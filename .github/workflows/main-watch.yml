@@ -1,0 +1,110 @@
+# Aviso inmediato si main/CI/release o el deploy de Production fallan.
+# Abre (o reutiliza) un issue con etiqueta alerta:main para respuesta técnica.
+name: main-watch
+
+on:
+  workflow_run:
+    workflows: [CI, security, Release]
+    types: [completed]
+  deployment_status:
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+
+jobs:
+  alert:
+    name: alerta-main
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: >
+      (github.event_name == 'workflow_run' &&
+        github.event.workflow_run.conclusion == 'failure' &&
+        github.event.workflow_run.head_branch == 'main')
+      ||
+      (github.event_name == 'deployment_status' &&
+        github.event.deployment_status.state == 'failure' &&
+        (github.event.deployment.environment == 'Production' ||
+         github.event.deployment.environment == 'production'))
+    steps:
+      - name: Crear o reutilizar issue de alerta
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          EVENT_NAME: ${{ github.event_name }}
+          WF_NAME: ${{ github.event.workflow_run.name }}
+          WF_URL: ${{ github.event.workflow_run.html_url }}
+          WF_SHA: ${{ github.event.workflow_run.head_sha }}
+          DEP_SHA: ${{ github.event.deployment.sha }}
+          DEP_ENV: ${{ github.event.deployment.environment }}
+          DEP_URL: ${{ github.event.deployment_status.target_url }}
+        run: |
+          set -euo pipefail
+
+          gh label create 'alerta:main' --color B60205 --description 'Fallo en main/CI/release o Production' 2>/dev/null || true
+
+          if [ "$EVENT_NAME" = "workflow_run" ]; then
+            SHA="$WF_SHA"
+            SHORT="${SHA:0:7}"
+            TITLE="[alerta:main] ${WF_NAME} falló en main (${SHORT})"
+            KIND="pipeline"
+            DETAIL="Workflow **${WF_NAME}** concluyó en *failure* sobre \`main\`."
+            LINK="$WF_URL"
+            IMPACT="**Impacto producción:** el merge a \`main\` ya puede haber disparado promote en Vercel. Si el workflow fallido es **CI** o **security**, el artefacto/deploy puede estar degradado; si es solo **Release**, el sitio puede estar OK pero falta tag/GitHub Release."
+          else
+            SHA="$DEP_SHA"
+            SHORT="${SHA:0:7}"
+            TITLE="[alerta:main] Deploy ${DEP_ENV} falló (${SHORT})"
+            KIND="deploy"
+            DETAIL="Deployment a **${DEP_ENV}** en estado *failure*."
+            LINK="${DEP_URL:-https://github.com/${REPO}/commit/${SHA}}"
+            IMPACT="**Impacto producción:** posible degradación o fallo del apex https://alexendros.dev (proyecto Vercel \`alexendros-dev\`). Prioridad crítica."
+          fi
+
+          marker="<!-- main-watch:${KIND}:${SHA} -->"
+          open="$(gh issue list --repo "$REPO" --label 'alerta:main' --state open --json number,body \
+            | jq -r --arg m "$marker" '[.[] | select(.body | contains($m))] | .[0].number // empty')"
+          if [ -n "$open" ]; then
+            echo "Issue #${open} ya cubre este evento; no se duplica."
+            exit 0
+          fi
+
+          {
+            echo "$marker"
+            echo "## Alerta automática (main-watch)"
+            echo
+            echo "$DETAIL"
+            echo
+            echo "- Commit: \`${SHA}\`"
+            echo "- Enlace: ${LINK}"
+            echo "- Repo: \`${REPO}\`"
+            echo
+            echo "$IMPACT"
+            echo
+            echo "**Respuesta técnica inmediata (orden):**"
+            if [ "$KIND" = "deploy" ]; then
+              echo "1. Abrir el enlace del deploy y el commit \`${SHORT}\`."
+              echo "2. Contrastar Production en Vercel vs último deploy verde."
+              echo "3. Si el sitio sirve 5xx/blanco: rollback/promote al deployment anterior verde en Vercel."
+              echo "4. Reproducir fallo en local (\`pnpm build\` / \`pnpm smoke\`) sobre el SHA."
+              echo "5. Abrir rama \`cursor/hotfix-…\`, fix, PR, gates verdes, merge."
+              echo "6. Cerrar este issue cuando Production vuelva a Ready y CI/release en main estén verdes."
+            else
+              echo "1. Abrir el run fallido y copiar el error raíz."
+              echo "2. Verificar Production en Vercel (Ready vs Error) y HTTP 200 en https://alexendros.dev/."
+              echo "3. Si Production está roto: rollback al deployment anterior verde; no esperar al siguiente merge."
+              echo "4. Si solo falló Release: no rollback; corregir \`.releaserc\`/workflow y re-lanzar \`workflow_dispatch\` de Release."
+              echo "5. Si falló CI/security tras merge: hotfix con PR desde \`cursor/hotfix-…\`."
+              echo "6. Registrar cierre en \`docs/audits/events.json\` (\`active: false\`) cuando proceda."
+            fi
+            echo
+            echo "_Generado por \`.github/workflows/main-watch.yml\`._"
+          } > /tmp/main-watch-body.md
+
+          gh issue create --repo "$REPO" \
+            --title "$TITLE" \
+            --label 'alerta:main' \
+            --label 'priority: critical' \
+            --label 'type: bug' \
+            --body-file /tmp/main-watch-body.md

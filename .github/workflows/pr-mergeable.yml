@@ -1,0 +1,84 @@
+# Bloqueo explícito + aviso cuando un PR entra en conflicto con la base.
+name: pr-mergeable
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, edited]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: pr-mergeable-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  mergeable:
+    name: pr-mergeable
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: ${{ github.event.pull_request.draft == false }}
+    steps:
+      - name: Resolver estado mergeable
+        id: state
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          mergeable=""
+          state=""
+          for i in 1 2 3 4 5 6; do
+            raw="$(gh api "repos/${REPO}/pulls/${PR}" --jq '{m:.mergeable,s:.mergeable_state}')"
+            mergeable="$(printf '%s' "$raw" | jq -r .m)"
+            state="$(printf '%s' "$raw" | jq -r .s)"
+            if [ "$mergeable" != "null" ]; then
+              break
+            fi
+            sleep 2
+          done
+          echo "mergeable=${mergeable}" >> "$GITHUB_OUTPUT"
+          echo "mergeable_state=${state}" >> "$GITHUB_OUTPUT"
+          echo "PR #${PR}: mergeable=${mergeable} state=${state}"
+
+      - name: Aviso y fallo si hay conflicto
+        if: ${{ steps.state.outputs.mergeable == 'false' || steps.state.outputs.mergeable_state == 'dirty' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          STATE: ${{ steps.state.outputs.mergeable_state }}
+        run: |
+          set -euo pipefail
+          marker='<!-- pr-mergeable-conflict -->'
+          existing="$(gh api "repos/${REPO}/issues/${PR}/comments" \
+            | jq --arg m "$marker" '[.[] | select(.body | contains($m))] | length')"
+          if [ "$existing" = "0" ]; then
+            {
+              echo "$marker"
+              echo "## Conflicto con la base"
+              echo
+              echo "Este PR **no es mergeable** (\`mergeable_state=${STATE}\`)."
+              echo
+              echo "**Bloqueo:** el check \`pr-mergeable\` falla hasta rebase/merge de \`main\` y resolución de conflictos."
+              echo
+              echo "**Acción:**"
+              echo "1. \`git fetch origin main && git rebase origin/main\` (o merge)."
+              echo "2. Resolver conflictos, pasar gates locales, push."
+              echo "3. Verificar que este check vuelve a verde."
+            } > /tmp/pr-mergeable-body.md
+            gh api "repos/${REPO}/issues/${PR}/comments" -F body=@/tmp/pr-mergeable-body.md
+          fi
+          echo "::error::PR en conflicto con la base (mergeable_state=${STATE}). Rebase requerido."
+          exit 1
+
+      - name: OK mergeable
+        if: ${{ steps.state.outputs.mergeable == 'true' }}
+        run: echo "PR mergeable."
+
+      - name: Estado desconocido (no bloquea)
+        if: ${{ steps.state.outputs.mergeable != 'true' && steps.state.outputs.mergeable != 'false' && steps.state.outputs.mergeable_state != 'dirty' }}
+        run: |
+          echo "::warning::GitHub aún no resolvió mergeable (state=${{ steps.state.outputs.mergeable_state }}). No se bloquea este intento."
