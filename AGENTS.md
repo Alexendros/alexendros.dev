@@ -4,7 +4,7 @@
 - **Estructura:** Propósito → preferencias → hechos del workspace → CI canónico.
 - **Contenido a integrar según contexto:** Conserva las preferencias de este portfolio. No copies un `AGENTS.md` de landing/SaaS ni tokens/DS de otro paquete. No reutilices `release.yml` ni cambies pricing/servicios sin confirmación.
 
-**Destinatarios:** agentes de código y el rol Mantenedor. Homogeneizamos **nombres y contratos** (jobs `quality` / `test` / `build` / `smoke`), no el copy del sitio.
+**Destinatarios:** agentes de código y el rol Mantenedor. Homogeneizamos **nombres y contratos** (jobs `quality` / `test` / `build` / `smoke` / `e2e-critical`), no el copy del sitio.
 
 ## Learned User Preferences
 
@@ -23,11 +23,12 @@
 - Repo canónico **público**: `Alexendros/alexendrosdev`; producción apex `https://alexendros.dev` en proyecto Vercel **`alexendros-dev`** (Hobby), Git link a este repo (decisión 1B).
 - Predecesor Next.js `nuevowebsite-alexendrosdev` archivado; no reutilizar como fuente de verdad.
 - Stack MVP: Astro 7.3 + isla React `ContactForm` (`client:visible`) + Tailwind (PostCSS) + TS estricto + Zod; contacto vía Proton SMTP (`operaciones@alexendros.dev`), honeypot, rate-limit Upstash y Turnstile (si `TURNSTILE_SECRET_KEY`).
-- Tema visual (ADR 0011, supersedes 0006/0007): claro editorial azul `#0f3778` con tokens en 3 capas (`@layer tokens` de `src/styles/global.css` es la fuente única; Tailwind solo referencia semánticos). Tema oscuro vía `prefers-color-scheme`/`data-theme`, validado por `pnpm check:contrast` (22 pares, ambos temas). Prohibidos colores literales fuera de tokens, `!important` y `transition: all` (stylelint `pnpm lint:css`).
-- Design system: componentes en `src/components/` (Button, Link, Badge, Eyebrow, Section/SectionHeader, Container/Stack/Grid, SkipLink), página viva `/design-system` (noindex) y `docs/design-system.md`. Motion: solo `transform`/`opacity`, reveal v2 con stagger, JS ≤ 2 KB gzip, 100% reduced-motion.
+- Tema visual (decisión 0011, supersedes 0006/0007): claro editorial azul `#0f3778` con tokens en 3 capas (`@layer tokens` de `src/styles/global.css` es la fuente única; Tailwind solo referencia semánticos). Tema oscuro vía `prefers-color-scheme`/`data-theme`, validado por `pnpm check:contrast` (22 pares, ambos temas). Prohibidos colores literales fuera de tokens, `!important` y `transition: all` (stylelint `pnpm lint:css`).
+- Design system: componentes en `src/components/`, página viva `/design-system` (noindex) y `docs/standards/website/diseno.md`. Motion: solo `transform`/`opacity`, reveal v2 con stagger, JS ≤ 2 KB gzip, 100% reduced-motion.
+- Documentación viva en `docs/standards/` (`website/`, `product/`, `protocols/`). Decisiones y eventos tipados en `docs/audits/{decisions,events}.json` (schema `record.schema.json`, gate `pnpm check:records`).
 - Vercel Analytics/Speed Insights solo se emiten en builds de Vercel (`__IS_VERCEL__` vía define en astro.config): en local/CI no existen los endpoints `/_vercel/*` y romperían Best Practices.
-- `engines.node` fijado a `22.x` (`.nvmrc`); validar Preview tras merge (issue #11).
-- CI canónico: jobs `quality` (typecheck, lint, format, **lint:css**), `test`, `build`, `smoke`, **`e2e-critical`** (always-on). e2e/axe completo + LHCI móvil son **opt-in** (label `e2e`); umbrales LHCI: perf ≥95, a11y/BP/SEO 100, CLS ≤0.05, LCP ≤2.5s. LCP medido ~1.9s.
-- Renovate (`.github/renovate.json`) sustituye Dependabot version-updates. Stack majors al día: Astro 7, Zod 4, nodemailer 10, React 19 (issue #12 cerrado).
-- SMTP/Upstash en Vercel: issue #13 (config operativa); el código es fail-closed sin esas vars.
+- `engines.node` fijado a `22.x` (`.nvmrc`); `packageManager` `pnpm@9.15.9`. Validar Preview tras merge (issue #11 cerrado).
+- CI canónico: jobs `quality` (typecheck, lint, format, **lint:css**, **check:records**), `test`, `build`, `smoke`, **`e2e-critical`** (always-on). e2e/axe completo + LHCI móvil son **opt-in** (label `e2e`); umbrales LHCI: perf ≥95, a11y/BP/SEO 100, CLS ≤0.05, LCP ≤2.5s. LCP medido ~1.9s.
+- Renovate (`.github/renovate.json`) es el único bot de version-updates (`npm` + `github-actions`). Stack majors al día: Astro 7, Zod 4, nodemailer 10, React 19 (issue #12 cerrado).
+- SMTP/Upstash en Vercel: issue #13 cerrado; el código es fail-closed sin esas vars.
 - Security: `security.yml` (gitleaks, osv-scanner + `osv-scanner.toml`, CodeQL sin upload); scorecard y dependency-review solo si el repo es público. Residuales documentados en `docs/threat-model.md`.

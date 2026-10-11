@@ -8,7 +8,7 @@ import { projects } from '../src/content/projects';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const outDir = join(root, 'public', 'og');
 
-// Paleta de marca (docs/design-system.md): azul profundo sobre papel claro.
+// Paleta de marca (docs/standards/website/diseno.md): azul profundo sobre papel claro.
 const BRAND = '#0f3778';
 const PAPER = '#f6f8fc';
 const LINE = '#d9e0ee';

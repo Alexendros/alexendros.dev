@@ -121,7 +121,7 @@ Usuario → [Navegador] → (HTTPS/TLS 1.3) → [Vercel Edge] → [Astro SSR/SSG
 | Táctica               | Técnica                            | Mitigación                                    | Estado |
 | --------------------- | ---------------------------------- | --------------------------------------------- | ------ |
 | **Initial Access**    | T1190 (Exploit Public-Facing App)  | WAF Vercel, rate limit, input validation      | ✅     |
-| **Initial Access**    | T1195.001 (Supply Chain)           | Lockfile, Dependabot, osv-scanner CI          | ✅     |
+| **Initial Access**    | T1195.001 (Supply Chain)           | Lockfile, Renovate, osv-scanner CI            | ✅     |
 | **Execution**         | T1059 (Command/Script Interpreter) | Sin `eval`/`exec` detectados, CSP             | ✅     |
 | **Credential Access** | T1552.001 (Unsecured Credentials)  | Secret scanning (pre-commit + CI), .gitignore | ✅     |
 | **Credential Access** | T1557 (MITM)                       | HSTS preload, TLS 1.3 only                    | ✅     |

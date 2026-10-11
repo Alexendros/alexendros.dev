@@ -2,8 +2,8 @@
 
 ### Propósito de este documento
 
-- **Objetivos:** Índice de docs de producto y de plataforma. Evitar que un agente o humano tome un audit puntual como contrato.
-- **Estructura:** Contratos raíz → guías → runbooks → ADRs → audits (histórico).
+- **Objetivos:** Índice de docs de producto y de plataforma. Evitar que un agente o humano tome un registro histórico como contrato.
+- **Estructura:** Contratos raíz → standards → registros en audits → threat model e inventario de cookies.
 - **Contenido a integrar según contexto:** Enlaza solo lo que existe en este repo. No copies el árbol de webconfig ni de un SaaS.
 
 ## Contratos (raíz)
@@ -13,25 +13,32 @@
 - [AGENTS.md](../AGENTS.md) — contrato operativo para agentes
 - [CONTRIBUTING.md](../CONTRIBUTING.md) · [SECURITY.md](../SECURITY.md) · [SUPPORT.md](../SUPPORT.md) · [CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md)
 
-## Guías
+## Standards
 
-- [guides/desarrollo.md](guides/desarrollo.md)
-- [guides/calidad.md](guides/calidad.md)
+### Website
 
-## Runbooks
+- [standards/website/desarrollo.md](standards/website/desarrollo.md)
+- [standards/website/calidad.md](standards/website/calidad.md)
+- [standards/website/diseno.md](standards/website/diseno.md)
 
-- [runbooks/ci-release.md](runbooks/ci-release.md)
-- [runbooks/env-vars.md](runbooks/env-vars.md)
-- [runbooks/gtm-server-side.md](runbooks/gtm-server-side.md)
+### Product
 
-## Decisiones
+- [standards/product/identidad.md](standards/product/identidad.md) — inventario de bloques del sitio (no es contrato de plataforma)
 
-- [architecture/decisions/](architecture/decisions/)
+### Protocols
 
-## Identidad de contenido (producto)
+- [standards/protocols/ci-release.md](standards/protocols/ci-release.md)
+- [standards/protocols/env-vars.md](standards/protocols/env-vars.md)
+- [standards/protocols/gtm-server-side.md](standards/protocols/gtm-server-side.md)
 
-- [IDENTITY.md](IDENTITY.md) — no es contrato de plataforma; inventario de bloques del sitio.
+## Registros (audits)
 
-## Audits (histórico)
+Colecciones tipadas validadas con `pnpm check:records` contra [audits/record.schema.json](audits/record.schema.json):
 
-`docs/audits/` son actas puntuales. No los uses como fuente de verdad si contradicen README / ARCHITECTURE.
+- [audits/decisions.json](audits/decisions.json) — decisiones de plataforma (antes ADRs markdown)
+- [audits/events.json](audits/events.json) — alertas (roto) y avisos (no-roto), con `active` y orden de escritura
+
+## Cumplimiento y seguridad
+
+- [cookies-inventory.json](cookies-inventory.json) — inventario canónico (`pnpm audit:cookies`)
+- [threat-model.md](threat-model.md) — modelo de amenazas y residuales aceptados

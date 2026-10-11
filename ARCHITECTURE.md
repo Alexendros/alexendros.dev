@@ -10,31 +10,32 @@ Sitio profesional de conversión + contratación. Producción: [https://alexendr
 
 ## Stack
 
-Astro 4 hybrid + una isla React (`ContactForm`, `client:load`) + Tailwind OKLCH + TypeScript estricto + Zod. Fuentes Inter + JetBrains Mono self-hosted. Sin GA ni cookies de tracking; sí Vercel Analytics y Speed Insights (agregados).
+Astro 7.3 hybrid + islas React (`ContactForm` con `client:visible`, CMP `CookieBanner`) + Tailwind (PostCSS) + TypeScript estricto + Zod. Fuentes Inter + JetBrains Mono self-hosted. Tracking comercial (GA4, Meta, Clarity, PostHog, LinkedIn, GTM) solo con consentimiento previo y granular (Consent Mode v2 default-deny). Vercel Analytics y Speed Insights solo en builds de Vercel (`__IS_VERCEL__`).
 
 ## Runtime
 
-| Capa                 | Dónde                                                      | Notas                               |
-| -------------------- | ---------------------------------------------------------- | ----------------------------------- |
-| Páginas SSG          | `src/pages/*.astro`                                        | Contenido tipado; 0 JS de contenido |
-| Isla cliente         | `src/components/ContactForm.tsx`                           | Única isla `client:load`            |
-| APIs serverless      | `src/pages/api/contact.ts`, `src/pages/api/cal/webhook.ts` | Adapter `@astrojs/vercel`           |
-| Contenido            | `src/content/*.ts`                                         | Zod en build; no CMS                |
-| Estáticos de preview | `.vercel/output/static`                                    | `pnpm preview` / job `smoke`        |
+| Capa                 | Dónde                                                                  | Notas                               |
+| -------------------- | ---------------------------------------------------------------------- | ----------------------------------- |
+| Páginas SSG          | `src/pages/*.astro`                                                    | Contenido tipado; 0 JS de contenido |
+| Islas cliente        | `ContactForm.tsx` (`client:visible`), `CookieBanner.tsx`               | Formulario + CMP                    |
+| APIs serverless      | `src/pages/api/contact.ts`, `src/pages/api/cal/webhook.ts`, CSP report | Adapter `@astrojs/vercel`           |
+| Contenido            | `src/content/*.ts`                                                     | Zod en build; no CMS                |
+| Estáticos de preview | `.vercel/output/static`                                                | `pnpm preview` / job `smoke`        |
 
 ## APIs
 
-- `POST /api/contact` — Zod, honeypot, rate-limit Upstash, Proton SMTP. Fail-closed (503) sin Redis/SMTP.
+- `POST /api/contact` — Zod, honeypot, rate-limit Upstash, Proton SMTP, Turnstile si hay secreto. Fail-closed (503) sin Redis/SMTP.
 - `POST /api/cal/webhook` — HMAC `X-Cal-Signature-256`, upsert Notion Leads, Redis solo idempotencia.
 
-Variables: [`.env.example`](.env.example). Nunca en git.
+Variables: [`.env.example`](.env.example) y [docs/standards/protocols/env-vars.md](docs/standards/protocols/env-vars.md). Nunca en git.
 
 ## CI y release
 
-Jobs del workflow principal: `quality` → `test` → `build` → `smoke`. Playwright + LHCI son **opt-in** (label `e2e` o `workflow_dispatch`). Release: `release.yml` + semantic-release (versionado ≠ promote a Vercel).
+Jobs del workflow principal: `quality` → `test` → `build` → `smoke` → `e2e-critical`. Playwright completo + LHCI son **opt-in** (label `e2e` o `workflow_dispatch`). Release: `release.yml` + semantic-release (versionado ≠ promote a Vercel). Actualizaciones de dependencias: Renovate (`.github/renovate.json`).
 
 ## Límites
 
 - No CMS, no Google Fonts, no ampliar servicios ni tocar pricing sin decisión explícita.
 - Predecesor Next.js `nuevowebsite-alexendrosdev` archivado: no es fuente de verdad.
-- Decisiones de alineación de plataforma: [`docs/architecture/decisions/`](docs/architecture/decisions/).
+- Decisiones de plataforma: [`docs/audits/decisions.json`](docs/audits/decisions.json) (schema en `docs/audits/record.schema.json`).
+- Alertas y avisos operativos: [`docs/audits/events.json`](docs/audits/events.json).

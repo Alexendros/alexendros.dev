@@ -3,7 +3,7 @@ export default {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   theme: {
     extend: {
-      // Fuente única de verdad: :root en src/styles/global.css (ADR 0011).
+      // Fuente única de verdad: :root en src/styles/global.css (decisión 0011).
       // No duplicar valores literales aquí; los translúcidos usan
       // color-mix sobre var(--brand) porque Tailwind v3 no aplica
       // /<alpha> sobre var().

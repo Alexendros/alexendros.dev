@@ -19,15 +19,15 @@ Más detalle y precios orientativos en [Servicios](https://alexendros.dev/servic
 2. Si prefieres una cita: [diagnóstico](https://cal.com/alexendros/diagnostico) o [sesión técnica](https://cal.com/alexendros/sesion-tecnica).
 3. Acordamos alcance, plazos y entregables antes de empezar.
 
-Trabajo desde Valencia (remoto o presencial según el proyecto). Sin tracking invasivo ni cookies de publicidad: el sitio prioriza claridad, accesibilidad y velocidad.
+Trabajo desde Valencia (remoto o presencial según el proyecto). El sitio prioriza claridad, accesibilidad y velocidad; el tracking comercial solo se carga con consentimiento previo y granular.
 
 ## Este repositorio
 
-Código fuente **público** del sitio en producción ([`Alexendros/alexendrosdev`](https://github.com/Alexendros/alexendrosdev)). Para contribuir o desplegar, empieza por [CONTRIBUTING](CONTRIBUTING.md). Arquitectura, ADRs y runbooks están en [docs/](docs/) y [ARCHITECTURE.md](ARCHITECTURE.md). Contrato para agentes: [AGENTS.md](AGENTS.md). Avisos de seguridad: [SECURITY.md](SECURITY.md).
+Código fuente **público** del sitio en producción ([`Alexendros/alexendrosdev`](https://github.com/Alexendros/alexendrosdev)). Para contribuir o desplegar, empieza por [CONTRIBUTING](CONTRIBUTING.md). Arquitectura en [ARCHITECTURE.md](ARCHITECTURE.md); estándares, protocolos y registros en [docs/](docs/). Contrato para agentes: [AGENTS.md](AGENTS.md). Avisos de seguridad: [SECURITY.md](SECURITY.md).
 
 ```bash
 pnpm i
 pnpm dev    # http://localhost:4321
 ```
 
-Node 22. Producción en Vercel Hobby (`alexendros-dev`); el merge a `main` publica el sitio.
+Node 22 + pnpm 9.15.9 (`packageManager`). Producción en Vercel Hobby (`alexendros-dev`); el merge a `main` publica el sitio.

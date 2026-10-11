@@ -1,0 +1,171 @@
+{
+  "version": 1,
+  "kind": "events",
+  "items": [
+    {
+      "id": "evt-2026-09-09-baseline",
+      "sequence": 1,
+      "timestamp": "2026-09-09T12:00:00Z",
+      "active": false,
+      "title": "Baseline WP-0 del MVP",
+      "summary": "Acta de baseline sobre el repo predecesor miwebsite-alexendrosdev; stack entonces Astro 4 / Node 20. Absorbida por el estado actual del MVP.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "docs/audits/2026-09-09-baseline.md"
+    },
+    {
+      "id": "evt-2026-09-09-delivery",
+      "sequence": 2,
+      "timestamp": "2026-09-09T18:00:00Z",
+      "active": false,
+      "title": "Entrega WP-5 checklist merge",
+      "summary": "Checklist de entrega puntual del ciclo WP-5; trabajo mergeado y cerrado.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "docs/audits/2026-09-09-delivery.md"
+    },
+    {
+      "id": "evt-2026-09-09-dependabot-majors",
+      "sequence": 3,
+      "timestamp": "2026-09-09T18:30:00Z",
+      "active": false,
+      "title": "Triage majors Dependabot (política WP-7)",
+      "summary": "Política de no fusionar majors junto a cambios funcionales. Dependabot ya no existe; majors cerrados en issue #12 (Astro 7, Zod 4, nodemailer 10, React 19) vía Renovate.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "docs/audits/2026-09-09-dependabot-majors-triage.md"
+    },
+    {
+      "id": "evt-2026-09-09-contact-smoke",
+      "sequence": 4,
+      "timestamp": "2026-09-09T19:00:00Z",
+      "active": false,
+      "title": "Checklist smoke contacto POST /api/contact",
+      "summary": "Plantilla operativa de smoke del formulario; el protocolo vivo vive en standards/protocols/env-vars.md.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "docs/audits/2026-09-09-contact-smoke-checklist.md"
+    },
+    {
+      "id": "evt-2026-09-11-cal-redeploy",
+      "sequence": 5,
+      "timestamp": "2026-09-11T12:00:00Z",
+      "active": false,
+      "title": "Redeploy Cal/Notion webhook en producción",
+      "summary": "Nota ops puntual de redeploy del webhook Cal; incidente cerrado.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "docs/audits/2026-09-11-cal-webhook-prod-redeploy.md"
+    },
+    {
+      "id": "evt-2026-09-28-frontend-baseline",
+      "sequence": 6,
+      "timestamp": "2026-09-28T10:00:00Z",
+      "active": false,
+      "title": "Baseline frontend pre-simplificación",
+      "summary": "Métricas LH/axe previas al trabajo de simplificación y tokens; supersedidas por cierres posteriores.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "docs/audits/2026-09-28-frontend-baseline.md"
+    },
+    {
+      "id": "evt-2026-09-28-frontend-cierre",
+      "sequence": 7,
+      "timestamp": "2026-09-28T16:00:00Z",
+      "active": false,
+      "title": "Cierre auditoría frontend",
+      "summary": "Informe de cierre con criterios del prompt §6 en verde; actas absorbidas por design system y decisión 0011.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "docs/audits/2026-09-28-frontend-cierre.md"
+    },
+    {
+      "id": "evt-2026-09-28-simplificacion",
+      "sequence": 8,
+      "timestamp": "2026-09-28T18:00:00Z",
+      "active": false,
+      "title": "Entrega simplificación visual (fases 1–5)",
+      "summary": "Delivery de simplificación con capturas before/after; decisión 0009 captura el alcance vivo.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "docs/audits/2026-09-28-simplificacion-delivery.md"
+    },
+    {
+      "id": "evt-2026-09-28-simplificacion-v2",
+      "sequence": 9,
+      "timestamp": "2026-09-28T20:00:00Z",
+      "active": false,
+      "title": "Entrega simplificación v2 (calidez/redondeo)",
+      "summary": "TE.1 cerrado; decisión 0010 documenta redondeo y retirada de ticks. Gate visual operador absorbido.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "docs/audits/2026-09-28-simplificacion-v2-delivery.md"
+    },
+    {
+      "id": "evt-2026-09-28-foto-sobre-mi",
+      "sequence": 10,
+      "timestamp": "2026-09-28T21:00:00Z",
+      "active": false,
+      "title": "Suite visual foto sobre-mí",
+      "summary": "Evidencia PNG before/after de la foto en /sobre-mi; suite completa OK.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "docs/audits/2026-09-28-foto-sobre-mi/README.md"
+    },
+    {
+      "id": "evt-2026-10-09-pre-remachar",
+      "sequence": 11,
+      "timestamp": "2026-10-09T12:00:00Z",
+      "active": false,
+      "title": "Readiness pre-Remachar READY",
+      "summary": "Veredicto READY FOR REMACHAR; majors #12 cerrados; alertas Dependabot a 0 tras dismiss allowlist; handoff a repo-ending sin publicación automática.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "docs/audits/2026-10-09-pre-remachar.md"
+    },
+    {
+      "id": "evt-issue-12-majors",
+      "sequence": 12,
+      "timestamp": "2026-10-09T15:00:00Z",
+      "active": false,
+      "title": "Majors stack (issue #12) cerrados",
+      "summary": "Astro 7, Zod 4, nodemailer 10 y React 19 en main. Ya no es tarea pendiente.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "https://github.com/Alexendros/alexendrosdev/issues/12"
+    },
+    {
+      "id": "evt-issue-13-smtp-upstash",
+      "sequence": 13,
+      "timestamp": "2026-10-09T16:00:00Z",
+      "active": false,
+      "title": "SMTP y Upstash en Vercel (issue #13)",
+      "summary": "Issue #13 CLOSED: SMTP_* y UPSTASH_* configurados en alexendros-dev. Código sigue fail-closed si faltan en un entorno.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "https://github.com/Alexendros/alexendrosdev/issues/13"
+    },
+    {
+      "id": "evt-threat-nodemailer-residual",
+      "sequence": 14,
+      "timestamp": "2026-10-09T17:00:00Z",
+      "active": false,
+      "title": "Residual nodemailer 6.x del threat model",
+      "summary": "El residual documentado como nodemailer 6.x quedó obsoleto: el manifiesto declara nodemailer ^10.0.16. Allowlist OSV se revisa en threat-model vivo.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "docs/threat-model.md"
+    },
+    {
+      "id": "evt-local-node-pnpm-drift",
+      "sequence": 15,
+      "timestamp": "2026-10-11T17:00:00Z",
+      "active": true,
+      "title": "Drift local Node/pnpm frente a CI",
+      "summary": "Shell local observado en Node 26 + pnpm 11 (WARN overrides). Canon del repo: Node 22.x (.nvmrc/engines) y pnpm 9 en CI. Usar fnm/nvm 22 + pnpm 9 para validar; no subir major en engines (Vercel Functions sin 26).",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "package.json#engines + .nvmrc + .github/workflows/ci.yml"
+    }
+  ]
+}

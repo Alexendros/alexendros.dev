@@ -1,5 +1,5 @@
 // Valida el contraste WCAG de los pares semánticos del design system
-// (ADR 0011, tema claro editorial + tema oscuro opcional) y los
+// (decisión 0011, tema claro editorial + tema oscuro opcional) y los
 // guardrails de fuente única: los literales viven en global.css
 // (primitivos hex + semánticos por var()); tailwind.config.mjs solo
 // referencia var()/color-mix. La matemática de color y el parsing de
