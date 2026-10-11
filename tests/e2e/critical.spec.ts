@@ -14,8 +14,8 @@ test.describe('critical paths', () => {
 
   test('contacto muestra formulario usable', async ({ page }) => {
     await page.goto('/contacto');
-    await expect(page.getByLabel('Nombre*')).toBeVisible();
-    await expect(page.getByLabel('Email*')).toBeVisible();
+    await expect(page.getByLabel('Nombre completo*')).toBeVisible();
+    await expect(page.getByLabel(/Correo electrónico|WhatsApp/).first()).toBeVisible();
   });
 
   test('sin consentimiento no hay trackers data-tracker', async ({ page }) => {

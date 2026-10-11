@@ -591,51 +591,8 @@
     font-size: 0.95rem;
   }
 
-  /* Landing banner. */
-  #landing-banner {
-    transition: transform var(--dur-fast) var(--ease-out);
-  }
-
-  #landing-banner.visible {
-    transform: translateY(0);
-  }
-
-  #landing-banner.hidden {
-    transform: translateY(100%);
-  }
-
-  /* Reduced-motion: el banner deja de deslizarse y funde. Sin
-     !important: estas reglas van tras .visible/.hidden con la misma
-     especificidad (id + clase) y ganan por orden en la capa. */
-  @media (prefers-reduced-motion: reduce) {
-    #landing-banner.reduce-motion {
-      transition: opacity var(--dur-fast) var(--ease-out);
-      transform: none;
-    }
-
-    #landing-banner.reduce-motion.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    #landing-banner.reduce-motion.visible {
-      opacity: 1;
-      pointer-events: auto;
-    }
-  }
-
   .pb-safe {
     padding-bottom: max(0px, env(safe-area-inset-bottom));
-  }
-
-  html.banner-visible {
-    padding-bottom: var(--banner-height, 0);
-  }
-
-  @media (max-width: 768px) {
-    html.banner-visible main {
-      padding-bottom: var(--banner-height, 0);
-    }
   }
 
   /* Reveal v2 (scroll): stagger por índice (--i en línea) con tokens.

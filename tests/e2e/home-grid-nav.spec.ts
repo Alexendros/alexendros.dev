@@ -1,12 +1,14 @@
 import { test, expect } from '@playwright/test';
 
-test('home muestra las 4 ofertas en rejilla estática sin autoplay', async ({ page }) => {
+test('F01: home muestra las cuatro secciones y Más información', async ({ page }) => {
   await page.goto('/');
-  const grid = page.locator('[data-services-grid]');
-  await expect(grid).toBeVisible();
-  await expect(grid.locator(':scope > *')).toHaveCount(4);
-  // Sin JS de slider: no hay autoplay ni diapositivas ocultas.
-  await expect(page.locator('[data-service-slider]')).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Servicios', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Referencias', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Metodología', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Valores', exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Más información' }).first()).toBeVisible();
+  await expect(page.getByText('Cuéntame')).toHaveCount(0);
+  await expect(page.locator('#lead-magnet')).toHaveCount(0);
 });
 
 test('navegación móvil abre/cierra con teclado y gestiona el foco', async ({ page }) => {
@@ -20,10 +22,8 @@ test('navegación móvil abre/cierra con teclado y gestiona el foco', async ({ p
   await menuButton.click();
   await expect(menuButton).toHaveAttribute('aria-expanded', 'true');
   await expect(mobileNav).toBeVisible();
-  // Al abrir, el foco va al primer enlace.
   await expect(mobileNav.locator('a').first()).toBeFocused();
 
-  // Cierre con Escape devuelve el foco al botón.
   await page.keyboard.press('Escape');
   await expect(menuButton).toHaveAttribute('aria-expanded', 'false');
   await expect(mobileNav).toBeHidden();

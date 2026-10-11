@@ -1,20 +1,21 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { track } from '../lib/tracking/events';
+import { discounted, formatEuro, provisionalPrices } from '../content/pricing';
 
 const STORAGE_KEY = 'alexendros.exitIntent.v1';
-const OFFER_HREF = '/contacto';
-const EXCLUDED_PREFIXES = ['/contacto', '/aviso-legal', '/privacidad', '/cookies'];
+const OFFER_HREF = '/contacto?motivo=propuestaComercial';
+const EXCLUDED_PREFIXES = ['/contacto', '/identidad', '/aviso-legal', '/privacidad', '/cookies'];
 
 /**
- * Exit intent: cuando el puntero abandona la ventana por arriba, ofrece un
- * 15% en el diagnóstico. Se muestra una vez por sesión y no vuelve a
- * aparecer si el usuario lo cierra (localStorage). Sin transiciones para
- * respetar prefers-reduced-motion.
+ * Exit intent: ofrece el informe comercial con 15 % sobre el precio provisional.
+ * Una vez por sesión; cierre solo con la X, Escape o el fondo.
  */
 export default function ExitIntent() {
   const [open, setOpen] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const shownRef = useRef(false);
+  const offerTitle = formatEuro(discounted(provisionalPrices.informeComercial));
+  const listPrice = formatEuro(provisionalPrices.informeComercial);
 
   useEffect(() => {
     const path = window.location.pathname;
@@ -26,15 +27,24 @@ export default function ExitIntent() {
       return;
     }
 
-    const onLeave = (event: MouseEvent) => {
-      if (event.clientY > 0 || shownRef.current) return;
+    const show = () => {
+      if (shownRef.current) return;
       shownRef.current = true;
       setOpen(true);
       track('exit_intent_impression');
     };
 
-    document.addEventListener('mouseleave', onLeave);
-    return () => document.removeEventListener('mouseleave', onLeave);
+    const onLeave = (event: MouseEvent) => {
+      if (event.clientY > 0) return;
+      show();
+    };
+
+    document.documentElement.addEventListener('mouseleave', onLeave);
+    document.addEventListener('alexendros:exit-intent', show as EventListener);
+    return () => {
+      document.documentElement.removeEventListener('mouseleave', onLeave);
+      document.removeEventListener('alexendros:exit-intent', show as EventListener);
+    };
   }, []);
 
   const dismiss = useCallback(() => {
@@ -94,29 +104,26 @@ export default function ExitIntent() {
             <line x1="18" y1="6" x2="6" y2="18" />
           </svg>
         </button>
-        <p className="font-mono text-xs tracking-[0.1em] text-primary">ANTES DE IRTE</p>
+        <p className="font-mono text-xs tracking-[0.1em] text-primary">
+          SI TIENES UN NEGOCIO, ESTO TE INTERESA
+        </p>
         <h2 id="exit-intent-title" className="mt-2 text-2xl font-bold">
-          15% en tu diagnóstico
+          {listPrice} − 15 % = {offerTitle}
         </h2>
         <p className="mt-2 text-sm text-muted">
-          Si tu web no te está trayendo contactos, lo revisamos y te decimos por dónde empezar. Te
-          aplico un 15% de descuento si lo pides ahora.
+          Inspección metodológica de tu dominio web y presencia en internet. Te enviaré un dossier
+          informativo de todas las detecciones y hallazgos, así como las áreas que se necesiten
+          corregir ya y mis recomendaciones de cómo podríamos construir algo más eficiente para tu
+          negocio.
         </p>
-        <div className="mt-5 flex flex-wrap items-center gap-3">
+        <div className="mt-5">
           <a
             href={OFFER_HREF}
             onClick={() => track('exit_intent_cta_click')}
             className="btn inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-ink transition-colors hover:bg-primaryHover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
-            Quiero el descuento
+            Rellenar formulario
           </a>
-          <button
-            type="button"
-            onClick={dismiss}
-            className="text-sm text-muted underline decoration-dotted underline-offset-2 hover:text-fg"
-          >
-            No, gracias
-          </button>
         </div>
       </div>
     </div>

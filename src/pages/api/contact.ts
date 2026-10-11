@@ -65,16 +65,7 @@ function createProductionDeps(): ContactDeps {
         userData: { email, ip, userAgent: userAgent ?? undefined }
       });
     },
-    saveLead: async ({
-      name,
-      email,
-      company,
-      subject,
-      message,
-      budget,
-      vertical,
-      referralCode
-    }) => {
+    saveLead: async ({ name, email, subject, message }) => {
       const token = import.meta.env.NOTION_TOKEN;
       const dataSourceId =
         import.meta.env.NOTION_LEADS_DATA_SOURCE_ID ?? import.meta.env.NOTION_LEADS_DATABASE_ID;
@@ -87,19 +78,15 @@ function createProductionDeps(): ContactDeps {
         tipo: 'Lead contacto',
         estado: 'Nuevo',
         asunto: subject,
-        mensaje: company ? `${message}\n\nEmpresa: ${company}` : message,
-        fuente: vertical ? `formulario/${vertical}` : 'formulario',
-        vertical,
-        budget,
-        referralCode,
+        mensaje: message,
+        fuente: 'formulario',
         consentMarketing: false
       });
     },
-    sendMail: async ({ name, email, company, subject, message, smtp }) => {
+    sendMail: async ({ name, email, subject, message, replyTo, smtp }) => {
       const { html, text, mailSubject } = buildContactEmailHtml({
         name,
         email,
-        company,
         subject,
         message
       });
@@ -112,7 +99,7 @@ function createProductionDeps(): ContactDeps {
       await transporter.sendMail({
         from: MAIL_FROM,
         to: MAIL_TO,
-        replyTo: email,
+        ...(replyTo ? { replyTo } : {}),
         subject: mailSubject,
         html,
         text

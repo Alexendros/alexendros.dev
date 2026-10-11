@@ -26,14 +26,18 @@ test('TEST-CMP-01: sin consentimiento no hay trackers activos', async ({ page })
   ).toHaveCount(0);
 });
 
-test('TEST-CMP-02a: el banner muestra 3 botones con el mismo peso y persiste al aceptar', async ({
-  page
-}) => {
+test('F06: el banner muestra cursiva y los tres rótulos nuevos', async ({ page }) => {
   await page.goto('/');
 
-  const accept = page.getByRole('button', { name: 'Aceptar todo' }).first();
-  const reject = page.getByRole('button', { name: 'Rechazar todo' }).first();
-  const configure = page.getByRole('button', { name: 'Configurar' }).first();
+  await expect(
+    page
+      .locator('.cc-normative')
+      .getByText('La normativa dice que tienes que leer esto y clicar en lo que consideres.')
+  ).toBeVisible();
+
+  const accept = page.getByRole('button', { name: 'Sí a todo' }).first();
+  const reject = page.getByRole('button', { name: 'Sí a lo esencial' }).first();
+  const configure = page.getByRole('button', { name: 'Configuración informada' }).first();
 
   await expect(accept).toBeVisible();
   await expect(reject).toBeVisible();
@@ -55,10 +59,12 @@ test('TEST-CMP-02a: el banner muestra 3 botones con el mismo peso y persiste al 
   expect(consent?.analytics).toBe(true);
 });
 
-test('TEST-CMP-02b: al rechazar todo analytics y marketing quedan a false', async ({ page }) => {
+test('TEST-CMP-02b: al elegir lo esencial analytics y marketing quedan a false', async ({
+  page
+}) => {
   await page.goto('/');
 
-  const reject = page.getByRole('button', { name: 'Rechazar todo' }).first();
+  const reject = page.getByRole('button', { name: 'Sí a lo esencial' }).first();
   await expect(reject).toBeVisible();
   await reject.click();
 
@@ -69,7 +75,7 @@ test('TEST-CMP-02b: al rechazar todo analytics y marketing quedan a false', asyn
   expect(consent?.necessary).toBe(true);
 });
 
-test('TEST-CMP-02c: configurar abre el modal de preferencias con la categoría técnica bloqueada', async ({
+test('TEST-CMP-02c: configuración informada abre preferencias con técnica bloqueada', async ({
   page
 }) => {
   await page.goto('/');
@@ -79,34 +85,19 @@ test('TEST-CMP-02c: configurar abre el modal de preferencias con la categoría t
   await configure.click();
 
   await expect(page.getByText('Preferencias de cookies')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Sí a todo' }).first()).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Sí a lo esencial' }).first()).toBeVisible();
   await expect(page.getByText('Cookies técnicas').first()).toBeVisible();
   await expect(page.locator('.pm input[type="checkbox"][disabled]')).toHaveCount(1);
 });
 
-test('TEST-CMP-03: el botón "Configurar cookies" del pie reabre las preferencias', async ({
-  page
-}) => {
-  await page.goto('/');
-
-  const footerTrigger = page
-    .locator('footer')
-    .getByRole('button', { name: /Configurar cookies/i })
-    .first();
-  await expect(footerTrigger).toBeVisible();
-  await footerTrigger.click();
-
-  await expect(page.getByText('Preferencias de cookies')).toBeVisible();
-});
-
-test('TEST-LEGAL-02: el pie enlaza a las páginas legales y /cookies lista la tabla', async ({
-  page
-}) => {
+test('TEST-LEGAL-02: el pie enlaza a Identidad, Privacidad y Cookies', async ({ page }) => {
   await page.goto('/');
 
   const footer = page.locator('footer');
-  await expect(footer.getByRole('link', { name: /Aviso legal/i }).first()).toHaveAttribute(
+  await expect(footer.getByRole('link', { name: /Identidad/i }).first()).toHaveAttribute(
     'href',
-    '/aviso-legal'
+    '/identidad'
   );
   await expect(footer.getByRole('link', { name: /Privacidad/i }).first()).toHaveAttribute(
     'href',

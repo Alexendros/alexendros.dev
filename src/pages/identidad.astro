@@ -1,0 +1,31 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Container from '../components/Container.astro';
+---
+
+<Layout
+  title="Identidad — Alexendros"
+  description="Propietario de alexendros.dev, responsabilidad legal y cumplimiento mercantil."
+>
+  <Container size="narrow" class="pt-12 legal-prose">
+    <p class="font-mono">LEGAL</p>
+    <h1>Identidad</h1>
+    <p>
+      Propietario de Alexendros.dev: Alejandro Domingo Agustí, NIF 21002968N, 46023 Valencia,
+      España. Correo de contratación:
+      <a href="mailto:contratacion@alexendros.dev">contratacion@alexendros.dev</a>.
+    </p>
+    <p>
+      Responsabilidad legal y cumplimiento mercantil sobre la presentación de servicios
+      profesionales en este portal público. El sitio informa sobre servicios y productos digitales;
+      no es un marketplace ni un SaaS de terceros.
+    </p>
+  </Container>
+</Layout>
+
+<style>
+  .legal-prose a {
+    color: var(--brand);
+    text-decoration: underline;
+  }
+</style>

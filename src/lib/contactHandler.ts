@@ -1,4 +1,11 @@
-import { escapeHtml, isHoneypotFilled, parseContactBody } from './contactSchema';
+import {
+  buildContactMessage,
+  escapeHtml,
+  isHoneypotFilled,
+  parseContactBody,
+  reasonLabels,
+  type ContactInput
+} from './contactSchema';
 import { resolveSmtpConfig, type SmtpConfig } from './smtpConfig';
 
 export const CONTACT_MAX_BODY_BYTES = 16_384;
@@ -12,22 +19,20 @@ export type ContactEnv = {
   SMTP_PASS?: string;
   UPSTASH_REDIS_REST_URL?: string;
   UPSTASH_REDIS_REST_TOKEN?: string;
-  /** Si está definido, se exige y verifica un token de Cloudflare Turnstile. */
   TURNSTILE_SECRET_KEY?: string;
 };
 
 export type RateLimitResult = {
   success: boolean;
-  /** Epoch ms when the window resets; used for Retry-After */
   reset?: number;
 };
 
 export type ContactMailPayload = {
   name: string;
   email: string;
-  company?: string;
   subject: string;
   message: string;
+  replyTo?: string;
   smtp: SmtpConfig;
 };
 
@@ -35,11 +40,8 @@ export type ContactDeps = {
   getEnv: () => ContactEnv;
   rateLimit: (ip: string) => Promise<RateLimitResult>;
   sendMail: (payload: ContactMailPayload) => Promise<void>;
-  /** Verificación Turnstile server-side; solo se invoca si hay TURNSTILE_SECRET_KEY. */
   verifyTurnstile?: (token: string, ip: string) => Promise<boolean>;
-  /** Evento de conversión server-side (Meta CAPI); best-effort, no bloquea la respuesta. */
   sendLeadEvent?: (input: ContactLeadEvent) => Promise<void>;
-  /** Alta del lead en el CRM (Notion); best-effort, no bloquea la respuesta. */
   saveLead?: (input: ContactLeadInput) => Promise<void>;
   createRequestId?: () => string;
   nowMs?: () => number;
@@ -55,12 +57,8 @@ export type ContactLeadEvent = {
 export type ContactLeadInput = {
   name: string;
   email: string;
-  company?: string;
   subject: string;
   message: string;
-  budget?: string;
-  vertical?: string;
-  referralCode?: string;
   consent: boolean;
 };
 
@@ -98,6 +96,20 @@ export function isJsonContentType(request: Request): boolean {
 
 export function methodNotAllowed(): Response {
   return json(405, { error: 'Method not allowed' }, { Allow: 'POST' });
+}
+
+function mailFields(data: ContactInput) {
+  const subject = reasonLabels[data.reason];
+  const message = buildContactMessage(data);
+  const email =
+    data.email ?? `whatsapp-${(data.phone ?? 'sin-tel').replace(/\D/g, '')}@alexendros.dev`;
+  return {
+    name: data.name,
+    email,
+    subject,
+    message,
+    replyTo: data.email
+  };
 }
 
 /**
@@ -191,24 +203,24 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
     return json(503, { error: 'Service unavailable' });
   }
 
-  const { name, email, company, subject, message } = parsed.data;
+  const fields = mailFields(parsed.data);
 
   try {
-    await deps.sendMail({ name, email, company, subject, message, smtp });
+    await deps.sendMail({ ...fields, smtp });
   } catch {
     logEvent('error', 'contact_smtp_error', requestId, false);
     return json(503, { error: 'Service unavailable' });
   }
 
   logEvent('info', 'contact_sent', requestId, true, {
-    subjectLen: subject.length,
-    messageLen: message.length
+    subjectLen: fields.subject.length,
+    messageLen: fields.message.length
   });
 
-  if (deps.sendLeadEvent) {
+  if (deps.sendLeadEvent && parsed.data.email) {
     void deps
       .sendLeadEvent({
-        email,
+        email: parsed.data.email,
         ip,
         userAgent: request.headers.get('user-agent'),
         sourceUrl: request.headers.get('referer')
@@ -219,14 +231,10 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
   if (deps.saveLead) {
     void deps
       .saveLead({
-        name,
-        email,
-        company,
-        subject,
-        message,
-        budget: parsed.data.budget,
-        vertical: parsed.data.vertical,
-        referralCode: parsed.data.referralCode,
+        name: fields.name,
+        email: fields.email,
+        subject: fields.subject,
+        message: fields.message,
         consent: parsed.data.consent
       })
       .catch(() => {});
@@ -238,27 +246,24 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
 export function buildContactEmailHtml(input: {
   name: string;
   email: string;
-  company?: string;
   subject: string;
   message: string;
 }): { html: string; text: string; mailSubject: string } {
   const safeName = escapeHtml(input.name);
   const safeEmail = escapeHtml(input.email);
-  const safeCompany = escapeHtml(input.company || '—');
   const safeSubject = escapeHtml(input.subject);
   const safeMessage = escapeHtml(input.message).replace(/\n/g, '<br/>');
 
   const html = `
-    <h2>Nuevo contacto — alexendros.dev</h2>
+    <h2>Nueva petición — alexendros.dev</h2>
     <p><strong>Nombre:</strong> ${safeName}</p>
-    <p><strong>Email:</strong> ${safeEmail}</p>
-    <p><strong>Empresa:</strong> ${safeCompany}</p>
-    <p><strong>Asunto:</strong> ${safeSubject}</p>
-    <p><strong>Mensaje:</strong></p>
+    <p><strong>Email / canal:</strong> ${safeEmail}</p>
+    <p><strong>Motivo:</strong> ${safeSubject}</p>
+    <p><strong>Detalle:</strong></p>
     <p>${safeMessage}</p>
   `;
 
-  const text = `Nombre: ${input.name}\nEmail: ${input.email}\nEmpresa: ${input.company || '—'}\nAsunto: ${input.subject}\n\n${input.message}`;
+  const text = `Nombre: ${input.name}\nEmail: ${input.email}\nMotivo: ${input.subject}\n\n${input.message}`;
   const mailSubject = `[alexendros.dev] ${input.subject} - ${input.name}`;
   return { html, text, mailSubject };
 }

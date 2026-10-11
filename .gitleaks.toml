@@ -10,6 +10,7 @@ condition = "AND"
 paths = [
   '''(?:^|/)src/components/ExitIntent\.tsx$''',
   '''(?:^|/)src/components/StickyCta\.astro$''',
+  # Histórico: el componente se retiró; gitleaks escanea el historial completo.
   '''(?:^|/)src/components/LandingBanner\.astro$''',
   '''(?:^|/)public/scripts/landing-banner\.js$''',
   '''(?:^|/)src/scripts/landing-banner\.js$''',

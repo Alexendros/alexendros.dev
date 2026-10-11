@@ -1,134 +1,92 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { track } from '../lib/tracking/events';
-import { contactSchema, parseContactBody } from '../lib/contactSchema';
-import { readReferralCookie } from '../lib/referral';
+import {
+  contactChannels,
+  contactReasons,
+  entityLabels,
+  entityTypes,
+  parseContactBody,
+  reasonLabels,
+  type ContactInput
+} from '../lib/contactSchema';
 import TurnstileWidget from './TurnstileWidget';
 
 type Props = {
-  subjects: string[];
-  calUrl: string;
   successMessage: string;
   errorMessage: string;
   turnstileSiteKey?: string;
 };
 
-const BUDGET_OPTIONS = [
-  'Menos de 1.000 €',
-  '1.000–2.500 €',
-  '2.500–5.000 €',
-  'Más de 5.000 €',
-  'Aún no lo sé'
-] as const;
-
-const STEP_LABELS = ['Datos de contacto', 'Tu proyecto', 'Mensaje'] as const;
-
-const stepOneSchema = contactSchema.pick({ name: true, email: true, company: true });
-const stepTwoSchema = contactSchema.pick({ subject: true, budget: true });
-
 const inputClass =
   'mt-1 w-full bg-bg border border-border-strong rounded-lg px-3 py-2 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
 
-export default function ContactForm({
-  subjects,
-  calUrl,
-  successMessage,
-  errorMessage,
-  turnstileSiteKey
-}: Props) {
+function reasonFromSearch(value: string | null): ContactInput['reason'] {
+  if (value && (contactReasons as readonly string[]).includes(value)) {
+    return value as ContactInput['reason'];
+  }
+  return 'informacionCliente';
+}
+
+export default function ContactForm({ successMessage, errorMessage, turnstileSiteKey }: Props) {
   const [status, setStatus] = useState<
     'idle' | 'ok' | 'error' | 'rate_limited' | 'unavailable' | 'loading'
   >('idle');
-  const [step, setStep] = useState(0);
-  const [stepError, setStepError] = useState(false);
+  const [fieldError, setFieldError] = useState(false);
   const [form, setForm] = useState({
     name: '',
+    entityType: 'particular' as ContactInput['entityType'],
+    channel: 'correo' as ContactInput['channel'],
+    phone: '',
     email: '',
-    company: '',
-    subject: subjects[0] ?? '',
-    budget: '',
-    message: '',
+    reason: 'informacionCliente' as ContactInput['reason'],
+    modules: '',
     consent: false,
     honeypot: ''
   });
   const [turnstileToken, setTurnstileToken] = useState('');
   const [turnstileKey, setTurnstileKey] = useState(0);
-  const [started, setStarted] = useState(false);
-
-  const stepRef = useRef(step);
-  stepRef.current = step;
-  const startedRef = useRef(started);
-  startedRef.current = started;
-  const statusRef = useRef(status);
-  statusRef.current = status;
 
   useEffect(() => {
-    const onHide = () => {
-      if (document.visibilityState !== 'hidden') return;
-      if (!startedRef.current || statusRef.current === 'ok') return;
-      track('form_abandon_step', { step: stepRef.current + 1 });
-    };
-    document.addEventListener('visibilitychange', onHide);
-    return () => document.removeEventListener('visibilitychange', onHide);
+    const params = new URLSearchParams(window.location.search);
+    const reason = reasonFromSearch(params.get('motivo'));
+    const modules = params.get('modulos') ?? '';
+    setForm((prev) => ({
+      ...prev,
+      reason,
+      modules
+    }));
   }, []);
 
-  const markStart = () => {
-    if (started) return;
-    setStarted(true);
-    track('form_start');
-  };
+  const showPhone = form.channel === 'whatsapp';
+  const showEmail = form.channel === 'correo';
 
   const resetTurnstile = () => {
     setTurnstileToken('');
     setTurnstileKey((k) => k + 1);
   };
 
-  const goNext = () => {
-    const data = {
-      name: form.name,
-      email: form.email,
-      company: form.company,
-      subject: form.subject,
-      budget: form.budget
-    };
-    const ok =
-      step === 0
-        ? stepOneSchema.safeParse({ ...data, company: form.company || undefined }).success
-        : stepTwoSchema.safeParse({ ...data, budget: form.budget || undefined }).success;
-    if (!ok) {
-      setStepError(true);
-      return;
-    }
-    setStepError(false);
-    const next = Math.min(step + 1, STEP_LABELS.length - 1);
-    setStep(next);
-    track('form_step', { step: next + 1 });
-  };
-
-  const goBack = () => {
-    setStepError(false);
-    setStep((s) => Math.max(s - 1, 0));
-  };
-
   const submit = async (e: FormEvent) => {
     e.preventDefault();
-    if (step < STEP_LABELS.length - 1) {
-      goNext();
-      return;
-    }
-    const parsed = parseContactBody({
-      ...form,
-      company: form.company || undefined,
-      budget: form.budget || undefined,
-      referralCode: readReferralCookie() || undefined,
-      consent: form.consent ? true : undefined,
+    const payload = {
+      name: form.name,
+      entityType: form.entityType,
+      channel: form.channel,
+      phone: form.phone || undefined,
+      email: form.email || undefined,
+      reason: form.reason,
+      modules: form.modules || undefined,
+      consent: form.consent as true,
+      honeypot: form.honeypot,
       turnstileToken: turnstileToken || undefined
-    });
+    };
+    const parsed = parseContactBody(payload);
     if (!parsed.success) {
-      setStatus('error');
+      setFieldError(true);
       return;
     }
+    setFieldError(false);
     setStatus('loading');
-    track('form_submit', { subject: form.subject });
+    track('form_submit');
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
@@ -136,265 +94,223 @@ export default function ContactForm({
         body: JSON.stringify(parsed.data)
       });
       if (res.status === 429) {
-        resetTurnstile();
         setStatus('rate_limited');
+        resetTurnstile();
         return;
       }
       if (res.status === 503) {
-        resetTurnstile();
         setStatus('unavailable');
+        resetTurnstile();
         return;
       }
       if (!res.ok) {
-        resetTurnstile();
         setStatus('error');
+        resetTurnstile();
         return;
       }
-      track('contact_form_success');
       setStatus('ok');
+      track('contact_form_success');
     } catch {
+      setStatus('error');
       resetTurnstile();
-      setStatus('unavailable');
     }
   };
 
-  const bookingIsExternal = /^https?:\/\//i.test(calUrl);
-  const progress = ((step + 1) / STEP_LABELS.length) * 100;
-  const isLast = step === STEP_LABELS.length - 1;
-
   if (status === 'ok') {
     return (
-      <div className="border border-primarySoft bg-primaryGhost rounded-lg p-6" role="status">
-        ✓ {successMessage}{' '}
-        <a
-          className="underline rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-          href={calUrl}
-          {...(bookingIsExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-        >
-          Reservar una sesión
-        </a>
-      </div>
+      <p role="status" className="rounded-lg border border-primarySoft bg-primaryGhost p-4 text-sm">
+        {successMessage}
+      </p>
     );
   }
 
   return (
-    <form
-      onSubmit={submit}
-      onFocus={markStart}
-      className="space-y-5 border border-border rounded-lg p-6 bg-card"
-      noValidate
-    >
+    <form onSubmit={submit} className="space-y-4" noValidate>
       <div>
-        <div className="flex items-baseline justify-between">
-          <p className="text-xs font-medium text-muted">
-            Paso {step + 1} de {STEP_LABELS.length} · {STEP_LABELS[step]}
-          </p>
-        </div>
-        <div
-          className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-primaryGhost"
-          role="progressbar"
-          aria-valuemin={1}
-          aria-valuemax={STEP_LABELS.length}
-          aria-valuenow={step + 1}
-          aria-label="Progreso del formulario"
-        >
-          <div className="h-full rounded-full bg-primary" style={{ width: `${progress}%` }} />
-        </div>
+        <label htmlFor="contact-name" className="text-sm">
+          Nombre completo*
+        </label>
+        <input
+          id="contact-name"
+          name="name"
+          autoComplete="name"
+          className={inputClass}
+          value={form.name}
+          onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+        />
       </div>
 
-      {step === 0 && (
-        <div className="space-y-4">
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="contact-name" className="text-sm">
-                Nombre*
-              </label>
-              <input
-                id="contact-name"
-                name="name"
-                required
-                autoComplete="name"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className={inputClass}
-              />
-            </div>
-            <div>
-              <label htmlFor="contact-email" className="text-sm">
-                Email*
-              </label>
-              <input
-                id="contact-email"
-                name="email"
-                type="email"
-                required
-                autoComplete="email"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className={inputClass}
-              />
-            </div>
-          </div>
-          <div>
-            <label htmlFor="contact-company" className="text-sm">
-              Empresa (opcional)
-            </label>
-            <input
-              id="contact-company"
-              name="company"
-              autoComplete="organization"
-              value={form.company}
-              onChange={(e) => setForm({ ...form, company: e.target.value })}
-              className={inputClass}
-            />
-          </div>
-        </div>
-      )}
+      <div>
+        <label htmlFor="contact-entity" className="text-sm">
+          Tipo*
+        </label>
+        <select
+          id="contact-entity"
+          name="entityType"
+          className={inputClass}
+          value={form.entityType}
+          onChange={(e) =>
+            setForm((f) => ({
+              ...f,
+              entityType: e.target.value as ContactInput['entityType']
+            }))
+          }
+        >
+          {entityTypes.map((t) => (
+            <option key={t} value={t}>
+              {entityLabels[t]}
+            </option>
+          ))}
+        </select>
+      </div>
 
-      {step === 1 && (
-        <div className="space-y-4">
-          <div>
-            <label htmlFor="contact-subject" className="text-sm">
-              ¿Qué necesitas?*
+      <fieldset>
+        <legend className="text-sm">Canal de preferencia para respuesta*</legend>
+        <div className="mt-2 flex flex-wrap gap-4">
+          {contactChannels.map((ch) => (
+            <label key={ch} className="inline-flex items-center gap-2 text-sm">
+              <input
+                type="radio"
+                name="channel"
+                value={ch}
+                checked={form.channel === ch}
+                onChange={() => setForm((f) => ({ ...f, channel: ch }))}
+              />
+              {ch === 'whatsapp' ? 'WhatsApp' : 'Correo electrónico'}
             </label>
-            <select
-              id="contact-subject"
-              name="subject"
-              value={form.subject}
-              onChange={(e) => setForm({ ...form, subject: e.target.value })}
-              className={inputClass}
-            >
-              {subjects.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="contact-budget" className="text-sm">
-              Presupuesto aproximado (opcional)
-            </label>
-            <select
-              id="contact-budget"
-              name="budget"
-              value={form.budget}
-              onChange={(e) => setForm({ ...form, budget: e.target.value })}
-              className={inputClass}
-            >
-              <option value="">Sin definir</option>
-              {BUDGET_OPTIONS.map((b) => (
-                <option key={b} value={b}>
-                  {b}
-                </option>
-              ))}
-            </select>
-          </div>
+          ))}
         </div>
-      )}
+      </fieldset>
 
-      {step === 2 && (
-        <div className="space-y-4">
-          <div>
-            <label htmlFor="contact-message" className="text-sm">
-              Cuéntame tu caso* (20-2000 chars)
-            </label>
-            <textarea
-              id="contact-message"
-              name="message"
-              required
-              minLength={20}
-              maxLength={2000}
-              rows={5}
-              value={form.message}
-              onChange={(e) => setForm({ ...form, message: e.target.value })}
-              className={inputClass}
-              placeholder="Contexto: alcance, plazos, enlaces relevantes..."
-            />
-          </div>
-          <div className="flex gap-2 text-xs items-start">
-            <input
-              id="contact-consent"
-              name="consent"
-              type="checkbox"
-              checked={form.consent}
-              onChange={(e) => setForm({ ...form, consent: e.target.checked })}
-              className="mt-0.5"
-            />
-            <label htmlFor="contact-consent">
-              Acepto{' '}
-              <a href="/privacidad" className="underline">
-                política privacidad
-              </a>{' '}
-              — datos para responder, máx 12 meses, sin marketing.
-            </label>
-          </div>
-          <TurnstileWidget
-            key={turnstileKey}
-            siteKey={turnstileSiteKey}
-            onToken={setTurnstileToken}
+      {showPhone && (
+        <div>
+          <label htmlFor="contact-phone" className="text-sm">
+            Teléfono WhatsApp*
+          </label>
+          <input
+            id="contact-phone"
+            name="phone"
+            type="tel"
+            autoComplete="tel"
+            className={inputClass}
+            value={form.phone}
+            onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
           />
         </div>
       )}
 
+      {showEmail && (
+        <div>
+          <label htmlFor="contact-email" className="text-sm">
+            Correo electrónico*
+          </label>
+          <input
+            id="contact-email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            className={inputClass}
+            value={form.email}
+            onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+          />
+        </div>
+      )}
+
+      <div>
+        <label htmlFor="contact-reason" className="text-sm">
+          Motivo de la petición*
+        </label>
+        <select
+          id="contact-reason"
+          name="reason"
+          className={inputClass}
+          value={form.reason}
+          onChange={(e) =>
+            setForm((f) => ({
+              ...f,
+              reason: e.target.value as ContactInput['reason']
+            }))
+          }
+        >
+          {contactReasons.map((r) => (
+            <option key={r} value={r}>
+              {reasonLabels[r]}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {form.modules ? (
+        <p className="text-sm text-muted">
+          Módulos indicados: <strong className="text-fg">{form.modules}</strong>
+        </p>
+      ) : null}
+
       <div className="sr-only" aria-hidden="true">
-        <label htmlFor="contact-website">Website</label>
+        <label htmlFor="contact-website">Sitio web</label>
         <input
           id="contact-website"
           name="website"
-          type="text"
           tabIndex={-1}
           autoComplete="off"
           value={form.honeypot}
-          onChange={(e) => setForm({ ...form, honeypot: e.target.value })}
+          onChange={(e) => setForm((f) => ({ ...f, honeypot: e.target.value }))}
         />
       </div>
 
-      {stepError && (
-        <div className="text-sm text-danger" role="alert">
-          Revisa los campos de este paso: nombre, email válido, asunto y presupuesto.
-        </div>
-      )}
-
-      <div className="flex flex-wrap items-center gap-3">
-        {step > 0 && (
-          <button
-            type="button"
-            onClick={goBack}
-            className="border border-border-strong text-brand px-5 py-2.5 rounded-lg font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-          >
-            Atrás
-          </button>
-        )}
-        <button
-          type="submit"
-          disabled={status === 'loading'}
-          className="bg-primary text-ink px-6 py-3 rounded-lg font-medium disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-        >
-          {status === 'loading' ? 'Enviando...' : isLast ? 'Enviar →' : 'Siguiente →'}
-        </button>
-      </div>
-
-      {status === 'error' && (
-        <div className="text-sm text-danger" role="alert">
-          {errorMessage} Revisa: nombre, email válido, mensaje 20+ chars y consentimiento.
-        </div>
-      )}
-      {status === 'rate_limited' && (
-        <div className="text-sm text-danger" role="alert">
-          Demasiados envíos. Espera un minuto e inténtalo de nuevo.
-        </div>
-      )}
-      {status === 'unavailable' && (
-        <div className="text-sm text-danger" role="alert">
-          El servicio de contacto no está disponible ahora. Escríbenos a operaciones@alexendros.dev
-          o reserva en{' '}
-          <a className="underline" href={calUrl} target="_blank" rel="noopener noreferrer">
-            Cal.com
+      <label className="flex items-start gap-2 text-sm">
+        <input
+          type="checkbox"
+          name="consent"
+          checked={form.consent}
+          onChange={(e) => setForm((f) => ({ ...f, consent: e.target.checked }))}
+          className="mt-1"
+        />
+        <span>
+          Acepto el tratamiento de mis datos para responder a esta petición según la{' '}
+          <a href="/privacidad" className="underline decoration-dotted underline-offset-2">
+            política de privacidad
           </a>
           .
-        </div>
+        </span>
+      </label>
+
+      {turnstileSiteKey ? (
+        <TurnstileWidget
+          key={turnstileKey}
+          siteKey={turnstileSiteKey}
+          onToken={setTurnstileToken}
+        />
+      ) : null}
+
+      {fieldError && (
+        <p role="alert" className="text-sm text-danger">
+          Revisa los campos obligatorios e inténtalo de nuevo.
+        </p>
       )}
+      {status === 'error' && (
+        <p role="alert" className="text-sm text-danger">
+          {errorMessage}
+        </p>
+      )}
+      {status === 'rate_limited' && (
+        <p role="alert" className="text-sm text-danger">
+          Demasiados intentos. Espera un minuto e inténtalo de nuevo.
+        </p>
+      )}
+      {status === 'unavailable' && (
+        <p role="alert" className="text-sm text-danger">
+          Servicio temporalmente no disponible. Escríbeme a contratacion@alexendros.dev.
+        </p>
+      )}
+
+      <button
+        type="submit"
+        disabled={status === 'loading'}
+        className="btn inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-ink transition-colors hover:bg-primaryHover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-60"
+      >
+        {status === 'loading' ? 'Enviando…' : 'Enviar'}
+      </button>
     </form>
   );
 }

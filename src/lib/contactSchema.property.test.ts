@@ -3,10 +3,11 @@ import * as fc from 'fast-check';
 import { escapeHtml, isHoneypotFilled, parseContactBody } from './contactSchema';
 
 const baseValid = {
-  name: 'Alex',
+  name: 'Alex Endros',
+  entityType: 'particular' as const,
+  channel: 'correo' as const,
   email: 'alex@example.com',
-  subject: 'otro',
-  message: 'Mensaje de prueba con más de veinte caracteres',
+  reason: 'propuestaComercial' as const,
   consent: true as const
 };
 

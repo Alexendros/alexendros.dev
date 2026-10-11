@@ -181,6 +181,21 @@
       "context": "Portfolio comercial con RGPD/LSSI-CE; giro a analítica y píxeles exige consentimiento previo granular.",
       "decision": "CMP vanilla-cookieconsent v3; categorías necessary/preferences/analytics/marketing; Consent Mode v2 denied por defecto; store consent_v1; loaders inertes; inventario docs/cookies-inventory.json; página /cookies.",
       "consequences": "Se abandona «sin GA»; tracking solo con consentimiento. Vercel Analytics/Speed Insights siguen gated por __IS_VERCEL__."
+    },
+    {
+      "id": "0013",
+      "sequence": 13,
+      "timestamp": "2026-10-12T00:00:00Z",
+      "active": true,
+      "title": "Catálogo de servicios, portal modular y cuatro secciones",
+      "summary": "Nav Servicios/Referencias/Metodología/Valores; fichas con precio/pago/plazo/entrega/garantía; importes provisionales en un módulo; contrato de tests R01–R08 y F01–F10.",
+      "recordType": "decision",
+      "status": "aceptada",
+      "supersedes": [],
+      "supersededBy": null,
+      "context": "Reorganización comercial del portfolio: servicios medibles, portal configurable por módulos y cláusulas de valor. Los euros siguen provisionales hasta fijación posterior.",
+      "decision": "Tres servicios (informe, sesión, auditoría) más portal de inicio con módulos; sin tiers Esencial/Conversión/Dominación; pricing.ts como única fuente de importes; formulario Más información con canal WhatsApp/correo; Identidad sin calle; CMP con rótulos nuevos; redirecciones desde como-trabajo, sobre-mi, aviso-legal y afiliados.",
+      "consequences": "La decisión 0013 no congela los importes. Cambiar precios solo toca pricing.ts. La entrega se acepta cuando el contrato de tests está en verde."
     }
   ]
 }

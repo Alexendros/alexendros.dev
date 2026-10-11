@@ -1,24 +1,31 @@
 import { describe, expect, it } from 'vitest';
 import { contact, publicBookingEvents } from './contact';
 
-describe('reservas públicas de contacto', () => {
-  it('expone solo diagnóstico 75 € y sesión técnica 150 €', () => {
-    expect(publicBookingEvents.map((event) => event.calLink)).toEqual([
-      'alexendros/diagnostico',
-      'alexendros/sesion-tecnica'
-    ]);
-    expect(publicBookingEvents.map((event) => event.url)).toEqual([
-      'https://cal.com/alexendros/diagnostico',
-      'https://cal.com/alexendros/sesion-tecnica'
-    ]);
-    // Los precios usan espacio fino no separable (U+202F) antes del €
-    expect(publicBookingEvents.map((event) => event.priceLabel)).toEqual(['75 €', '150 €']);
+describe('reservas públicas de contacto R05', () => {
+  it('el informe no tiene Cal.com y la sesión apunta a sesion-tecnica', () => {
+    const informe = contact.bookings.offers.find((o) => o.id === 'informe-comercial');
+    const sesion = contact.bookings.offers.find((o) => o.id === 'sesion-profesional');
+    expect(informe?.kind).toBe('form');
+    if (informe?.kind === 'form') {
+      expect(informe.href).toBe('#escribir');
+      expect(JSON.stringify(informe)).not.toMatch(/cal\.com/i);
+    }
+    expect(sesion?.kind).toBe('cal');
+    if (sesion?.kind === 'cal') {
+      expect(sesion.calLink).toBe('alexendros/sesion-tecnica');
+      expect(sesion.url).toBe('https://cal.com/alexendros/sesion-tecnica');
+    }
+    expect(publicBookingEvents.map((e) => e.calLink)).toEqual(['alexendros/sesion-tecnica']);
     expect(JSON.stringify(contact)).not.toMatch(/retainer/i);
+    expect(JSON.stringify(contact)).not.toMatch(/diagnostico/i);
   });
 
-  it('mantiene el formulario y apunta Cal al ancla de reservas', () => {
-    expect(contact.channels.some((channel) => channel.id === 'form')).toBe(true);
-    expect(contact.channels.find((channel) => channel.id === 'cal')?.href).toBe('#reservar');
-    expect(contact.bookings.scanLabel).toBe('Escanea para reservar');
+  it('expone formulario y perfiles sociales', () => {
+    expect(contact.channels.some((c) => c.id === 'form')).toBe(true);
+    expect(contact.channels.some((c) => c.id === 'github')).toBe(true);
+    expect(contact.channels.some((c) => c.id === 'linkedin')).toBe(true);
+    expect(contact.channels.find((c) => c.id === 'email')?.href).toBe(
+      'mailto:contratacion@alexendros.dev'
+    );
   });
 });

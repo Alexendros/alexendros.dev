@@ -6,15 +6,10 @@ import SectionHeader from '../components/SectionHeader.astro';
 import Container from '../components/Container.astro';
 import Grid from '../components/Grid.astro';
 import Button from '../components/Button.astro';
-import Link from '../components/Link.astro';
-import Dimension from '../components/Dimension.astro';
 import ServiceCard from '../components/ServiceCard.astro';
 import ProjectCard from '../components/ProjectCard.astro';
-import AxisCard from '../components/AxisCard.astro';
-import LeadMagnet from '../components/LeadMagnet.astro';
 import { services } from '../content/services';
 import { getFeaturedProjects } from '../content/projects';
-import { ejes } from '../content/ejes';
 
 const featured = getFeaturedProjects().slice(0, 3);
 ---
@@ -23,19 +18,21 @@ const featured = getFeaturedProjects().slice(0, 3);
   <Hero />
 
   <Container class="pt-4 md:pt-6">
-    <Dimension label="Servicios · Casos · Ejes · Contacto" />
+    <p class="font-mono text-xs tracking-[0.1em] text-muted">
+      Servicios · Referencias · Metodología · Valores
+    </p>
   </Container>
 
   <Section reveal>
     <Container>
       <SectionHeader
         index="01"
-        title="Cómo puedo ayudarte"
-        description="Cuatro formas de trabajar: web nueva o renovación, revisión con plan de mejora, plan digital antes de invertir, o landing en 10 días."
+        title="Servicios"
+        description="Informe comercial, sesión profesional y auditoría de normativa y ciberseguridad. Portal de inicio configurable por módulos."
         linkHref="/servicios"
-        linkText="Ver todo"
+        linkText="Ver catálogo"
       />
-      <Grid gap="6" class="mt-6 sm:grid-cols-2 lg:grid-cols-4" data-services-grid>
+      <Grid gap="6" class="mt-6 sm:grid-cols-2 lg:grid-cols-3" data-services-grid>
         {
           services.map((s, i) => (
             <div data-reveal style={`--i:${i}`}>
@@ -44,10 +41,6 @@ const featured = getFeaturedProjects().slice(0, 3);
           ))
         }
       </Grid>
-      <p class="mt-8 text-sm text-muted max-w-2xl">
-        Proceso claro, presupuesto cerrado y entregas definidas.
-        <Link href="/como-trabajo" variant="inline" class="text-fg">Cómo trabajo</Link>
-      </p>
     </Container>
   </Section>
 
@@ -55,10 +48,10 @@ const featured = getFeaturedProjects().slice(0, 3);
     <Container>
       <SectionHeader
         index="02"
-        title="Casos reales"
+        title="Referencias"
         description="En cada proyecto verás el problema, lo que se hizo y qué cambió."
         linkHref="/proyectos"
-        linkText="Ver todos"
+        linkText="Ver todas"
       />
       <Grid gap="6" class="mt-6 md:grid-cols-2 lg:grid-cols-3">
         {
@@ -76,33 +69,29 @@ const featured = getFeaturedProjects().slice(0, 3);
     <Container>
       <SectionHeader
         index="03"
-        title="Ejes de trabajo"
-        description="Tres ejes sostienen cada entrega: claridad, velocidad, y accesibilidad con privacidad."
+        title="Metodología"
+        description="Cinco ejes bloquean la entrega: seguridad, accesibilidad, visibilidad, mantenibilidad e identidad."
+        linkHref="/metodologia"
+        linkText="Ver metodología"
       />
-      <Grid gap="6" class="mt-6 md:grid-cols-3">
-        {
-          ejes.map((e, i) => (
-            <div data-reveal style={`--i:${i}`}>
-              <AxisCard eje={e} />
-            </div>
-          ))
-        }
-      </Grid>
+      <p class="mt-4 text-sm text-muted max-w-2xl">
+        Sección en desarrollo. Umbrales medibles y ciclo auditoría → propuesta → integración.
+      </p>
     </Container>
   </Section>
-
-  <LeadMagnet />
 
   <Section reveal>
     <Container class="text-center">
       <SectionHeader
         index="04"
         align="center"
-        title="¿Encaja con lo que buscas?"
-        description="Respuesta directa. Si no encajo, te lo digo en la primera conversación."
+        title="Valores"
+        description="Presupuesto desglosado, pago fraccionado sin recargo, mantenimiento del dominio y resultados comprobables."
+        linkHref="/valores"
+        linkText="Ver valores"
       />
       <div class="mt-6">
-        <Button href="/contacto">Cuéntame qué necesitas</Button>
+        <Button href="/contacto">Más información</Button>
       </div>
     </Container>
   </Section>
