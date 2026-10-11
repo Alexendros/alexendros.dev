@@ -30,11 +30,10 @@ MVP en **producción** en [https://alexendros.dev](https://alexendros.dev). Repo
 
 ## Pendiente operativo
 
-| Item                  | Issue / nota                                                                                                |
-| --------------------- | ----------------------------------------------------------------------------------------------------------- |
-| Release tras #90/#91  | Evento `evt-2026-10-11-release-gh013` — fix releaserc sin push a main; re-lanzar Release tras merge del fix |
-| Drift local Node/pnpm | Evento activo `evt-local-node-pnpm-drift` en `docs/audits/events.json` — validar con Node 22 + pnpm 9       |
-| Labels taxonomía      | WARN histórico pre-Remachar: deduplicar labels GitHub-default vs `type:*`                                   |
+| Item                  | Issue / nota                                                                                          |
+| --------------------- | ----------------------------------------------------------------------------------------------------- |
+| Drift local Node/pnpm | Evento activo `evt-local-node-pnpm-drift` en `docs/audits/events.json` — validar con Node 22 + pnpm 9 |
+| Labels taxonomía      | WARN histórico pre-Remachar: deduplicar labels GitHub-default vs `type:*`                             |
 
 Issues cerrados de referencia: [#11](https://github.com/Alexendros/alexendrosdev/issues/11) Node 22.x; [#12](https://github.com/Alexendros/alexendrosdev/issues/12) majors; [#13](https://github.com/Alexendros/alexendrosdev/issues/13) SMTP/Upstash.
 
