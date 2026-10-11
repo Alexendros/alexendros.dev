@@ -30,10 +30,11 @@ MVP en **producción** en [https://alexendros.dev](https://alexendros.dev). Repo
 
 ## Pendiente operativo
 
-| Item                  | Issue / nota                                                                                          |
-| --------------------- | ----------------------------------------------------------------------------------------------------- |
-| Drift local Node/pnpm | Evento activo `evt-local-node-pnpm-drift` en `docs/audits/events.json` — validar con Node 22 + pnpm 9 |
-| Labels taxonomía      | WARN histórico pre-Remachar: deduplicar labels GitHub-default vs `type:*`                             |
+| Item                  | Issue / nota                                                                                                |
+| --------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Release tras #90/#91  | Evento `evt-2026-10-11-release-gh013` — fix releaserc sin push a main; re-lanzar Release tras merge del fix |
+| Drift local Node/pnpm | Evento activo `evt-local-node-pnpm-drift` en `docs/audits/events.json` — validar con Node 22 + pnpm 9       |
+| Labels taxonomía      | WARN histórico pre-Remachar: deduplicar labels GitHub-default vs `type:*`                                   |
 
 Issues cerrados de referencia: [#11](https://github.com/Alexendros/alexendrosdev/issues/11) Node 22.x; [#12](https://github.com/Alexendros/alexendrosdev/issues/12) majors; [#13](https://github.com/Alexendros/alexendrosdev/issues/13) SMTP/Upstash.
 
@@ -43,7 +44,7 @@ El sitio Next.js en `nuevowebsite-alexendrosdev` está **archivado**. No hay red
 
 ## Releases
 
-Automáticas con **semantic-release** al push a `main` (workflow `release.yml`). SemVer: `content`/`docs`/`chore`/`style`/`refactor` → patch; `feat` → minor; breaking → major. Genera `CHANGELOG.md`, tag `v*.*.*` y GitHub Release. El commit `chore(release)` lleva `[skip ci]`. **Versionado ≠ promoción** a Vercel.
+Automáticas con **semantic-release** al push a `main` (workflow `release.yml`). SemVer: `content`/`docs`/`chore`/`style`/`refactor` → patch; `feat` → minor; breaking → major. Genera tag `v*.*.*` y GitHub Release (sin push de `chore(release)` a `main`; ruleset PR-only). Fuente de verdad de versión = tag. **Versionado ≠ promoción** a Vercel. Fallos en main/Production → issue `alerta:main` (`main-watch.yml`).
 
 ## Criterios de mantenimiento
 

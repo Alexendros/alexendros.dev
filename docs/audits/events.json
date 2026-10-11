@@ -166,6 +166,17 @@
       "recordType": "event",
       "kind": "aviso",
       "source": "package.json#engines + .nvmrc + .github/workflows/ci.yml"
+    },
+    {
+      "id": "evt-2026-10-11-release-gh013",
+      "sequence": 16,
+      "timestamp": "2026-10-11T17:40:02Z",
+      "active": true,
+      "title": "Release fallido: @semantic-release/git vs ruleset main",
+      "summary": "Tras merges #90 y #91, Release falló con GH013 (PR obligatorio + 7 checks). Causa: @semantic-release/git empujaba chore(release) a main. Fix: quitar git/changelog del releaserc; tag+GitHub Release solo. Sitio en Production OK (674261f); faltan tags posteriores a v1.18.6 hasta re-lanzar Release.",
+      "recordType": "event",
+      "kind": "alerta",
+      "source": "https://github.com/Alexendros/alexendrosdev/actions/runs/38160559451"
     }
   ]
 }
