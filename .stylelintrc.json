@@ -32,7 +32,7 @@
       },
       {
         "severity": "error",
-        "message": "Color literal, oklch/rgb() o transition:all fuera de @layer tokens: usa tokens semánticos (var()) o color-mix (docs/design-system.md)"
+        "message": "Color literal, oklch/rgb() o transition:all fuera de @layer tokens: usa tokens semánticos (var()) o color-mix (docs/standards/website/diseno.md)"
       }
     ]
   }
