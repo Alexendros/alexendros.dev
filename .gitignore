@@ -42,3 +42,6 @@ pnpm-debug.log*
 .vscode/
 .cursor/
 .worktrees/
+
+# Informes de fase del Protocolo Trifásico (no se versionan)
+.ai/skills/.phase/

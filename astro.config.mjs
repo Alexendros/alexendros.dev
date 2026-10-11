@@ -19,6 +19,11 @@ export default defineConfig({
   adapter: vercel({
     maxDuration: 10
   }),
+  build: {
+    // Fase ② PROTECCIÓN: externaliza los estilos de Astro a /_astro/*.css
+    // para poder retirar 'unsafe-inline' de style-src en la fase ③.
+    inlineStylesheets: 'never'
+  },
   image: { service: { entrypoint: 'astro/assets/services/sharp' } },
   vite: {
     build: { cssMinify: true },

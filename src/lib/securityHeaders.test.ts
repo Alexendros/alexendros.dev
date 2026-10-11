@@ -30,4 +30,12 @@ describe('security headers (vercel.json)', () => {
     expect(byKey['x-content-type-options']?.toLowerCase()).toBe('nosniff');
     expect(byKey['referrer-policy']).toBeTruthy();
   });
+
+  it('observa una CSP Report-Only sin unsafe-inline', () => {
+    const reportOnly = byKey['content-security-policy-report-only'] ?? '';
+    expect(reportOnly).toMatch(/report-uri\s+\/api\/csp-report/);
+    expect(reportOnly).not.toMatch(/unsafe-inline/);
+    expect(reportOnly).not.toMatch(/unsafe-eval/);
+    expect(reportOnly).toMatch(/frame-ancestors\s+'none'/);
+  });
 });
