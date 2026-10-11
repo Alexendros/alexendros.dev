@@ -122,7 +122,6 @@ const priceLabel = formatEuro(provisionalPrices.informeComercial);
       window.requestAnimationFrame(function () {
         ticking = false;
         if (window.scrollY < THRESHOLD) return;
-        if (htmlEl.classList.contains('banner-visible')) return;
         showBanner();
       });
     }

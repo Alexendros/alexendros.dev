@@ -15,7 +15,11 @@ describe('redirecciones permanentes', () => {
       ['/como-trabajo', '/metodologia'],
       ['/sobre-mi', '/valores'],
       ['/aviso-legal', '/identidad'],
-      ['/afiliados', '/']
+      ['/afiliados', '/'],
+      ['/servicios/produccion-sitios-web', '/servicios'],
+      ['/servicios/auditorias', '/servicios/informe-comercial'],
+      ['/servicios/consultoria-tecnologica', '/servicios'],
+      ['/servicios/landing-10-dias', '/servicios']
     ];
 
     for (const [source, destination] of expected) {

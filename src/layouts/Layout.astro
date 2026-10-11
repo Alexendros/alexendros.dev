@@ -9,7 +9,6 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import SkipLink from '../components/SkipLink.astro';
-import LandingBanner from '../components/LandingBanner.astro';
 import StickyCta from '../components/StickyCta.astro';
 import CookieBanner from '../components/consent/CookieBanner.tsx';
 import ExitIntent from '../components/ExitIntent.tsx';
@@ -78,7 +77,6 @@ const ogImageUrl = new URL(ogImage, site.url).href;
       <slot />
     </main>
     <Footer />
-    <LandingBanner pathname={Astro.url.pathname} />
     <StickyCta pathname={Astro.url.pathname} />
     <CookieBanner client:idle />
     <ExitIntent client:idle />

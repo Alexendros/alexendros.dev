@@ -27,6 +27,26 @@
       "source": "/afiliados",
       "destination": "/",
       "permanent": true
+    },
+    {
+      "source": "/servicios/produccion-sitios-web",
+      "destination": "/servicios",
+      "permanent": true
+    },
+    {
+      "source": "/servicios/auditorias",
+      "destination": "/servicios/informe-comercial",
+      "permanent": true
+    },
+    {
+      "source": "/servicios/consultoria-tecnologica",
+      "destination": "/servicios",
+      "permanent": true
+    },
+    {
+      "source": "/servicios/landing-10-dias",
+      "destination": "/servicios",
+      "permanent": true
     }
   ],
   "headers": [

@@ -10,9 +10,6 @@ condition = "AND"
 paths = [
   '''(?:^|/)src/components/ExitIntent\.tsx$''',
   '''(?:^|/)src/components/StickyCta\.astro$''',
-  '''(?:^|/)src/components/LandingBanner\.astro$''',
-  '''(?:^|/)public/scripts/landing-banner\.js$''',
-  '''(?:^|/)src/scripts/landing-banner\.js$''',
 ]
 regexTarget = "line"
 regexes = ['''STORAGE_KEY\s*=\s*['"][^'"]+['"]''']

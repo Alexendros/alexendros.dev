@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { track } from '../lib/tracking/events';
 import {
   contactChannels,
@@ -15,20 +15,19 @@ type Props = {
   successMessage: string;
   errorMessage: string;
   turnstileSiteKey?: string;
-  initialReason?: ContactInput['reason'];
-  initialModules?: string;
 };
 
 const inputClass =
   'mt-1 w-full bg-bg border border-border-strong rounded-lg px-3 py-2 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
 
-export default function ContactForm({
-  successMessage,
-  errorMessage,
-  turnstileSiteKey,
-  initialReason = 'informacionCliente',
-  initialModules = ''
-}: Props) {
+function reasonFromSearch(value: string | null): ContactInput['reason'] {
+  if (value && (contactReasons as readonly string[]).includes(value)) {
+    return value as ContactInput['reason'];
+  }
+  return 'informacionCliente';
+}
+
+export default function ContactForm({ successMessage, errorMessage, turnstileSiteKey }: Props) {
   const [status, setStatus] = useState<
     'idle' | 'ok' | 'error' | 'rate_limited' | 'unavailable' | 'loading'
   >('idle');
@@ -39,21 +38,27 @@ export default function ContactForm({
     channel: 'correo' as ContactInput['channel'],
     phone: '',
     email: '',
-    reason: initialReason,
-    modules: initialModules,
+    reason: 'informacionCliente' as ContactInput['reason'],
+    modules: '',
     consent: false,
     honeypot: ''
   });
   const [turnstileToken, setTurnstileToken] = useState('');
   const [turnstileKey, setTurnstileKey] = useState(0);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const reason = reasonFromSearch(params.get('motivo'));
+    const modules = params.get('modulos') ?? '';
+    setForm((prev) => ({
+      ...prev,
+      reason,
+      modules
+    }));
+  }, []);
+
   const showPhone = form.channel === 'whatsapp';
   const showEmail = form.channel === 'correo';
-
-  const channelLabel = useMemo(
-    () => (form.channel === 'whatsapp' ? 'WhatsApp' : 'Correo electrónico'),
-    [form.channel]
-  );
 
   const resetTurnstile = () => {
     setTurnstileToken('');
@@ -280,7 +285,7 @@ export default function ContactForm({
 
       {fieldError && (
         <p role="alert" className="text-sm text-danger">
-          Revisa los campos obligatorios. Para {channelLabel} falta el dato de contacto.
+          Revisa los campos obligatorios e inténtalo de nuevo.
         </p>
       )}
       {status === 'error' && (

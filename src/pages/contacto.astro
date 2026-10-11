@@ -6,13 +6,6 @@ import Link from '../components/Link.astro';
 import BookingOptions from '../components/BookingOptions.astro';
 import ContactForm from '../components/ContactForm';
 import { contact } from '../content/contact';
-import { contactReasons, type ContactInput } from '../lib/contactSchema';
-
-const reasonParam = Astro.url.searchParams.get('motivo') ?? '';
-const initialReason = (contactReasons as readonly string[]).includes(reasonParam)
-  ? (reasonParam as ContactInput['reason'])
-  : 'informacionCliente';
-const initialModules = Astro.url.searchParams.get('modulos') ?? '';
 ---
 
 <Layout
@@ -40,8 +33,6 @@ const initialModules = Astro.url.searchParams.get('modulos') ?? '';
             successMessage={contact.messages.success}
             errorMessage={contact.messages.error}
             turnstileSiteKey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
-            initialReason={initialReason}
-            initialModules={initialModules}
           />
         </div>
       </div>
