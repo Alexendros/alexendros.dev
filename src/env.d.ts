@@ -44,3 +44,10 @@ interface ImportMeta {
 
 /** Inyectado por vite.define en astro.config.mjs: true solo en builds de Vercel. */
 declare const __IS_VERCEL__: boolean;
+
+declare namespace App {
+  interface Locals {
+    /** Nonce CSP por petición. Solo lo rellena el middleware en rutas on-demand. */
+    cspNonce: string;
+  }
+}
