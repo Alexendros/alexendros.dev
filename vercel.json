@@ -7,6 +7,26 @@
       "has": [{ "type": "host", "value": "www.alexendros.dev" }],
       "destination": "https://alexendros.dev/:path*",
       "permanent": true
+    },
+    {
+      "source": "/como-trabajo",
+      "destination": "/metodologia",
+      "permanent": true
+    },
+    {
+      "source": "/sobre-mi",
+      "destination": "/valores",
+      "permanent": true
+    },
+    {
+      "source": "/aviso-legal",
+      "destination": "/identidad",
+      "permanent": true
+    },
+    {
+      "source": "/afiliados",
+      "destination": "/",
+      "permanent": true
     }
   ],
   "headers": [

@@ -1,27 +1,26 @@
 export const site = {
   name: 'Alexendros',
   url: 'https://alexendros.dev',
-  titleDefault: 'Alexendros — Webs claras y rápidas para profesionales y pequeños negocios',
+  titleDefault: 'Alexendros — Servicios digitales medibles para negocios',
   descriptionDefault:
-    'Creo y mejoro webs para que tus clientes entiendan lo que haces y te contacten. También reviso sitios existentes y preparo planes de mejora realistas.',
+    'Catálogo de servicios, portal configurable por módulos, metodología y cláusulas de valor. Valencia — remoto.',
   locale: 'es',
   ogLocale: 'es_ES',
   nav: [
-    { label: 'Cómo puedo ayudarte', href: '/servicios' },
-    { label: 'Proyectos', href: '/proyectos' },
-    { label: 'Cómo trabajo', href: '/como-trabajo' },
-    { label: 'Sobre mí', href: '/sobre-mi' }
+    { label: 'Servicios', href: '/servicios' },
+    { label: 'Referencias', href: '/proyectos' },
+    { label: 'Metodología', href: '/metodologia' },
+    { label: 'Valores', href: '/valores' }
   ],
   footerNav: [
-    { label: 'Aviso legal', href: '/aviso-legal' },
+    { label: 'Identidad', href: '/identidad' },
     { label: 'Privacidad', href: '/privacidad' },
-    { label: 'Cookies', href: '/cookies' },
-    { label: 'Afiliados', href: '/afiliados' }
+    { label: 'Cookies', href: '/cookies' }
   ],
   social: {
     github: 'https://github.com/alexendros',
     linkedin: 'https://linkedin.com/in/alexendros',
-    email: 'mailto:hola@alexendros.dev',
+    email: 'mailto:contratacion@alexendros.dev',
     cal: 'https://cal.com/alexendros'
   }
 } as const;

@@ -62,14 +62,14 @@ export default function CookieBanner() {
               title: 'Valoramos tu privacidad',
               description:
                 'Usamos cookies propias y de terceros para analizar el tráfico y mejorar nuestros servicios. Las cookies analíticas y de marketing solo se activan si nos das tu consentimiento. Puedes aceptar, rechazar o configurar tus preferencias.',
-              acceptAllBtn: 'Aceptar todo',
-              acceptNecessaryBtn: 'Rechazar todo',
-              showPreferencesBtn: 'Configurar'
+              acceptAllBtn: 'Sí a todo',
+              acceptNecessaryBtn: 'Sí a lo esencial',
+              showPreferencesBtn: 'Configuración informada'
             },
             preferencesModal: {
               title: 'Preferencias de cookies',
-              acceptAllBtn: 'Aceptar todo',
-              acceptNecessaryBtn: 'Rechazar todo',
+              acceptAllBtn: 'Sí a todo',
+              acceptNecessaryBtn: 'Sí a lo esencial',
               savePreferencesBtn: 'Guardar preferencias',
               closeIconLabel: 'Cerrar',
               sections: [
@@ -102,6 +102,35 @@ export default function CookieBanner() {
         }
       }
     });
+
+    const injectNote = () => {
+      const title = document.querySelector('#cc-main .cm__title');
+      if (!title || title.previousElementSibling?.classList.contains('cc-normative')) return;
+      const note = document.createElement('p');
+      note.className = 'cc-normative';
+      note.innerHTML =
+        '<em>La normativa dice que tienes que leer esto y clicar en lo que consideres.</em>';
+      title.parentElement?.insertBefore(note, title);
+    };
+
+    injectNote();
+    const observer = new MutationObserver(injectNote);
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    const openPreferences = (event: Event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const trigger = target.closest('[data-cc="show-preferencesModal"]');
+      if (!trigger) return;
+      event.preventDefault();
+      CookieConsent.showPreferences();
+    };
+    document.addEventListener('click', openPreferences);
+
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('click', openPreferences);
+    };
   }, []);
 
   return null;

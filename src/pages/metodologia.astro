@@ -1,0 +1,87 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHead from '../components/PageHead.astro';
+import Container from '../components/Container.astro';
+import Stack from '../components/Stack.astro';
+import Button from '../components/Button.astro';
+
+const axes = [
+  {
+    title: 'Seguridad',
+    desc: 'OWASP ASVS L1 y L2 selectivo, RGPD art. 32. 0 secretos, 0 vulnerabilidades high/critical.'
+  },
+  {
+    title: 'Accesibilidad',
+    desc: 'WCAG 2.2 AA, EN 301 549 y Core Web Vitals. axe = 0, a11y/SEO 100, LCP ≤ 2,5 s, CLS ≤ 0,05.'
+  },
+  {
+    title: 'Visibilidad',
+    desc: 'Design system canónico y Clean Code. 0 literales de color fuera de tokens; CSS en @layer.'
+  },
+  {
+    title: 'Mantenibilidad',
+    desc: 'OpenSSF Scorecard y SemVer 2.0.0. Acciones fijadas por SHA; Renovate cubre los ecosistemas del repo.'
+  },
+  {
+    title: 'Identidad',
+    desc: 'C4 y Diátaxis. Documentación clasificada ≥ 80 %; diagramas Mermaid revisados tras el código que describen.'
+  }
+];
+
+const cycle = [
+  {
+    title: 'Auditoría',
+    desc: 'Estándares externos, informes de fase y validadores que fallan o nunca fallan.'
+  },
+  { title: 'Propuesta', desc: 'Cambio acotado con criterio de salida medible.' },
+  { title: 'Integración', desc: 'Merge, verificación y renovación del umbral de entrega.' }
+];
+---
+
+<Layout
+  title="Metodología — Alexendros"
+  description="Cinco ejes que bloquean la entrega: seguridad, accesibilidad, visibilidad, mantenibilidad e identidad."
+>
+  <Container size="narrow" class="pt-12 pb-16">
+    <PageHead
+      kicker="EN DESARROLLO"
+      title="Metodología"
+      description="Pinceladas de la norma Pentalokgo.ss v2.0.0. El entregable solo se acepta si los cinco ejes cumplen su umbral."
+    />
+
+    <p class="mt-6 text-sm text-muted border border-border rounded-lg p-4 bg-card">
+      Sección en desarrollo. Aquí se publicará el detalle operativo; por ahora, los títulos y
+      umbrales básicos.
+    </p>
+
+    <Stack as="ol" gap="4" class="mt-10">
+      {
+        axes.map((axis, i) => (
+          <li class="border border-border rounded-lg p-5 bg-card">
+            <div class="text-xs text-primary font-medium">Eje {i + 1}</div>
+            <h2 class="font-bold mt-1">{axis.title}</h2>
+            <p class="text-sm text-muted mt-2">{axis.desc}</p>
+          </li>
+        ))
+      }
+    </Stack>
+
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold">Ciclo</h2>
+      <ul class="mt-4 space-y-3">
+        {
+          cycle.map((step) => (
+            <li class="border border-border rounded-lg p-4 bg-card">
+              <h3 class="font-bold">{step.title}</h3>
+              <p class="text-sm text-muted mt-1">{step.desc}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <div class="mt-10">
+      <Button href="/contacto">Más información</Button>
+    </div>
+  </Container>
+</Layout>

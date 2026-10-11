@@ -69,7 +69,7 @@ export const verticals: Vertical[] = [
           'Sí, integro agenda con Cal.com para que el cliente reserve el hueco y reciba confirmación sin llamadas previas.'
       }
     ],
-    relatedService: 'produccion-sitios-web',
+    relatedService: 'informe-comercial',
     cta: '/contacto?servicio=produccion-sitios-web&vertical=abogados'
   },
   {
@@ -125,7 +125,7 @@ export const verticals: Vertical[] = [
           'Sí. Consentimiento granular, política de privacidad específica y ninguna etiqueta no esencial cargada sin autorización previa.'
       }
     ],
-    relatedService: 'produccion-sitios-web',
+    relatedService: 'informe-comercial',
     cta: '/contacto?servicio=produccion-sitios-web&vertical=clinicas'
   },
   {
@@ -181,7 +181,7 @@ export const verticals: Vertical[] = [
           'Si la editas tú, el coste es cero. Si prefieres delegarlo, ofrezco un mantenimiento mensual con cambios de carta incluidos.'
       }
     ],
-    relatedService: 'produccion-sitios-web',
+    relatedService: 'informe-comercial',
     cta: '/contacto?servicio=produccion-sitios-web&vertical=restaurantes'
   },
   {
@@ -237,7 +237,7 @@ export const verticals: Vertical[] = [
           'Sí. Adapto la estructura a entrenamiento personal, grupos reducidos, crossfit, yoga o pilates sin perder claridad.'
       }
     ],
-    relatedService: 'landing-10-dias',
+    relatedService: 'informe-comercial',
     cta: '/contacto?servicio=landing-10-dias&vertical=gimnasios'
   },
   {
@@ -293,7 +293,7 @@ export const verticals: Vertical[] = [
           'Ambas. Hay estructura para agente individual con marca personal o para equipo con páginas por comercial y zona.'
       }
     ],
-    relatedService: 'produccion-sitios-web',
+    relatedService: 'informe-comercial',
     cta: '/contacto?servicio=produccion-sitios-web&vertical=inmobiliarias'
   }
 ];

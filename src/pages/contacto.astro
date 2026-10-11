@@ -6,70 +6,70 @@ import Link from '../components/Link.astro';
 import BookingOptions from '../components/BookingOptions.astro';
 import ContactForm from '../components/ContactForm';
 import { contact } from '../content/contact';
+import { contactReasons, type ContactInput } from '../lib/contactSchema';
+
+const reasonParam = Astro.url.searchParams.get('motivo') ?? '';
+const initialReason = (contactReasons as readonly string[]).includes(reasonParam)
+  ? (reasonParam as ContactInput['reason'])
+  : 'informacionCliente';
+const initialModules = Astro.url.searchParams.get('modulos') ?? '';
 ---
 
 <Layout
-  title="Contacto — Alexendros"
-  description="Cuéntame qué necesitas. Te responderé con una primera valoración y los siguientes pasos."
+  title="Más información — Alexendros"
+  description="Formulario de petición y perfiles. Te responderé por WhatsApp o correo según tu preferencia."
 >
   <Container size="narrow" class="py-16 md:py-24">
     <PageHead
       kicker="CONTACTO"
-      title="Cuéntame qué necesitas"
-      description="Explícame brevemente tu negocio, el problema que quieres resolver y, si ya tienes una web, comparte su dirección. Te responderé con una primera valoración y los siguientes pasos."
+      title="Más información"
+      description="Elige el servicio de entrada o envía una petición breve. Respuesta por el canal que indiques."
     />
 
     <BookingOptions />
 
     <div class="mt-12 grid md:grid-cols-[1.2fr_0.8fr] gap-10">
       <div id="escribir">
-        <h2 class="font-bold text-xl">O escríbeme</h2>
+        <h2 class="font-bold text-xl">Formulario</h2>
         <p class="text-muted mt-2 text-sm">
-          Si todavía no encaja una sesión, cuéntame el contexto y te respondo por correo.
+          Campos requeridos: nombre, tipo, canal de respuesta y motivo.
         </p>
         <div class="mt-6">
           <ContactForm
-            client:visible
-            subjects={[...contact.subjects]}
-            calUrl="#reservar"
+            client:load
             successMessage={contact.messages.success}
             errorMessage={contact.messages.error}
             turnstileSiteKey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
+            initialReason={initialReason}
+            initialModules={initialModules}
           />
         </div>
       </div>
       <div class="space-y-6">
         <div class="border border-border rounded-lg p-6 bg-card">
-          <h2 class="font-bold text-base">Otras formas de escribirme</h2>
+          <h2 class="font-bold text-base">Perfiles y correo</h2>
           <ul class="mt-3 space-y-2 text-sm">
             {
-              contact.channels.map((c) => (
-                <li>
-                  <Link
-                    href={c.href}
-                    variant="nav"
-                    class="hover:text-primary"
-                    {...(c.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                  >
-                    {c.label}
-                  </Link>
-                  {c.external ? <span aria-hidden="true"> ↗</span> : ''}
-                </li>
-              ))
+              contact.channels
+                .filter((c) => c.id !== 'form')
+                .map((c) => (
+                  <li>
+                    <Link
+                      href={c.href}
+                      variant="nav"
+                      class="hover:text-primary"
+                      {...(c.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    >
+                      {c.label}
+                    </Link>
+                    {c.external ? <span aria-hidden="true"> ↗</span> : ''}
+                  </li>
+                ))
             }
           </ul>
         </div>
-        <div class="border border-border rounded-lg p-6 bg-card">
-          <h2 class="font-bold text-base">Qué ayuda incluir</h2>
-          <ul class="mt-3 list-disc pl-5 text-sm text-muted space-y-1">
-            <li>Qué quieres conseguir</li>
-            <li>Si ya tienes web, su dirección</li>
-            <li>Plazo orientativo, si lo tienes</li>
-            <li>Presupuesto aproximado, si lo tienes</li>
-          </ul>
-        </div>
         <div class="border border-dashed border-border rounded-lg p-4 text-sm text-muted">
-          Usaré tus datos solo para responder a esta consulta. Puedes consultar la{' '}
+          Usaré tus datos solo para responder a esta petición. Consulta la{' '}
           <Link href="/privacidad" variant="inline">política de privacidad</Link> antes de enviar.
         </div>
       </div>

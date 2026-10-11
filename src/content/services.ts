@@ -1,4 +1,18 @@
 import { z } from 'zod';
+import { formatEuro, modulePrices, portalBasePrice, provisionalPrices } from './pricing';
+
+export const catalogEntrySchema = z.object({
+  id: z.string().min(1),
+  kind: z.enum(['service', 'portal', 'module']),
+  title: z.string().min(1),
+  priceEuros: z.number().positive(),
+  payment: z.string().min(1),
+  timeline: z.string().min(1),
+  delivery: z.string().min(1),
+  guarantee: z.string().min(1)
+});
+
+export type CatalogEntry = z.infer<typeof catalogEntrySchema>;
 
 export const serviceSchema = z.object({
   slug: z.string().min(1),
@@ -12,358 +26,241 @@ export const serviceSchema = z.object({
   process: z.array(z.string()).min(1),
   technologies: z.array(z.string()).min(1),
   exclusions: z.array(z.string()).min(1),
-  pricingFrom: z.string().min(1),
+  priceEuros: z.number().positive(),
+  payment: z.string().min(1),
   timeline: z.string().min(1),
+  delivery: z.string().min(1),
+  guarantee: z.string().min(1),
   cta: z.string().min(1),
-  metrics: z.array(z.object({ label: z.string(), value: z.string() })).min(1),
-  tiers: z
-    .array(
-      z.object({
-        name: z.string().min(1),
-        price: z.string().min(1),
-        highlight: z.boolean().optional(),
-        features: z.array(z.string()).min(1)
-      })
-    )
-    .length(3)
+  metrics: z.array(z.object({ label: z.string(), value: z.string() })).min(1)
 });
 
 export type Service = z.infer<typeof serviceSchema>;
 
+export const portalModuleSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().min(1),
+  short: z.string().min(1),
+  priceEuros: z.number().positive(),
+  payment: z.string().min(1),
+  timeline: z.string().min(1),
+  delivery: z.string().min(1),
+  guarantee: z.string().min(1),
+  additive: z.boolean()
+});
+
+export type PortalModule = z.infer<typeof portalModuleSchema>;
+
 export const services: Service[] = [
   {
-    slug: 'produccion-sitios-web',
-    title: 'Web nueva o renovación',
+    slug: 'informe-comercial',
+    title: 'Informe comercial',
     short:
-      'Una web clara, rápida y fácil de usar para explicar tu negocio y facilitar que te contacten.',
+      'Inspección metodológica de tu dominio y presencia en internet, con dossier de hallazgos y recomendaciones.',
     description:
-      'Si tu web actual se ha quedado antigua, carga mal o no explica bien lo que haces, creo una nueva o mejoro la que ya tienes. Trabajamos el mensaje, la estructura y el diseño para que tus clientes entiendan tu propuesta y sepan cómo contactar o comprar.',
-    audience:
-      'Profesionales que necesitan una primera web seria · Negocios locales con una web antigua · Empresas de servicios que reciben pocas consultas',
+      'Reviso tu dominio web y tu presencia en internet. Te envío un dossier con detecciones, hallazgos, áreas a corregir ya y recomendaciones para construir algo más eficiente para tu negocio.',
+    audience: 'Negocios y profesionales que necesitan saber por dónde empezar antes de invertir.',
     problems: [
-      'Tu web no explica bien lo que haces',
-      'Carga lenta o se ve mal en el móvil',
-      'Recibes pocas consultas o solicitudes',
-      'Es difícil de actualizar o mantener'
+      'La web no trae contactos',
+      'No sabes qué corregir primero',
+      'Has recibido propuestas difíciles de priorizar'
     ],
     scope: [
-      'Reunión inicial para entender el negocio y los objetivos',
-      'Estructura de páginas y textos principales',
-      'Diseño adaptado a móvil, tablet y ordenador',
-      'Formulario de contacto o pagos cuando el proyecto lo necesita',
-      'Publicación, revisión y guía básica de uso'
+      'Dominio web y presencia pública',
+      'Claridad de mensaje y camino a contacto',
+      'Velocidad y uso en móvil',
+      'Priorización de hallazgos'
     ],
     deliverables: [
-      'Una web lista para presentar tu negocio',
-      'Textos y estructura más claros',
-      'Guía para gestionar lo acordado'
+      'Dossier informativo de detecciones y hallazgos',
+      'Áreas a corregir ya',
+      'Recomendaciones de siguiente paso'
     ],
     process: [
-      'Reunión inicial y definición de alcance',
-      'Estructura y contenidos',
-      'Diseño y construcción con avances para validar',
-      'Revisión y publicación',
-      'Entrega de guía y soporte inicial'
+      'Encargo y acceso al dominio',
+      'Inspección metodológica',
+      'Redacción del dossier',
+      'Entrega y ronda de aclaraciones'
     ],
-    technologies: [
-      'Stack habitual: Next.js o Astro, TypeScript estricto, Tailwind. Entrega con repositorio privado, CI en verde, informe Lighthouse y 0 violaciones axe-core.'
-    ],
-    exclusions: [
-      'No incluye tienda online completa ni mantenimiento continuo (disponible como servicio aparte).'
-    ],
-    pricingFrom: 'Desde 1.500 €',
-    timeline: '1–4 semanas según alcance',
-    cta: '/contacto',
-    metrics: [
-      { label: 'Enfoque', value: 'Clientes' },
-      { label: 'Entrega', value: 'Lista para usar' }
-    ],
-    tiers: [
-      {
-        name: 'Esencial',
-        price: 'Desde 1.500 €',
-        features: [
-          'Web de 3 a 5 páginas con la estructura esencial',
-          'Diseño adaptado a móvil y ordenador',
-          'Formulario de contacto y datos de negocio'
-        ]
-      },
-      {
-        name: 'Conversión',
-        price: 'Desde 2.400 €',
-        highlight: true,
-        features: [
-          'Todo lo del plan Esencial',
-          'Copy orientado a que el visitante contacte',
-          'Páginas de servicio y casos con prueba social',
-          'Medición de contactos y formularios'
-        ]
-      },
-      {
-        name: 'Dominación',
-        price: 'Desde 3.900 €',
-        features: [
-          'Todo lo del plan Conversión',
-          'Contenido y páginas por servicio o sector',
-          'Integraciones (agenda, CRM o email)',
-          'Plan de mejora a 3 meses incluido'
-        ]
-      }
-    ]
-  },
-  {
-    slug: 'auditorias',
-    title: 'Revisión y plan de mejora de tu web',
-    short:
-      'Descubre qué está frenando tu web y qué conviene mejorar primero, con un plan claro y ordenado.',
-    description:
-      'Reviso tu web para detectar problemas que pueden hacerte perder visitas, confianza o contactos. Recibes un informe claro, priorizado por impacto, para saber qué mejorar ahora, qué puede esperar y qué inversión requiere cada paso.',
-    audience: 'Dueños de negocio y equipos que quieren saber qué mejorar antes de invertir más.',
-    problems: [
-      '¿Tu web carga lenta, recibe pocas consultas o parece difícil de usar?',
-      'No sabes por dónde empezar a mejorar',
-      'Has recibido propuestas técnicas difíciles de priorizar',
-      'Quieres un plan claro antes de gastar en cambios'
-    ],
-    scope: [
-      'Velocidad y experiencia en móvil',
-      'Claridad de contenidos y facilidad para contactar',
-      'Visibilidad básica en buscadores',
-      'Accesibilidad, mantenimiento y seguridad básica'
-    ],
-    deliverables: [
-      'Informe claro con problemas encontrados',
-      'Lista de mejoras ordenada por prioridad',
-      'Explicación del impacto de cada mejora',
-      'Reunión de 1 hora para revisar el informe'
-    ],
-    process: [
-      'Definimos el alcance de la revisión',
-      'Analizo tu web',
-      'Priorizo hallazgos por impacto',
-      'Te entrego el informe',
-      'Revisamos juntos en una reunión de 1 hora'
-    ],
-    technologies: [
-      'Para equipos técnicos: análisis CWV (LCP, CLS, INP), axe-core + revisión manual teclado/lector de pantalla, SEO técnico, seguridad proporcional, priorización ICE y scripts de reproducción.'
-    ],
+    technologies: ['Análisis CWV, SEO técnico básico, revisión de contenidos y accesibilidad.'],
     exclusions: [
       'No incluye implementación de las mejoras',
-      'No incluye pruebas de seguridad avanzadas',
-      'No incluye certificación oficial de accesibilidad'
+      'No incluye pentest ni certificación oficial'
     ],
-    pricingFrom: 'Desde 650 €',
-    timeline: '3–5 días',
+    priceEuros: provisionalPrices.informeComercial,
+    payment: 'Pago único antes de empezar',
+    timeline: '5 días laborables',
+    delivery: 'Dossier con hallazgos priorizados y recomendaciones',
+    guarantee: 'Una ronda de aclaraciones en 10 días naturales',
     cta: '/contacto',
     metrics: [
-      { label: 'Entrega', value: 'Informe claro' },
-      { label: 'Reunión', value: '1 hora' }
-    ],
-    tiers: [
-      {
-        name: 'Esencial',
-        price: 'Desde 650 €',
-        features: [
-          'Revisión de velocidad y móvil',
-          'Informe con los problemas principales',
-          'Prioridades ordenadas por impacto'
-        ]
-      },
-      {
-        name: 'Conversión',
-        price: 'Desde 990 €',
-        highlight: true,
-        features: [
-          'Todo lo del plan Esencial',
-          'Revisión de contenidos y camino a contacto',
-          'SEO técnico básico y accesibilidad',
-          'Reunión de 1 hora para revisar el informe'
-        ]
-      },
-      {
-        name: 'Dominación',
-        price: 'Desde 1.500 €',
-        features: [
-          'Todo lo del plan Conversión',
-          'Análisis de la competencia local',
-          'Plan de mejoras por fases con estimación',
-          'Seguimiento de la implementación'
-        ]
-      }
+      { label: 'Precio', value: formatEuro(provisionalPrices.informeComercial) },
+      { label: 'Plazo', value: '5 días' }
     ]
   },
   {
-    slug: 'consultoria-tecnologica',
-    title: 'Plan digital y automatización',
+    slug: 'sesion-profesional',
+    title: 'Sesión profesional',
     short:
-      'Antes de invertir en una nueva herramienta o desarrollo, definimos qué necesitas y cuál es el camino más sensato.',
+      'Sesión de trabajo para desbloquear un problema concreto o decidir el siguiente paso técnico.',
     description:
-      'Te ayudo a ordenar una idea, elegir entre opciones y preparar un plan de trabajo por fases. Es útil cuando necesitas mejorar procesos, conectar herramientas, reducir tareas repetitivas o decidir si merece la pena crear una solución a medida.',
-    audience: 'Negocios y equipos que necesitan ordenar su plan digital antes de invertir.',
+      'Una hora de trabajo enfocado. Sales con siguientes pasos por escrito en el siguiente día laborable.',
+    audience: 'Quien necesita desbloquear una decisión técnica o de producto con plazo corto.',
     problems: [
-      'Hay demasiadas opciones y no sabes cuál encaja',
-      'Procesos manuales que consumen tiempo',
-      'Herramientas desconectadas entre sí',
-      'Dudas entre comprar una herramienta o construir a medida'
+      'Hay un bloqueo concreto',
+      'Necesitas decidir el siguiente paso',
+      'No quieres un proyecto completo todavía'
     ],
-    scope: [
-      'Reducir tareas manuales repetitivas',
-      'Conectar un formulario con tu correo, CRM o agenda',
-      'Ordenar información repartida en varias herramientas',
-      'Decidir entre herramienta existente o desarrollo a medida'
-    ],
-    deliverables: [
-      'Documento de diagnóstico',
-      'Comparativa de opciones',
-      'Plan por fases con prioridades'
-    ],
-    process: [
-      'Conversación de descubrimiento',
-      'Diagnóstico de la situación actual',
-      'Comparativa de opciones',
-      'Plan por fases',
-      'Entrega y sesión de transferencia'
-    ],
-    technologies: [
-      'Evaluación de arquitectura, ADRs y runbooks cuando el proyecto lo requiere. Stack de referencia: TypeScript, Node, Rust, Go, integraciones MCP/Ollama.'
-    ],
-    exclusions: [
-      'No incluye la implementación del plan',
-      'No incluye infraestructura ni alojamiento',
-      'No incluye entrenamiento avanzado de modelos de IA'
-    ],
-    pricingFrom: 'Desde 900 €',
-    timeline: '1–2 semanas',
-    cta: '/contacto',
+    scope: ['Conversación de 60 minutos', 'Priorización del problema', 'Siguientes pasos escritos'],
+    deliverables: ['Resumen de siguientes pasos por escrito'],
+    process: ['Reserva en Cal.com', 'Sesión de 60 minutos', 'Entrega del resumen'],
+    technologies: ['Cal.com para reserva y pago.'],
+    exclusions: ['No incluye implementación', 'No incluye auditoría completa'],
+    priceEuros: provisionalPrices.sesionProfesional,
+    payment: 'Pago al reservar en Cal.com',
+    timeline: '60 minutos',
+    delivery: 'Siguientes pasos por escrito en 1 día laborable',
+    guarantee: 'Resumen entregado en 1 día laborable tras la sesión',
+    cta: 'https://cal.com/alexendros/sesion-tecnica',
     metrics: [
-      { label: 'Resultado', value: 'Plan claro' },
-      { label: 'Enfoque', value: 'Por fases' }
-    ],
-    tiers: [
-      {
-        name: 'Esencial',
-        price: 'Desde 900 €',
-        features: [
-          'Sesión de descubrimiento',
-          'Diagnóstico de la situación actual',
-          'Recomendación del siguiente paso'
-        ]
-      },
-      {
-        name: 'Conversión',
-        price: 'Desde 1.500 €',
-        highlight: true,
-        features: [
-          'Todo lo del plan Esencial',
-          'Comparativa de herramientas y opciones',
-          'Plan por fases con prioridades',
-          'Sesión de transferencia al equipo'
-        ]
-      },
-      {
-        name: 'Dominación',
-        price: 'Desde 2.400 €',
-        features: [
-          'Todo lo del plan Conversión',
-          'Diseño de procesos y automatizaciones',
-          'Arquitectura e integraciones definidas',
-          'Acompañamiento en la primera fase'
-        ]
-      }
+      { label: 'Precio', value: formatEuro(provisionalPrices.sesionProfesional) },
+      { label: 'Duración', value: '60 min' }
     ]
   },
   {
-    slug: 'landing-10-dias',
-    title: 'Landing en 10 días',
-    short: 'Landing A/B con captura de leads, lista en 10 días laborables desde brief y marca.',
+    slug: 'auditoria-normativa-ciberseguridad',
+    title: 'Auditoría de normativa y ciberseguridad',
+    short:
+      'Informe de RGPD/LSSI y seguridad básica, con severidad y corrección recomendada por hallazgo.',
     description:
-      'Paquete fijo (no web a medida): landing de alto impacto con test A/B del CTA, formulario de leads, tema claro/oscuro, personalización de marca y deploy en Vercel. Base técnica: plantilla PortfolioSaaS (demo: https://landing-ab-testing.vercel.app).',
-    audience:
-      'Negocios locales y profesionales que necesitan una landing de conversión rápida · Campañas o lanzamientos con plazo cerrado · Quien ya tiene marca y copy básico',
+      'Revisión de cumplimiento normativo y de seguridad básica de tu presencia web. Cada hallazgo lleva severidad y corrección recomendada. No incluye pentest ni certificación.',
+    audience: 'Negocios que necesitan un informe accionable antes de endurecer su sitio.',
     problems: [
-      'Web genérica que no convierte',
-      'Plazo largo de "web completa"',
-      'No hay captura de leads',
-      'Mensaje poco claro en móvil'
+      'Dudas de cumplimiento RGPD/LSSI',
+      'Superficie de seguridad sin priorizar',
+      'Necesitas un informe, no un pentest'
     ],
     scope: [
-      'Brief + materiales de marca',
-      'Estructura 1 landing + gracias',
-      'A/B de CTA',
-      'Formulario leads',
-      'Deploy Vercel',
-      'Guía breve de edición de copy'
+      'RGPD y LSSI en la superficie pública',
+      'Seguridad básica (cabeceras, secretos expuestos, superficies evidentes)',
+      'Priorización por severidad'
     ],
     deliverables: [
-      'Landing en producción',
-      'Repo privado del cliente',
-      'Guía de edición',
-      'Acceso Vercel acordado'
+      'Informe con hallazgos de normativa y seguridad básica',
+      'Severidad y corrección por hallazgo'
     ],
-    process: [
-      'Brief y materiales de marca',
-      'Configuración de marca (site.config / assets)',
-      'Preview para validar',
-      'Ajustes de copy y CTA',
-      'Publicación en el día 10',
-      'Handoff (repo, Vercel, guía de edición)'
-    ],
-    technologies: [
-      'Next.js',
-      'TypeScript',
-      'Tailwind',
-      'A/B CTA (plantilla PortfolioSaaS)',
-      'Vercel',
-      'CI en verde + Lighthouse + accesibilidad (estándar Alexendros)'
-    ],
+    process: ['Alcance del encargo', 'Análisis', 'Redacción del informe', 'Entrega'],
+    technologies: ['Revisión proporcional OWASP ASVS L1, CSP, cookies y formularios.'],
     exclusions: [
-      'No ecommerce completo',
-      'No SEO continuo',
-      'No mantenimiento mensual',
-      'No tienda ni pasarela de pago (salvo enlace a contacto/calendario)',
-      'No reescritura total de marca desde cero si faltan textos/logo'
+      'No incluye pentest',
+      'No incluye certificación oficial',
+      'No incluye implementación de remedios'
     ],
-    pricingFrom: 'Desde 990 €',
-    timeline: '10 días laborables desde brief + materiales de marca',
+    priceEuros: provisionalPrices.auditoria,
+    payment: '50 % al encargo y 50 % a la entrega, sin recargo',
+    timeline: '10 días laborables',
+    delivery:
+      'Informe RGPD/LSSI y seguridad básica; cada hallazgo con severidad y corrección recomendada',
+    guarantee: 'Corrección de desviaciones del alcance escrito en 15 días naturales',
     cta: '/contacto',
     metrics: [
-      { label: 'Enfoque', value: 'Conversión' },
-      { label: 'Entrega', value: '10 días' },
-      { label: 'Base', value: 'Plantilla A/B' }
-    ],
-    tiers: [
-      {
-        name: 'Esencial',
-        price: 'Desde 990 €',
-        features: [
-          'Landing de una página + gracias',
-          'Formulario de captura de leads',
-          'Deploy en Vercel incluido'
-        ]
-      },
-      {
-        name: 'Conversión',
-        price: 'Desde 1.500 €',
-        highlight: true,
-        features: [
-          'Todo lo del plan Esencial',
-          'Test A/B del CTA',
-          'Copy orientado a conversión',
-          'Guía de edición de copy'
-        ]
-      },
-      {
-        name: 'Dominación',
-        price: 'Desde 2.200 €',
-        features: [
-          'Todo lo del plan Conversión',
-          'Variantes de hero y prueba social',
-          'Integración con tu email o CRM',
-          'Revisión de resultados a 30 días'
-        ]
-      }
+      { label: 'Precio', value: formatEuro(provisionalPrices.auditoria) },
+      { label: 'Plazo', value: '10 días' }
     ]
   }
+];
+
+export const portalBase: PortalModule = {
+  id: 'portal-inicio',
+  title: 'Portal de inicio',
+  short: 'Landing clásica con página de gracias, formulario y publicación.',
+  priceEuros: portalBasePrice,
+  payment: '50 % al encargo y 50 % al publicar, sin recargo',
+  timeline: '10 días laborables',
+  delivery: 'Landing, página de gracias, formulario y publicación',
+  guarantee:
+    '30 días naturales para corregir desviaciones del alcance escrito. LCP ≤ 2,5 s, axe 0 en rutas acordadas, contraste AA',
+  additive: false
+};
+
+export const portalModules: PortalModule[] = [
+  {
+    id: 'tienda',
+    title: 'Tienda online',
+    short: 'Catálogo y pasarela de pagos.',
+    priceEuros: modulePrices.tienda,
+    payment: 'Incluido en el pago fraccionado del portal',
+    timeline: '+15 días laborables',
+    delivery: 'Catálogo y pasarela de pagos operativa',
+    guarantee: 'Misma garantía del portal sobre el alcance de este módulo',
+    additive: true
+  },
+  {
+    id: 'mensajeria',
+    title: 'Canal de mensajería',
+    short: 'Canalización de clientes a través de aplicaciones de mensajería.',
+    priceEuros: modulePrices.mensajeria,
+    payment: 'Incluido en el pago fraccionado del portal',
+    timeline: '+5 días laborables',
+    delivery: 'Canal de mensajería conectado al portal',
+    guarantee: 'Misma garantía del portal sobre el alcance de este módulo',
+    additive: true
+  },
+  {
+    id: 'usuarios',
+    title: 'Registro de usuarios y gestión de clientes',
+    short: 'Registro de usuarios y gestión interna de clientes.',
+    priceEuros: modulePrices.usuarios,
+    payment: 'Incluido en el pago fraccionado del portal',
+    timeline: '+10 días laborables',
+    delivery: 'Registro y panel interno de clientes',
+    guarantee: 'Misma garantía del portal sobre el alcance de este módulo',
+    additive: true
+  },
+  {
+    id: 'contenidos',
+    title: 'Panel de contenidos',
+    short: 'Publicaciones de fácil administración (partida de presupuesto; no CMS en este sitio).',
+    priceEuros: modulePrices.contenidos,
+    payment: 'Incluido en el pago fraccionado del portal',
+    timeline: '+5 días laborables',
+    delivery: 'Panel de contenidos y publicaciones',
+    guarantee: 'Misma garantía del portal sobre el alcance de este módulo',
+    additive: true
+  }
+];
+
+export const catalogEntries: CatalogEntry[] = [
+  ...services.map((s) => ({
+    id: s.slug,
+    kind: 'service' as const,
+    title: s.title,
+    priceEuros: s.priceEuros,
+    payment: s.payment,
+    timeline: s.timeline,
+    delivery: s.delivery,
+    guarantee: s.guarantee
+  })),
+  {
+    id: portalBase.id,
+    kind: 'portal',
+    title: portalBase.title,
+    priceEuros: portalBase.priceEuros,
+    payment: portalBase.payment,
+    timeline: portalBase.timeline,
+    delivery: portalBase.delivery,
+    guarantee: portalBase.guarantee
+  },
+  ...portalModules.map((m) => ({
+    id: m.id,
+    kind: 'module' as const,
+    title: m.title,
+    priceEuros: m.priceEuros,
+    payment: m.payment,
+    timeline: m.timeline,
+    delivery: m.delivery,
+    guarantee: m.guarantee
+  }))
 ];
 
 const slugs = new Set<string>();
@@ -372,4 +269,14 @@ services.forEach((s, i) => {
   if (!r.success) throw new Error(`Service ${i} inválido: ${r.error.message}`);
   if (slugs.has(s.slug)) throw new Error(`Service slug duplicado: ${s.slug}`);
   slugs.add(s.slug);
+});
+
+catalogEntries.forEach((e, i) => {
+  const r = catalogEntrySchema.safeParse(e);
+  if (!r.success) throw new Error(`CatalogEntry ${i} inválido: ${r.error.message}`);
+});
+
+portalModules.forEach((m, i) => {
+  const r = portalModuleSchema.safeParse(m);
+  if (!r.success) throw new Error(`PortalModule ${i} inválido: ${r.error.message}`);
 });

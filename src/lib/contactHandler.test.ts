@@ -8,10 +8,11 @@ import {
 } from './contactHandler';
 
 const validBody = {
-  name: 'Alex',
+  name: 'Alex Endros',
+  entityType: 'particular',
+  channel: 'correo',
   email: 'alex@example.com',
-  subject: 'otro',
-  message: 'Mensaje de prueba con más de veinte caracteres',
+  reason: 'propuestaComercial',
   consent: true
 };
 
@@ -75,6 +76,21 @@ describe('handleContactPost', () => {
     expect(sendMail).toHaveBeenCalledOnce();
   });
 
+  it('WhatsApp con teléfono → 200', async () => {
+    const res = await handleContactPost(
+      postJson({
+        name: 'Alex Endros',
+        entityType: 'empresa',
+        channel: 'whatsapp',
+        phone: '+34 600 000 000',
+        reason: 'proyectoEspecial',
+        consent: true
+      }),
+      deps()
+    );
+    expect(res.status).toBe(200);
+  });
+
   it('falta name → 400 genérico', async () => {
     const { name: _n, ...rest } = validBody;
     const res = await handleContactPost(postJson(rest), deps());
@@ -82,20 +98,23 @@ describe('handleContactPost', () => {
     expect(await res.json()).toEqual({ error: 'Invalid request' });
   });
 
-  it('falta email → 400', async () => {
+  it('correo sin email → 400', async () => {
     const { email: _e, ...rest } = validBody;
     const res = await handleContactPost(postJson(rest), deps());
     expect(res.status).toBe(400);
   });
 
-  it('email inválido → 400', async () => {
-    const res = await handleContactPost(postJson({ ...validBody, email: 'no-email' }), deps());
-    expect(res.status).toBe(400);
-  });
-
-  it('falta message → 400', async () => {
-    const { message: _m, ...rest } = validBody;
-    const res = await handleContactPost(postJson(rest), deps());
+  it('WhatsApp sin teléfono → 400', async () => {
+    const res = await handleContactPost(
+      postJson({
+        name: 'Alex Endros',
+        entityType: 'particular',
+        channel: 'whatsapp',
+        reason: 'informacionCliente',
+        consent: true
+      }),
+      deps()
+    );
     expect(res.status).toBe(400);
   });
 
@@ -120,7 +139,7 @@ describe('handleContactPost', () => {
           'Content-Type': 'application/json',
           'Content-Length': String(CONTACT_MAX_BODY_BYTES + 1)
         },
-        body: JSON.stringify({ ...validBody, message: big })
+        body: JSON.stringify({ ...validBody, modules: big })
       }),
       deps()
     );

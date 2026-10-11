@@ -1,6 +1,8 @@
 ---
 import { site } from '../content/site';
 import Link from './Link.astro';
+
+const iconClass = 'shrink-0';
 ---
 
 <footer class="border-t border-border mt-0 cv-auto">
@@ -8,30 +10,86 @@ import Link from './Link.astro';
   <div class="mx-auto max-w-6xl px-6 py-16 md:py-24 grid md:grid-cols-2 gap-10 text-sm">
     <div>
       <div class="font-mono font-bold">Alexendros<span class="text-primary">.dev</span></div>
-      <p class="text-muted mt-2 max-w-xs">
-        Webs claras y útiles para profesionales y pequeños negocios. Valencia — remoto.
-      </p>
-      <div class="mt-4 text-muted">
-        <Link href={site.social.email} variant="nav">hola@alexendros.dev</Link>
-        <div class="mt-2 flex gap-3">
-          <Link href={site.social.github} variant="nav" target="_blank" rel="noopener noreferrer"
-            >GitHub</Link
+      <ul class="mt-4 space-y-3 text-muted">
+        <li>
+          <Link
+            href={site.social.email}
+            variant="nav"
+            class="inline-flex items-center gap-2 hover:text-fg"
           >
-          <Link href={site.social.linkedin} variant="nav" target="_blank" rel="noopener noreferrer"
-            >LinkedIn</Link
+            <svg
+              class={iconClass}
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+              <path d="m3 7 9 6 9-6"></path>
+            </svg>
+            contratacion@alexendros.dev
+          </Link>
+        </li>
+        <li>
+          <Link
+            href={site.social.github}
+            variant="nav"
+            class="inline-flex items-center gap-2 hover:text-fg"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-        </div>
-        <div class="mt-4 text-xs">
-          Usamos cookies propias y de terceros solo con tu consentimiento.{' '}
-          <button
-            type="button"
-            data-cc="show-preferencesModal"
-            class="underline decoration-dotted underline-offset-2 hover:text-fg"
+            <svg
+              class={iconClass}
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"
+              ></path>
+            </svg>
+            GitHub
+          </Link>
+        </li>
+        <li>
+          <Link
+            href={site.social.linkedin}
+            variant="nav"
+            class="inline-flex items-center gap-2 hover:text-fg"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            Configurar cookies
-          </button>
-        </div>
-      </div>
+            <svg
+              class={iconClass}
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"></path>
+              <rect x="2" y="9" width="4" height="12"></rect>
+              <circle cx="4" cy="4" r="2"></circle>
+            </svg>
+            LinkedIn
+          </Link>
+        </li>
+      </ul>
     </div>
     <div class="flex gap-10">
       <div>
@@ -47,7 +105,7 @@ import Link from './Link.astro';
             ))
           }
           <li>
-            <Link href="/contacto" variant="nav">Contacto</Link>
+            <Link href="/contacto" variant="nav">Más información</Link>
           </li>
         </ul>
       </div>

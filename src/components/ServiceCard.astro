@@ -1,4 +1,6 @@
 ---
+import { formatEuro } from '../content/pricing';
+
 interface Props {
   service: import('../content/services').Service;
   /** h2 en indices (bajo h1), h3 en home (bajo h2 de seccion) */
@@ -17,6 +19,6 @@ const Heading = headingLevel;
     </a>
   </Heading>
   <p class="mt-3 text-sm text-muted">{service.short}</p>
-  <p class="mt-4 text-sm text-muted">{service.pricingFrom}</p>
+  <p class="mt-4 text-sm text-muted">{formatEuro(service.priceEuros)}</p>
   <div class="mt-auto pt-4 text-sm font-medium" aria-hidden="true">Ver qué incluye →</div>
 </article>
