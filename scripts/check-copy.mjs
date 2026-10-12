@@ -39,8 +39,9 @@ function stringLiterals(source) {
 /** Texto entre tags tras quitar frontmatter, script y style. */
 function markupTextChunks(source) {
   let s = source.replace(/^---[\s\S]*?---\s*/, '');
-  s = s.replace(/<script[\s\S]*?<\/script>/gi, ' ');
-  s = s.replace(/<style[\s\S]*?<\/style>/gi, ' ');
+  // Cierre con [^>]* (CodeQL js/bad-tag-filter: admite atributos/whitespace raros).
+  s = s.replace(/<script\b[^>]*>[\s\S]*?<\/script\b[^>]*>/gi, ' ');
+  s = s.replace(/<style\b[^>]*>[\s\S]*?<\/style\b[^>]*>/gi, ' ');
   const out = [];
   const re = />([^<]+)</g;
   let m;
