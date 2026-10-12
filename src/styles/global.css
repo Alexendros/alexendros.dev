@@ -802,29 +802,9 @@
       animation: none;
     }
 
-    .hero-slot-measure {
-      display: none;
-    }
-
-    .hero-slot-stage {
-      position: static;
-      overflow: visible;
-      perspective: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.15em;
-    }
-
-    .hero-slot-item {
-      position: static;
-      animation: none;
-      opacity: 1;
-      transform: none;
-    }
-
-    .hero-slot-pause {
-      display: none;
-    }
+    /* El rotador del H1 no se aplana aquí: visores (Cursor/Vercel) y
+       muchos motores llegan con reduce activo y mostrarían las tres
+       frases en columna. La pausa «¡Pare las rotativas!» es el control. */
 
     .btn-spinner,
     .badge-dot,
@@ -865,34 +845,10 @@
 
   .force-reduced-motion .js [data-hero] [data-hero-item],
   .force-reduced-motion .js [data-hero] [data-hero-lcp],
-  .force-reduced-motion .hero-slot-item,
   .force-reduced-motion .btn-spinner,
   .force-reduced-motion .badge-dot,
   .force-reduced-motion .dimension-line {
     animation: none;
-  }
-
-  .force-reduced-motion .hero-slot-measure {
-    display: none;
-  }
-
-  .force-reduced-motion .hero-slot-stage {
-    position: static;
-    overflow: visible;
-    perspective: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.15em;
-  }
-
-  .force-reduced-motion .hero-slot-item {
-    position: static;
-    opacity: 1;
-    transform: none;
-  }
-
-  .force-reduced-motion .hero-slot-pause {
-    display: none;
   }
 
   .force-reduced-motion .pagehead-rule,
