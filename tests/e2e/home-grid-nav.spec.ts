@@ -14,7 +14,7 @@ test('F01: home es hero + nav; sin secciones en página', async ({ page }) => {
   await expect(page.getByText(/El dominio donde despliegue tu portal/)).toBeVisible();
   await expect(page.getByLabel(/Pare las rotativas/)).toBeVisible();
 
-  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   const visiblePhrases = await page
     .locator('[data-hero] .hero-slot-item')
     .evaluateAll((els) => els.filter((el) => Number(getComputedStyle(el).opacity) > 0.2).length);
