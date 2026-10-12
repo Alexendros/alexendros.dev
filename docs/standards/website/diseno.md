@@ -62,6 +62,13 @@ Todos en `src/components/`. Clases utilidad de Tailwind permitidas; valores de c
 
 Extraído de Layout: primer foco de la página, salta a `#contenido`, visible solo con teclado (`focus-visible`), z-index máximo. No reordenar en Layout.
 
+### Ventana rotatoria del H1 (home)
+
+- **Uso:** solo el H1 de la home (`Hero.astro`). Tres frases complementan el arranque fijo; no se usa en portadas interiores ni en legales.
+- **Movimiento:** CSS puro (`transform`/`opacity`), reposo 4 s, giro 550 ms, frase activa en `--brand`. Checkbox «¡Pare las rotativas!» más pausa al hover/foco. Con `prefers-reduced-motion` (o `.force-reduced-motion`) las tres frases quedan en columna y el control se oculta.
+- **A11y:** el bloque visual es `aria-hidden`; el nombre accesible del `h1` lista el arranque y las tres frases una sola vez. Sin `aria-live`. No reescribir el nombre durante el ciclo.
+- **Don't:** no copiar la ventana a otras páginas; no añadir librerías de motion; no animar con propiedades distintas de `transform`/`opacity`.
+
 ### Tarjetas enlazables (ServiceCard / ProjectCard) — patrón card-link
 
 - **Estructura:** el `<article>` no es enlace; el enlace vive en el título y se estira sobre toda la tarjeta con `::after { position:absolute; inset:0 }`. El nombre accesible es el título del servicio/caso (nunca "Ver qué incluye →" repetido: ese texto es `aria-hidden`). El foco se muestra con `focus-within:outline` (estilo + ancho + color: Tailwind `outline-2` solo fija ancho y sin `outline` no se pinta nada).

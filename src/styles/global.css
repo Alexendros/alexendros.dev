@@ -154,6 +154,12 @@
        total, dentro del presupuesto de entrada. */
     --dur-hero: 460ms;
     --stagger: 60ms;
+
+    /* Ventana del H1: reposo 4 s + giro 550 ms; 3 frases → 13,65 s. */
+    --dur-slot: 4s;
+    --dur-slot-spin: 550ms;
+    --dur-slot-step: 4.55s;
+    --dur-slot-cycle: 13.65s;
   }
 
   /* @tema-oscuro:inicio — publicado condicionado: scripts/check-contrast.mjs
@@ -357,6 +363,12 @@
     opacity: 1;
   }
 
+  /* Filete izquierdo de marca en tarjetas planas (valores, ejes, precios). */
+  .card-rail {
+    border-left-color: var(--brand);
+    border-left-width: 3px;
+  }
+
   /* Zoom de portada en las cards de proyecto (overflow ya recorta). */
   .card-cover {
     transition: transform var(--dur-slow) var(--ease-out);
@@ -453,6 +465,93 @@
     }
   }
 
+  /* Ventana rotatoria del H1: tres frases en una celda (altura = la más
+     alta envuelta). Solo transform/opacity; CSS puro. */
+  .hero-slot {
+    display: grid;
+    margin-top: 0.15em;
+    perspective: 800px;
+    overflow: hidden;
+  }
+
+  .hero-slot-item {
+    grid-area: 1 / 1;
+    color: var(--brand);
+    transform-origin: center bottom;
+    backface-visibility: hidden;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-slot-item {
+      animation: hero-slot-cycle var(--dur-slot-cycle) var(--ease-out) both infinite;
+      animation-delay: calc(var(--dur-hero) + var(--i, 0) * var(--dur-slot-step));
+    }
+
+    /* Frase 0: reposo en el primer fotograma (LCP); el giro espera --dur-hero. */
+    .hero-slot-item[style*='--i:0'] {
+      animation-name: hero-slot-cycle-first;
+    }
+
+    .hero-slot:hover .hero-slot-item,
+    .hero-slot-root:focus-within .hero-slot-item,
+    .hero-slot-root:has(.hero-slot-pause-input:checked) .hero-slot-item {
+      animation-play-state: paused;
+    }
+  }
+
+  /* Reposo → salida arriba → salto abajo → reentrada al cerrar el ciclo. */
+  @keyframes hero-slot-cycle-first {
+    0%,
+    29.3% {
+      opacity: 1;
+      transform: none;
+    }
+
+    33.33% {
+      opacity: 0;
+      transform: translateY(-110%) rotateX(78deg);
+    }
+
+    33.34%,
+    95.97% {
+      opacity: 0;
+      transform: translateY(110%) rotateX(-78deg);
+    }
+
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes hero-slot-cycle {
+    0% {
+      opacity: 0;
+      transform: translateY(110%) rotateX(-78deg);
+    }
+
+    4.03% {
+      opacity: 1;
+      transform: none;
+    }
+
+    29.3% {
+      opacity: 1;
+      transform: none;
+    }
+
+    33.33% {
+      opacity: 0;
+      transform: translateY(-110%) rotateX(78deg);
+    }
+
+    33.34%,
+    100% {
+      opacity: 0;
+      transform: translateY(110%) rotateX(-78deg);
+    }
+  }
+
   /* Tira Dimension (decorativa): las hairlines crecen con scaleX al
      cargar, sin JS (animación CSS pura con fill). */
   @media (prefers-reduced-motion: no-preference) {
@@ -462,11 +561,33 @@
       animation: line-in var(--dur-slow) var(--ease-out) forwards;
       animation-delay: calc(var(--i, 0) * var(--stagger));
     }
+
+    .pagehead-rule {
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: line-in var(--dur-slow) var(--ease-out) forwards;
+    }
+
+    [data-mobile-nav]:not([hidden]) {
+      animation: mobile-nav-in var(--dur-base) var(--ease-out) both;
+    }
   }
 
   @keyframes line-in {
     to {
       transform: scaleX(1);
+    }
+  }
+
+  @keyframes mobile-nav-in {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+
+    to {
+      opacity: 1;
+      transform: none;
     }
   }
 
@@ -629,13 +750,35 @@
       animation: none;
     }
 
+    .hero-slot {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15em;
+      overflow: visible;
+      perspective: none;
+    }
+
+    .hero-slot-item {
+      animation: none;
+      grid-area: auto;
+      opacity: 1;
+      transform: none;
+    }
+
+    .hero-slot-pause {
+      display: none;
+    }
+
     .btn-spinner,
     .badge-dot,
-    .dimension-line {
+    .dimension-line,
+    .pagehead-rule,
+    [data-mobile-nav] {
       animation: none;
     }
 
-    .dimension-line {
+    .dimension-line,
+    .pagehead-rule {
       transform: none;
     }
 
@@ -665,13 +808,38 @@
 
   .force-reduced-motion .js [data-hero] [data-hero-item],
   .force-reduced-motion .js [data-hero] h1[data-hero-item],
+  .force-reduced-motion .hero-slot-item,
   .force-reduced-motion .btn-spinner,
   .force-reduced-motion .badge-dot,
   .force-reduced-motion .dimension-line {
     animation: none;
   }
 
-  .force-reduced-motion .dimension-line {
+  .force-reduced-motion .hero-slot {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15em;
+    overflow: visible;
+    perspective: none;
+  }
+
+  .force-reduced-motion .hero-slot-item {
+    grid-area: auto;
+    opacity: 1;
+    transform: none;
+  }
+
+  .force-reduced-motion .hero-slot-pause {
+    display: none;
+  }
+
+  .force-reduced-motion .pagehead-rule,
+  .force-reduced-motion [data-mobile-nav] {
+    animation: none;
+  }
+
+  .force-reduced-motion .dimension-line,
+  .force-reduced-motion .pagehead-rule {
     transform: none;
   }
 
