@@ -4,15 +4,20 @@ import Container from '../components/Container.astro';
 ---
 
 <Layout
-  title="Cookies"
-  description="Información sobre las cookies que usa el sitio, sus titulares, finalidad, duración y categorías, y cómo gestionar tu consentimiento."
+  title="Cookies — qué se guarda, para qué y cómo lo controlas"
+  description="Explicación clara de las cookies de este sitio: qué hace cada una, quién la emite, cuánto dura, si necesita tu permiso y cómo cambiar o retirar el consentimiento."
 >
   <Container size="narrow" class="pt-12 legal-prose">
     <p class="font-mono">LEGAL</p>
     <h1>Cookies</h1>
     <p>
-      Registro de navegación e interacción de los visitantes para mejorar las funcionalidades y el
-      diseño de este portal público. El detalle de cada cookie figura en la tabla siguiente.
+      Una cookie es un pequeño archivo que el navegador guarda en tu dispositivo. Algunas son
+      imprescindibles para que esta página recuerde tu decisión. Otras sirven para medir visitas o
+      para publicidad: esas no se encienden hasta que tú lo permites.
+    </p>
+    <p>
+      Esta página es la explicación completa. El aviso emergente solo resume. Si quieres el detalle
+      técnico (nombre, titular, plazo), está en la tabla de abajo.
     </p>
 
     <p class="mt-4">
@@ -24,151 +29,157 @@ import Container from '../components/Container.astro';
         Configuración informada
       </button>
     </p>
-
-    <h2>Qué son las cookies y base jurídica</h2>
-    <p>
-      Las cookies son pequeños archivos que se almacenan en tu dispositivo al visitar un sitio web y
-      que permiten recordar información sobre tu navegación. La base jurídica para instalar cookies
-      técnicas o exentas es el interés legítimo en prestar el servicio solicitado (Art. 6.1.f RGPD y
-      art. 22.2 LSSI-CE); las cookies no esenciales, como las de preferencias, analíticas y
-      publicidad, se instalan únicamente con tu consentimiento previo, informado y granular (Art.
-      6.1.a RGPD y art. 22.2 LSSI-CE).
+    <p class="text-sm text-muted">
+      Abre el panel con interruptores por categoría. «Aceptación desinformada» enciende todo de
+      golpe. «Sí a lo esencial» deja solo lo técnico.
     </p>
 
-    <h2>Cookies que usamos</h2>
+    <h2>En claro, sin jerga</h2>
+    <ul>
+      <li>
+        <strong>Técnicas:</strong> recuerdan que ya respondiste al aviso. Sin ellas te lo preguntaríamos
+        en cada visita. No hacen perfil comercial. No se pueden apagar aquí.
+      </li>
+      <li>
+        <strong>Preferencias:</strong> recuerdan ajustes que tú eliges. Hoy este sitio casi no las usa.
+        Opcionales.
+      </li>
+      <li>
+        <strong>Analítica:</strong> cuentan cuánta gente entra y qué páginas se leen (Google Analytics,
+        Microsoft Clarity, PostHog en la UE). Sirve para mejorar el sitio, no para mostrarte anuncios.
+        Opcionales.
+      </li>
+      <li>
+        <strong>Publicidad:</strong> miden campañas y pueden asociar esta visita a un perfil en Meta o
+        LinkedIn. Opcionales. En el código la categoría se llama <code>marketing</code>; en pantalla
+        se llama Publicidad.
+      </li>
+    </ul>
+
+    <h2>Base jurídica (grado técnico)</h2>
     <p>
-      A continuación se detallan todas las cookies que el sitio puede emitir. El inventario se
-      mantiene actualizado y es verificado automáticamente, de modo que no se emite ninguna cookie
-      que no figure en esta tabla.
+      Técnicas: interés legítimo en prestar el servicio que pides (art. 6.1.f RGPD y art. 22.2
+      LSSI-CE). Preferencias, analítica y publicidad: consentimiento previo, informado y por
+      categoría (art. 6.1.a RGPD y art. 22.2 LSSI-CE). Hasta que aceptas esas tres, el sitio las
+      deja en <em>denied</em> (Consent Mode v2).
+    </p>
+
+    <h2>Inventario (nombre, titular, para qué, cuánto dura)</h2>
+    <p>
+      Nada de lo que este dominio pueda escribir en tu navegador falta en esta tabla. Si una cookie
+      nueva entra en el código, el inventario se actualiza o falla la auditoría automática.
     </p>
     <div class="table-wrap">
       <table>
         <thead>
           <tr>
             <th scope="col">Nombre</th>
-            <th scope="col">Titular</th>
-            <th scope="col">Finalidad</th>
-            <th scope="col">Duración</th>
+            <th scope="col">Quién la emite</th>
+            <th scope="col">Para qué (en claro)</th>
+            <th scope="col">Cuánto dura</th>
             <th scope="col">Tipo</th>
+            <th scope="col">¿Hace falta tu permiso?</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>consent_v1</td>
-            <td>alexendros.dev</td>
-            <td>Guardar las preferencias de consentimiento del usuario</td>
+            <td><code>consent_v1</code></td>
+            <td>alexendros.dev (primera parte)</td>
+            <td>Recuerda tu sí/no a cada categoría, para no preguntarte otra vez.</td>
             <td>12 meses</td>
             <td>Técnica</td>
+            <td>No</td>
           </tr>
           <tr>
-            <td>_ga</td>
-            <td>Google Analytics</td>
-            <td>Distinguir usuarios</td>
+            <td><code>_ga</code></td>
+            <td>Google Analytics (tercero, EE. UU.)</td>
+            <td>Asigna un identificador anónimo para no contar la misma persona dos veces.</td>
             <td>2 años</td>
             <td>Analítica</td>
+            <td>Sí</td>
           </tr>
           <tr>
-            <td>_ga_*</td>
+            <td><code>_ga_*</code></td>
             <td>Google Analytics</td>
-            <td>Mantener el estado de la sesión</td>
+            <td>Mantiene el estado de esta visita (qué páginas de esta sesión).</td>
             <td>2 años</td>
             <td>Analítica</td>
+            <td>Sí</td>
           </tr>
           <tr>
-            <td>_gid</td>
+            <td><code>_gid</code></td>
             <td>Google Analytics</td>
-            <td>Distinguir usuarios</td>
+            <td>Otro identificador de corto plazo para distinguir visitas de un mismo día.</td>
             <td>1 día</td>
             <td>Analítica</td>
+            <td>Sí</td>
           </tr>
           <tr>
-            <td>_fbp</td>
+            <td><code>_clck</code></td>
+            <td>Microsoft Clarity</td>
+            <td>Identifica de forma persistente para unir visitas de la misma persona.</td>
+            <td>1 año</td>
+            <td>Analítica</td>
+            <td>Sí</td>
+          </tr>
+          <tr>
+            <td><code>_clsk</code></td>
+            <td>Microsoft Clarity</td>
+            <td>Agrupa las páginas vistas en una misma sesión.</td>
+            <td>1 día</td>
+            <td>Analítica</td>
+            <td>Sí</td>
+          </tr>
+          <tr>
+            <td><code>ph_*_posthog</code></td>
+            <td>PostHog (UE)</td>
+            <td>Analítica de producto: qué flujos usas, sin fines publicitarios.</td>
+            <td>1 año</td>
+            <td>Analítica</td>
+            <td>Sí</td>
+          </tr>
+          <tr>
+            <td><code>_fbp</code></td>
             <td>Meta</td>
-            <td>Medición y remarketing de campañas</td>
+            <td>Mide y personaliza anuncios; puede asociar esta visita a un perfil de Meta.</td>
             <td>3 meses</td>
             <td>Publicidad</td>
+            <td>Sí</td>
           </tr>
           <tr>
-            <td>_clck</td>
-            <td>Microsoft Clarity</td>
-            <td>Analítica de comportamiento</td>
-            <td>1 año</td>
-            <td>Analítica</td>
-          </tr>
-          <tr>
-            <td>_clsk</td>
-            <td>Microsoft Clarity</td>
-            <td>Agrupar visitas de una misma sesión</td>
-            <td>1 día</td>
-            <td>Analítica</td>
-          </tr>
-          <tr>
-            <td>ph_*_posthog</td>
-            <td>PostHog</td>
-            <td>Analítica de producto</td>
-            <td>1 año</td>
-            <td>Analítica</td>
-          </tr>
-          <tr>
-            <td>li_sugr</td>
+            <td><code>li_sugr</code></td>
             <td>LinkedIn</td>
-            <td>Atribución de campañas</td>
+            <td>Atribuye visitas a campañas de LinkedIn.</td>
             <td>3 meses</td>
             <td>Publicidad</td>
+            <td>Sí</td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <h2>Categorías de cookies</h2>
-    <ul>
+    <h2>Cómo elegir, cambiar o retirar</h2>
+    <ol>
       <li>
-        <strong>Técnicas:</strong> imprescindibles para el funcionamiento del sitio y para recordar tu
-        decisión. Están siempre activas y no requieren consentimiento.
+        La primera visita muestra el aviso. «Aceptación desinformada» activa analítica y publicidad
+        sin leer el detalle. «Sí a lo esencial» deja solo lo técnico. «Configuración informada»
+        (este botón) abre interruptores uno a uno.
       </li>
       <li>
-        <strong>Preferencias:</strong> recuerdan tus ajustes para personalizar tu experiencia. Solo se
-        activan con tu consentimiento.
+        Puedes volver aquí en cualquier momento y pulsar otra vez «Configuración informada». Retirar
+        el permiso no anula lo ya tratado hasta ese instante.
       </li>
       <li>
-        <strong>Analítica:</strong> permiten medir el uso del sitio de forma agregada (Google Analytics,
-        Microsoft Clarity y PostHog). Solo se activan con tu consentimiento.
+        También puedes borrar cookies desde Chrome, Firefox, Safari o Edge. Si bloqueas las
+        técnicas, el aviso reaparecerá y algunas funciones pueden fallar.
       </li>
-      <li>
-        <strong>Publicidad:</strong> se usan para medir y personalizar campañas publicitarias (Meta y
-        LinkedIn). Solo se activan con tu consentimiento.
-      </li>
-    </ul>
+    </ol>
 
-    <h2>Cómo aceptar, rechazar o configurar</h2>
+    <h2>Autoridad de control</h2>
     <p>
-      Al visitar el sitio por primera vez verás un banner donde puedes elegir «Sí a todo», «Sí a lo
-      esencial» o «Configuración informada». Las cookies analíticas y de publicidad permanecen
-      desactivadas hasta que las aceptes de forma expresa. Puedes reabrir el panel en cualquier
-      momento con el botón «Configuración informada» de esta página.
-    </p>
-
-    <h2>Cómo revocar o cambiar el consentimiento</h2>
-    <p>
-      Puedes cambiar o retirar tu consentimiento en cualquier momento con «Configuración informada»
-      en esta página, que reabre el panel de preferencias. Revocar el consentimiento no afecta a la
-      licitud del tratamiento realizado antes de retirarlo.
-    </p>
-
-    <h2>Cómo eliminar las cookies del navegador</h2>
-    <p>
-      Además del panel de preferencias, puedes eliminar las cookies ya instaladas desde la
-      configuración de tu navegador (Chrome, Firefox, Safari o Edge), donde también puedes bloquear
-      su instalación. Ten en cuenta que bloquear las cookies técnicas puede afectar al correcto
-      funcionamiento del sitio.
-    </p>
-
-    <h2>Más información</h2>
-    <p>
-      Puedes consultar información adicional y ejercer tus derechos ante la Agencia Española de
-      Protección de Datos en <a href="https://www.aepd.es" rel="noopener noreferrer" target="_blank"
-        >www.aepd.es</a
-      >. Para cualquier duda sobre esta política, escríbenos a
+      Agencia Española de Protección de Datos:
+      <a href="https://www.aepd.es" rel="noopener noreferrer" target="_blank">www.aepd.es</a>. Dudas
+      sobre esta política:
       <a href="mailto:contratacion@alexendros.dev">contratacion@alexendros.dev</a>.
     </p>
 
@@ -184,13 +195,21 @@ import Container from '../components/Container.astro';
     margin-bottom: var(--space-2);
   }
 
-  .legal-prose ul {
+  .legal-prose ul,
+  .legal-prose ol {
     margin-top: var(--space-4);
     padding-left: var(--space-5);
-    list-style: disc;
     color: var(--fg-muted);
     font-size: 0.95rem;
     line-height: 1.7;
+  }
+
+  .legal-prose ul {
+    list-style: disc;
+  }
+
+  .legal-prose ol {
+    list-style: decimal;
   }
 
   .legal-prose li + li {
@@ -206,6 +225,11 @@ import Container from '../components/Container.astro';
     text-decoration: underline;
   }
 
+  .legal-prose code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.85em;
+  }
+
   .table-wrap {
     margin-top: var(--space-5);
     overflow-x: auto;
@@ -213,7 +237,7 @@ import Container from '../components/Container.astro';
 
   .legal-prose table {
     width: 100%;
-    min-width: 40rem;
+    min-width: 48rem;
     border-collapse: collapse;
     font-size: 0.875rem;
     line-height: 1.5;

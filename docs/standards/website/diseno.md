@@ -65,7 +65,7 @@ Extraído de Layout: primer foco de la página, salta a `#contenido`, visible so
 ### Ventana rotatoria del H1 (home)
 
 - **Uso:** solo el H1 de la home (`Hero.astro`). Tres frases complementan el arranque fijo; no se usa en portadas interiores ni en legales.
-- **Movimiento:** CSS puro (`transform`/`opacity`), ciclo 9 s / paso 3 s, timing `linear`. Giro **siempre** (no se aplana con `prefers-reduced-motion`: visores y previews llegan con reduce y mostrarían las tres frases a la vez). Cada frase entra desde abajo con `rotateX` y sale hacia arriba. Checkbox «¡Pare las rotativas!» para parar. CTA Contactar solo en el header.
+- **Movimiento:** CSS puro (`transform`/`opacity`), ciclo 9 s / paso 3 s, timing `linear`. Giro continuo (no se aplana con `prefers-reduced-motion`). Cada frase entra desde abajo con `rotateX` y sale hacia arriba. Sin control de pausa. CTA Contactar solo en el header.
 - **A11y:** el escenario visual es `aria-hidden`; el nombre accesible del `h1` lista el arranque y las tres frases una sola vez. Sin `aria-live`. No reescribir el nombre durante el ciclo.
 - **Don't:** no copiar la ventana a otras páginas; no añadir librerías de motion; no animar con propiedades distintas de `transform`/`opacity`.
 

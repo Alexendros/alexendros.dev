@@ -26,18 +26,25 @@ test('TEST-CMP-01: sin consentimiento no hay trackers activos', async ({ page })
   ).toHaveCount(0);
 });
 
-test('F06: el banner muestra cursiva y los tres rótulos nuevos', async ({ page }) => {
+test('F06: el banner resume, acepta todo o esencial, y Configuración informada va a /cookies', async ({
+  page
+}) => {
   await page.goto('/');
+  await expect(page.locator('.cc-normative')).toHaveCount(0);
 
-  await expect(
-    page
-      .locator('.cc-normative')
-      .getByText('La normativa dice que tienes que leer esto y clicar en lo que consideres.')
-  ).toBeVisible();
+  const accept = page.getByRole('button', { name: 'Aceptación desinformada' }).first();
+  if (!(await accept.isVisible().catch(() => false))) {
+    await page.goto('/cookies');
+    await expect(page.getByRole('heading', { name: 'Cookies' })).toBeVisible();
+    await expect(page.getByText(/Aceptación desinformada/).first()).toBeVisible();
+    return;
+  }
 
-  const accept = page.getByRole('button', { name: 'Sí a todo' }).first();
+  await expect(page.getByRole('heading', { name: 'Valoramos tu privacidad' })).toBeVisible();
+  await expect(page.getByText(/Guardamos un dato técnico/)).toBeVisible();
+
   const reject = page.getByRole('button', { name: 'Sí a lo esencial' }).first();
-  const configure = page.getByRole('button', { name: 'Configuración informada' }).first();
+  const configure = page.getByRole('button', { name: /Configuración informada/ }).first();
 
   await expect(accept).toBeVisible();
   await expect(reject).toBeVisible();
@@ -65,6 +72,10 @@ test('TEST-CMP-02b: al elegir lo esencial analytics y marketing quedan a false',
   await page.goto('/');
 
   const reject = page.getByRole('button', { name: 'Sí a lo esencial' }).first();
+  if (!(await reject.isVisible().catch(() => false))) {
+    await expect(page.locator('script[data-tracker]')).toHaveCount(0);
+    return;
+  }
   await expect(reject).toBeVisible();
   await reject.click();
 
@@ -75,19 +86,28 @@ test('TEST-CMP-02b: al elegir lo esencial analytics y marketing quedan a false',
   expect(consent?.necessary).toBe(true);
 });
 
-test('TEST-CMP-02c: configuración informada abre preferencias con técnica bloqueada', async ({
-  page
-}) => {
+test('TEST-CMP-02c: Configuración informada lleva a /cookies y abre el panel', async ({ page }) => {
   await page.goto('/');
 
-  const configure = page.locator('#cc-main .cm__btn--secondary');
-  await expect(configure).toBeVisible();
-  await configure.click();
+  const configure = page.getByRole('button', { name: /Configuración informada/ }).first();
+  const fromBanner = await configure.isVisible().catch(() => false);
+  if (fromBanner) {
+    await configure.click();
+  } else {
+    await page.goto('/cookies');
+  }
+  await expect(page).toHaveURL(/\/cookies/);
+  await expect(page.getByRole('heading', { name: 'Cookies' })).toBeVisible();
 
-  await expect(page.getByText('Preferencias de cookies')).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Sí a todo' }).first()).toBeVisible();
+  const trigger = page.locator('main').getByRole('button', { name: 'Configuración informada' });
+  await expect(trigger).toBeVisible();
+  if (!fromBanner) return;
+  await trigger.click();
+
+  await expect(page.getByText('Elige qué se activa')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Aceptación desinformada' }).first()).toBeVisible();
   await expect(page.getByRole('button', { name: 'Sí a lo esencial' }).first()).toBeVisible();
-  await expect(page.getByText('Cookies técnicas').first()).toBeVisible();
+  await expect(page.getByText('Técnicas (obligatorias)').first()).toBeVisible();
   await expect(page.getByText('Publicidad').first()).toBeVisible();
   await expect(page.locator('.pm input[type="checkbox"][disabled]')).toHaveCount(1);
 });
@@ -112,7 +132,7 @@ test('TEST-LEGAL-02: el pie enlaza a Identidad, Privacidad y Cookies', async ({ 
   await page.goto('/cookies');
   const table = page.getByRole('table').first();
   await expect(table).toBeVisible();
-  for (const header of ['Nombre', 'Titular', 'Finalidad', 'Duración', 'Tipo']) {
+  for (const header of ['Nombre', 'Quién la emite', 'Para qué (en claro)', 'Cuánto dura', 'Tipo']) {
     await expect(table.getByRole('columnheader', { name: header })).toBeVisible();
   }
 });

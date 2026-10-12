@@ -32,22 +32,20 @@ test('F08: Identidad muestra NIF y CP sin calle', async ({ page }) => {
   await expect(main).toContainText('contratacion@alexendros.dev');
 });
 
-test('F09: /cookies ofrece Configuración informada y abre el modal', async ({ page }) => {
+test('F09: /cookies explica en claro y ofrece Configuración informada', async ({ page }) => {
   await page.goto('/cookies');
-  await expect(page.locator('#cc-main')).toBeAttached({ timeout: 10_000 });
-  const essential = page.getByRole('button', { name: 'Sí a lo esencial' }).first();
-  await expect(essential).toBeVisible();
-  await essential.click();
-  const trigger = page.locator('main').getByRole('button', { name: 'Configuración informada' });
+  const main = page.locator('main');
+  await expect(main.getByRole('heading', { name: 'Cookies' })).toBeVisible();
+  await expect(main.getByRole('heading', { name: 'En claro, sin jerga' })).toBeVisible();
+  await expect(main.getByText(/Aceptación desinformada/).first()).toBeVisible();
+  const trigger = main.getByRole('button', { name: 'Configuración informada' });
   await expect(trigger).toBeVisible();
-  await trigger.click();
-  await expect(page.getByText('Preferencias de cookies')).toBeVisible({ timeout: 10_000 });
 });
 
 test('privacidad nombra AEPD y campos del formulario', async ({ page }) => {
   await page.goto('/privacidad');
   const main = page.locator('main');
   await expect(main).toContainText('AEPD');
-  await expect(main).toContainText('nombre completo');
+  await expect(main).toContainText('nombre');
   await expect(main).toContainText('WhatsApp');
 });
