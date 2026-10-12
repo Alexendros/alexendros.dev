@@ -1,5 +1,16 @@
 import { test, expect } from '@playwright/test';
 
+test('F02: home sin scroll horizontal a 320, 390 y 768px', async ({ page }) => {
+  for (const width of [320, 390, 768]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto('/');
+    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    expect(scrollWidth, `scrollWidth ${scrollWidth} > viewport ${width}`).toBeLessThanOrEqual(
+      width
+    );
+  }
+});
+
 test('F01: home es hero + nav; sin secciones en página', async ({ page }) => {
   await page.goto('/');
 
