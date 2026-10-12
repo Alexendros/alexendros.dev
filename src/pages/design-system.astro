@@ -339,22 +339,35 @@ const RADIUS = [
         >
           <p class="text-2xl font-bold leading-tight">
             Aquí se crean productos digitales que son reflejo de
-            <span class="hero-slot" aria-hidden="true">
-              <span class="hero-slot-item bp-h1-draft" style="--i:0"
-                >personalidad individual y reputación profesional</span
-              >
-              <span class="hero-slot-item bp-h1-draft" style="--i:1"
-                >proyectos empresariales e iniciativas sociales</span
-              >
-              <span class="hero-slot-item bp-h1-draft" style="--i:2"
-                >cualidades humanas de alto valor</span
-              >
+            <span class="hero-slot">
+              <span class="hero-slot-measure" aria-hidden="true">
+                <span class="hero-slot-measure-line"
+                  >personalidad individual y reputación profesional</span
+                >
+                <span class="hero-slot-measure-line"
+                  >proyectos empresariales e iniciativas sociales</span
+                >
+                <span class="hero-slot-measure-line">cualidades humanas de alto valor</span>
+              </span>
+              <span class="hero-slot-stage" aria-hidden="true">
+                <span class="hero-slot-item bp-h1-draft" data-i="0"
+                  >personalidad individual y reputación profesional</span
+                >
+                <span class="hero-slot-item bp-h1-draft" data-i="1"
+                  >proyectos empresariales e iniciativas sociales</span
+                >
+                <span class="hero-slot-item bp-h1-draft" data-i="2"
+                  >cualidades humanas de alto valor</span
+                >
+              </span>
             </span>
           </p>
-          <p class="hero-slot-pause mt-3 text-sm text-muted">
-            <label class="inline-flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" class="hero-slot-pause-input focus-ring rounded" />
-              ¡Pare las rotativas!
+          <p class="hero-slot-pause mt-3">
+            <label
+              class="hero-slot-pause-label inline-flex items-center gap-2 cursor-pointer font-mono text-xs tracking-[var(--tracking-eyebrow)] text-muted hover:text-fg"
+            >
+              <input type="checkbox" class="hero-slot-pause-input" />
+              <span>¡Pare las rotativas!</span>
             </label>
           </p>
         </div>

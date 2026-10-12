@@ -439,7 +439,9 @@
     animation-delay: calc(var(--i, 0) * var(--stagger));
   }
 
-  .js [data-hero] h1[data-hero-item] {
+  /* LCP: solo translateY (sin opacity). Ya no va en el h1 para no aplanar
+     el rotateX 3D de la ventana. */
+  .js [data-hero] [data-hero-lcp] {
     animation-name: hero-in-lcp;
   }
 
@@ -465,20 +467,65 @@
     }
   }
 
-  /* Ventana rotatoria del H1: tres frases en una celda (altura = la más
-     alta envuelta). Solo transform/opacity; CSS puro. */
+  /* Ventana rotatoria del H1: medida invisible (altura = frase más alta) +
+     escenario absoluto. El rotateX no colapsa el layout ni provoca CLS. */
   .hero-slot {
+    position: relative;
     display: grid;
     margin-top: 0.15em;
-    perspective: 800px;
+  }
+
+  .hero-slot-measure {
+    display: grid;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .hero-slot-measure-line {
+    grid-area: 1 / 1;
+  }
+
+  .hero-slot-stage {
+    position: absolute;
+    inset: 0;
     overflow: hidden;
+    perspective: 800px;
+    transform-style: preserve-3d;
   }
 
   .hero-slot-item {
-    grid-area: 1 / 1;
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
     color: var(--brand);
     transform-origin: center bottom;
     backface-visibility: hidden;
+  }
+
+  /* Control de pausa: checkbox dibujado; tipografía vía clases en el markup. */
+  .hero-slot-pause-input {
+    appearance: none;
+    width: 0.875rem;
+    height: 0.875rem;
+    flex-shrink: 0;
+    margin: 0;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out);
+  }
+
+  .hero-slot-pause-input:checked {
+    background: var(--brand);
+    border-color: var(--brand);
+  }
+
+  .hero-slot-pause-input:focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+    box-shadow: var(--focus-ring);
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -487,13 +534,24 @@
       animation-delay: calc(var(--dur-hero) + var(--i, 0) * var(--dur-slot-step));
     }
 
-    /* Frase 0: reposo en el primer fotograma (LCP); el giro espera --dur-hero. */
-    .hero-slot-item[style*='--i:0'] {
+    .hero-slot-item[data-i='0'] {
+      --i: 0;
+
       animation-name: hero-slot-cycle-first;
     }
 
+    .hero-slot-item[data-i='1'] {
+      --i: 1;
+    }
+
+    .hero-slot-item[data-i='2'] {
+      --i: 2;
+    }
+
+    /* Pausa solo en la ventana, el control, o el checkbox — no al enfocar el CTA. */
     .hero-slot:hover .hero-slot-item,
-    .hero-slot-root:focus-within .hero-slot-item,
+    .hero-slot-root:has(.hero-slot-pause:hover) .hero-slot-item,
+    .hero-slot-root:has(.hero-slot-pause:focus-within) .hero-slot-item,
     .hero-slot-root:has(.hero-slot-pause-input:checked) .hero-slot-item {
       animation-play-state: paused;
     }
@@ -746,21 +804,26 @@
     }
 
     .js [data-hero] [data-hero-item],
-    .js [data-hero] h1[data-hero-item] {
+    .js [data-hero] [data-hero-lcp] {
       animation: none;
     }
 
-    .hero-slot {
+    .hero-slot-measure {
+      display: none;
+    }
+
+    .hero-slot-stage {
+      position: static;
+      overflow: visible;
+      perspective: none;
       display: flex;
       flex-direction: column;
       gap: 0.15em;
-      overflow: visible;
-      perspective: none;
     }
 
     .hero-slot-item {
+      position: static;
       animation: none;
-      grid-area: auto;
       opacity: 1;
       transform: none;
     }
@@ -807,7 +870,7 @@
   }
 
   .force-reduced-motion .js [data-hero] [data-hero-item],
-  .force-reduced-motion .js [data-hero] h1[data-hero-item],
+  .force-reduced-motion .js [data-hero] [data-hero-lcp],
   .force-reduced-motion .hero-slot-item,
   .force-reduced-motion .btn-spinner,
   .force-reduced-motion .badge-dot,
@@ -815,16 +878,21 @@
     animation: none;
   }
 
-  .force-reduced-motion .hero-slot {
+  .force-reduced-motion .hero-slot-measure {
+    display: none;
+  }
+
+  .force-reduced-motion .hero-slot-stage {
+    position: static;
+    overflow: visible;
+    perspective: none;
     display: flex;
     flex-direction: column;
     gap: 0.15em;
-    overflow: visible;
-    perspective: none;
   }
 
   .force-reduced-motion .hero-slot-item {
-    grid-area: auto;
+    position: static;
     opacity: 1;
     transform: none;
   }
