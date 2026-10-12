@@ -6,7 +6,7 @@ interface Props {
 }
 
 const { pathname } = Astro.props;
-const HIDE_PATHS = ['/contacto', '/contacto/', '/gracias'];
+const HIDE_PATHS = ['/contacto', '/contacto/'];
 const currentPath = Astro.url.pathname || pathname;
 const shouldShow = !HIDE_PATHS.some((p) => currentPath === p || currentPath.startsWith(p + '/'));
 const priceLabel = formatEuro(provisionalPrices.informeComercial);
