@@ -1,7 +1,5 @@
 ---
 import BlueprintMotif from './BlueprintMotif.astro';
-import Eyebrow from './Eyebrow.astro';
-import Badge from './Badge.astro';
 import Button from './Button.astro';
 ---
 
@@ -9,21 +7,19 @@ import Button from './Button.astro';
   <BlueprintMotif
     class="pointer-events-none absolute -right-16 top-4 h-56 w-auto aspect-[4/3] text-brand-line md:-right-20 md:top-8 md:h-96"
   />
-  <div data-hero-item style="--i:0">
-    <Eyebrow>DISEÑO WEB · VALENCIA</Eyebrow>
-  </div>
-  <div class="mt-4" data-hero-item style="--i:1">
-    <Badge>Disponible para nuevos proyectos</Badge>
-  </div>
   <h1
-    class="bp-h1 mt-6 text-4xl md:text-5xl font-bold leading-[1.05] tracking-tight max-w-3xl"
+    class="bp-h1 text-4xl md:text-5xl font-bold leading-[1.05] tracking-tight max-w-3xl"
     data-hero-item
-    style="--i:2"
+    style="--i:0"
   >
-    Un sitio empresarial es más que <em>una página</em> publicada en Internet, es un reflejo de tu identidad
-    virtual que merece atenciones y respeto.
+    Aquí se crean productos digitales que son reflejo de identidades con valores profesionales,
+    empresariales, sociales y humanos de alta calidad.
   </h1>
-  <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3" data-hero-item style="--i:3">
+  <p class="mt-6 text-lg text-muted max-w-2xl" data-hero-item style="--i:1">
+    El dominio donde despliegue tu portal será accesible globalmente para que puedas dar a conocer
+    tus productos, conectar con personas y difundir tus proyectos para todo el mundo.
+  </p>
+  <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3" data-hero-item style="--i:2">
     <Button href="/contacto">Contactar</Button>
   </div>
 </section>

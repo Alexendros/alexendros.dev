@@ -6,19 +6,19 @@ const path = Astro.url.pathname;
 ---
 
 <header id="site-header" class="sticky top-0 z-50 backdrop-blur border-b border-border bg-bg/80">
-  <div class="mx-auto max-w-6xl px-6 h-14 flex items-center justify-between gap-4">
+  <div class="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between gap-4">
     <a href="/" class="font-mono font-bold tracking-tight shrink-0 focus-ring rounded"
       >Alexendros<span class="text-primary">.dev</span></a
     >
     <nav
-      class="site-nav hidden md:flex flex-wrap justify-end gap-x-4 gap-y-1 text-sm"
+      class="site-nav hidden md:flex flex-wrap justify-end gap-x-6 gap-y-1 text-base font-medium"
       aria-label="Principal"
     >
       {
         site.nav.map((i) => {
           const current = path.startsWith(i.href);
           return (
-            <Link href={i.href} variant="nav" current={current} class="text-muted">
+            <Link href={i.href} variant="nav" current={current}>
               {i.label}
             </Link>
           );
@@ -78,16 +78,11 @@ const path = Astro.url.pathname;
     aria-label="Principal"
     hidden
   >
-    <ul class="px-6 py-3 flex flex-col gap-1 text-sm">
+    <ul class="px-6 py-3 flex flex-col gap-1 text-base font-medium">
       {
         site.nav.map((i) => (
           <li>
-            <Link
-              href={i.href}
-              variant="nav"
-              current={path.startsWith(i.href)}
-              class="block py-2 text-muted"
-            >
+            <Link href={i.href} variant="nav" current={path.startsWith(i.href)} class="block py-3">
               {i.label}
             </Link>
           </li>
@@ -98,7 +93,7 @@ const path = Astro.url.pathname;
           href="/contacto"
           variant="nav"
           current={path.startsWith('/contacto')}
-          class="block py-2 text-muted"
+          class="block py-3"
         >
           Contactar
         </Link>
