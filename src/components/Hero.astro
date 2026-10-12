@@ -9,38 +9,49 @@ const phrases = [
 ] as const;
 ---
 
-<section
-  class="hero-slot-root relative mx-auto max-w-3xl px-6 py-16 md:py-24 overflow-hidden"
-  data-hero
->
-  <BlueprintMotif
-    class="pointer-events-none absolute -right-16 top-4 h-56 w-auto aspect-[4/3] text-brand-line md:-right-20 md:top-8 md:h-96"
-  />
-  <h1
-    class="bp-h1 text-4xl md:text-5xl font-bold leading-[1.05] tracking-tight max-w-3xl"
-    data-hero-item
-    style="--i:0"
+<section class="hero-slot-root relative mx-auto max-w-3xl px-6 py-16 md:py-24" data-hero>
+  {/* Contenedor propio para no clipar el H1 ni el CTA con overflow-hidden. */}
+  <div
+    class="pointer-events-none absolute -right-16 top-4 h-56 w-auto overflow-hidden md:-right-20 md:top-8 md:h-96"
+    aria-hidden="true"
   >
-    Aquí se crean productos digitales que son reflejo de
-    <span class="sr-only">
-      {` ${phrases[0]}, ${phrases[1]} y ${phrases[2]}`}
-    </span>
-    <span class="hero-slot" aria-hidden="true">
-      {
-        phrases.map((phrase, i) => (
-          <span class="hero-slot-item bp-h1-draft" style={`--i:${i}`}>
-            {phrase}
-          </span>
-        ))
-      }
-    </span>
-  </h1>
-  <p class="hero-slot-pause mt-3 text-sm text-muted">
-    <label class="inline-flex items-center gap-2 cursor-pointer">
-      <input type="checkbox" class="hero-slot-pause-input focus-ring rounded" />
-      ¡Pare las rotativas!
+    <BlueprintMotif class="h-full w-auto aspect-[4/3] text-brand-line" />
+  </div>
+
+  {/* Wrapper con hero-in-lcp: el h1 no lleva transform y no aplana el rotateX. */}
+  <div data-hero-item data-hero-lcp style="--i:0">
+    <h1 class="bp-h1 text-4xl md:text-5xl font-bold leading-[1.05] tracking-tight max-w-3xl">
+      Aquí se crean productos digitales que son reflejo de
+      <span class="sr-only">
+        {` ${phrases[0]}, ${phrases[1]} y ${phrases[2]}`}
+      </span>
+      <span class="hero-slot">
+        {/* Capa de medida: misma celda, invisible; fija la altura al máximo envuelto. */}
+        <span class="hero-slot-measure" aria-hidden="true">
+          {phrases.map((phrase) => <span class="hero-slot-measure-line">{phrase}</span>)}
+        </span>
+        <span class="hero-slot-stage" aria-hidden="true">
+          {
+            phrases.map((phrase, i) => (
+              <span class="hero-slot-item bp-h1-draft" data-i={i}>
+                {phrase}
+              </span>
+            ))
+          }
+        </span>
+      </span>
+    </h1>
+  </div>
+
+  <p class="hero-slot-pause mt-3">
+    <label
+      class="hero-slot-pause-label inline-flex items-center gap-2 cursor-pointer font-mono text-xs tracking-[var(--tracking-eyebrow)] text-muted hover:text-fg"
+    >
+      <input type="checkbox" class="hero-slot-pause-input" />
+      <span>¡Pare las rotativas!</span>
     </label>
   </p>
+
   <p class="mt-6 text-lg text-muted max-w-2xl" data-hero-item style="--i:1">
     El dominio donde despliegue tu portal será accesible globalmente para que puedas dar a conocer
     tus productos, conectar con personas y difundir tus proyectos para todo el mundo.
