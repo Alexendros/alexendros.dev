@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('F04: contacto valida canal y envía', async ({ page }) => {
+async function mockContactApi(page: import('@playwright/test').Page): Promise<void> {
   await page.route('**/api/contact', async (route) => {
     const req = route.request();
     if (req.method() === 'POST') {
@@ -18,25 +18,36 @@ test('F04: contacto valida canal y envía', async ({ page }) => {
       body: JSON.stringify({ error: 'Method not allowed' })
     });
   });
+}
+
+test('F04: todos los campos visibles en una pantalla, sin pasos', async ({ page }) => {
+  await page.goto('/contacto');
+
+  await expect(page.getByRole('heading', { name: 'Formulario de contacto' })).toBeVisible();
+  await expect(page.getByLabel('Motivo*')).toBeVisible();
+  await expect(page.getByLabel('Nombre*')).toBeVisible();
+  await expect(page.getByLabel('Categoría')).toBeVisible();
+  await expect(page.getByRole('radio', { name: 'Correo electrónico' })).toBeVisible();
+  await expect(page.getByRole('radio', { name: 'WhatsApp' })).toBeVisible();
+  await expect(page.getByLabel('Correo electrónico*')).toBeVisible();
+  await expect(page.getByLabel('Tu petición*')).toBeVisible();
+  await expect(page.getByLabel(/Acepto/)).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Enviar' })).toBeVisible();
+
+  await expect(page.getByRole('button', { name: /Continuar/ })).toHaveCount(0);
+  await expect(page.getByText(/Paso \d+ de \d+/)).toHaveCount(0);
+});
+
+test('F04: envío válido hace POST y confirma', async ({ page }) => {
+  await mockContactApi(page);
 
   await page.goto('/contacto');
-  await expect(page.getByRole('heading', { name: 'Formulario de contacto' })).toBeVisible();
-
-  await page.getByRole('button', { name: /Continuar/ }).click(); // Motivo
-  await page.getByLabel('Nombre*').fill('A');
-  await page.getByRole('button', { name: /Continuar/ }).click();
-  await expect(page.getByRole('alert')).toBeVisible();
-
   await page.getByLabel('Nombre*').fill('Test Cliente');
-  await page.getByRole('button', { name: /Continuar/ }).click();
-  await page.getByRole('button', { name: /Continuar/ }).click(); // Categoría
   await page.getByRole('radio', { name: 'Correo electrónico' }).check();
   await page.getByLabel('Correo electrónico*').fill('test@example.com');
-  await page.getByRole('button', { name: /Continuar/ }).click();
   await page.getByLabel('Tu petición*').fill('Necesito información sobre el informe comercial.');
-  await page.getByRole('button', { name: /Continuar/ }).click();
   await page.getByLabel(/Acepto/).check();
-  await page.getByRole('button', { name: /Enviar/ }).click();
+  await page.getByRole('button', { name: 'Enviar' }).click();
   await expect(page.getByRole('status')).toContainText(/Mensaje enviado/i, { timeout: 10000 });
 });
 
@@ -52,14 +63,22 @@ test('F04: WhatsApp sin teléfono no envía', async ({ page }) => {
   });
 
   await page.goto('/contacto');
-  await page.getByRole('button', { name: /Continuar/ }).click();
-  await page.getByLabel('Nombre*').fill('Test Cliente');
-  await page.getByRole('button', { name: /Continuar/ }).click();
-  await page.getByRole('button', { name: /Continuar/ }).click();
   await page.getByRole('radio', { name: 'WhatsApp' }).check();
-  await page.getByRole('button', { name: /Continuar/ }).click();
+  await page.getByRole('button', { name: 'Enviar' }).click();
   await expect(page.getByRole('alert')).toBeVisible();
   expect(posted).toBe(false);
+});
+
+test('validación: nombre corto muestra error accesible y mueve el foco', async ({ page }) => {
+  await page.goto('/contacto');
+  await page.getByLabel('Nombre*').fill('A');
+  await page.getByRole('button', { name: 'Enviar' }).click();
+
+  const alert = page.getByRole('alert');
+  await expect(alert).toBeVisible();
+  await expect(alert).toContainText(/Nombre/);
+  await expect(page.getByLabel('Nombre*')).toHaveAttribute('aria-invalid', 'true');
+  await expect(page.getByLabel('Nombre*')).toBeFocused();
 });
 
 test('contacto preselecciona el motivo desde ?servicio= de la URL', async ({ page }) => {
