@@ -22,8 +22,7 @@ type Props = {
   turnstileSiteKey?: string;
 };
 
-const inputClass =
-  'mt-1 w-full bg-bg border border-border-strong rounded-lg px-3 py-2 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
+const inputClass = 'mt-1 w-full bg-bg border border-border-strong rounded-lg px-3 py-2 focus-ring';
 
 const FIELD_IDS: Record<string, string | undefined> = {
   reason: 'contact-reason',
@@ -409,7 +408,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
         <button
           type="submit"
           disabled={status === 'loading'}
-          className="btn inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-ink transition-colors hover:bg-primaryHover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-60"
+          className="btn focus-ring inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-ink transition-colors hover:bg-primaryHover disabled:opacity-60"
         >
           {status === 'loading' ? 'Enviando…' : 'Enviar'}
         </button>

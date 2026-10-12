@@ -98,6 +98,10 @@
        suavidad. */
     --focus-ring: 0 0 0 3px color-mix(in srgb, var(--brand) 55%, transparent);
 
+    /* Superficies derivadas de marca (clases bg-primarySoft/bg-primaryGhost
+       de Tailwind las referencian; fuente única aquí). */
+    --primary-ghost: color-mix(in srgb, var(--brand) 8%, transparent);
+
     /* Tipografía fluida. */
     /* stylelint-disable-next-line custom-property-pattern --
        la escala incluye el step negativo --step--1 por convención */
@@ -252,6 +256,7 @@
 
   ::selection {
     background: color-mix(in srgb, var(--brand) 25%, transparent);
+    color: var(--fg);
   }
 
   /* Micro-motion sobria: solo transiciones de color, sin desplazamientos;

@@ -22,6 +22,10 @@ Definidos en `src/styles/global.css` (`@layer tokens`). Tipografía fluida `--st
 
 Todos en `src/components/`. Clases utilidad de Tailwind permitidas; valores de color y espaciado siempre vía tokens.
 
+### Foco
+
+Un solo sistema: la clase `.focus-ring` (outline 2px `--brand` con offset 2px + anillo `--focus-ring`, ≥3:1 en ambos temas) aplicada a todo interactivo — Button, Link, navegación móvil, islas React (`ContactForm`, `PricingConfigurator`) y barra CTA. No usar utilidades sueltas `focus-visible:outline*` ni depender del outline por defecto del navegador.
+
 ### Button
 
 - **API:** `href?` (con href renderiza `<a>`, sin él `<button>`), `variant: 'primary'|'secondary'|'ghost'` (default `primary`), `size: 'sm'|'md'|'lg'` (default `md`), `type?`, `disabled?`, `loading?` (solo `<button>`), rest spread de atributos nativos (`target`, `rel`, `data-*`, `aria-*`).
