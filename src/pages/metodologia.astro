@@ -57,7 +57,11 @@ const cycle = [
     <Stack as="ol" gap="4" class="mt-10">
       {
         axes.map((axis, i) => (
-          <li class="border border-border rounded-lg p-5 bg-card">
+          <li
+            class="card-lift card-rail border border-border rounded-lg p-5 bg-card"
+            data-reveal
+            style={`--i:${i}`}
+          >
             <div class="text-xs text-primary font-medium">Eje {i + 1}</div>
             <h2 class="font-bold mt-1">{axis.title}</h2>
             <p class="text-sm text-muted mt-2">{axis.desc}</p>
@@ -70,8 +74,12 @@ const cycle = [
       <h2 class="text-2xl font-bold">Ciclo</h2>
       <ul class="mt-4 space-y-3">
         {
-          cycle.map((step) => (
-            <li class="border border-border rounded-lg p-4 bg-card">
+          cycle.map((step, i) => (
+            <li
+              class="card-lift card-rail border border-border rounded-lg p-4 bg-card"
+              data-reveal
+              style={`--i:${i}`}
+            >
               <h3 class="font-bold">{step.title}</h3>
               <p class="text-sm text-muted mt-1">{step.desc}</p>
             </li>

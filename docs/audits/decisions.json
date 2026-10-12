@@ -211,6 +211,21 @@
       "context": "Correcciones post-catálogo: nombres de sección, consentimiento y conversión no quedaron cerrados en 0013.",
       "decision": "Renombrar Referencias a Publicaciones con availability si|no|reservado; rótulo CMP Publicidad (clave marketing); CTA Contactar; home sin índice mono ni FIG ni portadas; formulario de contacto paso a paso con campo de petición y errores por campo; check:copy tipográfico en quality.",
       "consequences": "R06 y e2e F01/F04 actualizados. La clave técnica marketing del CMP no cambia."
+    },
+    {
+      "id": "0015",
+      "sequence": 15,
+      "timestamp": "2026-10-12T03:14:00Z",
+      "active": true,
+      "title": "Motion editorial: ventana H1 y ritmo de superficies",
+      "summary": "Rotador vertical CSS del H1 en home; reveal y card-lift en listas; regla PageHead; menú móvil; motivo 404; demo y contrato documentados.",
+      "recordType": "decision",
+      "status": "aceptada",
+      "supersedes": [],
+      "supersededBy": null,
+      "context": "El design system ya tenía entrada de hero, reveal y card-lift; faltaba el complemento rotatorio del titular y aplicar el mismo vocabulario en páginas planas sin nuevas secciones en home.",
+      "decision": "Ventana CSS de tres frases en el H1 de home (arranque fijo, --brand, pausa «¡Pare las rotativas!», reduced-motion en columna); stagger y card-rail en valores/metodología/servicios/publicaciones; pagehead-rule con scaleX; apertura del menú móvil con transform/opacity; BlueprintMotif quieto en 404; demo en /design-system; párrafo en diseno.md. Sin librerías de animación ni motion en el configurador de precio.",
+      "consequences": "F01 exige las tres frases en el nombre accesible del H1. Tokens --dur-slot*. Home sigue sin FIG ni portadas (0014)."
     }
   ]
 }

@@ -22,7 +22,13 @@ import { verticals } from '../../content/verticals';
       description="Catálogo con precio, pago, plazo, entrega y garantía. Los importes son provisionales."
     />
     <Grid gap="6" class="mt-8 md:grid-cols-3" data-services-grid>
-      {services.map((s) => <ServiceCard service={s} />)}
+      {
+        services.map((s, i) => (
+          <div data-reveal style={`--i:${i}`}>
+            <ServiceCard service={s} />
+          </div>
+        ))
+      }
     </Grid>
 
     <section class="mt-16" aria-labelledby="portal-heading">
@@ -34,13 +40,21 @@ import { verticals } from '../../content/verticals';
 
       {/* Precios indexables sin JS */}
       <ul class="mt-6 grid gap-3 sm:grid-cols-2 text-sm" data-pricing-static>
-        <li class="border border-border rounded-lg p-4 bg-card">
+        <li
+          class="card-lift card-rail border border-border rounded-lg p-4 bg-card"
+          data-reveal
+          style="--i:0"
+        >
           <strong>Portal de inicio</strong>
           <span class="block text-muted mt-1">{formatEuro(provisionalPrices.portalInicio)}</span>
         </li>
         {
-          portalModules.map((m) => (
-            <li class="border border-border rounded-lg p-4 bg-card">
+          portalModules.map((m, i) => (
+            <li
+              class="card-lift card-rail border border-border rounded-lg p-4 bg-card"
+              data-reveal
+              style={`--i:${i + 1}`}
+            >
               <strong>{m.title}</strong>
               <span class="block text-muted mt-1">+{formatEuro(m.priceEuros)}</span>
               <span class="block text-muted">{m.timeline}</span>
@@ -60,10 +74,12 @@ import { verticals } from '../../content/verticals';
     </p>
     <Grid gap="6" class="mt-6 md:grid-cols-3">
       {
-        verticals.map((v) => (
-          <Link href={`/servicios/web-para/${v.slug}`} variant="inline" class="text-sm">
-            {v.name}
-          </Link>
+        verticals.map((v, i) => (
+          <div data-reveal style={`--i:${i}`}>
+            <Link href={`/servicios/web-para/${v.slug}`} variant="inline" class="text-sm">
+              {v.name}
+            </Link>
+          </div>
         ))
       }
     </Grid>

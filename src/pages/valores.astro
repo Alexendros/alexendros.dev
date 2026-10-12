@@ -42,8 +42,12 @@ const clauses = [
 
     <Stack as="ul" gap="4" class="mt-10">
       {
-        clauses.map((clause) => (
-          <li class="border border-border rounded-lg p-5 bg-card">
+        clauses.map((clause, i) => (
+          <li
+            class="card-lift card-rail border border-border rounded-lg p-5 bg-card"
+            data-reveal
+            style={`--i:${i}`}
+          >
             <h2 class="font-bold">{clause.title}</h2>
             <p class="text-sm text-muted mt-2">{clause.desc}</p>
           </li>

@@ -326,6 +326,42 @@ const RADIUS = [
           <Button id="ds-hero-replay" variant="ghost" size="sm">Repetir entrada</Button>
         </div>
 
+        <h3 class="mt-8 text-base font-bold">Ventana rotatoria del H1</h3>
+        <p class="mt-2 text-sm text-muted max-w-2xl">
+          Solo en el H1 de la home: tres frases en una celda, giro vertical con <code>rotateX</code
+          >, reposo 4&nbsp;s y giro 550&nbsp;ms. Control «¡Pare las rotativas!» (checkbox +
+          hover/foco). Con reduced-motion las tres frases quedan en columna y el control se oculta.
+          El nombre accesible no se reescribe durante el ciclo.
+        </p>
+        <div
+          data-ds-slot-demo
+          class="hero-slot-root mt-3 border border-border rounded-lg p-6 bg-card"
+        >
+          <p class="text-2xl font-bold leading-tight">
+            Aquí se crean productos digitales que son reflejo de
+            <span class="hero-slot" aria-hidden="true">
+              <span class="hero-slot-item bp-h1-draft" style="--i:0"
+                >personalidad individual y reputación profesional</span
+              >
+              <span class="hero-slot-item bp-h1-draft" style="--i:1"
+                >proyectos empresariales e iniciativas sociales</span
+              >
+              <span class="hero-slot-item bp-h1-draft" style="--i:2"
+                >cualidades humanas de alto valor</span
+              >
+            </span>
+          </p>
+          <p class="hero-slot-pause mt-3 text-sm text-muted">
+            <label class="inline-flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" class="hero-slot-pause-input focus-ring rounded" />
+              ¡Pare las rotativas!
+            </label>
+          </p>
+        </div>
+        <div class="mt-3">
+          <Button id="ds-slot-replay" variant="ghost" size="sm">Repetir giro</Button>
+        </div>
+
         <h3 class="mt-8 text-base font-bold">Reveal con stagger</h3>
         <p class="mt-2 text-sm text-muted max-w-2xl">
           <code>data-reveal</code> + <code>--i</code> por ítem: cada tarjeta entra 60ms después de la
@@ -404,6 +440,18 @@ const RADIUS = [
     demo.removeAttribute('data-hero');
     void demo.offsetWidth;
     demo.setAttribute('data-hero', '');
+  });
+
+  // Replay del giro de la ventana: reinicia animation en cada frase.
+  const slotReplay = document.getElementById('ds-slot-replay');
+  slotReplay?.addEventListener('click', () => {
+    const items = document.querySelectorAll('[data-ds-slot-demo] .hero-slot-item');
+    items.forEach((node) => {
+      if (!(node instanceof HTMLElement)) return;
+      node.style.animation = 'none';
+      void node.offsetWidth;
+      node.style.animation = '';
+    });
   });
 
   // Replay del reveal con stagger.

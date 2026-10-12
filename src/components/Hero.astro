@@ -1,9 +1,18 @@
 ---
 import BlueprintMotif from './BlueprintMotif.astro';
 import Button from './Button.astro';
+
+const phrases = [
+  'personalidad individual y reputación profesional',
+  'proyectos empresariales e iniciativas sociales',
+  'cualidades humanas de alto valor'
+] as const;
 ---
 
-<section class="relative mx-auto max-w-3xl px-6 py-16 md:py-24 overflow-hidden" data-hero>
+<section
+  class="hero-slot-root relative mx-auto max-w-3xl px-6 py-16 md:py-24 overflow-hidden"
+  data-hero
+>
   <BlueprintMotif
     class="pointer-events-none absolute -right-16 top-4 h-56 w-auto aspect-[4/3] text-brand-line md:-right-20 md:top-8 md:h-96"
   />
@@ -12,9 +21,26 @@ import Button from './Button.astro';
     data-hero-item
     style="--i:0"
   >
-    Aquí se crean productos digitales que son reflejo de identidades con valores profesionales,
-    empresariales, sociales y humanos de alta calidad.
+    Aquí se crean productos digitales que son reflejo de
+    <span class="sr-only">
+      {` ${phrases[0]}, ${phrases[1]} y ${phrases[2]}`}
+    </span>
+    <span class="hero-slot" aria-hidden="true">
+      {
+        phrases.map((phrase, i) => (
+          <span class="hero-slot-item bp-h1-draft" style={`--i:${i}`}>
+            {phrase}
+          </span>
+        ))
+      }
+    </span>
   </h1>
+  <p class="hero-slot-pause mt-3 text-sm text-muted">
+    <label class="inline-flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" class="hero-slot-pause-input focus-ring rounded" />
+      ¡Pare las rotativas!
+    </label>
+  </p>
   <p class="mt-6 text-lg text-muted max-w-2xl" data-hero-item style="--i:1">
     El dominio donde despliegue tu portal será accesible globalmente para que puedas dar a conocer
     tus productos, conectar con personas y difundir tus proyectos para todo el mundo.

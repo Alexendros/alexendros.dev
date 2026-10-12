@@ -19,8 +19,12 @@ import { verticals } from '../../../content/verticals';
     />
     <Grid gap="6" class="mt-8 md:grid-cols-3">
       {
-        verticals.map((v) => (
-          <article class="card-lift border border-border rounded-lg p-5 bg-card relative">
+        verticals.map((v, i) => (
+          <article
+            class="card-lift card-rail border border-border rounded-lg p-5 bg-card relative"
+            data-reveal
+            style={`--i:${i}`}
+          >
             <h2 class="font-bold">
               <Link href={`/servicios/web-para/${v.slug}`} variant="inline">
                 {v.name}
