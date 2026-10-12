@@ -11,6 +11,13 @@ test('F02: home sin scroll horizontal a 320, 390 y 768px', async ({ page }) => {
   }
 });
 
+test('F03: el hero propone la oferta con CTA a servicios y contacto', async ({ page }) => {
+  await page.goto('/');
+  const hero = page.locator('[data-hero]');
+  await expect(hero.getByRole('link', { name: 'Ver servicios' })).toBeVisible();
+  await expect(hero.getByRole('link', { name: 'Contactar' })).toBeVisible();
+});
+
 test('F01: home es hero + nav; sin secciones en página', async ({ page }) => {
   await page.goto('/');
 
@@ -22,7 +29,7 @@ test('F01: home es hero + nav; sin secciones en página', async ({ page }) => {
   await expect(h1).toHaveAccessibleName(
     /emprendimientos personales novedosos de alto impacto social y reputación profesional.*sociedades empresariales con sólidas estructuras productivas.*historia y obra de seres humanos con valores ejemplares/
   );
-  await expect(page.getByText(/El dominio donde despliegue tu portal/)).toBeVisible();
+  await expect(page.getByText(/Diseño y publico webs y portales/)).toBeVisible();
   await expect(page.getByText(/Pare las rotativas/)).toHaveCount(0);
   await expect(page.getByText(/SI TIENES UN NEGOCIO/i)).toHaveCount(0);
 
@@ -34,7 +41,6 @@ test('F01: home es hero + nav; sin secciones en página', async ({ page }) => {
 
   const banner = page.getByRole('banner');
   await expect(banner.getByRole('link', { name: 'Contactar' })).toBeVisible();
-  await expect(page.locator('[data-hero]').getByRole('link', { name: 'Contactar' })).toHaveCount(0);
   await expect(page.getByRole('contentinfo').getByRole('link', { name: 'Contactar' })).toHaveCount(
     0
   );
