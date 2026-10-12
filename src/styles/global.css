@@ -155,11 +155,13 @@
     --dur-hero: 460ms;
     --stagger: 60ms;
 
-    /* Ventana del H1: reposo 4 s + giro 550 ms; 3 frases → 13,65 s. */
-    --dur-slot: 4s;
-    --dur-slot-spin: 550ms;
-    --dur-slot-step: 4.55s;
-    --dur-slot-cycle: 13.65s;
+    /* Ventana del H1: reposo 2,4 s + giro 600 ms; 3 frases → 9 s.
+       perspective() va en el propio transform (no en el padre con
+       overflow:hidden) para que el rotateX se vea de verdad. */
+    --dur-slot: 2.4s;
+    --dur-slot-spin: 600ms;
+    --dur-slot-step: 3s;
+    --dur-slot-cycle: 9s;
   }
 
   /* @tema-oscuro:inicio — publicado condicionado: scripts/check-contrast.mjs
@@ -489,8 +491,6 @@
     position: absolute;
     inset: 0;
     overflow: hidden;
-    perspective: 800px;
-    transform-style: preserve-3d;
   }
 
   .hero-slot-item {
@@ -498,8 +498,9 @@
     inset-inline: 0;
     top: 0;
     color: var(--brand);
-    transform-origin: center bottom;
+    transform-origin: 50% 50%;
     backface-visibility: hidden;
+    will-change: transform, opacity;
   }
 
   /* Control de pausa: checkbox dibujado; tipografía vía clases en el markup. */
@@ -529,9 +530,11 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
+    /* linear: los % del keyframe = tiempo real; ease-out adelantaba la salida
+       y dejaba el H1 en blanco entre frases. */
     .hero-slot-item {
-      animation: hero-slot-cycle var(--dur-slot-cycle) var(--ease-out) both infinite;
-      animation-delay: calc(var(--dur-hero) + var(--i, 0) * var(--dur-slot-step));
+      animation: hero-slot-cycle var(--dur-slot-cycle) linear both infinite;
+      animation-delay: calc(var(--i, 0) * var(--dur-slot-step));
     }
 
     .hero-slot-item[data-i='0'] {
@@ -548,7 +551,6 @@
       --i: 2;
     }
 
-    /* Pausa solo en la ventana, el control, o el checkbox — no al enfocar el CTA. */
     .hero-slot:hover .hero-slot-item,
     .hero-slot-root:has(.hero-slot-pause:hover) .hero-slot-item,
     .hero-slot-root:has(.hero-slot-pause:focus-within) .hero-slot-item,
@@ -557,56 +559,59 @@
     }
   }
 
-  /* Reposo → salida arriba → salto abajo → reentrada al cerrar el ciclo. */
+  /* perspective() en el transform: el overflow del stage ya no aplana el 3D.
+     Ciclo 9 s / paso 3 s: cada frase aguanta hasta el handoff (33.33 %),
+     sale en solape con la siguiente (33→42 %) para que el hueco del H1
+     nunca quede vacío. */
   @keyframes hero-slot-cycle-first {
     0%,
-    29.3% {
-      opacity: 1;
-      transform: none;
-    }
-
     33.33% {
-      opacity: 0;
-      transform: translateY(-110%) rotateX(78deg);
+      opacity: 1;
+      transform: perspective(900px) translateY(0) rotateX(0deg);
     }
 
-    33.34%,
-    95.97% {
+    42% {
       opacity: 0;
-      transform: translateY(110%) rotateX(-78deg);
+      transform: perspective(900px) translateY(-110%) rotateX(85deg);
+    }
+
+    42.01%,
+    90% {
+      opacity: 0;
+      transform: perspective(900px) translateY(110%) rotateX(-85deg);
     }
 
     100% {
       opacity: 1;
-      transform: none;
+      transform: perspective(900px) translateY(0) rotateX(0deg);
     }
   }
 
   @keyframes hero-slot-cycle {
     0% {
       opacity: 0;
-      transform: translateY(110%) rotateX(-78deg);
+      transform: perspective(900px) translateY(110%) rotateX(-85deg);
     }
 
-    4.03% {
+    8% {
       opacity: 1;
-      transform: none;
-    }
-
-    29.3% {
-      opacity: 1;
-      transform: none;
+      transform: perspective(900px) translateY(0) rotateX(0deg);
     }
 
     33.33% {
-      opacity: 0;
-      transform: translateY(-110%) rotateX(78deg);
+      opacity: 1;
+      transform: perspective(900px) translateY(0) rotateX(0deg);
     }
 
-    33.34%,
+    42% {
+      opacity: 0;
+      transform: perspective(900px) translateY(-110%) rotateX(85deg);
+    }
+
+    42.01%,
     100% {
       opacity: 0;
-      transform: translateY(110%) rotateX(-78deg);
+      transform: perspective(900px) translateY(110%) rotateX(-85deg);
     }
   }
 
