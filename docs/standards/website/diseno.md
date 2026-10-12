@@ -50,7 +50,7 @@ Todos en `src/components/`. Clases utilidad de Tailwind permitidas; valores de c
 ### Section / SectionHeader
 
 - **Section:** `as?`, `cv?` (default true, `content-visibility`), `reveal?` (`data-reveal`), padding vertical de tokens. Componer con Container dentro.
-- **SectionHeader:** `index` ("FIG. 0X" vía Eyebrow), `title`, `description?`, `linkHref?/linkText?` (Link arrow), `align?: 'start'|'center'`. `FigureHead` sigue existiendo como wrapper de compatibilidad: las páginas nuevas usan SectionHeader directamente.
+- **SectionHeader:** `index` ("FIG. 0X" vía Eyebrow), `title`, `description?`, `linkHref?/linkText?` (Link arrow), `align?: 'start'|'center'`.
 
 ### Container / Stack / Grid
 
