@@ -70,7 +70,7 @@ export const verticals: Vertical[] = [
       }
     ],
     relatedService: 'informe-comercial',
-    cta: '/contacto?servicio=produccion-sitios-web&vertical=abogados'
+    cta: '/contacto?servicio=informe-comercial&vertical=abogados'
   },
   {
     slug: 'clinicas',
@@ -126,7 +126,7 @@ export const verticals: Vertical[] = [
       }
     ],
     relatedService: 'informe-comercial',
-    cta: '/contacto?servicio=produccion-sitios-web&vertical=clinicas'
+    cta: '/contacto?servicio=informe-comercial&vertical=clinicas'
   },
   {
     slug: 'restaurantes',
@@ -182,7 +182,7 @@ export const verticals: Vertical[] = [
       }
     ],
     relatedService: 'informe-comercial',
-    cta: '/contacto?servicio=produccion-sitios-web&vertical=restaurantes'
+    cta: '/contacto?servicio=informe-comercial&vertical=restaurantes'
   },
   {
     slug: 'gimnasios',
@@ -237,8 +237,8 @@ export const verticals: Vertical[] = [
           'Sí. Adapto la estructura a entrenamiento personal, grupos reducidos, crossfit, yoga o pilates sin perder claridad.'
       }
     ],
-    relatedService: 'informe-comercial',
-    cta: '/contacto?servicio=landing-10-dias&vertical=gimnasios'
+    relatedService: 'sesion-profesional',
+    cta: '/contacto?servicio=sesion-profesional&vertical=gimnasios'
   },
   {
     slug: 'inmobiliarias',
@@ -294,7 +294,7 @@ export const verticals: Vertical[] = [
       }
     ],
     relatedService: 'informe-comercial',
-    cta: '/contacto?servicio=produccion-sitios-web&vertical=inmobiliarias'
+    cta: '/contacto?servicio=informe-comercial&vertical=inmobiliarias'
   }
 ];
 

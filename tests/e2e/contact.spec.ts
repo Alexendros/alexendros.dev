@@ -62,6 +62,16 @@ test('F04: WhatsApp sin teléfono no envía', async ({ page }) => {
   expect(posted).toBe(false);
 });
 
+test('contacto preselecciona el motivo desde ?servicio= de la URL', async ({ page }) => {
+  await page.goto('/contacto?servicio=informe-comercial&vertical=restaurantes');
+  await expect(page.locator('#contact-reason')).toHaveValue('propuestaComercial');
+});
+
+test('?motivo= explícito tiene prioridad sobre ?servicio=', async ({ page }) => {
+  await page.goto('/contacto?servicio=informe-comercial&motivo=proyectoEspecial');
+  await expect(page.locator('#contact-reason')).toHaveValue('proyectoEspecial');
+});
+
 test('contacto muestra canales horizontales y sin servicios de entrada', async ({ page }) => {
   await page.goto('/contacto');
 
@@ -70,9 +80,10 @@ test('contacto muestra canales horizontales y sin servicios de entrada', async (
   await expect(page.getByRole('heading', { name: 'Perfiles y correo' })).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Formulario', exact: true })).toHaveCount(0);
 
-  await expect(page.getByRole('link', { name: 'contratacion@alexendros.dev' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'GitHub' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'LinkedIn' })).toBeVisible();
+  const canales = page.locator('#contenido');
+  await expect(canales.getByRole('link', { name: 'contratacion@alexendros.dev' })).toBeVisible();
+  await expect(canales.getByRole('link', { name: 'GitHub' })).toBeVisible();
+  await expect(canales.getByRole('link', { name: 'LinkedIn' })).toBeVisible();
   await expect(page.locator('body')).not.toContainText(/retainer/i);
   await expect(page.locator('body')).not.toContainText(/diagnóstico/i);
 });

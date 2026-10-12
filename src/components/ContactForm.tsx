@@ -3,6 +3,7 @@ import { track } from '../lib/tracking/events';
 import {
   CONTACT_WIZARD_STEPS,
   contactChannels,
+  contactReasonForService,
   contactReasons,
   entityLabels,
   entityTypes,
@@ -26,11 +27,11 @@ type Props = {
 const inputClass =
   'mt-1 w-full bg-bg border border-border-strong rounded-lg px-3 py-2 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
 
-function reasonFromSearch(value: string | null): ContactInput['reason'] {
-  if (value && (contactReasons as readonly string[]).includes(value)) {
-    return value as ContactInput['reason'];
+function reasonFromSearch(motivo: string | null, servicio: string | null): ContactInput['reason'] {
+  if (motivo && (contactReasons as readonly string[]).includes(motivo)) {
+    return motivo as ContactInput['reason'];
   }
-  return 'informacionCliente';
+  return contactReasonForService(servicio);
 }
 
 export default function ContactForm({ successMessage, errorMessage, turnstileSiteKey }: Props) {
@@ -56,7 +57,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const reason = reasonFromSearch(params.get('motivo'));
+    const reason = reasonFromSearch(params.get('motivo'), params.get('servicio'));
     const modules = params.get('modulos') ?? '';
     setForm((prev) => ({
       ...prev,

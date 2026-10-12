@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  contactReasonForService,
   escapeHtml,
   formatContactFieldErrors,
   isHoneypotFilled,
@@ -132,5 +133,22 @@ describe('escapeHtml', () => {
     expect(escapeHtml(`<script>"x"&'y'</script>`)).toBe(
       '&lt;script&gt;&quot;x&quot;&amp;&#39;y&#39;&lt;/script&gt;'
     );
+  });
+});
+
+describe('contactReasonForService', () => {
+  it('mapea cada slug de servicio a un motivo de contacto válido', () => {
+    expect(contactReasonForService('informe-comercial')).toBe('propuestaComercial');
+    expect(contactReasonForService('sesion-profesional')).toBe('proyectoEspecial');
+    expect(contactReasonForService('auditoria-normativa-ciberseguridad')).toBe(
+      'propuestaComercial'
+    );
+  });
+
+  it('fallback al motivo por defecto con slug desconocido o ausente', () => {
+    expect(contactReasonForService('slug-inexistente')).toBe('informacionCliente');
+    expect(contactReasonForService('')).toBe('informacionCliente');
+    expect(contactReasonForService(null)).toBe('informacionCliente');
+    expect(contactReasonForService(undefined)).toBe('informacionCliente');
   });
 });

@@ -95,6 +95,22 @@ export const reasonLabels: Record<(typeof contactReasons)[number], string> = {
   informacionCliente: 'Información para clientes'
 };
 
+/* Slugs de services.ts → motivo de contacto. Los servicios de catálogo
+   se preseleccionan desde ?servicio=…; slug desconocido o ausente cae
+   en el motivo por defecto. */
+const SERVICE_REASON: Record<string, (typeof contactReasons)[number]> = {
+  'informe-comercial': 'propuestaComercial',
+  'sesion-profesional': 'proyectoEspecial',
+  'auditoria-normativa-ciberseguridad': 'propuestaComercial'
+};
+
+export function contactReasonForService(
+  slug: string | null | undefined
+): (typeof contactReasons)[number] {
+  if (slug && Object.hasOwn(SERVICE_REASON, slug)) return SERVICE_REASON[slug];
+  return 'informacionCliente';
+}
+
 export const entityLabels: Record<(typeof entityTypes)[number], string> = {
   particular: 'Particular',
   empresa: 'Empresa',
