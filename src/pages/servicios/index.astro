@@ -68,20 +68,22 @@ import { verticals } from '../../content/verticals';
       </div>
     </section>
 
-    <h2 class="mt-16 text-2xl font-bold">Webs por sector</h2>
-    <p class="mt-2 text-sm text-muted max-w-2xl">
-      Cada sector tiene sus dudas concretas. Estas páginas las resuelven.
-    </p>
-    <Grid gap="6" class="mt-6 md:grid-cols-3">
-      {
-        verticals.map((v, i) => (
-          <div data-reveal style={`--i:${i}`}>
-            <Link href={`/servicios/web-para/${v.slug}`} variant="inline" class="text-sm">
-              {v.name}
-            </Link>
-          </div>
-        ))
-      }
-    </Grid>
+    <section aria-labelledby="sectores-heading">
+      <h2 id="sectores-heading" class="mt-16 text-2xl font-bold">Webs por sector</h2>
+      <p class="mt-2 text-sm text-muted max-w-2xl">
+        Cada sector tiene sus dudas concretas. Estas páginas las resuelven.
+      </p>
+      <Grid gap="6" class="mt-6 md:grid-cols-3">
+        {
+          verticals.map((v, i) => (
+            <div data-reveal style={`--i:${i}`}>
+              <Link href={`/servicios/web-para/${v.slug}`} variant="inline" class="text-sm">
+                {v.name}
+              </Link>
+            </div>
+          ))
+        }
+      </Grid>
+    </section>
   </Container>
 </Layout>
