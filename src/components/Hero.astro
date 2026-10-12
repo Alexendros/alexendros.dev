@@ -3,7 +3,6 @@ import BlueprintMotif from './BlueprintMotif.astro';
 import Eyebrow from './Eyebrow.astro';
 import Badge from './Badge.astro';
 import Button from './Button.astro';
-import Link from './Link.astro';
 ---
 
 <section class="relative mx-auto max-w-3xl px-6 py-16 md:py-24 overflow-hidden" data-hero>
@@ -21,15 +20,10 @@ import Link from './Link.astro';
     data-hero-item
     style="--i:2"
   >
-    Webs que convierten visitas en clientes,
-    <span class="bp-h1-draft">no folletos que nadie lee.</span>
+    Un sitio empresarial es más que <em>una página</em> publicada en Internet, es un reflejo de tu identidad
+    virtual que merece atenciones y respeto.
   </h1>
-  <p class="mt-4 text-lg text-muted max-w-2xl" data-hero-item style="--i:3">
-    Diseño y optimizo webs para profesionales y pequeños negocios. Rápidas, claras y medidas: si no
-    ayudan a que te contacten, las mejoramos.
-  </p>
-  <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3" data-hero-item style="--i:4">
-    <Button href="/contacto">Más información</Button>
-    <Link href="/servicios" variant="inline" class="text-muted">Ver servicios</Link>
+  <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3" data-hero-item style="--i:3">
+    <Button href="/contacto">Contactar</Button>
   </div>
 </section>

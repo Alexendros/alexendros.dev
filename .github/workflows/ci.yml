@@ -49,6 +49,8 @@ jobs:
 
       - run: pnpm run check:records
 
+      - run: pnpm run check:copy
+
   test:
     name: test
     runs-on: ubuntu-latest

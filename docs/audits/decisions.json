@@ -186,16 +186,31 @@
       "id": "0013",
       "sequence": 13,
       "timestamp": "2026-10-12T00:00:00Z",
-      "active": true,
+      "active": false,
       "title": "Catálogo de servicios, portal modular y cuatro secciones",
       "summary": "Nav Servicios/Referencias/Metodología/Valores; fichas con precio/pago/plazo/entrega/garantía; importes provisionales en un módulo; contrato de tests R01–R08 y F01–F10.",
       "recordType": "decision",
-      "status": "aceptada",
+      "status": "superseded",
       "supersedes": [],
-      "supersededBy": null,
+      "supersededBy": "0014",
       "context": "Reorganización comercial del portfolio: servicios medibles, portal configurable por módulos y cláusulas de valor. Los euros siguen provisionales hasta fijación posterior.",
       "decision": "Tres servicios (informe, sesión, auditoría) más portal de inicio con módulos; sin tiers Esencial/Conversión/Dominación; pricing.ts como única fuente de importes; formulario Más información con canal WhatsApp/correo; Identidad sin calle; CMP con rótulos nuevos; redirecciones desde como-trabajo, sobre-mi, aviso-legal y afiliados.",
-      "consequences": "La decisión 0013 no congela los importes. Cambiar precios solo toca pricing.ts. La entrega se acepta cuando el contrato de tests está en verde."
+      "consequences": "Superseded por 0014 (Publicaciones, Publicidad, Contactar). El catálogo y pricing.ts siguen vigentes."
+    },
+    {
+      "id": "0014",
+      "sequence": 14,
+      "timestamp": "2026-10-12T02:00:00Z",
+      "active": true,
+      "title": "Publicaciones, Publicidad CMP y Contactar",
+      "summary": "Nav Publicaciones con disponibilidad; categoría CMP Publicidad; CTA Contactar; formulario asistente con mensaje libre; home sin FIG ni portadas.",
+      "recordType": "decision",
+      "status": "aceptada",
+      "supersedes": ["0013"],
+      "supersededBy": null,
+      "context": "Correcciones post-catálogo: nombres de sección, consentimiento y conversión no quedaron cerrados en 0013.",
+      "decision": "Renombrar Referencias a Publicaciones con availability si|no|reservado; rótulo CMP Publicidad (clave marketing); CTA Contactar; home sin índice mono ni FIG ni portadas; formulario de contacto paso a paso con campo de petición y errores por campo; check:copy tipográfico en quality.",
+      "consequences": "R06 y e2e F01/F04 actualizados. La clave técnica marketing del CMP no cambia."
     }
   ]
 }

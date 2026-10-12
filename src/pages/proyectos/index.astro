@@ -8,14 +8,14 @@ import { projects } from '../../content/projects';
 ---
 
 <Layout
-  title="Referencias — Alexendros"
-  description="Referencias reales: el problema, lo que se hizo y qué cambió. Detalles técnicos disponibles en cada ficha."
+  title="Publicaciones — Alexendros"
+  description="Publicaciones: el problema, lo que se hizo, qué cambió y si la obra está disponible."
 >
   <Container class="py-16 md:py-24">
     <PageHead
-      kicker="ÍNDICE · REFERENCIAS"
-      title="Referencias"
-      description="En cada proyecto verás el punto de partida, lo que se hizo y qué cambió."
+      kicker="ÍNDICE · PUBLICACIONES"
+      title="Publicaciones"
+      description="En cada obra verás el punto de partida, lo que se hizo, qué cambió y si está disponible."
     />
     <Grid gap="6" class="mt-8 md:grid-cols-2 lg:grid-cols-3">
       {projects.map((p, i) => <ProjectCard project={p} priority={i === 0} />)}

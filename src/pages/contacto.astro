@@ -3,67 +3,62 @@ import Layout from '../layouts/Layout.astro';
 import PageHead from '../components/PageHead.astro';
 import Container from '../components/Container.astro';
 import Link from '../components/Link.astro';
-import BookingOptions from '../components/BookingOptions.astro';
 import ContactForm from '../components/ContactForm';
 import { contact } from '../content/contact';
+import { site } from '../content/site';
 ---
 
 <Layout
-  title="Más información — Alexendros"
-  description="Formulario de petición y perfiles. Te responderé por WhatsApp o correo según tu preferencia."
+  title="Formulario de contacto — Alexendros"
+  description="Envía una petición breve. Te responderé por WhatsApp o correo según tu preferencia."
 >
   <Container size="narrow" class="py-16 md:py-24">
-    <PageHead
-      kicker="CONTACTO"
-      title="Más información"
-      description="Elige el servicio de entrada o envía una petición breve. Respuesta por el canal que indiques."
-    />
+    <PageHead kicker="CONTACTO" title="Formulario de contacto" />
 
-    <BookingOptions />
+    <ul class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+      <li>
+        <Link href={site.social.email} variant="nav" class="hover:text-primary">
+          contratacion@alexendros.dev
+        </Link>
+      </li>
+      <li>
+        <Link
+          href={site.social.github}
+          variant="nav"
+          class="hover:text-primary"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub
+        </Link>
+        <span aria-hidden="true"> ↗</span>
+      </li>
+      <li>
+        <Link
+          href={site.social.linkedin}
+          variant="nav"
+          class="hover:text-primary"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          LinkedIn
+        </Link>
+        <span aria-hidden="true"> ↗</span>
+      </li>
+    </ul>
 
-    <div class="mt-12 grid md:grid-cols-[1.2fr_0.8fr] gap-10">
-      <div id="escribir">
-        <h2 class="font-bold text-xl">Formulario</h2>
-        <p class="text-muted mt-2 text-sm">
-          Campos requeridos: nombre, tipo, canal de respuesta y motivo.
-        </p>
-        <div class="mt-6">
-          <ContactForm
-            client:load
-            successMessage={contact.messages.success}
-            errorMessage={contact.messages.error}
-            turnstileSiteKey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
-          />
-        </div>
-      </div>
-      <div class="space-y-6">
-        <div class="border border-border rounded-lg p-6 bg-card">
-          <h2 class="font-bold text-base">Perfiles y correo</h2>
-          <ul class="mt-3 space-y-2 text-sm">
-            {
-              contact.channels
-                .filter((c) => c.id !== 'form')
-                .map((c) => (
-                  <li>
-                    <Link
-                      href={c.href}
-                      variant="nav"
-                      class="hover:text-primary"
-                      {...(c.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                    >
-                      {c.label}
-                    </Link>
-                    {c.external ? <span aria-hidden="true"> ↗</span> : ''}
-                  </li>
-                ))
-            }
-          </ul>
-        </div>
-        <div class="border border-dashed border-border rounded-lg p-4 text-sm text-muted">
-          Usaré tus datos solo para responder a esta petición. Consulta la{' '}
-          <Link href="/privacidad" variant="inline">política de privacidad</Link> antes de enviar.
-        </div>
-      </div>
+    <div class="mt-10">
+      <ContactForm
+        client:load
+        successMessage={contact.messages.success}
+        errorMessage={contact.messages.error}
+        turnstileSiteKey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
+      />
     </div>
+
+    <p class="mt-8 text-sm text-muted">
+      Usaré tus datos solo para responder a esta petición. Consulta la{' '}
+      <Link href="/privacidad" variant="inline">política de privacidad</Link> antes de enviar.
+    </p>
   </Container>
 </Layout>

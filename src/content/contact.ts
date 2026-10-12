@@ -78,7 +78,7 @@ export const contact = contactSchema.parse({
     error: 'No se pudo enviar. Escríbeme a contratacion@alexendros.dev'
   },
   bookings: {
-    heading: 'Servicios de entrada',
+    heading: 'Opciones de contacto',
     intro: 'Informe comercial por formulario. Sesión profesional con reserva y pago en Cal.com.',
     scanLabel: 'Escanea para reservar',
     offers: [

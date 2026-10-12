@@ -24,6 +24,8 @@ export const projectSchema = z.object({
   }),
   published: z.string().min(1),
   featured: z.boolean(),
+  /** Transferibilidad de la obra: sí = adquirible; no = no transfiere; reservado = titular actual. */
+  availability: z.enum(['si', 'no', 'reservado']),
   coverAlt: z.string().min(1),
   testimonial: z
     .object({
@@ -36,6 +38,14 @@ export const projectSchema = z.object({
 });
 
 export type Project = z.infer<typeof projectSchema> & { cover: ImageMetadata };
+
+export type ProjectAvailability = Project['availability'];
+
+export const availabilityLabels: Record<ProjectAvailability, string> = {
+  si: 'sí',
+  no: 'no',
+  reservado: 'reservado'
+};
 
 export const projects: Project[] = [
   {
@@ -80,6 +90,7 @@ export const projects: Project[] = [
     },
     published: '2025-07-13',
     featured: true,
+    availability: 'si',
     cover: coverFront,
     coverAlt:
       'Home de la web del restaurante Front Valencia: cabecera con foto del local, menú destacado y botón de reserva.'
@@ -126,6 +137,7 @@ export const projects: Project[] = [
     },
     published: '2023-11-20',
     featured: true,
+    availability: 'si',
     cover: coverNasve,
     coverAlt:
       'Tienda online de Gráficas Nasve: catálogo de productos con precios calculados al momento y pago online.'
@@ -165,6 +177,7 @@ export const projects: Project[] = [
     links: { github: 'https://github.com/Soluciones-Alexendros/zedazo' },
     published: '2024-01-10',
     featured: false,
+    availability: 'reservado',
     cover: coverZedazo,
     coverAlt:
       'Interfaz de Zedazo, herramienta de código abierto para limpiar y unificar listados de contactos.'
@@ -204,6 +217,7 @@ export const projects: Project[] = [
     },
     published: '2024-01-15',
     featured: true,
+    availability: 'no',
     cover: coverMe,
     coverAlt:
       'Home de Alexendros.me, web personal centrada en lectura cómoda, buen contraste y privacidad.'

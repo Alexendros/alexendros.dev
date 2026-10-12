@@ -20,15 +20,21 @@ test('F04: contacto valida canal y envía', async ({ page }) => {
   });
 
   await page.goto('/contacto');
-  await expect(page.getByRole('button', { name: /Enviar/ })).toBeEnabled();
+  await expect(page.getByRole('heading', { name: 'Formulario de contacto' })).toBeVisible();
 
-  await page.getByLabel('Nombre completo*').fill('A');
-  await page.getByRole('button', { name: /Enviar/ }).click();
+  await page.getByRole('button', { name: /Continuar/ }).click(); // Motivo
+  await page.getByLabel('Nombre*').fill('A');
+  await page.getByRole('button', { name: /Continuar/ }).click();
   await expect(page.getByRole('alert')).toBeVisible();
 
-  await page.getByLabel('Nombre completo*').fill('Test Cliente');
+  await page.getByLabel('Nombre*').fill('Test Cliente');
+  await page.getByRole('button', { name: /Continuar/ }).click();
+  await page.getByRole('button', { name: /Continuar/ }).click(); // Categoría
   await page.getByRole('radio', { name: 'Correo electrónico' }).check();
   await page.getByLabel('Correo electrónico*').fill('test@example.com');
+  await page.getByRole('button', { name: /Continuar/ }).click();
+  await page.getByLabel('Tu petición*').fill('Necesito información sobre el informe comercial.');
+  await page.getByRole('button', { name: /Continuar/ }).click();
   await page.getByLabel(/Acepto/).check();
   await page.getByRole('button', { name: /Enviar/ }).click();
   await expect(page.getByRole('status')).toContainText(/Mensaje enviado/i, { timeout: 10000 });
@@ -46,32 +52,27 @@ test('F04: WhatsApp sin teléfono no envía', async ({ page }) => {
   });
 
   await page.goto('/contacto');
-  await page.getByLabel('Nombre completo*').fill('Test Cliente');
+  await page.getByRole('button', { name: /Continuar/ }).click();
+  await page.getByLabel('Nombre*').fill('Test Cliente');
+  await page.getByRole('button', { name: /Continuar/ }).click();
+  await page.getByRole('button', { name: /Continuar/ }).click();
   await page.getByRole('radio', { name: 'WhatsApp' }).check();
-  await page.getByLabel(/Acepto/).check();
-  await page.getByRole('button', { name: /Enviar/ }).click();
+  await page.getByRole('button', { name: /Continuar/ }).click();
   await expect(page.getByRole('alert')).toBeVisible();
   expect(posted).toBe(false);
 });
 
-test('contacto muestra informe por formulario y sesión en Cal', async ({ page }) => {
+test('contacto muestra canales horizontales y sin servicios de entrada', async ({ page }) => {
   await page.goto('/contacto');
 
-  await expect(page.getByRole('heading', { name: 'Servicios de entrada' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Formulario' })).toBeVisible();
-  await expect(page.getByLabel('Nombre completo*')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Formulario de contacto' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Servicios de entrada' })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Perfiles y correo' })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Formulario', exact: true })).toHaveCount(0);
 
-  await expect(
-    page.getByRole('link', { name: 'Rellenar formulario', exact: true })
-  ).toHaveAttribute('href', '#escribir');
-
-  const sesion = page.getByRole('link', { name: 'Reservar sesión profesional', exact: true });
-  await expect(sesion).toHaveAttribute('href', 'https://cal.com/alexendros/sesion-tecnica');
-  await expect(sesion).toHaveAttribute('data-cal-link', 'alexendros/sesion-tecnica');
-
-  await expect(
-    page.getByRole('link', { name: /Código QR para reservar Sesión profesional/ })
-  ).toBeVisible();
+  await expect(page.getByRole('link', { name: 'contratacion@alexendros.dev' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'GitHub' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'LinkedIn' })).toBeVisible();
   await expect(page.locator('body')).not.toContainText(/retainer/i);
   await expect(page.locator('body')).not.toContainText(/diagnóstico/i);
 });

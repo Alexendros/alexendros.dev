@@ -7,9 +7,9 @@ import Container from '../components/Container.astro';
 import Grid from '../components/Grid.astro';
 import Button from '../components/Button.astro';
 import ServiceCard from '../components/ServiceCard.astro';
-import ProjectCard from '../components/ProjectCard.astro';
+import Link from '../components/Link.astro';
 import { services } from '../content/services';
-import { getFeaturedProjects } from '../content/projects';
+import { getFeaturedProjects, availabilityLabels } from '../content/projects';
 
 const featured = getFeaturedProjects().slice(0, 3);
 ---
@@ -17,16 +17,9 @@ const featured = getFeaturedProjects().slice(0, 3);
 <Layout>
   <Hero />
 
-  <Container class="pt-4 md:pt-6">
-    <p class="font-mono text-xs tracking-[0.1em] text-muted">
-      Servicios · Referencias · Metodología · Valores
-    </p>
-  </Container>
-
   <Section reveal>
     <Container>
       <SectionHeader
-        index="01"
         title="Servicios"
         description="Informe comercial, sesión profesional y auditoría de normativa y ciberseguridad. Portal de inicio configurable por módulos."
         linkHref="/servicios"
@@ -47,28 +40,34 @@ const featured = getFeaturedProjects().slice(0, 3);
   <Section reveal>
     <Container>
       <SectionHeader
-        index="02"
-        title="Referencias"
-        description="En cada proyecto verás el problema, lo que se hizo y qué cambió."
+        title="Publicaciones"
+        description="En cada obra verás el problema, lo que se hizo, qué cambió y si está disponible."
         linkHref="/proyectos"
         linkText="Ver todas"
       />
-      <Grid gap="6" class="mt-6 md:grid-cols-2 lg:grid-cols-3">
+      <ul class="mt-6 space-y-4">
         {
           featured.map((p, i) => (
-            <div data-reveal style={`--i:${i}`}>
-              <ProjectCard project={p} headingLevel="h3" />
-            </div>
+            <li data-reveal style={`--i:${i}`} class="border-b border-border pb-4 last:border-0">
+              <h3 class="font-bold text-base">
+                <Link href={`/proyectos/${p.slug}`} variant="nav" class="hover:text-primary">
+                  {p.title}
+                </Link>
+              </h3>
+              <p class="mt-1 text-sm text-muted">{p.short}</p>
+              <p class="mt-2 text-xs font-mono text-muted">
+                Disponible: {availabilityLabels[p.availability]}
+              </p>
+            </li>
           ))
         }
-      </Grid>
+      </ul>
     </Container>
   </Section>
 
   <Section reveal>
     <Container>
       <SectionHeader
-        index="03"
         title="Metodología"
         description="Cinco ejes bloquean la entrega: seguridad, accesibilidad, visibilidad, mantenibilidad e identidad."
         linkHref="/metodologia"
@@ -83,7 +82,6 @@ const featured = getFeaturedProjects().slice(0, 3);
   <Section reveal>
     <Container class="text-center">
       <SectionHeader
-        index="04"
         align="center"
         title="Valores"
         description="Presupuesto desglosado, pago fraccionado sin recargo, mantenimiento del dominio y resultados comprobables."
@@ -91,7 +89,7 @@ const featured = getFeaturedProjects().slice(0, 3);
         linkText="Ver valores"
       />
       <div class="mt-6">
-        <Button href="/contacto">Más información</Button>
+        <Button href="/contacto">Contactar</Button>
       </div>
     </Container>
   </Section>
