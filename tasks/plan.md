@@ -4,58 +4,58 @@ overview: 'Plan aprobado 2026-10-12: bugs de renderizado, enlaces rotos, retirad
 todos:
   - id: a1-superficies
     content: A1. Superficies translúcidas que sí compilan (header, StickyCta, swatch DS) + e2e RED.
-    status: pending
+    status: completed
   - id: a2-overflow
     content: A2. Sin overflow-x en home móvil + e2e RED.
-    status: pending
+    status: completed
   - id: a3-ctas-sectores
     content: A3. CTAs de sectores reales + formulario lee servicio/vertical de la URL.
-    status: pending
+    status: completed
   - id: b1-embudo
     content: B1. Eliminar lead magnet, doble opt-in, reserva QR y referencias.
-    status: pending
+    status: completed
   - id: b2-muerto
     content: B2. Eliminar FigureHead, ejes.ts, hero-slot-root, reduce-motion.
-    status: pending
+    status: completed
   - id: c1-cookie-ref
     content: C1. Documentar alexendros_ref en inventario y /cookies.
-    status: pending
+    status: completed
   - id: c2-cookie-linkedin
     content: C2. Completar cookies de LinkedIn en inventario y /cookies.
-    status: pending
+    status: completed
   - id: d1-home-cta
     content: D1. Párrafo que vende + botones Ver servicios/Contactar + decisión 0016.
-    status: pending
+    status: completed
   - id: e1-tests-form
     content: E1. Reescribir tests del flujo de contacto (RED).
-    status: pending
+    status: completed
   - id: e2-form-un-paso
     content: E2. Formulario de una pantalla (GREEN).
-    status: pending
+    status: completed
   - id: f1-foco
     content: F1. Un solo sistema de foco.
-    status: pending
+    status: completed
   - id: f2-legal
     content: F2. Estilos legales a @layer con tokens + fechas de actualización.
-    status: pending
+    status: completed
   - id: f3-cmp
     content: F3. Theming del CMP con tokens.
-    status: pending
+    status: completed
   - id: f4-contraste
     content: F4. Pares de contraste nuevos + ::selection + tracking token.
-    status: pending
+    status: completed
   - id: f5-poda
     content: F5. Poda de tokens, gutters unificados, landmark, nota interna, 404.
-    status: pending
+    status: completed
   - id: f6-theme-color
     content: F6. Test theme-color vs tokens.
-    status: pending
+    status: completed
   - id: g1-docs
     content: G1. Decisión 0016, diseno.md, AGENTS.md, tasks.
-    status: pending
+    status: completed
   - id: g2-cierre
     content: G2. Verificación integral + PR en borrador.
-    status: pending
+    status: completed
 isProject: false
 ---
 

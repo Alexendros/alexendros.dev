@@ -59,34 +59,37 @@ Un solo sistema: la clase `.focus-ring` (outline 2px `--brand` con offset 2px + 
 ### Container / Stack / Grid
 
 - **Container:** `size?: 'default'|'narrow'` (`--container` 72rem / `--container-narrow` 56rem), gutter `--gutter`. Sin padding vertical (lo da Section o la página).
-- **Stack:** columna con `gap: var(--space-*)` (`gap` default `'4'`, claves `1…24`).
+- **Stack:** columna con `gap: var(--space-*)` (`gap` default `'4'`; la escala viva tras la poda es `2, 3, 4, 5, 6, 8, 16, 24`).
 - **Grid:** rejilla con gap de token; las columnas van en `class` con clases responsive (`sm:grid-cols-2 lg:grid-cols-4`).
 
 ### SkipLink
 
 Extraído de Layout: primer foco de la página, salta a `#contenido`, visible solo con teclado (`focus-visible`), z-index máximo. No reordenar en Layout.
 
+### Superficies translúcidas (glass)
+
+`.glass-bg` (header), `.glass-card` (barra CTA, 95 % y 80 % con `backdrop-filter`) y `.swatch-brand` viven en `@layer components`: cada una declara primero el fallback sólido con su token (`background: var(--bg)`…) y después `color-mix(in oklab, …)` para navegadores con soporte. Tailwind v3 no compila `/<alpha>` sobre `var()`, así que las translúcidas son siempre clases de componente, nunca utilidades.
+
+### CMP (vanilla-cookieconsent v3)
+
+`#cc-main` redefine las custom properties del vendor (`--cc-bg`, `--cc-btn-*`, `--cc-toggle-*`, `--cc-cookie-category-*`, radios, fuente…) con los tokens del sitio en `@layer components`. Un solo set sirve para claro y oscuro porque los tokens ya reaccionan al tema; los botones del banner usan el foco del sistema (outline 2 px `--brand`).
+
 ### Ventana rotatoria del H1 (home)
 
 - **Uso:** solo el H1 de la home (`Hero.astro`). Tres frases complementan el arranque fijo; no se usa en portadas interiores ni en legales.
-- **Movimiento:** CSS puro (`transform`/`opacity`), ciclo 9 s / paso 3 s, timing `linear`. Giro continuo (no se aplana con `prefers-reduced-motion`). Cada frase entra desde abajo con `rotateX` y sale hacia arriba. Sin control de pausa. CTA Contactar solo en el header.
+- **Movimiento:** CSS puro (`transform`/`opacity`), ciclo 9 s / paso 3 s, timing `linear`. Giro continuo (no se aplana con `prefers-reduced-motion`). Cada frase entra desde abajo con `rotateX` y sale hacia arriba. Sin control de pausa. El H1 no lleva CTA: las acciones viven bajo el párrafo del hero (decisión 0016).
 - **A11y:** el escenario visual es `aria-hidden`; el nombre accesible del `h1` lista el arranque y las tres frases una sola vez. Sin `aria-live`. No reescribir el nombre durante el ciclo.
 - **Don't:** no copiar la ventana a otras páginas; no añadir librerías de motion; no animar con propiedades distintas de `transform`/`opacity`.
 
 ### Tarjetas enlazables (ServiceCard / ProjectCard) — patrón card-link
 
-- **Estructura:** el `<article>` no es enlace; el enlace vive en el título y se estira sobre toda la tarjeta con `::after { position:absolute; inset:0 }`. El nombre accesible es el título del servicio/caso (nunca "Ver qué incluye →" repetido: ese texto es `aria-hidden`). El foco se muestra con `focus-within:outline` (estilo + ancho + color: Tailwind `outline-2` solo fija ancho y sin `outline` no se pinta nada).
+- **Estructura:** el `<article>` no es enlace; el enlace vive en el título y se estira sobre toda la tarjeta con `::after { position:absolute; inset:0 }`. El nombre accesible es el título del servicio/caso (nunca "Ver qué incluye →" repetido: ese texto es `aria-hidden`). El foco de la tarjeta se muestra con `focus-within:outline` en `--brand` (mismo color que `.focus-ring`; Tailwind `outline-2` solo fija ancho y sin `outline` no se pinta nada).
 - **Contrato:** dentro de una card-link **no puede haber otros elementos interactivos** (el `::after` los taparía) y el texto de la tarjeta **no es seleccionable con ratón** (el pseudo-elemento captura el mousedown). Si una tarjeta necesita un segundo enlace o texto seleccionable, no uses este patrón: enlaces explícitos por elemento.
 - **A11y:** las páginas de detalle (`/servicios/x`) mantienen `aria-current="page"` en el item de sección del header ("Servicios"): marca la sección activa, no la página exacta. Es deliberado.
 
 ## 4. Excepciones de color fijo (deliberadas)
 
-| Elemento              | Valor                         | Motivo                                                                            |
-| --------------------- | ----------------------------- | --------------------------------------------------------------------------------- |
-| QR de reserva Cal.com | `bg-white`                    | Funcional: el QR debe escanearse; el azul de marca baja la legibilidad del código |
-| Marca Cal.com (embed) | `#FFC53D` (su propio dominio) | Marca de terceros: no es UI del tema                                              |
-
-Documentado en Fase 1 (commit `a86528d`) y validado como excepción en la auditoría; no introducir nuevas excepciones sin justificarlo aquí.
+Sin excepciones activas: la excepción del QR de reserva (retirada con el embudo huérfano, fase B) y la del embed de Cal.com (sin consumidores en UI) se dieron de baja en la corrección integral 2026-10-12. No introducir excepciones sin justificarlas aquí.
 
 ## 5. Verificación
 
