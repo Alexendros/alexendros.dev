@@ -14,6 +14,12 @@ test('F01: home es hero + nav; sin secciones en página', async ({ page }) => {
   await expect(page.getByText(/El dominio donde despliegue tu portal/)).toBeVisible();
   await expect(page.getByLabel(/Pare las rotativas/)).toBeVisible();
 
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  const visiblePhrases = await page
+    .locator('[data-hero] .hero-slot-item')
+    .evaluateAll((els) => els.filter((el) => Number(getComputedStyle(el).opacity) > 0.2).length);
+  expect(visiblePhrases).toBe(1);
+
   const banner = page.getByRole('banner');
   await expect(banner.getByRole('link', { name: 'Contactar' })).toBeVisible();
   await expect(page.locator('[data-hero]').getByRole('link', { name: 'Contactar' })).toHaveCount(0);
@@ -22,7 +28,6 @@ test('F01: home es hero + nav; sin secciones en página', async ({ page }) => {
   );
 
   // El hueco del H1 no puede quedarse en blanco entre frases (timing linear + solape).
-  await page.emulateMedia({ reducedMotion: 'no-preference' });
   const emptyFrames = await page.evaluate(async () => {
     const gaps: number[] = [];
     const t0 = performance.now();

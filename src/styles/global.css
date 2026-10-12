@@ -493,6 +493,9 @@
     overflow: hidden;
   }
 
+  /* Rotación por defecto (no gated a no-preference): si el SO no declara
+     reduce, o el motor no resuelve la media, el giro tiene que verse.
+     Linear: los % del keyframe = tiempo real. */
   .hero-slot-item {
     position: absolute;
     inset-inline: 0;
@@ -501,6 +504,8 @@
     transform-origin: 50% 50%;
     backface-visibility: hidden;
     will-change: transform, opacity;
+    animation: hero-slot-cycle var(--dur-slot-cycle) linear both infinite;
+    animation-delay: calc(var(--i, 0) * var(--dur-slot-step));
   }
 
   /* Control de pausa: checkbox dibujado; tipografía vía clases en el markup. */
@@ -529,34 +534,18 @@
     box-shadow: var(--focus-ring);
   }
 
-  @media (prefers-reduced-motion: no-preference) {
-    /* linear: los % del keyframe = tiempo real; ease-out adelantaba la salida
-       y dejaba el H1 en blanco entre frases. */
-    .hero-slot-item {
-      animation: hero-slot-cycle var(--dur-slot-cycle) linear both infinite;
-      animation-delay: calc(var(--i, 0) * var(--dur-slot-step));
-    }
+  .hero-slot-item[data-i='0'] {
+    --i: 0;
 
-    .hero-slot-item[data-i='0'] {
-      --i: 0;
+    animation-name: hero-slot-cycle-first;
+  }
 
-      animation-name: hero-slot-cycle-first;
-    }
+  .hero-slot-item[data-i='1'] {
+    --i: 1;
+  }
 
-    .hero-slot-item[data-i='1'] {
-      --i: 1;
-    }
-
-    .hero-slot-item[data-i='2'] {
-      --i: 2;
-    }
-
-    .hero-slot:hover .hero-slot-item,
-    .hero-slot-root:has(.hero-slot-pause:hover) .hero-slot-item,
-    .hero-slot-root:has(.hero-slot-pause:focus-within) .hero-slot-item,
-    .hero-slot-root:has(.hero-slot-pause-input:checked) .hero-slot-item {
-      animation-play-state: paused;
-    }
+  .hero-slot-item[data-i='2'] {
+    --i: 2;
   }
 
   /* perspective() en el transform: el overflow del stage ya no aplana el 3D.
@@ -931,6 +920,13 @@
   .force-reduced-motion :hover > .link-arrow,
   .force-reduced-motion :focus-visible > .link-arrow {
     transform: none;
+  }
+
+  .hero-slot:hover .hero-slot-item,
+  .hero-slot-root:has(.hero-slot-pause:hover) .hero-slot-item,
+  .hero-slot-root:has(.hero-slot-pause:focus-within) .hero-slot-item,
+  .hero-slot-root:has(.hero-slot-pause-input:checked) .hero-slot-item {
+    animation-play-state: paused;
   }
 }
 
