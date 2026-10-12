@@ -508,32 +508,6 @@
     animation-delay: calc(var(--i, 0) * var(--dur-slot-step));
   }
 
-  /* Control de pausa: checkbox dibujado; tipografía vía clases en el markup. */
-  .hero-slot-pause-input {
-    appearance: none;
-    width: 0.875rem;
-    height: 0.875rem;
-    flex-shrink: 0;
-    margin: 0;
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius-sm);
-    background: var(--bg);
-    transition:
-      background-color var(--dur-fast) var(--ease-out),
-      border-color var(--dur-fast) var(--ease-out);
-  }
-
-  .hero-slot-pause-input:checked {
-    background: var(--brand);
-    border-color: var(--brand);
-  }
-
-  .hero-slot-pause-input:focus-visible {
-    outline: 2px solid var(--brand);
-    outline-offset: 2px;
-    box-shadow: var(--focus-ring);
-  }
-
   .hero-slot-item[data-i='0'] {
     --i: 0;
 
@@ -804,7 +778,7 @@
 
     /* El rotador del H1 no se aplana aquí: visores (Cursor/Vercel) y
        muchos motores llegan con reduce activo y mostrarían las tres
-       frases en columna. La pausa «¡Pare las rotativas!» es el control. */
+       frases en columna. */
 
     .btn-spinner,
     .badge-dot,
@@ -876,13 +850,6 @@
   .force-reduced-motion :hover > .link-arrow,
   .force-reduced-motion :focus-visible > .link-arrow {
     transform: none;
-  }
-
-  .hero-slot:hover .hero-slot-item,
-  .hero-slot-root:has(.hero-slot-pause:hover) .hero-slot-item,
-  .hero-slot-root:has(.hero-slot-pause:focus-within) .hero-slot-item,
-  .hero-slot-root:has(.hero-slot-pause-input:checked) .hero-slot-item {
-    animation-play-state: paused;
   }
 }
 

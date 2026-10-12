@@ -9,10 +9,11 @@ test('F01: home es hero + nav; sin secciones en página', async ({ page }) => {
   });
   await expect(h1).toBeVisible();
   await expect(h1).toHaveAccessibleName(
-    /personalidad individual y reputación profesional.*proyectos empresariales e iniciativas sociales.*cualidades humanas de alto valor/
+    /emprendimientos personales novedosos de alto impacto social y reputación profesional.*sociedades empresariales con sólidas estructuras productivas.*historia y obra de seres humanos con valores ejemplares/
   );
   await expect(page.getByText(/El dominio donde despliegue tu portal/)).toBeVisible();
-  await expect(page.getByLabel(/Pare las rotativas/)).toBeVisible();
+  await expect(page.getByText(/Pare las rotativas/)).toHaveCount(0);
+  await expect(page.getByText(/SI TIENES UN NEGOCIO/i)).toHaveCount(0);
 
   await page.emulateMedia({ reducedMotion: 'reduce' });
   const visiblePhrases = await page
@@ -27,7 +28,6 @@ test('F01: home es hero + nav; sin secciones en página', async ({ page }) => {
     0
   );
 
-  // El hueco del H1 no puede quedarse en blanco entre frases (timing linear + solape).
   const emptyFrames = await page.evaluate(async () => {
     const gaps: number[] = [];
     const t0 = performance.now();

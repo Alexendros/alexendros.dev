@@ -11,7 +11,6 @@ const TARGETS = [
   'src/content',
   'src/components/Hero.astro',
   'src/components/StickyCta.astro',
-  'src/components/ExitIntent.tsx',
   'src/components/ContactForm.tsx',
   'src/components/consent/CookieBanner.tsx',
   'src/pages/index.astro',

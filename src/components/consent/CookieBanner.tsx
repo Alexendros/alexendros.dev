@@ -61,39 +61,47 @@ export default function CookieBanner() {
             consentModal: {
               title: 'Valoramos tu privacidad',
               description:
-                'Usamos cookies propias y de terceros para analizar el tráfico y mejorar nuestros servicios. Las cookies analíticas y de marketing solo se activan si nos das tu consentimiento. Puedes aceptar, rechazar o configurar tus preferencias.',
-              acceptAllBtn: 'Sí a todo',
+                'Guardamos un dato técnico para recordar tu decisión. El resto (medición de visitas y publicidad) no se enciende hasta que tú lo permitas. ' +
+                '«Aceptación desinformada» activa todo. «Sí a lo esencial» deja solo lo técnico. ' +
+                '<a href="/cookies">Explicación completa en Cookies</a>.',
+              acceptAllBtn: 'Aceptación desinformada',
               acceptNecessaryBtn: 'Sí a lo esencial',
               showPreferencesBtn: 'Configuración informada'
             },
             preferencesModal: {
-              title: 'Preferencias de cookies',
-              acceptAllBtn: 'Sí a todo',
+              title: 'Elige qué se activa',
+              acceptAllBtn: 'Aceptación desinformada',
               acceptNecessaryBtn: 'Sí a lo esencial',
-              savePreferencesBtn: 'Guardar preferencias',
-              closeIconLabel: 'Cerrar',
+              savePreferencesBtn: 'Guardar esta elección',
+              closeIconLabel: 'Cerrar panel de cookies',
               sections: [
                 {
-                  title: 'Cookies técnicas',
+                  title: 'Qué implica cada interruptor',
                   description:
-                    'Imprescindibles para el funcionamiento del sitio y para recordar tu decisión. No requieren consentimiento.',
+                    'En lenguaje llano: cada fila es un tipo de dato. Lo técnico no se puede apagar porque sin él el sitio no recuerda esta elección. Lo demás es opcional. Detalle, titulares y plazos están en <a href="/cookies">Cookies</a>.'
+                },
+                {
+                  title: 'Técnicas (obligatorias)',
+                  description:
+                    'En claro: recuerdan que ya respondiste a este aviso, para no preguntártelo cada vez. Grado técnico: cookie de primera parte, 12 meses, sin perfilado. Base: prestar el servicio que pides (art. 6.1.f RGPD y 22.2 LSSI-CE).',
                   linkedCategory: 'necessary'
                 },
                 {
-                  title: 'Preferencias',
-                  description: 'Recuerdan tus ajustes para personalizar tu experiencia.',
+                  title: 'Preferencias (opcionales)',
+                  description:
+                    'En claro: recuerdan ajustes que tú eliges (por ejemplo un tema). Hoy este sitio casi no las usa. Grado técnico: solo se escriben si las aceptas. Base: consentimiento (art. 6.1.a RGPD).',
                   linkedCategory: 'preferences'
                 },
                 {
-                  title: 'Analítica',
+                  title: 'Analítica (opcionales)',
                   description:
-                    'Nos permiten medir el uso del sitio de forma agregada (Google Analytics, Microsoft Clarity y PostHog).',
+                    'En claro: cuentan visitas y clics de forma agregada (Google Analytics, Microsoft Clarity, PostHog en la UE). No sirve para mostrarte anuncios. Grado técnico: identificadores de dispositivo y sesión, 1 día a 2 años. Base: consentimiento.',
                   linkedCategory: 'analytics'
                 },
                 {
-                  title: 'Publicidad',
+                  title: 'Publicidad (opcionales)',
                   description:
-                    'Se usan para medir y personalizar campañas publicitarias (Meta y LinkedIn).',
+                    'En claro: miden y personalizan campañas (Meta y LinkedIn). Pueden asociar esta visita a un perfil publicitario. Grado técnico: píxeles de terceros, hasta 3 meses. Base: consentimiento. Clave interna: marketing.',
                   linkedCategory: 'marketing'
                 }
               ]
@@ -103,18 +111,30 @@ export default function CookieBanner() {
       }
     });
 
-    const injectNote = () => {
-      const title = document.querySelector('#cc-main .cm__title');
-      if (!title || title.previousElementSibling?.classList.contains('cc-normative')) return;
-      const note = document.createElement('p');
-      note.className = 'cc-normative';
-      note.innerHTML =
-        '<em>La normativa dice que tienes que leer esto y clicar en lo que consideres.</em>';
-      title.parentElement?.insertBefore(note, title);
+    const retargetPreferencesBtn = () => {
+      const buttons = document.querySelectorAll('#cc-main button');
+      const btn = [...buttons].find((el) =>
+        /configuración informada/i.test(el.textContent ?? '')
+      ) as HTMLButtonElement | undefined;
+      if (!btn || btn.dataset.ccPolicy === '1') return;
+      btn.dataset.ccPolicy = '1';
+      btn.setAttribute(
+        'aria-label',
+        'Ir a Cookies: explicación completa y panel para elegir categoría a categoría'
+      );
+      btn.addEventListener(
+        'click',
+        (event) => {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          window.location.assign('/cookies');
+        },
+        true
+      );
     };
 
-    injectNote();
-    const observer = new MutationObserver(injectNote);
+    retargetPreferencesBtn();
+    const observer = new MutationObserver(retargetPreferencesBtn);
     observer.observe(document.body, { childList: true, subtree: true });
 
     const openPreferences = (event: Event) => {
