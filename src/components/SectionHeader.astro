@@ -1,12 +1,12 @@
 ---
-// Cabecera de sección: kicker mono ("FIG. 0X" vía Eyebrow), H2, intro
-// opcional y enlace "Ver todo →" (Link variant arrow). Sustituye al
-// FigureHead original (conservado como wrapper por compatibilidad).
+// Cabecera de sección: kicker mono opcional ("FIG. 0X" vía Eyebrow), H2,
+// intro opcional y enlace "Ver todo →" (Link variant arrow).
 import Eyebrow from './Eyebrow.astro';
 import Link from './Link.astro';
 
 interface Props {
-  index: string;
+  /** Si se omite, no se muestra el rótulo FIG. */
+  index?: string;
   title: string;
   description?: string;
   linkHref?: string;
@@ -24,8 +24,8 @@ const centered = align === 'center';
   ]}
 >
   <div class:list={[centered && 'flex flex-col items-center']}>
-    <Eyebrow>FIG. {index}</Eyebrow>
-    <h2 class="text-2xl font-bold mt-2">{title}</h2>
+    {index ? <Eyebrow>FIG. {index}</Eyebrow> : null}
+    <h2 class:list={['text-2xl font-bold', index ? 'mt-2' : null]}>{title}</h2>
     {
       description && (
         <p class:list={['text-sm text-muted mt-2 max-w-2xl', centered && 'mx-auto']}>

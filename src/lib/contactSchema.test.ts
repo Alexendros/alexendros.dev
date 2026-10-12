@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { escapeHtml, isHoneypotFilled, parseContactBody } from './contactSchema';
+import {
+  escapeHtml,
+  formatContactFieldErrors,
+  isHoneypotFilled,
+  parseContactBody
+} from './contactSchema';
 
 const validCorreo = {
   name: 'Alex Endros',
@@ -7,6 +12,7 @@ const validCorreo = {
   channel: 'correo' as const,
   email: 'alex@example.com',
   reason: 'propuestaComercial' as const,
+  message: 'Quiero un informe comercial para mi dominio.',
   consent: true as const
 };
 
@@ -16,6 +22,7 @@ const validWhatsapp = {
   channel: 'whatsapp' as const,
   phone: '+34 600 000 000',
   reason: 'proyectoEspecial' as const,
+  message: 'Necesito una sesión para priorizar el siguiente paso.',
   consent: true as const
 };
 
@@ -30,6 +37,11 @@ describe('parseContactBody R04', () => {
 
   it('rechaza formulario incompleto (sin motivo)', () => {
     const { reason: _r, ...rest } = validCorreo;
+    expect(parseContactBody(rest).success).toBe(false);
+  });
+
+  it('rechaza sin mensaje de petición', () => {
+    const { message: _m, ...rest } = validCorreo;
     expect(parseContactBody(rest).success).toBe(false);
   });
 
@@ -52,6 +64,27 @@ describe('parseContactBody R04', () => {
         email: `${'a'.repeat(243)}@example.com`
       }).success
     ).toBe(false);
+  });
+
+  it('rechaza markup peligroso en el mensaje', () => {
+    expect(
+      parseContactBody({
+        ...validCorreo,
+        message: 'Hola <script>alert(1)</script> necesito ayuda ya.'
+      }).success
+    ).toBe(false);
+  });
+});
+
+describe('formatContactFieldErrors', () => {
+  it('nombra campo y causa de falta de contenido', () => {
+    const parsed = parseContactBody({ ...validCorreo, message: '' });
+    expect(parsed.success).toBe(false);
+    if (parsed.success) return;
+    const errors = formatContactFieldErrors(parsed.error);
+    expect(errors.some((e) => e.label === 'Tu petición' && e.cause === 'falta contenido')).toBe(
+      true
+    );
   });
 });
 

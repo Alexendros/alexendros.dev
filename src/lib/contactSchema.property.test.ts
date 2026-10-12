@@ -8,6 +8,7 @@ const baseValid = {
   channel: 'correo' as const,
   email: 'alex@example.com',
   reason: 'propuestaComercial' as const,
+  message: 'Quiero un informe comercial para mi dominio.',
   consent: true as const
 };
 

@@ -13,6 +13,7 @@ const validBody = {
   channel: 'correo',
   email: 'alex@example.com',
   reason: 'propuestaComercial',
+  message: 'Quiero un informe comercial para mi dominio.',
   consent: true
 };
 
@@ -84,6 +85,7 @@ describe('handleContactPost', () => {
         channel: 'whatsapp',
         phone: '+34 600 000 000',
         reason: 'proyectoEspecial',
+        message: 'Necesito una sesión para priorizar el siguiente paso.',
         consent: true
       }),
       deps()

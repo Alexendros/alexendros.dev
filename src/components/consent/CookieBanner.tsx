@@ -91,7 +91,7 @@ export default function CookieBanner() {
                   linkedCategory: 'analytics'
                 },
                 {
-                  title: 'Marketing',
+                  title: 'Publicidad',
                   description:
                     'Se usan para medir y personalizar campañas publicitarias (Meta y LinkedIn).',
                   linkedCategory: 'marketing'

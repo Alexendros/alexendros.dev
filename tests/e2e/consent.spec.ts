@@ -88,6 +88,7 @@ test('TEST-CMP-02c: configuración informada abre preferencias con técnica bloq
   await expect(page.getByRole('button', { name: 'Sí a todo' }).first()).toBeVisible();
   await expect(page.getByRole('button', { name: 'Sí a lo esencial' }).first()).toBeVisible();
   await expect(page.getByText('Cookies técnicas').first()).toBeVisible();
+  await expect(page.getByText('Publicidad').first()).toBeVisible();
   await expect(page.locator('.pm input[type="checkbox"][disabled]')).toHaveCount(1);
 });
 
