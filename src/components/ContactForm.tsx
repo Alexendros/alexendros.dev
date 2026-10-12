@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { track } from '../lib/tracking/events';
 import {
+  CONTACT_WIZARD_STEPS,
   contactChannels,
   contactReasons,
   entityLabels,
@@ -8,7 +9,10 @@ import {
   formatContactFieldErrors,
   parseContactBody,
   reasonLabels,
+  stepIndexForField,
+  validateContactStep,
   type ContactInput,
+  type ContactWizardStep,
   type FieldError
 } from '../lib/contactSchema';
 import TurnstileWidget from './TurnstileWidget';
@@ -22,47 +26,11 @@ type Props = {
 const inputClass =
   'mt-1 w-full bg-bg border border-border-strong rounded-lg px-3 py-2 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
 
-type Step = 'reason' | 'name' | 'entity' | 'channel' | 'message' | 'consent';
-
-const STEPS: Step[] = ['reason', 'name', 'entity', 'channel', 'message', 'consent'];
-
 function reasonFromSearch(value: string | null): ContactInput['reason'] {
   if (value && (contactReasons as readonly string[]).includes(value)) {
     return value as ContactInput['reason'];
   }
   return 'informacionCliente';
-}
-
-function stepValid(
-  step: Step,
-  form: {
-    name: string;
-    entityType: ContactInput['entityType'];
-    channel: ContactInput['channel'];
-    phone: string;
-    email: string;
-    reason: ContactInput['reason'];
-    message: string;
-    consent: boolean;
-  }
-): boolean {
-  switch (step) {
-    case 'reason':
-      return Boolean(form.reason);
-    case 'name':
-      return form.name.trim().length >= 2;
-    case 'entity':
-      return Boolean(form.entityType);
-    case 'channel':
-      if (form.channel === 'whatsapp') return form.phone.trim().length >= 9;
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim());
-    case 'message':
-      return form.message.trim().length >= 10;
-    case 'consent':
-      return form.consent;
-    default:
-      return false;
-  }
 }
 
 export default function ContactForm({ successMessage, errorMessage, turnstileSiteKey }: Props) {
@@ -97,8 +65,8 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
     }));
   }, []);
 
-  const step = STEPS[stepIndex] ?? 'reason';
-  const isLast = stepIndex === STEPS.length - 1;
+  const step: ContactWizardStep = CONTACT_WIZARD_STEPS[stepIndex] ?? 'reason';
+  const isLast = stepIndex === CONTACT_WIZARD_STEPS.length - 1;
 
   const resetTurnstile = () => {
     setTurnstileToken('');
@@ -106,37 +74,13 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
   };
 
   const goNext = () => {
-    setFieldErrors([]);
-    if (!stepValid(step, form)) {
-      const labelMap: Record<Step, string> = {
-        reason: 'Motivo',
-        name: 'Nombre',
-        entity: 'Categoría',
-        channel: form.channel === 'whatsapp' ? 'Teléfono WhatsApp' : 'Correo electrónico',
-        message: 'Tu petición',
-        consent: 'Consentimiento'
-      };
-      const fieldMap: Record<Step, string> = {
-        reason: 'reason',
-        name: 'name',
-        entity: 'entityType',
-        channel: form.channel === 'whatsapp' ? 'phone' : 'email',
-        message: 'message',
-        consent: 'consent'
-      };
-      setFieldErrors([
-        {
-          field: fieldMap[step],
-          label: labelMap[step],
-          cause:
-            step === 'channel' && form.channel === 'correo' && form.email.trim()
-              ? 'formato no válido'
-              : 'falta contenido'
-        }
-      ]);
+    const errors = validateContactStep(step, form);
+    if (errors.length) {
+      setFieldErrors(errors);
       return;
     }
-    setStepIndex((i) => Math.min(i + 1, STEPS.length - 1));
+    setFieldErrors([]);
+    setStepIndex((i) => Math.min(i + 1, CONTACT_WIZARD_STEPS.length - 1));
   };
 
   const goBack = () => {
@@ -148,6 +92,11 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
     e.preventDefault();
     if (!isLast) {
       goNext();
+      return;
+    }
+    const consentErrors = validateContactStep('consent', form);
+    if (consentErrors.length) {
+      setFieldErrors(consentErrors);
       return;
     }
     const payload = {
@@ -165,7 +114,9 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
     };
     const parsed = parseContactBody(payload);
     if (!parsed.success) {
-      setFieldErrors(formatContactFieldErrors(parsed.error));
+      const errors = formatContactFieldErrors(parsed.error);
+      setFieldErrors(errors);
+      if (errors[0]) setStepIndex(stepIndexForField(errors[0].field));
       return;
     }
     setFieldErrors([]);
@@ -211,7 +162,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
   return (
     <form onSubmit={submit} className="space-y-4" noValidate>
       <p className="text-xs font-mono text-muted">
-        Paso {stepIndex + 1} de {STEPS.length}
+        Paso {stepIndex + 1} de {CONTACT_WIZARD_STEPS.length}
       </p>
 
       <div className="sr-only" aria-hidden="true">

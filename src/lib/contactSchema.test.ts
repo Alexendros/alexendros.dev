@@ -3,7 +3,8 @@ import {
   escapeHtml,
   formatContactFieldErrors,
   isHoneypotFilled,
-  parseContactBody
+  parseContactBody,
+  validateContactStep
 } from './contactSchema';
 
 const validCorreo = {
@@ -73,6 +74,36 @@ describe('parseContactBody R04', () => {
         message: 'Hola <script>alert(1)</script> necesito ayuda ya.'
       }).success
     ).toBe(false);
+  });
+});
+
+describe('validateContactStep', () => {
+  it('rechaza teléfono con caracteres no permitidos en el paso canal', () => {
+    const errors = validateContactStep('channel', {
+      name: 'Alex',
+      entityType: 'particular',
+      channel: 'whatsapp',
+      phone: 'abc-not-a-phone',
+      email: '',
+      reason: 'informacionCliente',
+      message: 'Petición suficientemente larga.',
+      consent: false
+    });
+    expect(errors.some((e) => e.field === 'phone')).toBe(true);
+  });
+
+  it('rechaza markup en el mensaje en su paso', () => {
+    const errors = validateContactStep('message', {
+      name: 'Alex',
+      entityType: 'particular',
+      channel: 'correo',
+      phone: '',
+      email: 'a@b.co',
+      reason: 'informacionCliente',
+      message: 'Hola <script>x</script> necesito ayuda ya.',
+      consent: false
+    });
+    expect(errors.some((e) => e.field === 'message')).toBe(true);
   });
 });
 

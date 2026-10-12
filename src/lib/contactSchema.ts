@@ -135,6 +135,72 @@ export function formatContactFieldErrors(error: z.ZodError): FieldError[] {
   return out;
 }
 
+export type ContactWizardStep = 'reason' | 'name' | 'entity' | 'channel' | 'message' | 'consent';
+
+export const CONTACT_WIZARD_STEPS: ContactWizardStep[] = [
+  'reason',
+  'name',
+  'entity',
+  'channel',
+  'message',
+  'consent'
+];
+
+const STEP_FIELDS: Record<ContactWizardStep, string[]> = {
+  reason: ['reason'],
+  name: ['name'],
+  entity: ['entityType'],
+  channel: ['channel', 'phone', 'email'],
+  message: ['message'],
+  consent: ['consent']
+};
+
+export type ContactFormSlice = {
+  name: string;
+  entityType: ContactInput['entityType'];
+  channel: ContactInput['channel'];
+  phone: string;
+  email: string;
+  reason: ContactInput['reason'];
+  message: string;
+  modules?: string;
+  consent: boolean;
+};
+
+/** Valida el paso actual con el mismo Zod que el envío (stubs en campos ajenos). */
+export function validateContactStep(step: ContactWizardStep, form: ContactFormSlice): FieldError[] {
+  const data: Record<string, unknown> = {
+    name: 'Valid Name',
+    entityType: 'particular',
+    channel: 'correo',
+    email: 'valid@example.com',
+    reason: 'informacionCliente',
+    message: 'Mensaje de petición válido para stub.',
+    consent: true
+  };
+
+  if (step === 'reason') data.reason = form.reason;
+  if (step === 'name') data.name = form.name;
+  if (step === 'entity') data.entityType = form.entityType;
+  if (step === 'channel') {
+    data.channel = form.channel;
+    data.phone = form.phone.trim() ? form.phone : undefined;
+    data.email = form.email.trim() ? form.email : undefined;
+  }
+  if (step === 'message') data.message = form.message;
+  if (step === 'consent') data.consent = form.consent;
+
+  const parsed = parseContactBody(data);
+  if (parsed.success) return [];
+  const allowed = new Set(STEP_FIELDS[step]);
+  return formatContactFieldErrors(parsed.error).filter((e) => allowed.has(e.field));
+}
+
+export function stepIndexForField(field: string): number {
+  const idx = CONTACT_WIZARD_STEPS.findIndex((s) => STEP_FIELDS[s].includes(field));
+  return idx >= 0 ? idx : 0;
+}
+
 export function buildContactMessage(input: ContactInput): string {
   const lines = [
     `Categoría: ${entityLabels[input.entityType]}`,

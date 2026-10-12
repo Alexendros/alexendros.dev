@@ -1,12 +1,7 @@
 #!/usr/bin/env node
 /**
  * Detecta coma/punto y coma pegados a una letra minúscula en la misma línea
- * de literales de copy (p. ej. «clientes,no»). No colapsa saltos de línea:
- * el salto tras coma es válido en prosa envuelta; el fallo tipográfico es
- * la ausencia de espacio en la misma línea.
- *
- * Origen: Prettier/ESLint no validan ortotipografía española; un H1 partido
- * en dos líneas ocultaba el patrón al grep literal.
+ * de literales JS y de texto markup en Astro/JSX (p. ej. «clientes,no»).
  */
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
@@ -33,11 +28,25 @@ function stringLiterals(source) {
   const re = /(['"`])(?:\\.|(?!\1)[\s\S])*?\1/g;
   let m;
   while ((m = re.exec(source))) {
-    // Evitar template vacíos / imports de path
     const body = m[0].slice(1, -1);
     if (body.length < 4) continue;
     if (!/[a-záéíóúñü]/i.test(body)) continue;
     out.push(body);
+  }
+  return out;
+}
+
+/** Texto entre tags tras quitar frontmatter, script y style. */
+function markupTextChunks(source) {
+  let s = source.replace(/^---[\s\S]*?---\s*/, '');
+  s = s.replace(/<script[\s\S]*?<\/script>/gi, ' ');
+  s = s.replace(/<style[\s\S]*?<\/style>/gi, ' ');
+  const out = [];
+  const re = />([^<]+)</g;
+  let m;
+  while ((m = re.exec(s))) {
+    const t = m[1].replace(/\{[^}]*\}/g, ' ').trim();
+    if (t.length > 2 && /[a-záéíóúñü]/i.test(t)) out.push(t);
   }
   return out;
 }
@@ -68,10 +77,8 @@ function collectFiles() {
   return files;
 }
 
-const hits = [];
-for (const file of collectFiles()) {
-  const src = readFileSync(file, 'utf8');
-  for (const lit of stringLiterals(src)) {
+function scanChunks(file, chunks, hits) {
+  for (const lit of chunks) {
     for (const line of lit.split('\n')) {
       if (!BAD_LINE.test(line)) continue;
       const m = line.match(BAD_LINE);
@@ -80,6 +87,15 @@ for (const file of collectFiles()) {
         snippet: line.trim().slice(Math.max(0, (m?.index ?? 0) - 16), (m?.index ?? 0) + 20)
       });
     }
+  }
+}
+
+const hits = [];
+for (const file of collectFiles()) {
+  const src = readFileSync(file, 'utf8');
+  scanChunks(file, stringLiterals(src), hits);
+  if (/\.(astro|tsx)$/.test(file)) {
+    scanChunks(file, markupTextChunks(src), hits);
   }
 }
 
