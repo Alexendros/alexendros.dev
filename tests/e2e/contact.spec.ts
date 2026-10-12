@@ -82,7 +82,7 @@ test('validación: nombre corto muestra error accesible y mueve el foco', async 
 });
 
 test('contacto preselecciona el motivo desde ?servicio= de la URL', async ({ page }) => {
-  await page.goto('/contacto?servicio=informe-comercial&vertical=restaurantes');
+  await page.goto('/contacto?servicio=informe-comercial');
   await expect(page.locator('#contact-reason')).toHaveValue('propuestaComercial');
 });
 
