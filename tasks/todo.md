@@ -18,5 +18,6 @@
 - [x] F6 test theme-color
 - [x] G1 decisión 0016 + docs
 - [x] G2 verificación integral + PR borrador
+- [x] H1 supresiones del operador: webs por sector (bloque + páginas), kickers «ÍNDICE · …», Contactar en Metodología/Valores
 
-Nota: `uqr` quedó sin uso tras retirar qrSvg.ts (fase B1); pendiente `pnpm remove uqr`.
+Nota: `uqr` se retiró con `pnpm remove` en la fase B (commit 764fa91).

@@ -56,6 +56,9 @@ todos:
   - id: g2-cierre
     content: G2. Verificación integral + PR en borrador.
     status: completed
+  - id: h1-supresiones
+    content: H1 (2026-10-13, decisión del operador). Suprimir «Webs por sector» (bloque y 6 páginas /servicios/web-para, verticals.ts y su test), kickers «ÍNDICE · …» (kicker opcional en PageHead) y botones Contactar de Metodología y Valores. El prefill ?servicio= se conserva; los CTAs de verticales de A3 quedan derogados con las páginas.
+    status: completed
 isProject: false
 ---
 
