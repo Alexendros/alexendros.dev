@@ -639,6 +639,31 @@
     opacity: 1;
   }
 
+  /* Superficies translúcidas (header, barra CTA, muestras del design
+     system): fallback sólido con el token primero; color-mix después lo
+     mejora donde hay soporte. Tailwind v3 no compila /<alpha> sobre
+     var(), así que viven aquí (tailwind.config.mjs). */
+  .glass-bg {
+    background: var(--bg);
+    background: color-mix(in oklab, var(--bg) 80%, transparent);
+  }
+
+  .glass-card {
+    background: var(--card);
+    background: color-mix(in oklab, var(--card) 95%, transparent);
+  }
+
+  @supports (backdrop-filter: blur(4px)) {
+    .glass-card {
+      background: color-mix(in oklab, var(--card) 80%, transparent);
+    }
+  }
+
+  .swatch-brand {
+    background: var(--brand);
+    background: color-mix(in oklab, var(--brand) 60%, transparent);
+  }
+
   /* Indicador de página activa en la nav de escritorio: subrayado que
      crece con scaleX. */
   .site-nav a {

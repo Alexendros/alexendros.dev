@@ -12,6 +12,24 @@ test.describe('critical paths', () => {
     await expect(page.locator('a[href="/contacto"]').first()).toBeVisible();
   });
 
+  test('header sticky no es transparente', async ({ page }) => {
+    await page.goto('/');
+    const alpha = await page.evaluate(() => {
+      const header = document.getElementById('site-header');
+      if (!header) return 0;
+      const raw = getComputedStyle(header).backgroundColor;
+      if (!raw || raw === 'transparent') return 0;
+      const comma = raw.match(/rgba?\(([^)]+)\)/);
+      if (comma) {
+        const parts = comma[1].split(',').map((part) => Number.parseFloat(part));
+        return parts.length === 4 ? (parts[3] ?? 0) : 1;
+      }
+      const slash = raw.match(/\/\s*([\d.]+)\s*\)?\s*$/);
+      return slash ? Number.parseFloat(slash[1]) : 1;
+    });
+    expect(alpha).toBeGreaterThan(0);
+  });
+
   test('contacto muestra formulario usable', async ({ page }) => {
     await page.goto('/contacto');
     await expect(page.getByRole('heading', { name: 'Formulario de contacto' })).toBeVisible();
