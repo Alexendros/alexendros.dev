@@ -1,12 +1,13 @@
 ---
 import { formatEuro } from '../content/pricing';
+import type { ProductCard } from '../content/services';
 
 interface Props {
-  service: import('../content/services').Service;
-  /** h2 en indices (bajo h1), h3 en home (bajo h2 de seccion) */
+  product: ProductCard;
+  /** h2 en índices (bajo h1), h3 en demos (bajo h2 de sección) */
   headingLevel?: 'h2' | 'h3';
 }
-const { service, headingLevel = 'h2' } = Astro.props;
+const { product, headingLevel = 'h2' } = Astro.props;
 const Heading = headingLevel;
 ---
 
@@ -14,11 +15,11 @@ const Heading = headingLevel;
   class="card-lift group relative border border-border rounded-lg p-6 hover:border-primarySoft bg-card flex flex-col h-full focus-within:outline focus-within:outline-2 focus-within:outline-primary focus-within:outline-offset-2"
 >
   <Heading class="font-bold text-lg leading-tight mt-1 group-hover:text-primary transition-colors">
-    <a href={`/servicios/${service.slug}`} class="rounded after:absolute after:inset-0">
-      {service.title}
+    <a href={product.href} class="rounded after:absolute after:inset-0">
+      {product.title}
     </a>
   </Heading>
-  <p class="mt-3 text-sm text-muted">{service.short}</p>
-  <p class="mt-4 text-sm text-muted">{formatEuro(service.priceEuros)}</p>
-  <div class="mt-auto pt-4 text-sm font-medium" aria-hidden="true">Ver qué incluye →</div>
+  <p class="mt-3 text-sm text-muted">{product.short}</p>
+  <p class="mt-4 text-sm text-muted">{formatEuro(product.priceEuros)}</p>
+  <div class="mt-auto pt-4 text-sm font-medium" aria-hidden="true">{product.ctaLabel}</div>
 </article>

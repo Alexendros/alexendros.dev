@@ -4,11 +4,8 @@ import PageHead from '../../components/PageHead.astro';
 import Container from '../../components/Container.astro';
 import Grid from '../../components/Grid.astro';
 import ServiceCard from '../../components/ServiceCard.astro';
-import Link from '../../components/Link.astro';
 import PricingConfigurator from '../../components/PricingConfigurator';
-import { formatEuro, portalBasePrice, provisionalPrices } from '../../content/pricing';
-import { portalBase, portalModules, services } from '../../content/services';
-import { verticals } from '../../content/verticals';
+import { serviceProducts } from '../../content/services';
 ---
 
 <Layout
@@ -23,9 +20,9 @@ import { verticals } from '../../content/verticals';
     />
     <Grid gap="6" class="mt-8 md:grid-cols-3" data-services-grid>
       {
-        services.map((s, i) => (
+        serviceProducts.map((product, i) => (
           <div data-reveal style={`--i:${i}`}>
-            <ServiceCard service={s} />
+            <ServiceCard product={product} />
           </div>
         ))
       }
@@ -34,54 +31,12 @@ import { verticals } from '../../content/verticals';
     <section class="mt-16" aria-labelledby="portal-heading">
       <h2 id="portal-heading" class="text-2xl font-bold">Portal de inicio</h2>
       <p class="mt-2 text-sm text-muted max-w-2xl">
-        {portalBase.short} Precio base {formatEuro(portalBasePrice)}. Pago: {portalBase.payment}.
-        Plazo: {portalBase.timeline}.
+        Configura la base y los módulos. El total es una estimación provisional, no un presupuesto
+        contractual.
       </p>
-
-      {/* Precios indexables sin JS */}
-      <ul class="mt-6 grid gap-3 sm:grid-cols-2 text-sm" data-pricing-static>
-        <li
-          class="card-lift card-rail border border-border rounded-lg p-4 bg-card"
-          data-reveal
-          style="--i:0"
-        >
-          <strong>Portal de inicio</strong>
-          <span class="block text-muted mt-1">{formatEuro(provisionalPrices.portalInicio)}</span>
-        </li>
-        {
-          portalModules.map((m, i) => (
-            <li
-              class="card-lift card-rail border border-border rounded-lg p-4 bg-card"
-              data-reveal
-              style={`--i:${i + 1}`}
-            >
-              <strong>{m.title}</strong>
-              <span class="block text-muted mt-1">+{formatEuro(m.priceEuros)}</span>
-              <span class="block text-muted">{m.timeline}</span>
-            </li>
-          ))
-        }
-      </ul>
-
       <div class="mt-8">
         <PricingConfigurator client:load />
       </div>
     </section>
-
-    <h2 class="mt-16 text-2xl font-bold">Webs por sector</h2>
-    <p class="mt-2 text-sm text-muted max-w-2xl">
-      Cada sector tiene sus dudas concretas. Estas páginas las resuelven.
-    </p>
-    <Grid gap="6" class="mt-6 md:grid-cols-3">
-      {
-        verticals.map((v, i) => (
-          <div data-reveal style={`--i:${i}`}>
-            <Link href={`/servicios/web-para/${v.slug}`} variant="inline" class="text-sm">
-              {v.name}
-            </Link>
-          </div>
-        ))
-      }
-    </Grid>
   </Container>
 </Layout>
