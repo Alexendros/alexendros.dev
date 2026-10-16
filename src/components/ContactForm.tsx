@@ -270,6 +270,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
       </p>
 
       <h2
+        id={`${formId}-step-title`}
         ref={stepHeadingRef}
         tabIndex={-1}
         className="text-base font-bold focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
@@ -297,14 +298,13 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
 
       {step === 'reason' && (
         <div>
-          <label htmlFor="contact-reason" className="text-sm">
-            Motivo*
-          </label>
           <select
             id="contact-reason"
             name="reason"
             className={inputClass}
             value={form.reason}
+            aria-labelledby={`${formId}-step-title`}
+            aria-required="true"
             aria-invalid={reasonErr ? true : undefined}
             aria-describedby={fieldDescribedBy('reason', reasonErr)}
             disabled={sending}
@@ -331,15 +331,14 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
 
       {step === 'name' && (
         <div>
-          <label htmlFor="contact-name" className="text-sm">
-            Nombre*
-          </label>
           <input
             id="contact-name"
             name="name"
             autoComplete="name"
             className={inputClass}
             value={form.name}
+            aria-labelledby={`${formId}-step-title`}
+            aria-required="true"
             aria-invalid={nameErr ? true : undefined}
             aria-describedby={fieldDescribedBy('name', nameErr)}
             disabled={sending}
@@ -355,14 +354,13 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
 
       {step === 'entity' && (
         <div>
-          <label htmlFor="contact-entity" className="text-sm">
-            Categoría*
-          </label>
           <select
             id="contact-entity"
             name="entityType"
             className={inputClass}
             value={form.entityType}
+            aria-labelledby={`${formId}-step-title`}
+            aria-required="true"
             aria-invalid={entityErr ? true : undefined}
             aria-describedby={fieldDescribedBy('entityType', entityErr)}
             disabled={sending}
@@ -464,15 +462,14 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
 
       {step === 'message' && (
         <div>
-          <label htmlFor="contact-message" className="text-sm">
-            Tu petición*
-          </label>
           <textarea
             id="contact-message"
             name="message"
             rows={5}
             className={inputClass}
             value={form.message}
+            aria-labelledby={`${formId}-step-title`}
+            aria-required="true"
             aria-invalid={messageErr ? true : undefined}
             aria-describedby={fieldDescribedBy('message', messageErr)}
             disabled={sending}
