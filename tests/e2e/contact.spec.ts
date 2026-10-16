@@ -23,17 +23,19 @@ test('F04: contacto valida canal y envía', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Formulario de contacto' })).toBeVisible();
 
   await page.getByRole('button', { name: /Continuar/ }).click(); // Motivo
-  await page.getByLabel('Nombre*').fill('A');
+  await page.getByRole('textbox', { name: 'Tu nombre' }).fill('A');
   await page.getByRole('button', { name: /Continuar/ }).click();
   await expect(page.getByRole('alert')).toBeVisible();
 
-  await page.getByLabel('Nombre*').fill('Test Cliente');
+  await page.getByRole('textbox', { name: 'Tu nombre' }).fill('Test Cliente');
   await page.getByRole('button', { name: /Continuar/ }).click();
   await page.getByRole('button', { name: /Continuar/ }).click(); // Categoría
   await page.getByRole('radio', { name: 'Correo electrónico' }).check();
   await page.getByLabel('Correo electrónico*').fill('test@example.com');
   await page.getByRole('button', { name: /Continuar/ }).click();
-  await page.getByLabel('Tu petición*').fill('Necesito información sobre el informe comercial.');
+  await page
+    .getByRole('textbox', { name: 'Tu petición' })
+    .fill('Necesito información sobre el informe comercial.');
   await page.getByRole('button', { name: /Continuar/ }).click();
   await page.getByLabel(/Acepto/).check();
   await page.getByRole('button', { name: /Enviar/ }).click();
@@ -53,7 +55,7 @@ test('F04: WhatsApp sin teléfono no envía', async ({ page }) => {
 
   await page.goto('/contacto');
   await page.getByRole('button', { name: /Continuar/ }).click();
-  await page.getByLabel('Nombre*').fill('Test Cliente');
+  await page.getByRole('textbox', { name: 'Tu nombre' }).fill('Test Cliente');
   await page.getByRole('button', { name: /Continuar/ }).click();
   await page.getByRole('button', { name: /Continuar/ }).click();
   await page.getByRole('radio', { name: 'WhatsApp' }).check();
@@ -70,9 +72,11 @@ test('contacto muestra canales horizontales y sin servicios de entrada', async (
   await expect(page.getByRole('heading', { name: 'Perfiles y correo' })).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Formulario', exact: true })).toHaveCount(0);
 
-  await expect(page.getByRole('link', { name: 'contratacion@alexendros.dev' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'GitHub' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'LinkedIn' })).toBeVisible();
+  const footer = page.locator('footer');
+  await expect(footer.getByRole('link', { name: /contratacion@alexendros\.dev/i })).toBeVisible();
+  await expect(footer.getByRole('link', { name: 'GitHub' })).toBeVisible();
+  await expect(footer.getByRole('link', { name: 'LinkedIn' })).toBeVisible();
+  await expect(page.locator('main').getByRole('link', { name: 'GitHub' })).toHaveCount(0);
   await expect(page.locator('body')).not.toContainText(/retainer/i);
   await expect(page.locator('body')).not.toContainText(/diagnóstico/i);
 });

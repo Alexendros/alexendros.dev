@@ -15,38 +15,6 @@ import { site } from '../content/site';
   <Container size="narrow" class="py-16 md:py-24">
     <PageHead kicker="CONTACTO" title="Formulario de contacto" />
 
-    <ul class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
-      <li>
-        <Link href={site.social.email} variant="nav" class="hover:text-primary">
-          contratacion@alexendros.dev
-        </Link>
-      </li>
-      <li>
-        <Link
-          href={site.social.github}
-          variant="nav"
-          class="hover:text-primary"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          GitHub
-        </Link>
-        <span aria-hidden="true"> ↗</span>
-      </li>
-      <li>
-        <Link
-          href={site.social.linkedin}
-          variant="nav"
-          class="hover:text-primary"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          LinkedIn
-        </Link>
-        <span aria-hidden="true"> ↗</span>
-      </li>
-    </ul>
-
     <div class="mt-10">
       <ContactForm
         client:load
