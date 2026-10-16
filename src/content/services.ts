@@ -37,6 +37,24 @@ export const serviceSchema = z.object({
 
 export type Service = z.infer<typeof serviceSchema>;
 
+/**
+ * Objeto homogéneo de ficha en el índice `/servicios`.
+ * Una sola forma para rellenar cada tarjeta; el detalle fino de cada producto
+ * se define después en la ficha `/servicios/[slug]`.
+ */
+export const productCardSchema = z.object({
+  slug: z.string().min(1),
+  title: z.string().min(1),
+  short: z.string().min(1),
+  priceEuros: z.number().positive(),
+  href: z.string().min(1),
+  ctaLabel: z.string().min(1)
+});
+
+export type ProductCard = z.infer<typeof productCardSchema>;
+
+export const SERVICE_PRODUCT_CTA = 'Ver qué incluye →';
+
 export const portalModuleSchema = z.object({
   id: z.string().min(1),
   title: z.string().min(1),
@@ -230,6 +248,16 @@ export const portalModules: PortalModule[] = [
   }
 ];
 
+/** Fichas del índice: mismas claves, mismos CTA; datos desde el catálogo vivo. */
+export const serviceProducts: ProductCard[] = services.map((s) => ({
+  slug: s.slug,
+  title: s.title,
+  short: s.short,
+  priceEuros: s.priceEuros,
+  href: `/servicios/${s.slug}`,
+  ctaLabel: SERVICE_PRODUCT_CTA
+}));
+
 export const catalogEntries: CatalogEntry[] = [
   ...services.map((s) => ({
     id: s.slug,
@@ -269,6 +297,11 @@ services.forEach((s, i) => {
   if (!r.success) throw new Error(`Service ${i} inválido: ${r.error.message}`);
   if (slugs.has(s.slug)) throw new Error(`Service slug duplicado: ${s.slug}`);
   slugs.add(s.slug);
+});
+
+serviceProducts.forEach((p, i) => {
+  const r = productCardSchema.safeParse(p);
+  if (!r.success) throw new Error(`ProductCard ${i} inválido: ${r.error.message}`);
 });
 
 catalogEntries.forEach((e, i) => {

@@ -47,6 +47,16 @@
       "source": "/servicios/landing-10-dias",
       "destination": "/servicios",
       "permanent": true
+    },
+    {
+      "source": "/servicios/web-para",
+      "destination": "/servicios",
+      "permanent": true
+    },
+    {
+      "source": "/servicios/web-para/:path*",
+      "destination": "/servicios",
+      "permanent": true
     }
   ],
   "headers": [
