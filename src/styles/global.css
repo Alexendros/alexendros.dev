@@ -154,14 +154,6 @@
        total, dentro del presupuesto de entrada. */
     --dur-hero: 460ms;
     --stagger: 60ms;
-
-    /* Ventana del H1: reposo 2,4 s + giro 600 ms; 3 frases → 9 s.
-       perspective() va en el propio transform (no en el padre con
-       overflow:hidden) para que el rotateX se vea de verdad. */
-    --dur-slot: 2.4s;
-    --dur-slot-spin: 600ms;
-    --dur-slot-step: 3s;
-    --dur-slot-cycle: 9s;
   }
 
   /* @tema-oscuro:inicio — publicado condicionado: scripts/check-contrast.mjs
@@ -469,115 +461,6 @@
     }
   }
 
-  /* Ventana rotatoria del H1: medida invisible (altura = frase más alta) +
-     escenario absoluto. El rotateX no colapsa el layout ni provoca CLS. */
-  .hero-slot {
-    position: relative;
-    display: grid;
-    margin-top: 0.15em;
-  }
-
-  .hero-slot-measure {
-    display: grid;
-    visibility: hidden;
-    pointer-events: none;
-  }
-
-  .hero-slot-measure-line {
-    grid-area: 1 / 1;
-  }
-
-  .hero-slot-stage {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-  }
-
-  /* Rotación por defecto (no gated a no-preference): si el SO no declara
-     reduce, o el motor no resuelve la media, el giro tiene que verse.
-     Linear: los % del keyframe = tiempo real. */
-  .hero-slot-item {
-    position: absolute;
-    inset-inline: 0;
-    top: 0;
-    color: var(--brand);
-    transform-origin: 50% 50%;
-    backface-visibility: hidden;
-    will-change: transform, opacity;
-    animation: hero-slot-cycle var(--dur-slot-cycle) linear both infinite;
-    animation-delay: calc(var(--i, 0) * var(--dur-slot-step));
-  }
-
-  .hero-slot-item[data-i='0'] {
-    --i: 0;
-
-    animation-name: hero-slot-cycle-first;
-  }
-
-  .hero-slot-item[data-i='1'] {
-    --i: 1;
-  }
-
-  .hero-slot-item[data-i='2'] {
-    --i: 2;
-  }
-
-  /* perspective() en el transform: el overflow del stage ya no aplana el 3D.
-     Ciclo 9 s / paso 3 s: cada frase aguanta hasta el handoff (33.33 %),
-     sale en solape con la siguiente (33→42 %) para que el hueco del H1
-     nunca quede vacío. */
-  @keyframes hero-slot-cycle-first {
-    0%,
-    33.33% {
-      opacity: 1;
-      transform: perspective(900px) translateY(0) rotateX(0deg);
-    }
-
-    42% {
-      opacity: 0;
-      transform: perspective(900px) translateY(-110%) rotateX(85deg);
-    }
-
-    42.01%,
-    90% {
-      opacity: 0;
-      transform: perspective(900px) translateY(110%) rotateX(-85deg);
-    }
-
-    100% {
-      opacity: 1;
-      transform: perspective(900px) translateY(0) rotateX(0deg);
-    }
-  }
-
-  @keyframes hero-slot-cycle {
-    0% {
-      opacity: 0;
-      transform: perspective(900px) translateY(110%) rotateX(-85deg);
-    }
-
-    8% {
-      opacity: 1;
-      transform: perspective(900px) translateY(0) rotateX(0deg);
-    }
-
-    33.33% {
-      opacity: 1;
-      transform: perspective(900px) translateY(0) rotateX(0deg);
-    }
-
-    42% {
-      opacity: 0;
-      transform: perspective(900px) translateY(-110%) rotateX(85deg);
-    }
-
-    42.01%,
-    100% {
-      opacity: 0;
-      transform: perspective(900px) translateY(110%) rotateX(-85deg);
-    }
-  }
-
   /* Tira Dimension (decorativa): las hairlines crecen con scaleX al
      cargar, sin JS (animación CSS pura con fill). */
   @media (prefers-reduced-motion: no-preference) {
@@ -775,10 +658,6 @@
     .js [data-hero] [data-hero-lcp] {
       animation: none;
     }
-
-    /* El rotador del H1 no se aplana aquí: visores (Cursor/Vercel) y
-       muchos motores llegan con reduce activo y mostrarían las tres
-       frases en columna. */
 
     .btn-spinner,
     .badge-dot,

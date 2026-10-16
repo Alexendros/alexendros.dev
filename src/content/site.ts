@@ -1,9 +1,9 @@
 export const site = {
   name: 'Alexendros',
   url: 'https://alexendros.dev',
-  titleDefault: 'Alexendros — Servicios digitales medibles para negocios',
+  titleDefault: 'Alexendros — Diseño y desarrollo de productos web',
   descriptionDefault:
-    'Catálogo de servicios, portal configurable por módulos, metodología y cláusulas de valor. Valencia — remoto.',
+    'Diseño y desarrollo de productos web, y revisión de claridad, funcionamiento y seguridad básica. Alcance acordado y trato directo. Valencia — remoto.',
   locale: 'es',
   ogLocale: 'es_ES',
   nav: [

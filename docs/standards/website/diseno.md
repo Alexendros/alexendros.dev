@@ -62,12 +62,12 @@ Todos en `src/components/`. Clases utilidad de Tailwind permitidas; valores de c
 
 Extraído de Layout: primer foco de la página, salta a `#contenido`, visible solo con teclado (`focus-visible`), z-index máximo. No reordenar en Layout.
 
-### Ventana rotatoria del H1 (home)
+### H1 estable de la home (decisión 0016)
 
-- **Uso:** solo el H1 de la home (`Hero.astro`). Tres frases complementan el arranque fijo; no se usa en portadas interiores ni en legales.
-- **Movimiento:** CSS puro (`transform`/`opacity`), ciclo 9 s / paso 3 s, timing `linear`. Giro continuo (no se aplana con `prefers-reduced-motion`). Cada frase entra desde abajo con `rotateX` y sale hacia arriba. Sin control de pausa. CTA Contactar solo en el header.
-- **A11y:** el escenario visual es `aria-hidden`; el nombre accesible del `h1` lista el arranque y las tres frases una sola vez. Sin `aria-live`. No reescribir el nombre durante el ciclo.
-- **Don't:** no copiar la ventana a otras páginas; no añadir librerías de motion; no animar con propiedades distintas de `transform`/`opacity`.
+- **Uso:** solo el H1 de la home (`Hero.astro`). Mensaje fijo de contratación; sin rotación ni dependencia de un ciclo.
+- **CTAs:** primario «Cuéntame qué necesitas» (`/contacto`) y secundario «Explorar servicios» (`/servicios`) en el hero, además del Contactar de cabecera y del sticky móvil.
+- **Motion:** la entrada escalonada del hero (`data-hero-item`) sigue las reglas generales de reveal; con `prefers-reduced-motion` no hay animación.
+- **Don't:** no reintroducir ventana rotatoria en el producto; no añadir librerías de motion; no animar con propiedades distintas de `transform`/`opacity`.
 
 ### Tarjetas enlazables (ServiceCard / ProjectCard) — patrón card-link
 

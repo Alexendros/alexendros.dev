@@ -36,13 +36,19 @@ export type ContactMailPayload = {
   smtp: SmtpConfig;
 };
 
+export const CONTACT_IDEMPOTENCY_TTL_SECONDS = 10 * 60;
+export const CONTACT_IDEMPOTENCY_KEY_PREFIX = 'alexendros:contact:idemp';
+
 export type ContactDeps = {
   getEnv: () => ContactEnv;
   rateLimit: (ip: string) => Promise<RateLimitResult>;
   sendMail: (payload: ContactMailPayload) => Promise<void>;
   verifyTurnstile?: (token: string, ip: string) => Promise<boolean>;
+  /** Solo con consentimiento de publicidad; el formulario de contacto no lo recoge. */
   sendLeadEvent?: (input: ContactLeadEvent) => Promise<void>;
   saveLead?: (input: ContactLeadInput) => Promise<void>;
+  claimIdempotency?: (key: string) => Promise<boolean>;
+  releaseIdempotency?: (key: string) => Promise<void>;
   createRequestId?: () => string;
   nowMs?: () => number;
 };
@@ -96,6 +102,27 @@ export function isJsonContentType(request: Request): boolean {
 
 export function methodNotAllowed(): Response {
   return json(405, { error: 'Method not allowed' }, { Allow: 'POST' });
+}
+
+/** Clave de idempotencia: cabecera Idempotency-Key o huella del cuerpo. */
+export function resolveContactIdempotencyKey(request: Request, data: ContactInput): string | null {
+  const header = request.headers.get('idempotency-key')?.trim();
+  if (header && header.length >= 8 && header.length <= 128) {
+    return `${CONTACT_IDEMPOTENCY_KEY_PREFIX}:${header}`;
+  }
+  const material = [
+    data.name,
+    data.email ?? '',
+    data.phone ?? '',
+    data.reason,
+    data.message,
+    data.channel
+  ].join('|');
+  let hash = 0;
+  for (let i = 0; i < material.length; i++) {
+    hash = (hash * 31 + material.charCodeAt(i)) >>> 0;
+  }
+  return `${CONTACT_IDEMPOTENCY_KEY_PREFIX}:body:${hash.toString(16)}`;
 }
 
 function mailFields(data: ContactInput) {
@@ -204,10 +231,31 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
   }
 
   const fields = mailFields(parsed.data);
+  const idemKey =
+    deps.claimIdempotency && deps.releaseIdempotency
+      ? resolveContactIdempotencyKey(request, parsed.data)
+      : null;
+
+  if (idemKey && deps.claimIdempotency) {
+    let claimed = false;
+    try {
+      claimed = await deps.claimIdempotency(idemKey);
+    } catch {
+      logEvent('error', 'contact_idempotency_error', requestId, false);
+      return json(503, { error: 'Service unavailable' });
+    }
+    if (!claimed) {
+      logEvent('info', 'contact_idempotent_replay', requestId, true);
+      return json(200, { ok: true, duplicate: true });
+    }
+  }
 
   try {
     await deps.sendMail({ ...fields, smtp });
   } catch {
+    if (idemKey && deps.releaseIdempotency) {
+      await deps.releaseIdempotency(idemKey).catch(() => {});
+    }
     logEvent('error', 'contact_smtp_error', requestId, false);
     return json(503, { error: 'Service unavailable' });
   }
@@ -217,6 +265,9 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
     messageLen: fields.message.length
   });
 
+  // CAPI Lead solo si el dep está cableado Y el visitante dio consentimiento de
+  // publicidad. El formulario actual solo pide consentimiento de respuesta: el
+  // cableado de producción no registra sendLeadEvent (CIERRE-21).
   if (deps.sendLeadEvent && parsed.data.email) {
     void deps
       .sendLeadEvent({

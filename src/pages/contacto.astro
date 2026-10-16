@@ -56,6 +56,19 @@ import { site } from '../content/site';
       />
     </div>
 
+    <noscript>
+      <p class="mt-6 rounded-lg border border-border bg-card p-4 text-sm">
+        El formulario interactivo necesita JavaScript. Mientras tanto puedes escribir a{' '}
+        <a
+          href={site.social.email}
+          class="underline decoration-dotted underline-offset-2 text-primary"
+        >
+          contratacion@alexendros.dev
+        </a>
+        {' '}indicando qué necesitas y cómo prefieres que te responda.
+      </p>
+    </noscript>
+
     <p class="mt-8 text-sm text-muted">
       Usaré tus datos solo para responder a esta petición. Consulta la{' '}
       <Link href="/privacidad" variant="inline">política de privacidad</Link> antes de enviar.

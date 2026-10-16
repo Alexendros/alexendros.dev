@@ -25,23 +25,22 @@ Quien eres: role Full Stack · Auditor · Consultor, summary conversion-focused,
 
 ## Componentes
 
-- Header.astro: sticky blur nav activo CTA Reservar siempre visible
-- Footer.astro: 3 col marca+nav+legal+contacto; tracking solo con consentimiento (CMP)
-- Hero.astro: H1 "Construyo webs y apps que convierten y escalan", 3 formas trabajar, CTA doble contacto+proyectos, 3 metricas pill -65% 3.2% 0 viol, terminal logs CI verde stack pills, trust bar 85% hiring managers revisan portfolio 88% clientes investigan 1s vs5s 3x 3 campos 3.2% vs 9+ 0.8%
-- ServiceCard.astro: pricingDesde timeline metricas scope count hover border primary
-- ProjectCard.astro: titulo short results pills primary/10 tech pills role footer
-- ContactForm.tsx: Isla React `client:visible`. Campos nombre* email* empresa opcional asunto* select 6 opciones mensaje* 20-2000 consent RGPD no pre-marcado honeypot hidden. Zod validacion. Nota conversion.
-- CookieBanner.tsx: Isla CMP `vanilla-cookieconsent` v3; Consent Mode v2 default-deny.
-- BookingOptions.astro: CTAs Cal.com (diagnóstico 75€, sesión técnica 150€) con embed.js diferido en modal + QR SVG de build (uqr). Retainer oculto.
+- Header.astro: sticky blur; nav Servicios / Publicaciones / Metodología / Valores; CTA Contactar
+- Footer.astro: marca + nav + legal; tracking solo con consentimiento (CMP)
+- Hero.astro: H1 estable de contratación (decisión 0016); subtítulo de alcance; CTAs «Cuéntame qué necesitas» y «Explorar servicios»
+- ServiceCard.astro / ProjectCard.astro: fichas de catálogo y publicaciones con availability
+- ContactForm.tsx: isla React `client:load`, asistente de 6 pasos (motivo → nombre → categoría → canal → petición → consentimiento), errores por campo, honeypot, Turnstile opcional
+- CookieBanner.tsx: isla CMP `vanilla-cookieconsent` v3 (`client:idle`); Consent Mode v2 default-deny
+- BookingOptions.astro / LeadMagnet.astro: componentes residuales **no montados** en rutas publicadas; reserva de sesión vía enlace Cal.com en ficha
 
 ## Paginas
 
-- index.astro: Hero+Servicios grid 3+transparencia+Proyectos featured 3+por que convierte 3 col velocidad prueba friccion+CTA final
-- servicios/index.astro y [slug].astro: metricas arriba pricing timeline 2 col problemas/alcance/exclusiones vs entregables/proceso/stack CTA sticky
-- proyectos/index.astro y [slug].astro: contexto reto solucion responsabilidades vs stack highlights links CTA Similar?
-- sobre-mi.astro: method 6 pasos por que distinto 0 JS contenido self-hosted; tracking gated por CMP
-- contacto.astro: Reservas Cal (diagnóstico 75€ / sesión técnica 150€ + QR) + Form + canales email; nota privacidad 12 meses RGPD 6.1.b
-- api/contact.ts: Zod honeypot rate-limit Upstash nodemailer Proton SMTP From/To operaciones@alexendros.dev
-- aviso-legal.astro privacidad.astro: NIF 21002968N C/Higinio Noja 21 p9 Valencia hola@alexendros.dev sin alta autonomo bajo SMI 12 meses retencion Proton Vercel DPF+SCC
+- index.astro: solo Hero (home mínima 0014)
+- servicios/: catálogo + configurador de portal; fichas con precio/pago/plazo/entrega/garantía
+- proyectos/: Publicaciones con availability si|no|reservado
+- metodologia.astro, valores.astro, identidad.astro
+- contacto.astro: formulario asistente + mailto; sin embed Cal en página
+- api/contact.ts: Zod, honeypot, rate-limit Upstash, idempotencia Redis, Proton SMTP; sin CAPI Lead (falta consentimiento publicidad)
+- privacidad.astro / cookies.astro: textos alineados al CMP; Identidad como aviso del prestador
 
 Cada elemento existe para reducir objecion o aumentar trust. No anadir sin justificar metrica conversion.

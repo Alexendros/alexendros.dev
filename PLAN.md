@@ -21,8 +21,8 @@ MVP en **producción** en [https://alexendros.dev](https://alexendros.dev). Repo
 ## Arquitectura entregada
 
 - Contenido tipado en `src/content/*.ts` (Zod en build)
-- Páginas: home, servicios, proyectos, sobre-mí, contacto, cookies, aviso-legal, privacidad
-- Islas cliente: `ContactForm.tsx` (`client:visible`), `CookieBanner.tsx`
+- Páginas: home (hero mínimo), servicios, proyectos (Publicaciones), metodología, valores, identidad, contacto, cookies, privacidad
+- Islas cliente: `ContactForm.tsx` (`client:load`, asistente 6 pasos), `CookieBanner.tsx` (`client:idle`), `PricingConfigurator.tsx` (`client:load` en servicios)
 - API: contacto, webhook Cal, CSP report
 - CI: `quality` (incluye `lint:css` + `check:records`), `test`, `build`, `smoke`, `e2e-critical`; e2e/LHCI opt-in
 - Deploy Hobby: preview por PR; producción = merge a `main`

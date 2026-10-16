@@ -177,6 +177,17 @@
       "recordType": "event",
       "kind": "alerta",
       "source": "https://github.com/Alexendros/alexendrosdev/actions/runs/38160559451"
+    },
+    {
+      "id": "evt-cierre-producto-2026-10-16",
+      "sequence": 17,
+      "timestamp": "2026-10-16T16:30:00Z",
+      "active": true,
+      "title": "Cierre de producto: referencia prod y aplazamientos",
+      "summary": "Producción = cf355e4 (dpl_GMKphxUX…). Portada B, asistente corto y agrupación Metodología/Valores aplazados. LeadMagnet/BookingOptions sin montar. Condiciones de precios e importes siguen provisionales.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "docs/audits/cierres/CIERRE-01-referencia.md"
     }
   ]
 }
