@@ -179,7 +179,7 @@ export const portalBase: PortalModule = {
   timeline: '10 días laborables',
   delivery: 'Landing, página de gracias, formulario y publicación',
   guarantee:
-    '30 días naturales para corregir desviaciones del alcance escrito. LCP ≤ 2,5 s, axe 0 en rutas acordadas, contraste AA',
+    '30 días naturales para corregir desviaciones del alcance escrito. Objetivos técnicos en rutas y entorno acordados: LCP ≤ 2,5 s (Lighthouse), axe 0 en esas rutas (no es conformidad WCAG completa) y contraste AA del tema',
   additive: false
 };
 

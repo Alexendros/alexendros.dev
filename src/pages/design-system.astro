@@ -326,50 +326,14 @@ const RADIUS = [
           <Button id="ds-hero-replay" variant="ghost" size="sm">Repetir entrada</Button>
         </div>
 
-        <h3 class="mt-8 text-base font-bold">Ventana rotatoria del H1</h3>
+        <h3 class="mt-8 text-base font-bold">H1 estable de la home</h3>
         <p class="mt-2 text-sm text-muted max-w-2xl">
-          Solo en el H1 de la home: tres frases en una celda, giro vertical con <code
-            >perspective() + rotateX</code
-          >, reposo 2,4&nbsp;s y giro 600&nbsp;ms (ciclo 9&nbsp;s). Giro continuo, también con
-          reduced-motion del SO. El toggle de esta página no aplana el rotador.
+          Decisión 0016: el titular de la home es un mensaje fijo de contratación, sin rotación. Ver{
+            ' '
+          }
+          <Link href="/" variant="inline">la portada</Link> y{' '}
+          <code>docs/standards/website/diseno.md</code>.
         </p>
-        <div
-          data-ds-slot-demo
-          class="hero-slot-root mt-3 border border-border rounded-lg p-6 bg-card"
-        >
-          <p class="text-2xl font-bold leading-tight">
-            Aquí se crean productos digitales que son reflejo de
-            <span class="hero-slot">
-              <span class="hero-slot-measure" aria-hidden="true">
-                <span class="hero-slot-measure-line"
-                  >emprendimientos personales novedosos de alto impacto social y reputación
-                  profesional</span
-                >
-                <span class="hero-slot-measure-line"
-                  >sociedades empresariales con sólidas estructuras productivas</span
-                >
-                <span class="hero-slot-measure-line"
-                  >historia y obra de seres humanos con valores ejemplares</span
-                >
-              </span>
-              <span class="hero-slot-stage" aria-hidden="true">
-                <span class="hero-slot-item bp-h1-draft" data-i="0"
-                  >emprendimientos personales novedosos de alto impacto social y reputación
-                  profesional</span
-                >
-                <span class="hero-slot-item bp-h1-draft" data-i="1"
-                  >sociedades empresariales con sólidas estructuras productivas</span
-                >
-                <span class="hero-slot-item bp-h1-draft" data-i="2"
-                  >historia y obra de seres humanos con valores ejemplares</span
-                >
-              </span>
-            </span>
-          </p>
-        </div>
-        <div class="mt-3">
-          <Button id="ds-slot-replay" variant="ghost" size="sm">Repetir giro</Button>
-        </div>
 
         <h3 class="mt-8 text-base font-bold">Reveal con stagger</h3>
         <p class="mt-2 text-sm text-muted max-w-2xl">
@@ -449,18 +413,6 @@ const RADIUS = [
     demo.removeAttribute('data-hero');
     void demo.offsetWidth;
     demo.setAttribute('data-hero', '');
-  });
-
-  // Replay del giro de la ventana: reinicia animation en cada frase.
-  const slotReplay = document.getElementById('ds-slot-replay');
-  slotReplay?.addEventListener('click', () => {
-    const items = document.querySelectorAll('[data-ds-slot-demo] .hero-slot-item');
-    items.forEach((node) => {
-      if (!(node instanceof HTMLElement)) return;
-      node.style.animation = 'none';
-      void node.offsetWidth;
-      node.style.animation = '';
-    });
   });
 
   // Replay del reveal con stagger.

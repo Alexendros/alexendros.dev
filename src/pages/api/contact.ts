@@ -9,7 +9,7 @@ import {
   type ContactDeps
 } from '../../lib/contactHandler';
 import { verifyTurnstileToken } from '../../lib/turnstile';
-import { isCapiConfigured, sendCapiEvent } from '../../lib/tracking/capi';
+import { CONTACT_IDEMPOTENCY_TTL_SECONDS } from '../../lib/contactHandler';
 import { createNotionLeadsStore } from '../../lib/calNotionClient';
 
 export const prerender = false;
@@ -18,6 +18,16 @@ const MAIL_FROM = 'operaciones@alexendros.dev';
 const MAIL_TO = 'operaciones@alexendros.dev';
 
 let cachedRatelimit: Ratelimit | null = null;
+let cachedRedis: Redis | null = null;
+
+function getContactRedis(): Redis {
+  if (cachedRedis) return cachedRedis;
+  const url = import.meta.env.UPSTASH_REDIS_REST_URL;
+  const token = import.meta.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token) throw new Error('redis_misconfigured');
+  cachedRedis = new Redis({ url, token });
+  return cachedRedis;
+}
 
 function getContactRatelimit(): Ratelimit {
   if (cachedRatelimit) return cachedRatelimit;
@@ -52,18 +62,19 @@ function createProductionDeps(): ContactDeps {
       if (!secret) return false;
       return verifyTurnstileToken(secret, token, ip);
     },
-    sendLeadEvent: async ({ email, ip, userAgent, sourceUrl }) => {
-      const cfg = {
-        pixelId: import.meta.env.META_PIXEL_ID ?? import.meta.env.PUBLIC_META_PIXEL_ID,
-        accessToken: import.meta.env.META_CAPI_TOKEN,
-        testEventCode: import.meta.env.META_CAPI_TEST_EVENT_CODE
-      };
-      if (!isCapiConfigured(cfg)) return;
-      await sendCapiEvent(cfg, {
-        eventName: 'Lead',
-        eventSourceUrl: sourceUrl ?? undefined,
-        userData: { email, ip, userAgent: userAgent ?? undefined }
+    // Meta CAPI Lead no se emite desde el formulario: solo hay consentimiento
+    // de respuesta, no de publicidad (CIERRE-21).
+    claimIdempotency: async (key) => {
+      const redis = getContactRedis();
+      const result = await redis.set(key, '1', {
+        nx: true,
+        ex: CONTACT_IDEMPOTENCY_TTL_SECONDS
       });
+      return Boolean(result);
+    },
+    releaseIdempotency: async (key) => {
+      const redis = getContactRedis();
+      await redis.del(key);
     },
     saveLead: async ({ name, email, subject, message }) => {
       const token = import.meta.env.NOTION_TOKEN;

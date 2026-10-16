@@ -1,14 +1,9 @@
 ---
 import BlueprintMotif from './BlueprintMotif.astro';
-
-const phrases = [
-  'emprendimientos personales novedosos de alto impacto social y reputación profesional',
-  'sociedades empresariales con sólidas estructuras productivas',
-  'historia y obra de seres humanos con valores ejemplares'
-] as const;
+import Button from './Button.astro';
 ---
 
-<section class="hero-slot-root relative mx-auto max-w-3xl px-6 py-16 md:py-24" data-hero>
+<section class="relative mx-auto max-w-3xl px-6 py-16 md:py-24" data-hero>
   <div
     class="pointer-events-none absolute -right-16 top-4 h-56 w-auto overflow-hidden md:-right-20 md:top-8 md:h-96"
     aria-hidden="true"
@@ -18,29 +13,22 @@ const phrases = [
 
   <div data-hero-item data-hero-lcp style="--i:0">
     <h1 class="bp-h1 text-4xl md:text-5xl font-bold leading-[1.05] tracking-tight max-w-3xl">
-      Aquí se crean productos digitales que son reflejo de
-      <span class="sr-only">
-        {` ${phrases[0]}, ${phrases[1]} y ${phrases[2]}`}
-      </span>
-      <span class="hero-slot">
-        <span class="hero-slot-measure" aria-hidden="true">
-          {phrases.map((phrase) => <span class="hero-slot-measure-line">{phrase}</span>)}
-        </span>
-        <span class="hero-slot-stage" aria-hidden="true">
-          {
-            phrases.map((phrase, i) => (
-              <span class="hero-slot-item bp-h1-draft" data-i={i}>
-                {phrase}
-              </span>
-            ))
-          }
-        </span>
-      </span>
+      Diseño y desarrollo de productos web, y reviso los que necesitan mejorar
     </h1>
   </div>
 
   <p class="mt-6 text-lg text-muted max-w-2xl" data-hero-item style="--i:1">
-    El dominio donde despliegue tu portal será accesible globalmente para que puedas dar a conocer
-    tus productos, conectar con personas y difundir tus proyectos para todo el mundo.
+    Desde una primera página hasta una revisión de claridad, funcionamiento y seguridad básica. Con
+    alcance acordado y trato directo conmigo.
   </p>
+
+  <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3" data-hero-item style="--i:2">
+    <Button href="/contacto">Cuéntame qué necesitas</Button>
+    <a
+      href="/servicios"
+      class="text-sm font-medium text-muted underline decoration-dotted underline-offset-4 hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded"
+    >
+      Explorar servicios
+    </a>
+  </div>
 </section>

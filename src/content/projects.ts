@@ -41,10 +41,17 @@ export type Project = z.infer<typeof projectSchema> & { cover: ImageMetadata };
 
 export type ProjectAvailability = Project['availability'];
 
+/** Etiquetas comerciales (no dependen solo del color). */
 export const availabilityLabels: Record<ProjectAvailability, string> = {
-  si: 'sí',
-  no: 'no',
-  reservado: 'reservado'
+  si: 'Disponible para consulta o encargo',
+  no: 'No transferible',
+  reservado: 'Reservado — titular actual; consulta posible'
+};
+
+export const availabilityCtaLabels: Record<ProjectAvailability, string> = {
+  si: 'Consultar sobre esta obra',
+  no: 'Ver ficha',
+  reservado: 'Preguntar por esta obra'
 };
 
 export const projects: Project[] = [

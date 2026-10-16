@@ -1,5 +1,5 @@
 # Alexendros.dev — Cursor Rules (Astro MVP Conversion-Focused)
-Stack: Astro 7.3 + React islands ContactForm.tsx client:visible + CookieBanner CMP + Tailwind tokens 3 capas + TS estricto + Zod + Vercel
+Stack: Astro 7.3 + React islands ContactForm.tsx client:load + CookieBanner CMP + Tailwind tokens 3 capas + TS estricto + Zod + Vercel
 Principios: 0 JS contenido, self-hosted fonts Inter+JetBrains Mono, tracking solo con consentimiento (Consent Mode v2 default-deny; Vercel Analytics+Speed Insights solo __IS_VERCEL__), WCAG AA, LHCI opt-in perf>=95 a11y/BP/SEO 100 CLS<=0.05 LCP<=2.5s, axe-core 0 violaciones rutas CI, e2e-critical always-on
 Reglas: contenido tipado src/content/*.ts Zod, tema editorial #0f3778 (decisión 0011 en docs/audits/decisions.json), focus-visible teclado, sharp content-visibility, form Zod honeypot Upstash Proton operaciones@alexendros.dev, docs vivas en docs/standards/, registros docs/audits/{decisions,events}.json con pnpm check:records, CI quality(test lint css format cookies records)/test/build/smoke/e2e-critical, commits español
 DONE: build verde 0 TS errors gates documentados form Proton OG 1200x630 CMP+Consent Mode v2

@@ -216,16 +216,31 @@
       "id": "0015",
       "sequence": 15,
       "timestamp": "2026-10-12T03:14:00Z",
-      "active": true,
+      "active": false,
       "title": "Motion editorial: ventana H1 y ritmo de superficies",
       "summary": "Rotador vertical CSS del H1 en home; reveal y card-lift en listas; regla PageHead; menú móvil; motivo 404; demo y contrato documentados.",
       "recordType": "decision",
-      "status": "aceptada",
+      "status": "superseded",
       "supersedes": [],
-      "supersededBy": null,
+      "supersededBy": "0016",
       "context": "El design system ya tenía entrada de hero, reveal y card-lift; faltaba el complemento rotatorio del titular y aplicar el mismo vocabulario en páginas planas sin nuevas secciones en home.",
       "decision": "Ventana CSS de tres frases en el H1 de home (arranque fijo, --brand, pausa «¡Pare las rotativas!», reduced-motion en columna); stagger y card-rail en valores/metodología/servicios/publicaciones; pagehead-rule con scaleX; apertura del menú móvil con transform/opacity; BlueprintMotif quieto en 404; demo en /design-system; párrafo en diseno.md. Sin librerías de animación ni motion en el configurador de precio.",
-      "consequences": "F01 exige las tres frases en el nombre accesible del H1. Tokens --dur-slot*. Home sigue sin FIG ni portadas (0014)."
+      "consequences": "Superseded por 0016 (H1 estable). Reveal, card-lift y motion de superficies siguen vigentes vía 0016."
+    },
+    {
+      "id": "0016",
+      "sequence": 16,
+      "timestamp": "2026-10-16T16:30:00Z",
+      "active": true,
+      "title": "H1 estable, home mínima y cierre de accesibilidad del titular",
+      "summary": "Sustituye el rotador del H1 por un mensaje fijo; conserva home mínima (0014); CTAs en hero; motion de listas intacto.",
+      "recordType": "decision",
+      "status": "aceptada",
+      "supersedes": ["0015"],
+      "supersededBy": null,
+      "context": "El rotador publicado giraba sin pausa y bajo prefers-reduced-motion, en tensión con WCAG 2.2.2 y con la propia 0015. El cierre de producto fija mensaje comprensible al primer estado sin movimiento obligatorio. Portada comercial compacta (alternativa B) y asistente de contacto más corto quedan aplazados.",
+      "decision": "H1 y subtítulo estables en Hero.astro (copy de contratación directo); CTAs «Cuéntame qué necesitas» (/contacto) y «Explorar servicios» (/servicios) en el hero además del Contactar de cabecera; retirar CSS/demo de ventana rotatoria del producto; conservar reveal, card-lift, pagehead-rule y menú móvil de 0015; home sigue sin FIG ni bloques de sección (0014).",
+      "consequences": "F01 espera H1 estable y CTAs en hero. Tokens --dur-slot* pueden retirarse del CSS vivo. Decisión 0014 de nav y home mínima no se altera."
     }
   ]
 }

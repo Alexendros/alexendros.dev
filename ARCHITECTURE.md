@@ -10,14 +10,14 @@ Sitio profesional de conversión + contratación. Producción: [https://alexendr
 
 ## Stack
 
-Astro 7.3 hybrid + islas React (`ContactForm` con `client:visible`, CMP `CookieBanner`) + Tailwind (PostCSS) + TypeScript estricto + Zod. Fuentes Inter + JetBrains Mono self-hosted. Tracking comercial (GA4, Meta, Clarity, PostHog, LinkedIn, GTM) solo con consentimiento previo y granular (Consent Mode v2 default-deny). Vercel Analytics y Speed Insights solo en builds de Vercel (`__IS_VERCEL__`).
+Astro 7.3 hybrid + islas React (`ContactForm` con `client:load`, CMP `CookieBanner` con `client:idle`) + Tailwind (PostCSS) + TypeScript estricto + Zod. Fuentes Inter + JetBrains Mono self-hosted. Tracking comercial (GA4, Meta, Clarity, PostHog, LinkedIn, GTM) solo con consentimiento previo y granular (Consent Mode v2 default-deny). Vercel Analytics y Speed Insights solo en builds de Vercel (`__IS_VERCEL__`).
 
 ## Runtime
 
 | Capa                 | Dónde                                                                  | Notas                               |
 | -------------------- | ---------------------------------------------------------------------- | ----------------------------------- |
 | Páginas SSG          | `src/pages/*.astro`                                                    | Contenido tipado; 0 JS de contenido |
-| Islas cliente        | `ContactForm.tsx` (`client:visible`), `CookieBanner.tsx`               | Formulario + CMP                    |
+| Islas cliente        | `ContactForm.tsx` (`client:load`), `CookieBanner.tsx` (`client:idle`)  | Formulario + CMP                    |
 | APIs serverless      | `src/pages/api/contact.ts`, `src/pages/api/cal/webhook.ts`, CSP report | Adapter `@astrojs/vercel`           |
 | Contenido            | `src/content/*.ts`                                                     | Zod en build; no CMS                |
 | Estáticos de preview | `.vercel/output/static`                                                | `pnpm preview` / job `smoke`        |

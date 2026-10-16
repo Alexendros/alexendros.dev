@@ -36,11 +36,16 @@ function deps(overrides: Partial<ContactDeps> = {}): ContactDeps {
 }
 
 function postJson(body: unknown, init?: RequestInit): Request {
+  const extraHeaders =
+    init?.headers instanceof Headers
+      ? Object.fromEntries(init.headers.entries())
+      : ((init?.headers as Record<string, string> | undefined) ?? {});
+  const { headers: _h, ...rest } = init ?? {};
   return new Request('https://alexendros.dev/api/contact', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...(init?.headers || {}) },
-    body: typeof body === 'string' ? body : JSON.stringify(body),
-    ...init
+    ...rest,
+    headers: { 'Content-Type': 'application/json', ...extraHeaders },
+    body: typeof body === 'string' ? body : JSON.stringify(body)
   });
 }
 
@@ -220,5 +225,63 @@ describe('handleContactPost', () => {
     );
     expect(res.status).toBe(200);
     expect(sendMail).not.toHaveBeenCalled();
+  });
+
+  it('reintento con misma Idempotency-Key → 200 sin segundo envío', async () => {
+    const claimed = new Set<string>();
+    const sendMail = vi.fn(async () => undefined);
+    const d = deps({
+      sendMail,
+      claimIdempotency: async (key) => {
+        if (claimed.has(key)) return false;
+        claimed.add(key);
+        return true;
+      },
+      releaseIdempotency: async (key) => {
+        claimed.delete(key);
+      }
+    });
+    const first = await handleContactPost(
+      postJson(validBody, { headers: { 'Idempotency-Key': 'test-key-001' } }),
+      d
+    );
+    const second = await handleContactPost(
+      postJson(validBody, { headers: { 'Idempotency-Key': 'test-key-001' } }),
+      d
+    );
+    expect(first.status).toBe(200);
+    expect(second.status).toBe(200);
+    expect(await second.json()).toEqual({ ok: true, duplicate: true });
+    expect(sendMail).toHaveBeenCalledOnce();
+  });
+
+  it('SMTP falla → libera idempotencia y permite reintento', async () => {
+    const claimed = new Set<string>();
+    let attempts = 0;
+    const d = deps({
+      sendMail: async () => {
+        attempts += 1;
+        if (attempts === 1) throw new Error('smtp');
+      },
+      claimIdempotency: async (key) => {
+        if (claimed.has(key)) return false;
+        claimed.add(key);
+        return true;
+      },
+      releaseIdempotency: async (key) => {
+        claimed.delete(key);
+      }
+    });
+    const fail = await handleContactPost(
+      postJson(validBody, { headers: { 'Idempotency-Key': 'retry-key' } }),
+      d
+    );
+    const ok = await handleContactPost(
+      postJson(validBody, { headers: { 'Idempotency-Key': 'retry-key' } }),
+      d
+    );
+    expect(fail.status).toBe(503);
+    expect(ok.status).toBe(200);
+    expect(attempts).toBe(2);
   });
 });
