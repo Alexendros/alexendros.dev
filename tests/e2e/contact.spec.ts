@@ -188,6 +188,46 @@ test('UI-05: reintento conserva Idempotency-Key', async ({ page }) => {
   expect(keys[0]).toBe(keys[1]);
 });
 
+test('CFG-04: motivo y módulos válidos muestran nombres', async ({ page }) => {
+  await page.goto('/contacto?motivo=propuestaComercial&modulos=contenidos,tienda');
+  await expect(page.getByRole('heading', { name: 'Formulario de contacto' })).toBeVisible();
+  await expect(page.locator('#contact-reason')).toHaveValue('propuestaComercial', {
+    timeout: 10_000
+  });
+  const modules = page.locator('[data-contact-modules]');
+  await expect(modules).toBeVisible();
+  await expect(modules.locator('strong')).toHaveText('Tienda online, Panel de contenidos');
+});
+
+test('CFG-05: params hostiles no inventan condiciones ni XSS', async ({ page }) => {
+  await page.goto(
+    '/contacto?motivo=hack&precio=1&modulos=evil,<script>alert(1)</script>,tienda,tienda'
+  );
+  await expect(page.locator('#contact-reason')).toHaveValue('informacionCliente', {
+    timeout: 10_000
+  });
+  const modules = page.locator('[data-contact-modules]');
+  await expect(modules).toBeVisible();
+  await expect(modules.locator('strong')).toHaveText('Tienda online');
+  await expect(modules).not.toContainText(/script|evil|precio|1\s*€/i);
+  await expect(page.locator('body')).not.toContainText('alert(1)');
+});
+
+test.describe('UI-07: sin JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+
+  test('correo y alternativa sin JS visibles; sin POST JSON funcional', async ({ page }) => {
+    await page.goto('/contacto');
+    await expect(page.getByRole('heading', { name: 'Formulario de contacto' })).toBeVisible();
+    const nojs = page.locator('[data-contact-nojs]');
+    await expect(nojs).toBeVisible();
+    await expect(nojs).toContainText(/necesita JavaScript/i);
+    await expect(nojs.getByRole('link', { name: /contratacion@alexendros\.dev/i })).toBeVisible();
+    await expect(page.locator('noscript')).toHaveCount(1);
+    await expect(page.locator('form[action*="api/contact"]')).toHaveCount(0);
+  });
+});
+
 test('UI-06: 202 no es éxito; 200 accepted sí; 409 comprensible', async ({ page }) => {
   let mode: 'processing' | 'accepted' | 'conflict' = 'processing';
   await mockContact(page, async (route) => {

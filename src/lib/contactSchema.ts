@@ -1,4 +1,10 @@
 import { z } from 'zod';
+import {
+  normalizePortalModuleIds,
+  serializePortalModuleIds,
+  type PortalModuleId
+} from '../content/pricing';
+import { portalModules } from '../content/services';
 
 export const entityTypes = ['particular', 'empresa', 'institucion'] as const;
 export const contactChannels = ['whatsapp', 'correo'] as const;
@@ -7,6 +13,16 @@ export const contactReasons = [
   'propuestaComercial',
   'informacionCliente'
 ] as const;
+
+const PORTAL_MODULE_TITLES: Record<PortalModuleId, string> = Object.fromEntries(
+  portalModules.map((m) => [m.id, m.title])
+) as Record<PortalModuleId, string>;
+
+/** Nombres legibles de módulos ya normalizados (IDs o CSV). */
+export function portalModuleDisplayNames(modules: string | readonly string[] | undefined): string {
+  const ids = normalizePortalModuleIds(modules);
+  return ids.map((id) => PORTAL_MODULE_TITLES[id] ?? id).join(', ');
+}
 
 const UNSAFE_CONTENT = /<\s*script|javascript:|on\w+\s*=|data:\s*text\/html/i;
 
@@ -41,10 +57,12 @@ export const contactSchema = z
     ),
     reason: z.enum(contactReasons),
     message: z.string().trim().min(10).max(2000),
-    modules: z.preprocess(
-      (v) => (typeof v === 'string' && v.trim() === '' ? undefined : v),
-      z.string().trim().max(200).optional()
-    ),
+    modules: z.preprocess((v) => {
+      if (v === undefined || v === null) return undefined;
+      if (typeof v === 'string' && v.trim() === '') return undefined;
+      const ids = normalizePortalModuleIds(v);
+      return ids.length > 0 ? serializePortalModuleIds(ids) : undefined;
+    }, z.string().optional()),
     consent: z.literal(true),
     honeypot: z.string().optional(),
     turnstileToken: z.string().max(4096).optional()
@@ -52,7 +70,6 @@ export const contactSchema = z
   .superRefine((data, ctx) => {
     rejectUnsafe(data.name, ctx, 'name');
     rejectUnsafe(data.message, ctx, 'message');
-    if (data.modules) rejectUnsafe(data.modules, ctx, 'modules');
 
     if (data.channel === 'whatsapp' && !data.phone) {
       ctx.addIssue({
@@ -210,6 +227,9 @@ export function buildContactMessage(input: ContactInput): string {
   ];
   if (input.phone) lines.push(`Teléfono: ${input.phone}`);
   if (input.email) lines.push(`Email: ${input.email}`);
-  if (input.modules) lines.push(`Módulos de portal: ${input.modules}`);
+  if (input.modules) {
+    const names = portalModuleDisplayNames(input.modules);
+    if (names) lines.push(`Módulos de portal: ${names}`);
+  }
   return lines.join('\n');
 }

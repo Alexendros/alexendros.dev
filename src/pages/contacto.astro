@@ -24,16 +24,34 @@ import { site } from '../content/site';
       />
     </div>
 
+    <!-- Visible sin JS; se oculta al ejecutar el script inline (noscript no basta en algunos entornos). -->
+    <p
+      id="contact-nojs"
+      data-contact-nojs
+      class="mt-6 rounded-lg border border-border bg-card p-4 text-sm"
+    >
+      El formulario interactivo necesita JavaScript. Mientras tanto puedes escribir a{' '}
+      <a
+        href={site.social.email}
+        class="underline decoration-dotted underline-offset-2 text-primary"
+      >
+        contratacion@alexendros.dev
+      </a>
+      {' '}indicando qué necesitas y cómo prefieres que te responda.
+    </p>
+    <script is:inline>
+      document.getElementById('contact-nojs')?.setAttribute('hidden', '');
+    </script>
     <noscript>
       <p class="mt-6 rounded-lg border border-border bg-card p-4 text-sm">
-        El formulario interactivo necesita JavaScript. Mientras tanto puedes escribir a{' '}
+        Sin JavaScript puedes escribir a{' '}
         <a
           href={site.social.email}
           class="underline decoration-dotted underline-offset-2 text-primary"
         >
           contratacion@alexendros.dev
         </a>
-        {' '}indicando qué necesitas y cómo prefieres que te responda.
+        .
       </p>
     </noscript>
 
