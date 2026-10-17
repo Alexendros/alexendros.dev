@@ -4,7 +4,7 @@
 Checkpoint: CP-00…CP-07 (alcance A+B+C+D) + gates locales
 Estado: READY_LOCAL (escrituras externas NO autorizadas)
 SHA base: a3c7a689c55013573655ac53a887e37c74e42269 (origin/main)
-SHA candidato: (HEAD de cursor/contacto-medicion tras commits C+D)
+SHA candidato: 55ebc6053ee8131c4ff5bd86b13eb3f6234996a3
 Objetivo y alcance autorizado: continuar plan general; sin push/PR/automerge
 ```
 
