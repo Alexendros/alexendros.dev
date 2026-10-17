@@ -1,5 +1,8 @@
 import { z } from 'zod';
-import { formatEuro, modulePrices, portalBasePrice, provisionalPrices } from './pricing';
+import { modulePrices, portalBasePrice, provisionalPrices } from './pricing';
+
+const nonEmptyTrimmed = z.string().trim().min(1);
+const nonEmptyList = z.array(nonEmptyTrimmed).min(1);
 
 export const catalogEntrySchema = z.object({
   id: z.string().min(1),
@@ -14,25 +17,84 @@ export const catalogEntrySchema = z.object({
 
 export type CatalogEntry = z.infer<typeof catalogEntrySchema>;
 
-export const serviceSchema = z.object({
-  slug: z.string().min(1),
-  title: z.string().min(1),
-  short: z.string().min(1),
-  description: z.string().min(1),
-  audience: z.string().min(1),
-  problems: z.array(z.string()).min(1),
-  scope: z.array(z.string()).min(1),
-  deliverables: z.array(z.string()).min(1),
-  process: z.array(z.string()).min(1),
-  technologies: z.array(z.string()).min(1),
-  exclusions: z.array(z.string()).min(1),
+export const serviceActionSchema = z
+  .object({
+    kind: z.enum(['contact', 'booking', 'configure']),
+    label: nonEmptyTrimmed,
+    href: nonEmptyTrimmed,
+    newTab: z.boolean()
+  })
+  .superRefine((action, ctx) => {
+    if (action.kind === 'contact' || action.kind === 'configure') {
+      if (!action.href.startsWith('/') || action.href.startsWith('//')) {
+        ctx.addIssue({
+          code: 'custom',
+          message: `action.href interno inválido para kind=${action.kind}: ${action.href}`,
+          path: ['href']
+        });
+      }
+      if (action.newTab) {
+        ctx.addIssue({
+          code: 'custom',
+          message: `action.newTab debe ser false para kind=${action.kind}`,
+          path: ['newTab']
+        });
+      }
+      return;
+    }
+    try {
+      const url = new URL(action.href);
+      if (url.protocol !== 'https:') {
+        ctx.addIssue({
+          code: 'custom',
+          message: `action.href de booking debe ser https: ${action.href}`,
+          path: ['href']
+        });
+      }
+    } catch {
+      ctx.addIssue({
+        code: 'custom',
+        message: `action.href de booking no es URL válida: ${action.href}`,
+        path: ['href']
+      });
+    }
+    if (!action.newTab) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'action.newTab debe ser true para kind=booking',
+        path: ['newTab']
+      });
+    }
+  });
+
+export type ServiceAction = z.infer<typeof serviceActionSchema>;
+
+export const serviceCommercialSchema = z.object({
   priceEuros: z.number().positive(),
-  payment: z.string().min(1),
-  timeline: z.string().min(1),
-  delivery: z.string().min(1),
-  guarantee: z.string().min(1),
-  cta: z.string().min(1),
-  metrics: z.array(z.object({ label: z.string(), value: z.string() })).min(1)
+  priceStatus: z.enum(['provisional', 'confirmed']),
+  payment: nonEmptyTrimmed,
+  timeline: nonEmptyTrimmed,
+  delivery: nonEmptyTrimmed,
+  guarantee: nonEmptyTrimmed
+});
+
+export type ServiceCommercial = z.infer<typeof serviceCommercialSchema>;
+
+export const serviceSchema = z.object({
+  slug: nonEmptyTrimmed,
+  kind: z.literal('service'),
+  title: nonEmptyTrimmed,
+  short: nonEmptyTrimmed,
+  description: nonEmptyTrimmed,
+  audience: nonEmptyList,
+  problems: nonEmptyList,
+  scope: nonEmptyList,
+  deliverables: nonEmptyList,
+  process: nonEmptyList,
+  exclusions: nonEmptyList,
+  technicalDetails: nonEmptyList,
+  commercial: serviceCommercialSchema,
+  action: serviceActionSchema
 });
 
 export type Service = z.infer<typeof serviceSchema>;
@@ -47,6 +109,7 @@ export const productCardSchema = z.object({
   title: z.string().min(1),
   short: z.string().min(1),
   priceEuros: z.number().positive(),
+  priceStatus: z.enum(['provisional', 'confirmed']),
   href: z.string().min(1),
   ctaLabel: z.string().min(1)
 });
@@ -69,15 +132,23 @@ export const portalModuleSchema = z.object({
 
 export type PortalModule = z.infer<typeof portalModuleSchema>;
 
+/** Slugs publicados como ficha `/servicios/[slug]` (excepción D-01 / decisión 0017). */
+export const PUBLISHED_SERVICE_SLUGS = [
+  'informe-comercial',
+  'sesion-profesional',
+  'auditoria-normativa-ciberseguridad'
+] as const;
+
 export const services: Service[] = [
   {
     slug: 'informe-comercial',
+    kind: 'service',
     title: 'Informe comercial',
     short:
       'Inspección metodológica de tu dominio y presencia en internet, con dossier de hallazgos y recomendaciones.',
     description:
       'Reviso tu dominio web y tu presencia en internet. Te envío un dossier con detecciones, hallazgos, áreas a corregir ya y recomendaciones para construir algo más eficiente para tu negocio.',
-    audience: 'Negocios y profesionales que necesitan saber por dónde empezar antes de invertir.',
+    audience: ['Negocios y profesionales que necesitan saber por dónde empezar antes de invertir.'],
     problems: [
       'La web no trae contactos',
       'No sabes qué corregir primero',
@@ -100,30 +171,35 @@ export const services: Service[] = [
       'Redacción del dossier',
       'Entrega y ronda de aclaraciones'
     ],
-    technologies: ['Análisis CWV, SEO técnico básico, revisión de contenidos y accesibilidad.'],
+    technicalDetails: ['Análisis CWV, SEO técnico básico, revisión de contenidos y accesibilidad.'],
     exclusions: [
       'No incluye implementación de las mejoras',
       'No incluye pentest ni certificación oficial'
     ],
-    priceEuros: provisionalPrices.informeComercial,
-    payment: 'Pago único antes de empezar',
-    timeline: '5 días laborables',
-    delivery: 'Dossier con hallazgos priorizados y recomendaciones',
-    guarantee: 'Una ronda de aclaraciones en 10 días naturales',
-    cta: '/contacto',
-    metrics: [
-      { label: 'Precio', value: formatEuro(provisionalPrices.informeComercial) },
-      { label: 'Plazo', value: '5 días' }
-    ]
+    commercial: {
+      priceEuros: provisionalPrices.informeComercial,
+      priceStatus: 'provisional',
+      payment: 'Pago único antes de empezar',
+      timeline: '5 días laborables',
+      delivery: 'Dossier con hallazgos priorizados y recomendaciones',
+      guarantee: 'Una ronda de aclaraciones en 10 días naturales'
+    },
+    action: {
+      kind: 'contact',
+      label: 'Contactar',
+      href: '/contacto',
+      newTab: false
+    }
   },
   {
     slug: 'sesion-profesional',
+    kind: 'service',
     title: 'Sesión profesional',
     short:
       'Sesión de trabajo para desbloquear un problema concreto o decidir el siguiente paso técnico.',
     description:
       'Una hora de trabajo enfocado. Sales con siguientes pasos por escrito en el siguiente día laborable.',
-    audience: 'Quien necesita desbloquear una decisión técnica o de producto con plazo corto.',
+    audience: ['Quien necesita desbloquear una decisión técnica o de producto con plazo corto.'],
     problems: [
       'Hay un bloqueo concreto',
       'Necesitas decidir el siguiente paso',
@@ -132,27 +208,32 @@ export const services: Service[] = [
     scope: ['Conversación de 60 minutos', 'Priorización del problema', 'Siguientes pasos escritos'],
     deliverables: ['Resumen de siguientes pasos por escrito'],
     process: ['Reserva en Cal.com', 'Sesión de 60 minutos', 'Entrega del resumen'],
-    technologies: ['Cal.com para reserva y pago.'],
+    technicalDetails: ['Cal.com para reserva y pago.'],
     exclusions: ['No incluye implementación', 'No incluye auditoría completa'],
-    priceEuros: provisionalPrices.sesionProfesional,
-    payment: 'Pago al reservar en Cal.com',
-    timeline: '60 minutos',
-    delivery: 'Siguientes pasos por escrito en 1 día laborable',
-    guarantee: 'Resumen entregado en 1 día laborable tras la sesión',
-    cta: 'https://cal.com/alexendros/sesion-tecnica',
-    metrics: [
-      { label: 'Precio', value: formatEuro(provisionalPrices.sesionProfesional) },
-      { label: 'Duración', value: '60 min' }
-    ]
+    commercial: {
+      priceEuros: provisionalPrices.sesionProfesional,
+      priceStatus: 'provisional',
+      payment: 'Pago al reservar en Cal.com',
+      timeline: '60 minutos',
+      delivery: 'Siguientes pasos por escrito en 1 día laborable',
+      guarantee: 'Resumen entregado en 1 día laborable tras la sesión'
+    },
+    action: {
+      kind: 'booking',
+      label: 'Reservar sesión',
+      href: 'https://cal.com/alexendros/sesion-tecnica',
+      newTab: true
+    }
   },
   {
     slug: 'auditoria-normativa-ciberseguridad',
+    kind: 'service',
     title: 'Auditoría de normativa y ciberseguridad',
     short:
       'Informe de RGPD/LSSI y seguridad básica, con severidad y corrección recomendada por hallazgo.',
     description:
       'Revisión de cumplimiento normativo y de seguridad básica de tu presencia web. Cada hallazgo lleva severidad y corrección recomendada. No incluye pentest ni certificación.',
-    audience: 'Negocios que necesitan un informe accionable antes de endurecer su sitio.',
+    audience: ['Negocios que necesitan un informe accionable antes de endurecer su sitio.'],
     problems: [
       'Dudas de cumplimiento RGPD/LSSI',
       'Superficie de seguridad sin priorizar',
@@ -168,25 +249,32 @@ export const services: Service[] = [
       'Severidad y corrección por hallazgo'
     ],
     process: ['Alcance del encargo', 'Análisis', 'Redacción del informe', 'Entrega'],
-    technologies: ['Revisión proporcional OWASP ASVS L1, CSP, cookies y formularios.'],
+    technicalDetails: ['Revisión proporcional OWASP ASVS L1, CSP, cookies y formularios.'],
     exclusions: [
       'No incluye pentest',
       'No incluye certificación oficial',
       'No incluye implementación de remedios'
     ],
-    priceEuros: provisionalPrices.auditoria,
-    payment: '50 % al encargo y 50 % a la entrega, sin recargo',
-    timeline: '10 días laborables',
-    delivery:
-      'Informe RGPD/LSSI y seguridad básica; cada hallazgo con severidad y corrección recomendada',
-    guarantee: 'Corrección de desviaciones del alcance escrito en 15 días naturales',
-    cta: '/contacto',
-    metrics: [
-      { label: 'Precio', value: formatEuro(provisionalPrices.auditoria) },
-      { label: 'Plazo', value: '10 días' }
-    ]
+    commercial: {
+      priceEuros: provisionalPrices.auditoria,
+      priceStatus: 'provisional',
+      payment: '50 % al encargo y 50 % a la entrega, sin recargo',
+      timeline: '10 días laborables',
+      delivery:
+        'Informe RGPD/LSSI y seguridad básica; cada hallazgo con severidad y corrección recomendada',
+      guarantee: 'Corrección de desviaciones del alcance escrito en 15 días naturales'
+    },
+    action: {
+      kind: 'contact',
+      label: 'Contactar',
+      href: '/contacto',
+      newTab: false
+    }
   }
 ];
+
+/** Alias del catálogo de fichas publicadas (mismo origen que `services`). */
+export const products = services;
 
 export const portalBase: PortalModule = {
   id: 'portal-inicio',
@@ -253,7 +341,8 @@ export const serviceProducts: ProductCard[] = services.map((s) => ({
   slug: s.slug,
   title: s.title,
   short: s.short,
-  priceEuros: s.priceEuros,
+  priceEuros: s.commercial.priceEuros,
+  priceStatus: s.commercial.priceStatus,
   href: `/servicios/${s.slug}`,
   ctaLabel: SERVICE_PRODUCT_CTA
 }));
@@ -263,11 +352,11 @@ export const catalogEntries: CatalogEntry[] = [
     id: s.slug,
     kind: 'service' as const,
     title: s.title,
-    priceEuros: s.priceEuros,
-    payment: s.payment,
-    timeline: s.timeline,
-    delivery: s.delivery,
-    guarantee: s.guarantee
+    priceEuros: s.commercial.priceEuros,
+    payment: s.commercial.payment,
+    timeline: s.commercial.timeline,
+    delivery: s.commercial.delivery,
+    guarantee: s.commercial.guarantee
   })),
   {
     id: portalBase.id,
@@ -291,6 +380,16 @@ export const catalogEntries: CatalogEntry[] = [
   }))
 ];
 
+export function assertUniqueServiceSlugs(items: readonly { slug: string }[]): void {
+  const seen = new Set<string>();
+  for (const item of items) {
+    if (seen.has(item.slug)) {
+      throw new Error(`Service slug duplicado: ${item.slug}`);
+    }
+    seen.add(item.slug);
+  }
+}
+
 const slugs = new Set<string>();
 services.forEach((s, i) => {
   const r = serviceSchema.safeParse(s);
@@ -298,6 +397,20 @@ services.forEach((s, i) => {
   if (slugs.has(s.slug)) throw new Error(`Service slug duplicado: ${s.slug}`);
   slugs.add(s.slug);
 });
+
+if (services.length !== PUBLISHED_SERVICE_SLUGS.length) {
+  throw new Error(
+    `Catálogo de fichas: se esperaban ${PUBLISHED_SERVICE_SLUGS.length} servicios, hay ${services.length}`
+  );
+}
+for (const slug of PUBLISHED_SERVICE_SLUGS) {
+  if (!slugs.has(slug)) {
+    throw new Error(`Falta servicio publicado: ${slug}`);
+  }
+}
+if (slugs.has('portal-inicio')) {
+  throw new Error('portal-inicio no debe publicarse como ficha de servicio (decisión 0017)');
+}
 
 serviceProducts.forEach((p, i) => {
   const r = productCardSchema.safeParse(p);

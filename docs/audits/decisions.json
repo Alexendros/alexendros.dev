@@ -241,6 +241,21 @@
       "context": "El rotador publicado giraba sin pausa y bajo prefers-reduced-motion, en tensión con WCAG 2.2.2 y con la propia 0015. El cierre de producto fija mensaje comprensible al primer estado sin movimiento obligatorio. Portada comercial compacta (alternativa B) y asistente de contacto más corto quedan aplazados.",
       "decision": "H1 y subtítulo estables en Hero.astro (copy de contratación directo); CTAs «Cuéntame qué necesitas» (/contacto) y «Explorar servicios» (/servicios) en el hero además del Contactar de cabecera; retirar CSS/demo de ventana rotatoria del producto; conservar reveal, card-lift, pagehead-rule y menú móvil de 0015; home sigue sin FIG ni bloques de sección (0014).",
       "consequences": "F01 espera H1 estable y CTAs en hero. Tokens --dur-slot* pueden retirarse del CSS vivo. Decisión 0014 de nav y home mínima no se altera."
+    },
+    {
+      "id": "0017",
+      "sequence": 17,
+      "timestamp": "2026-10-17T00:20:00Z",
+      "active": true,
+      "title": "Excepción: tres fichas de servicio sin portal publicado",
+      "summary": "Homogeneizar solo informe-comercial, sesion-profesional y auditoría; portal-inicio queda en el configurador, sin ruta /servicios/portal-inicio.",
+      "recordType": "decision",
+      "status": "aceptada",
+      "supersedes": [],
+      "supersededBy": null,
+      "context": "Cierre de producción: contrato Zod y plantilla única de fichas. Publicar el portal como ficha duplicaría el configurador y rompería D-01 del ciclo.",
+      "decision": "Publicar tres fichas con schema canónico (audience/problems/scope/deliverables/process/exclusions/technicalDetails, commercial.priceStatus provisional, action tipada). No generar /servicios/portal-inicio; el portal sigue solo en el índice vía PricingConfigurator.",
+      "consequences": "DET-07 no aplica. serviceProducts enumera solo los tres slugs. Tests CAT y products-structure always-on en e2e-critical."
     }
   ]
 }
