@@ -1,4 +1,5 @@
 @layer components {
+  /* Contenedor de página */
   .delivery-page {
     max-width: var(--container);
     margin-inline: auto;
@@ -10,14 +11,22 @@
     scroll-margin-top: calc(var(--header-h) + var(--space-6));
   }
 
-  .delivery-hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.85fr);
-    gap: clamp(2rem, 6vw, 5rem);
-    align-items: start;
+  /* Secciones: mismo ritmo vertical y filete */
+  .delivery-section {
+    padding-block: clamp(2.5rem, 6vw, 5rem);
+    border-top: 1px solid var(--border);
+  }
+
+  .delivery-section-hero {
+    border-top: 0;
     padding-block: clamp(3rem, 7vw, 6rem);
   }
 
+  .delivery-section-close {
+    padding-bottom: var(--space-24);
+  }
+
+  /* Tipografía compartida */
   .delivery-title {
     font-size: clamp(2.6rem, 5.5vw, 4.7rem);
     letter-spacing: -0.055em;
@@ -30,11 +39,73 @@
     color: var(--brand);
   }
 
+  .delivery-heading {
+    max-width: 24ch;
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+
+  .delivery-subheading {
+    font-size: 1.25rem;
+    letter-spacing: -0.025em;
+  }
+
   .delivery-lead {
     color: var(--fg-muted);
     max-width: 52ch;
     margin-top: var(--space-6);
     font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  }
+
+  .delivery-muted {
+    color: var(--fg-muted);
+    max-width: 64ch;
+    margin-top: var(--space-4);
+  }
+
+  .delivery-stack-item .delivery-muted {
+    margin-top: var(--space-3);
+  }
+
+  .delivery-note {
+    color: var(--fg);
+    font-size: 0.9375rem;
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border);
+  }
+
+  .delivery-item-ruled .delivery-note {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .delivery-header {
+    max-width: 64ch;
+  }
+
+  .delivery-number {
+    display: block;
+    font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
+    font-size: 0.875rem;
+    color: var(--brand);
+  }
+
+  .delivery-subheading + .delivery-muted,
+  .delivery-number + .delivery-subheading {
+    margin-top: var(--space-4);
+  }
+
+  /* Enlaces e interacción */
+  .delivery-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--brand);
+    font-weight: 650;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
   }
 
   .delivery-actions {
@@ -45,125 +116,22 @@
     margin-top: var(--space-8);
   }
 
-  .delivery-secondary {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    color: var(--brand);
+  .delivery-faq-summary {
+    cursor: pointer;
+    padding: var(--space-3) 0;
     font-weight: 650;
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
+    min-height: 44px;
   }
 
-  .delivery-secondary:focus-visible {
+  .delivery-link:focus-visible,
+  .delivery-faq-summary:focus-visible {
     outline: 2px solid var(--brand);
     outline-offset: 2px;
     box-shadow: var(--focus-ring);
   }
 
-  .delivery-summary {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-top: 3px solid var(--brand);
-    border-radius: var(--radius-lg);
-    padding: clamp(1.5rem, 3vw, 2.25rem);
-  }
-
-  .delivery-summary h2 {
-    font-size: 1.35rem;
-    letter-spacing: -0.025em;
-  }
-
-  .delivery-checklist {
-    list-style: none;
-    padding: 0;
-    margin-top: var(--space-6);
-  }
-
-  .delivery-checklist li {
-    padding-block: var(--space-3);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .delivery-terms-list {
-    list-style: none;
-    padding: 0;
-  }
-
-  .delivery-terms-list li + li {
-    margin-top: var(--space-6);
-    padding-top: var(--space-6);
-    border-top: 1px solid var(--border);
-  }
-
-  .delivery-checklist li:last-child {
-    border: 0;
-    padding-bottom: 0;
-  }
-
-  .delivery-section {
-    padding-block: clamp(2.5rem, 6vw, 5rem);
-    border-top: 1px solid var(--border);
-  }
-
-  .delivery-heading {
-    max-width: 24ch;
-    font-size: clamp(1.8rem, 3vw, 2.6rem);
-    letter-spacing: -0.04em;
-    text-wrap: balance;
-  }
-
-  .delivery-intro {
-    max-width: 64ch;
-    color: var(--fg-muted);
-    margin-top: var(--space-4);
-  }
-
-  .delivery-steps {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: var(--space-6);
-    list-style: none;
-    padding: 0;
-    margin-top: var(--space-12);
-  }
-
-  .delivery-step {
-    padding-top: var(--space-5);
-    border-top: 2px solid var(--brand);
-    min-width: 0;
-  }
-
-  .delivery-number {
-    font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
-    font-size: 0.875rem;
-    color: var(--brand);
-  }
-
-  .delivery-step h3 {
-    font-size: 1.25rem;
-    margin-top: var(--space-4);
-    letter-spacing: -0.025em;
-  }
-
-  .delivery-step p {
-    color: var(--fg-muted);
-    margin-top: var(--space-4);
-  }
-
-  .delivery-step .delivery-output {
-    color: var(--fg);
-    font-size: 0.9375rem;
-  }
-
-  .delivery-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-6);
-    margin-top: var(--space-8);
-  }
-
-  .delivery-card {
+  /* Superficies compartidas */
+  .delivery-panel {
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
@@ -171,124 +139,115 @@
     min-width: 0;
   }
 
-  .delivery-card h3 {
-    font-size: 1.35rem;
-    letter-spacing: -0.025em;
+  .delivery-panel-soft {
+    background: var(--bg-subtle);
   }
 
-  .delivery-card p {
-    color: var(--fg-muted);
-    margin-top: var(--space-4);
-    max-width: 58ch;
-  }
-
-  .delivery-card .delivery-proof {
-    color: var(--fg);
-    font-size: 0.9375rem;
-    padding-top: var(--space-4);
-    border-top: 1px solid var(--border);
+  .delivery-panel > .delivery-muted {
     margin-top: var(--space-4);
   }
 
-  .delivery-terms {
-    display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-    gap: clamp(2rem, 6vw, 5rem);
-  }
-
-  .delivery-terms-list h3 {
-    font-size: 1.125rem;
-  }
-
-  .delivery-terms-list p {
-    color: var(--fg-muted);
-    margin-top: var(--space-3);
-  }
-
-  .delivery-evidence {
+  .delivery-section > .delivery-panel {
     margin-top: var(--space-8);
-    padding: var(--space-6);
-    background: var(--bg-subtle);
-    border-radius: var(--radius-md);
   }
 
-  .delivery-evidence p {
-    margin-top: var(--space-3);
-    max-width: 65ch;
-    color: var(--fg-muted);
+  /* Listas / apilados con el mismo filete */
+  .delivery-stack {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-top: var(--space-6);
   }
 
-  .delivery-evidence a {
-    color: var(--brand);
-    font-weight: 650;
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
+  .delivery-stack-narrow {
+    max-width: 72ch;
+    margin-top: var(--space-8);
   }
 
-  .delivery-evidence a:focus-visible {
-    outline: 2px solid var(--brand);
-    outline-offset: 2px;
-    box-shadow: var(--focus-ring);
+  .delivery-panel > .delivery-stack {
+    margin-top: var(--space-6);
   }
 
-  .delivery-close {
-    margin-block: var(--space-8) var(--space-24);
-    padding: clamp(2rem, 5vw, 4rem);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    background: var(--bg-subtle);
+  .delivery-stack-item {
+    padding-block: var(--space-4);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .delivery-stack-item:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .delivery-stack-item:first-child {
+    padding-top: 0;
+  }
+
+  .delivery-stack-item .delivery-faq-summary + .delivery-muted {
+    padding-bottom: var(--space-4);
+  }
+
+  /* Ítems de proceso (línea superior de marca) */
+  .delivery-item {
+    min-width: 0;
+  }
+
+  .delivery-item-ruled {
+    padding-top: var(--space-5);
+    border-top: 2px solid var(--brand);
+  }
+
+  /* Retículas y splits */
+  .delivery-grid {
     display: grid;
+    gap: var(--space-6);
+    margin-top: var(--space-8);
+    list-style: none;
+    padding: 0;
+  }
+
+  .delivery-grid-steps {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: var(--space-12);
+  }
+
+  .delivery-grid-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .delivery-split {
+    display: grid;
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: start;
+  }
+
+  .delivery-split-hero {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.85fr);
+  }
+
+  .delivery-split-terms {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  }
+
+  .delivery-split-close {
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: var(--space-8);
     align-items: center;
   }
 
-  .delivery-close p {
-    margin-top: var(--space-4);
-    color: var(--fg-muted);
-    max-width: 54ch;
-  }
-
-  .delivery-details {
-    margin-top: var(--space-8);
-    max-width: 72ch;
-  }
-
-  .delivery-details details {
-    border-bottom: 1px solid var(--border);
-    padding-block: var(--space-4);
-  }
-
-  .delivery-details summary {
-    cursor: pointer;
-    padding: var(--space-3) 0;
-    font-weight: 650;
-    min-height: 44px;
-  }
-
-  .delivery-details summary:focus-visible {
-    outline: 2px solid var(--brand);
-    outline-offset: 2px;
-    box-shadow: var(--focus-ring);
-  }
-
-  .delivery-details details p {
-    color: var(--fg-muted);
-    padding-bottom: var(--space-4);
-    max-width: 66ch;
+  .delivery-split-terms > .delivery-stack {
+    margin-top: 0;
   }
 
   @media (width <= 64rem) {
-    .delivery-steps {
+    .delivery-grid-steps {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
   @media (width <= 48rem) {
-    .delivery-hero,
-    .delivery-grid,
-    .delivery-terms,
-    .delivery-close {
+    .delivery-split-hero,
+    .delivery-split-terms,
+    .delivery-split-close,
+    .delivery-grid-cards {
       grid-template-columns: minmax(0, 1fr);
     }
 
@@ -296,13 +255,13 @@
       max-width: 17ch;
     }
 
-    .delivery-close .btn {
+    .delivery-split-close .btn {
       justify-self: start;
     }
   }
 
   @media (width <= 30rem) {
-    .delivery-steps {
+    .delivery-grid-steps {
       grid-template-columns: minmax(0, 1fr);
     }
 

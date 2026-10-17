@@ -61,8 +61,8 @@ test('proceso: ancla bajo la cabecera y sticky ausente', async ({ page }) => {
 
 test('proceso: FAQ abre con teclado', async ({ page }) => {
   await page.goto(route);
-  const firstSummary = page.locator('.delivery-details summary').first();
+  const firstSummary = page.locator('.delivery-faq-summary').first();
   await firstSummary.focus();
   await page.keyboard.press('Enter');
-  await expect(page.locator('.delivery-details details').first()).toHaveAttribute('open', '');
+  await expect(page.locator('details.delivery-stack-item').first()).toHaveAttribute('open', '');
 });
