@@ -40,7 +40,7 @@ Quien eres: role Full Stack · Auditor · Consultor, summary conversion-focused,
 - proyectos/: Publicaciones con availability si|no|reservado
 - metodologia.astro, valores.astro, identidad.astro
 - contacto.astro: formulario asistente + mailto; sin embed Cal en página
-- api/contact.ts: Zod, honeypot, rate-limit Upstash, idempotencia Redis, Proton SMTP; sin CAPI Lead (falta consentimiento publicidad)
+- api/contact.ts: Zod, honeypot, rate-limit Upstash, idempotencia Redis (estados accepted/processing/conflict/unknown; no exactly-once Redis+SMTP), Proton SMTP; sin CAPI Lead (falta consentimiento publicidad)
 - privacidad.astro / cookies.astro: textos alineados al CMP; Identidad como aviso del prestador
 
 Cada elemento existe para reducir objecion o aumentar trust. No anadir sin justificar metrica conversion.

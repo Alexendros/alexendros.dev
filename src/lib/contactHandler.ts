@@ -6,9 +6,23 @@ import {
   reasonLabels,
   type ContactInput
 } from './contactSchema';
+import {
+  beginContactIdempotency,
+  contactPayloadFingerprint,
+  finishContactIdempotency,
+  resolveContactIdempotencyKey,
+  type ContactIdempotencyStore
+} from './contactIdempotency';
 import { resolveSmtpConfig, type SmtpConfig } from './smtpConfig';
 
 export const CONTACT_MAX_BODY_BYTES = 16_384;
+
+export {
+  CONTACT_IDEMPOTENCY_TTL_SECONDS,
+  CONTACT_IDEMPOTENCY_KEY_PREFIX,
+  resolveContactIdempotencyKey,
+  contactPayloadFingerprint
+} from './contactIdempotency';
 
 const JSON_HEADERS = { 'Content-Type': 'application/json' } as const;
 
@@ -36,9 +50,6 @@ export type ContactMailPayload = {
   smtp: SmtpConfig;
 };
 
-export const CONTACT_IDEMPOTENCY_TTL_SECONDS = 10 * 60;
-export const CONTACT_IDEMPOTENCY_KEY_PREFIX = 'alexendros:contact:idemp';
-
 export type ContactDeps = {
   getEnv: () => ContactEnv;
   rateLimit: (ip: string) => Promise<RateLimitResult>;
@@ -47,8 +58,8 @@ export type ContactDeps = {
   /** Solo con consentimiento de publicidad; el formulario de contacto no lo recoge. */
   sendLeadEvent?: (input: ContactLeadEvent) => Promise<void>;
   saveLead?: (input: ContactLeadInput) => Promise<void>;
-  claimIdempotency?: (key: string) => Promise<boolean>;
-  releaseIdempotency?: (key: string) => Promise<void>;
+  /** Almacén de idempotencia con estados y lease por propietario. */
+  idempotencyStore?: ContactIdempotencyStore;
   createRequestId?: () => string;
   nowMs?: () => number;
 };
@@ -104,27 +115,6 @@ export function methodNotAllowed(): Response {
   return json(405, { error: 'Method not allowed' }, { Allow: 'POST' });
 }
 
-/** Clave de idempotencia: cabecera Idempotency-Key o huella del cuerpo. */
-export function resolveContactIdempotencyKey(request: Request, data: ContactInput): string | null {
-  const header = request.headers.get('idempotency-key')?.trim();
-  if (header && header.length >= 8 && header.length <= 128) {
-    return `${CONTACT_IDEMPOTENCY_KEY_PREFIX}:${header}`;
-  }
-  const material = [
-    data.name,
-    data.email ?? '',
-    data.phone ?? '',
-    data.reason,
-    data.message,
-    data.channel
-  ].join('|');
-  let hash = 0;
-  for (let i = 0; i < material.length; i++) {
-    hash = (hash * 31 + material.charCodeAt(i)) >>> 0;
-  }
-  return `${CONTACT_IDEMPOTENCY_KEY_PREFIX}:body:${hash.toString(16)}`;
-}
-
 function mailFields(data: ContactInput) {
   const subject = reasonLabels[data.reason];
   const message = buildContactMessage(data);
@@ -142,6 +132,8 @@ function mailFields(data: ContactInput) {
 /**
  * Handler de contrato para POST /api/contact.
  * Fail-closed si Upstash no está configurado o falla.
+ * Contrato de idempotencia: 200 accepted (+replay), 202 processing, 409 conflict,
+ * 503 retryable_failure | unknown. Un claim ocupado no es éxito final.
  */
 export async function handleContactPost(request: Request, deps: ContactDeps): Promise<Response> {
   const requestId = deps.createRequestId?.() ?? crypto.randomUUID();
@@ -184,7 +176,7 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
 
   if (isHoneypotFilled(parsed.data.honeypot)) {
     logEvent('info', 'contact_honeypot', requestId, true);
-    return json(200, { ok: true });
+    return json(200, { ok: true, status: 'accepted', requestId, replay: false });
   }
 
   const env = deps.getEnv();
@@ -204,14 +196,14 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
 
   if (!env.UPSTASH_REDIS_REST_URL || !env.UPSTASH_REDIS_REST_TOKEN) {
     logEvent('error', 'contact_redis_misconfigured', requestId, false);
-    return json(503, { error: 'Service unavailable' });
+    return json(503, { ok: false, status: 'retryable_failure', error: 'Service unavailable' });
   }
   let limited: RateLimitResult;
   try {
     limited = await deps.rateLimit(ip);
   } catch {
     logEvent('error', 'contact_redis_error', requestId, false);
-    return json(503, { error: 'Service unavailable' });
+    return json(503, { ok: false, status: 'retryable_failure', error: 'Service unavailable' });
   }
 
   if (!limited.success) {
@@ -227,37 +219,115 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
   const smtp = resolveSmtpConfig(env);
   if (!smtp) {
     logEvent('error', 'contact_smtp_misconfigured', requestId, false);
-    return json(503, { error: 'Service unavailable' });
+    return json(503, { ok: false, status: 'retryable_failure', error: 'Service unavailable' });
   }
 
   const fields = mailFields(parsed.data);
-  const idemKey =
-    deps.claimIdempotency && deps.releaseIdempotency
-      ? resolveContactIdempotencyKey(request, parsed.data)
-      : null;
+  const store = deps.idempotencyStore;
+  const idemKey = store ? resolveContactIdempotencyKey(request, parsed.data) : null;
+  const fingerprint = contactPayloadFingerprint(parsed.data);
 
-  if (idemKey && deps.claimIdempotency) {
-    let claimed = false;
+  let ownerId: string | null = null;
+
+  if (idemKey && store) {
+    let begin;
     try {
-      claimed = await deps.claimIdempotency(idemKey);
+      begin = await beginContactIdempotency(store, {
+        key: idemKey,
+        fingerprint,
+        requestId,
+        nowMs
+      });
     } catch {
       logEvent('error', 'contact_idempotency_error', requestId, false);
-      return json(503, { error: 'Service unavailable' });
+      return json(503, { ok: false, status: 'retryable_failure', error: 'Service unavailable' });
     }
-    if (!claimed) {
-      logEvent('info', 'contact_idempotent_replay', requestId, true);
-      return json(200, { ok: true, duplicate: true });
+
+    if (begin.kind === 'accepted') {
+      logEvent('info', 'contact_idempotent_replay', requestId, true, {
+        originalRequestId: begin.requestId
+      });
+      return json(200, {
+        ok: true,
+        status: 'accepted',
+        requestId: begin.requestId,
+        replay: true
+      });
     }
+    if (begin.kind === 'processing') {
+      logEvent('info', 'contact_idempotent_processing', requestId, false, {
+        originalRequestId: begin.requestId
+      });
+      return json(
+        202,
+        { ok: false, status: 'processing', requestId: begin.requestId },
+        { 'Retry-After': String(begin.retryAfterSec) }
+      );
+    }
+    if (begin.kind === 'conflict') {
+      logEvent('info', 'contact_idempotent_conflict', requestId, false);
+      return json(409, { ok: false, status: 'conflict' });
+    }
+    if (begin.kind === 'unknown') {
+      logEvent('info', 'contact_idempotent_unknown', requestId, false, {
+        originalRequestId: begin.requestId
+      });
+      return json(503, {
+        ok: false,
+        status: 'unknown',
+        requestId: begin.requestId
+      });
+    }
+    ownerId = begin.ownerId;
   }
 
+  let mailAccepted = false;
   try {
     await deps.sendMail({ ...fields, smtp });
+    mailAccepted = true;
   } catch {
-    if (idemKey && deps.releaseIdempotency) {
-      await deps.releaseIdempotency(idemKey).catch(() => {});
+    if (idemKey && store && ownerId) {
+      await finishContactIdempotency(store, {
+        key: idemKey,
+        ownerId,
+        status: 'retryable_failure',
+        requestId,
+        nowMs
+      }).catch(() => {});
     }
     logEvent('error', 'contact_smtp_error', requestId, false);
-    return json(503, { error: 'Service unavailable' });
+    return json(503, { ok: false, status: 'retryable_failure', error: 'Service unavailable' });
+  }
+
+  if (idemKey && store && ownerId) {
+    let persisted = false;
+    try {
+      persisted = await finishContactIdempotency(store, {
+        key: idemKey,
+        ownerId,
+        status: 'accepted',
+        requestId,
+        nowMs
+      });
+    } catch {
+      persisted = false;
+    }
+    if (!persisted && mailAccepted) {
+      // SMTP aceptó pero no pudimos persistir el resultado → unknown, sin reenvío ciego
+      try {
+        await finishContactIdempotency(store, {
+          key: idemKey,
+          ownerId,
+          status: 'unknown',
+          requestId,
+          nowMs
+        });
+      } catch {
+        /* ignore */
+      }
+      logEvent('error', 'contact_idempotency_unknown', requestId, false);
+      return json(503, { ok: false, status: 'unknown', requestId });
+    }
   }
 
   logEvent('info', 'contact_sent', requestId, true, {
@@ -291,7 +361,7 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
       .catch(() => {});
   }
 
-  return json(200, { ok: true });
+  return json(200, { ok: true, status: 'accepted', requestId, replay: false });
 }
 
 export function buildContactEmailHtml(input: {

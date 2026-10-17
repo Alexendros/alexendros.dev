@@ -6,6 +6,10 @@ import {
   methodNotAllowed,
   type ContactDeps
 } from './contactHandler';
+import {
+  createMemoryContactIdempotencyStore,
+  type ContactIdempotencyStore
+} from './contactIdempotency';
 
 const validBody = {
   name: 'Alex Endros',
@@ -74,11 +78,16 @@ describe('isJsonContentType', () => {
 });
 
 describe('handleContactPost', () => {
-  it('POST válido → 200', async () => {
+  it('POST válido → 200 accepted', async () => {
     const sendMail = vi.fn(async () => undefined);
     const res = await handleContactPost(postJson(validBody), deps({ sendMail }));
     expect(res.status).toBe(200);
-    expect(await res.json()).toEqual({ ok: true });
+    expect(await res.json()).toEqual({
+      ok: true,
+      status: 'accepted',
+      requestId: 'req-test',
+      replay: false
+    });
     expect(sendMail).toHaveBeenCalledOnce();
   });
 
@@ -153,7 +162,7 @@ describe('handleContactPost', () => {
     expect(res.status).toBe(413);
   });
 
-  it('SMTP no configurado → 503', async () => {
+  it('SMTP no configurado → 503 retryable_failure', async () => {
     const res = await handleContactPost(
       postJson(validBody),
       deps({
@@ -164,7 +173,7 @@ describe('handleContactPost', () => {
       })
     );
     expect(res.status).toBe(503);
-    expect(await res.json()).toEqual({ error: 'Service unavailable' });
+    expect(await res.json()).toMatchObject({ ok: false, status: 'retryable_failure' });
   });
 
   it('Redis no configurado → 503 fail-closed', async () => {
@@ -205,7 +214,7 @@ describe('handleContactPost', () => {
     expect(res.headers.get('Retry-After')).toBe('30');
   });
 
-  it('SMTP send fail → 503', async () => {
+  it('SMTP send fail → 503 retryable_failure', async () => {
     const res = await handleContactPost(
       postJson(validBody),
       deps({
@@ -215,6 +224,7 @@ describe('handleContactPost', () => {
       })
     );
     expect(res.status).toBe(503);
+    expect(await res.json()).toMatchObject({ status: 'retryable_failure' });
   });
 
   it('honeypot → 200 sin sendMail', async () => {
@@ -227,61 +237,180 @@ describe('handleContactPost', () => {
     expect(sendMail).not.toHaveBeenCalled();
   });
 
-  it('reintento con misma Idempotency-Key → 200 sin segundo envío', async () => {
-    const claimed = new Set<string>();
+  it('API-01: envío válido con store → un sendMail y accepted', async () => {
+    const store = createMemoryContactIdempotencyStore();
     const sendMail = vi.fn(async () => undefined);
-    const d = deps({
-      sendMail,
-      claimIdempotency: async (key) => {
-        if (claimed.has(key)) return false;
-        claimed.add(key);
-        return true;
-      },
-      releaseIdempotency: async (key) => {
-        claimed.delete(key);
-      }
+    const res = await handleContactPost(
+      postJson(validBody, { headers: { 'Idempotency-Key': 'api-01-key' } }),
+      deps({ sendMail, idempotencyStore: store })
+    );
+    expect(res.status).toBe(200);
+    expect(await res.json()).toMatchObject({ ok: true, status: 'accepted', replay: false });
+    expect(sendMail).toHaveBeenCalledOnce();
+  });
+
+  it('API-02: claim ocupado → 202 processing (no 200 duplicate)', async () => {
+    const store = createMemoryContactIdempotencyStore();
+    let release!: () => void;
+    const gate = new Promise<void>((r) => {
+      release = r;
     });
+    const sendMail = vi.fn(async () => {
+      await gate;
+    });
+    const d = deps({ sendMail, idempotencyStore: store, nowMs: () => 1_700_000_000_000 });
+
+    const firstPromise = handleContactPost(
+      postJson(validBody, { headers: { 'Idempotency-Key': 'api-02-key' } }),
+      d
+    );
+    // Esperar a que el primer claim esté en processing (sendMail retenido)
+    await vi.waitFor(() => expect(sendMail).toHaveBeenCalled());
+
+    const second = await handleContactPost(
+      postJson(validBody, { headers: { 'Idempotency-Key': 'api-02-key' } }),
+      d
+    );
+    expect(second.status).toBe(202);
+    expect(await second.json()).toMatchObject({ ok: false, status: 'processing' });
+    expect(second.headers.get('Retry-After')).toBeTruthy();
+    expect(sendMail).toHaveBeenCalledOnce();
+
+    release();
+    const first = await firstPromise;
+    expect(first.status).toBe(200);
+    expect(await first.json()).toMatchObject({ status: 'accepted', replay: false });
+  });
+
+  it('API-03: replay accepted → 200 sin segundo envío', async () => {
+    const store = createMemoryContactIdempotencyStore();
+    const sendMail = vi.fn(async () => undefined);
+    const d = deps({ sendMail, idempotencyStore: store });
     const first = await handleContactPost(
-      postJson(validBody, { headers: { 'Idempotency-Key': 'test-key-001' } }),
+      postJson(validBody, { headers: { 'Idempotency-Key': 'api-03-key' } }),
       d
     );
     const second = await handleContactPost(
-      postJson(validBody, { headers: { 'Idempotency-Key': 'test-key-001' } }),
+      postJson(validBody, { headers: { 'Idempotency-Key': 'api-03-key' } }),
       d
     );
     expect(first.status).toBe(200);
     expect(second.status).toBe(200);
-    expect(await second.json()).toEqual({ ok: true, duplicate: true });
+    expect(await second.json()).toMatchObject({
+      ok: true,
+      status: 'accepted',
+      replay: true
+    });
     expect(sendMail).toHaveBeenCalledOnce();
   });
 
-  it('SMTP falla → libera idempotencia y permite reintento', async () => {
-    const claimed = new Set<string>();
+  it('API-04: misma clave otro payload → 409', async () => {
+    const store = createMemoryContactIdempotencyStore();
+    const sendMail = vi.fn(async () => undefined);
+    const d = deps({ sendMail, idempotencyStore: store });
+    await handleContactPost(
+      postJson(validBody, { headers: { 'Idempotency-Key': 'api-04-key' } }),
+      d
+    );
+    const conflict = await handleContactPost(
+      postJson(
+        { ...validBody, message: 'Mensaje distinto que cambia la huella lógica.' },
+        { headers: { 'Idempotency-Key': 'api-04-key' } }
+      ),
+      d
+    );
+    expect(conflict.status).toBe(409);
+    expect(await conflict.json()).toEqual({ ok: false, status: 'conflict' });
+    expect(sendMail).toHaveBeenCalledOnce();
+  });
+
+  it('API-05: SMTP falla → retryable_failure y permite reintento', async () => {
+    const store = createMemoryContactIdempotencyStore();
     let attempts = 0;
     const d = deps({
+      idempotencyStore: store,
       sendMail: async () => {
         attempts += 1;
         if (attempts === 1) throw new Error('smtp');
-      },
-      claimIdempotency: async (key) => {
-        if (claimed.has(key)) return false;
-        claimed.add(key);
-        return true;
-      },
-      releaseIdempotency: async (key) => {
-        claimed.delete(key);
       }
     });
     const fail = await handleContactPost(
-      postJson(validBody, { headers: { 'Idempotency-Key': 'retry-key' } }),
+      postJson(validBody, { headers: { 'Idempotency-Key': 'api-05-key' } }),
       d
     );
     const ok = await handleContactPost(
-      postJson(validBody, { headers: { 'Idempotency-Key': 'retry-key' } }),
+      postJson(validBody, { headers: { 'Idempotency-Key': 'api-05-key' } }),
       d
     );
     expect(fail.status).toBe(503);
+    expect(await fail.json()).toMatchObject({ status: 'retryable_failure' });
     expect(ok.status).toBe(200);
     expect(attempts).toBe(2);
+  });
+
+  it('API-06: SMTP ok pero persistencia accepted falla → 503 unknown', async () => {
+    const inner = createMemoryContactIdempotencyStore();
+    const store: ContactIdempotencyStore = {
+      get: (k) => inner.get(k),
+      tryCreate: (k, r, t) => inner.tryCreate(k, r, t),
+      compareAndSet: async (k, owner, record, ttl) => {
+        if (record.status === 'accepted') return false;
+        return inner.compareAndSet(k, owner, record, ttl);
+      }
+    };
+    const sendMail = vi.fn(async () => undefined);
+    const res = await handleContactPost(
+      postJson(validBody, { headers: { 'Idempotency-Key': 'api-06-key' } }),
+      deps({ sendMail, idempotencyStore: store })
+    );
+    expect(res.status).toBe(503);
+    expect(await res.json()).toMatchObject({ ok: false, status: 'unknown' });
+    expect(sendMail).toHaveBeenCalledOnce();
+
+    // Reintento no reenvía (unknown bloquea)
+    const again = await handleContactPost(
+      postJson(validBody, { headers: { 'Idempotency-Key': 'api-06-key' } }),
+      deps({ sendMail, idempotencyStore: store })
+    );
+    expect(again.status).toBe(503);
+    expect(await again.json()).toMatchObject({ status: 'unknown' });
+    expect(sendMail).toHaveBeenCalledOnce();
+  });
+
+  it('API-08: Turnstile distinto no cambia la huella de claim', async () => {
+    const store = createMemoryContactIdempotencyStore();
+    const sendMail = vi.fn(async () => undefined);
+    const d = deps({
+      sendMail,
+      idempotencyStore: store,
+      getEnv: () => ({
+        SMTP_HOST: 'smtp.example.com',
+        SMTP_PORT: '587',
+        SMTP_USER: 'user@example.com',
+        SMTP_PASS: 'secret',
+        UPSTASH_REDIS_REST_URL: 'https://example.upstash.io',
+        UPSTASH_REDIS_REST_TOKEN: 'token',
+        TURNSTILE_SECRET_KEY: 'secret'
+      }),
+      verifyTurnstile: async () => true
+    });
+    const first = await handleContactPost(
+      postJson(
+        { ...validBody, turnstileToken: 'token-old' },
+        { headers: { 'Idempotency-Key': 'api-08-key' } }
+      ),
+      d
+    );
+    const second = await handleContactPost(
+      postJson(
+        { ...validBody, turnstileToken: 'token-new' },
+        { headers: { 'Idempotency-Key': 'api-08-key' } }
+      ),
+      d
+    );
+    expect(first.status).toBe(200);
+    expect(second.status).toBe(200);
+    expect(await second.json()).toMatchObject({ replay: true });
+    expect(sendMail).toHaveBeenCalledOnce();
   });
 });
