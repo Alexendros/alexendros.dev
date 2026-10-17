@@ -152,6 +152,17 @@ describe('formatContactFieldErrors', () => {
       true
     );
   });
+
+  it('relaciona el error de consent con la aceptación del tratamiento', () => {
+    const parsed = parseContactBody({ ...validCorreo, consent: false });
+    expect(parsed.success).toBe(false);
+    if (parsed.success) return;
+    const errors = formatContactFieldErrors(parsed.error);
+    expect(
+      errors.some((e) => e.field === 'consent' && e.cause === 'falta la aceptación del tratamiento')
+    ).toBe(true);
+    expect(errors.some((e) => e.field === 'consent' && e.cause === 'falta contenido')).toBe(false);
+  });
 });
 
 describe('isHoneypotFilled', () => {

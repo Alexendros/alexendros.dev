@@ -141,12 +141,14 @@ export function formatContactFieldErrors(error: z.ZodError): FieldError[] {
     if (seen.has(field)) continue;
     seen.add(field);
     const label = fieldLabels[field] ?? field;
-    const missing =
-      issue.message === 'falta' ||
-      issue.code === 'invalid_type' ||
-      issue.code === 'too_small' ||
-      field === 'consent';
-    const cause = missing ? 'falta contenido' : 'formato no válido';
+    let cause: string;
+    if (field === 'consent') {
+      cause = 'falta la aceptación del tratamiento';
+    } else {
+      const missing =
+        issue.message === 'falta' || issue.code === 'invalid_type' || issue.code === 'too_small';
+      cause = missing ? 'falta contenido' : 'formato no válido';
+    }
     out.push({ field, label, cause });
   }
   return out;
