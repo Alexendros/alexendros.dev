@@ -13,6 +13,7 @@ describe('fichas homogéneas de servicios', () => {
       expect(product.href).toBe(`/servicios/${product.slug}`);
       expect(product.short.trim().length).toBeGreaterThan(0);
       expect(product.priceEuros).toBeGreaterThan(0);
+      expect(product.priceStatus).toBe('provisional');
     }
   });
 
@@ -22,7 +23,8 @@ describe('fichas homogéneas de servicios', () => {
       expect(card).toBeDefined();
       expect(card?.title).toBe(service.title);
       expect(card?.short).toBe(service.short);
-      expect(card?.priceEuros).toBe(service.priceEuros);
+      expect(card?.priceEuros).toBe(service.commercial.priceEuros);
+      expect(card?.priceStatus).toBe(service.commercial.priceStatus);
     }
   });
 });
