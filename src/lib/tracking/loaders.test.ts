@@ -132,9 +132,12 @@ describe('tracking loaders', () => {
     expect(env.scripts).toHaveLength(0);
   });
 
-  it('revocar el consentimiento emite gtag update denied y fbq revoke', async () => {
+  it('revocar el consentimiento emite gtag update denied, fbq revoke y posthog opt_out', async () => {
     vi.stubEnv('PUBLIC_GA4_ID', 'G-TEST123');
     vi.stubEnv('PUBLIC_META_PIXEL_ID', 'PIXEL1');
+    vi.stubEnv('PUBLIC_POSTHOG_KEY', 'phc_test');
+    vi.stubEnv('PUBLIC_CLARITY_ID', 'clarity1');
+    vi.stubEnv('PUBLIC_LINKEDIN_PARTNER_ID', '99');
 
     const consent = await import('./consent');
     const { initTracking } = await import('./loaders');
@@ -142,7 +145,9 @@ describe('tracking loaders', () => {
     initTracking();
     consent.writeConsent(['necessary', 'analytics', 'marketing']);
 
-    expect(env.scripts.map((script) => script.dataset.tracker)).toEqual(['ga4', 'meta-pixel']);
+    expect(env.scripts.map((script) => script.dataset.tracker)).toEqual(
+      expect.arrayContaining(['ga4', 'meta-pixel', 'posthog', 'clarity', 'linkedin'])
+    );
 
     consent.writeConsent(['necessary']);
 
@@ -160,6 +165,14 @@ describe('tracking loaders', () => {
       (call as unknown[]).slice(0, 2)
     );
     expect(fbqCalls).toContainEqual(['consent', 'revoke']);
+
+    const posthog = env.window.posthog as { _i?: unknown[][] };
+    expect(posthog._i?.some((call) => call[0] === 'opt_out_capturing')).toBe(true);
+
+    const clarity = env.window.clarity as { q?: unknown[][] };
+    expect(clarity.q?.some((call) => call[0] === 'consent' && call[1] === false)).toBe(true);
+
+    expect(env.window._linkedin_partner_id).toBe('');
   });
 
   it('con analytics y PUBLIC_POSTHOG_KEY crea el stub en cola e inyecta array.js', async () => {

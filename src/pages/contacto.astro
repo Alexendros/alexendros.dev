@@ -24,7 +24,7 @@ import { site } from '../content/site';
       />
     </div>
 
-    <!-- Visible sin JS; se oculta al ejecutar el script inline (noscript no basta en algunos entornos). -->
+    <!-- Visible hasta que la isla React marca hidratación usable (data-contact-hydrated). -->
     <p
       id="contact-nojs"
       data-contact-nojs
@@ -39,9 +39,6 @@ import { site } from '../content/site';
       </a>
       {' '}indicando qué necesitas y cómo prefieres que te responda.
     </p>
-    <script is:inline>
-      document.getElementById('contact-nojs')?.setAttribute('hidden', '');
-    </script>
     <noscript>
       <p class="mt-6 rounded-lg border border-border bg-card p-4 text-sm">
         Sin JavaScript puedes escribir a{' '}

@@ -134,6 +134,9 @@ function mailFields(data: ContactInput) {
  * Fail-closed si Upstash no está configurado o falla.
  * Contrato de idempotencia: 200 accepted (+replay), 202 processing, 409 conflict,
  * 503 retryable_failure | unknown. Un claim ocupado no es éxito final.
+ *
+ * `accepted` = la aplicación aceptó el envío (SMTP encolado/aceptado por el
+ * transporte o replay idempotente). No demuestra llegada a bandeja ni lectura.
  */
 export async function handleContactPost(request: Request, deps: ContactDeps): Promise<Response> {
   const requestId = deps.createRequestId?.() ?? crypto.randomUUID();

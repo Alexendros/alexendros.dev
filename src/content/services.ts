@@ -145,9 +145,9 @@ export const services: Service[] = [
     kind: 'service',
     title: 'Informe 360º',
     short:
-      'Informe completo de tu website actual: posicionamiento en buscadores, velocidad de carga, accesibilidad al navegarlo y plan de mejoras.',
+      'Reviso tu web y te entrego los problemas detectados, sus límites y un plan priorizado de mejoras.',
     description:
-      'Reviso tu website actual de punta a punta: puntuación en posicionamiento de buscadores, velocidad de carga, accesibilidad al navegarlo y claridad del camino a contacto. Te entrego un dossier con hallazgos, necesidades y un plan completo para solucionar cada problema.',
+      'Reviso tu website actual: SEO técnico básico, velocidad de carga, accesibilidad al navegarlo y claridad del camino a contacto. Te entrego un dossier con hallazgos, límites del análisis y un plan priorizado de mejoras. No promete posiciones en buscadores ni resolver cada problema sin encargo aparte.',
     audience: ['Negocios y profesionales que necesitan saber por dónde empezar antes de invertir.'],
     problems: [
       'La web no trae contactos',
@@ -155,15 +155,15 @@ export const services: Service[] = [
       'Has recibido propuestas difíciles de priorizar'
     ],
     scope: [
-      'Posicionamiento en buscadores',
+      'SEO técnico básico y señales de posicionamiento',
       'Velocidad de carga y uso en móvil',
       'Accesibilidad al navegarlo',
       'Claridad de mensaje y camino a contacto',
-      'Priorización de hallazgos'
+      'Priorización de hallazgos con límites explícitos'
     ],
     deliverables: [
-      'Dossier completo con hallazgos y necesidades',
-      'Plan completo para solucionar cada problema'
+      'Dossier con hallazgos, necesidades y límites del análisis',
+      'Plan priorizado de mejoras (sin implementación incluida)'
     ],
     process: [
       'Encargo y acceso al dominio',
@@ -174,7 +174,8 @@ export const services: Service[] = [
     technicalDetails: ['Análisis CWV, SEO técnico básico, revisión de contenidos y accesibilidad.'],
     exclusions: [
       'No incluye implementación de las mejoras',
-      'No incluye pentest ni certificación oficial'
+      'No incluye pentest ni certificación oficial',
+      'No garantiza posiciones en buscadores'
     ],
     commercial: {
       priceEuros: provisionalPrices.informeComercial,
@@ -182,13 +183,13 @@ export const services: Service[] = [
       payment: 'Pago único antes de empezar',
       timeline: '5 días laborables',
       delivery:
-        'Dossier completo con hallazgos y necesidades junto a un plan completo para solucionar cada problema',
+        'Dossier con hallazgos, límites del análisis y plan priorizado de mejoras (sin implementación)',
       guarantee: 'Una ronda de aclaraciones en 10 días naturales'
     },
     action: {
       kind: 'contact',
-      label: 'Contactar',
-      href: '/contacto',
+      label: 'Pedir el informe',
+      href: '/contacto?motivo=informacionCliente&servicio=informe-comercial',
       newTab: false
     }
   },
@@ -196,9 +197,10 @@ export const services: Service[] = [
     slug: 'sesion-profesional',
     kind: 'service',
     title: 'Sesión profesional',
-    short: 'Sesión de mejoras sobre tu página actual.',
+    short:
+      'Una sesión de 60 minutos para revisar un problema concreto de tu web y decidir los siguientes pasos.',
     description:
-      'Sesión de mejoras sobre tu página actual. Sales con siguientes pasos por escrito en el siguiente día laborable. 50 % de descuento si la sesión aplica el plan de soluciones de una de mis inspecciones (Informe 360º o inspección de vulnerabilidades).',
+      'Sesión de 60 minutos orientada a un problema concreto de tu página actual. Orienta y entrega un resumen escrito; no incluye implementación salvo acuerdo aparte. 50 % de descuento si la sesión aplica el plan de una de mis inspecciones (Informe 360º o inspección de vulnerabilidades).',
     audience: ['Quien necesita desbloquear una decisión técnica o de producto con plazo corto.'],
     problems: [
       'Hay un bloqueo concreto',
@@ -207,18 +209,22 @@ export const services: Service[] = [
     ],
     scope: [
       'Conversación de 60 minutos',
-      'Mejoras sobre tu página actual',
-      'Siguientes pasos escritos'
+      'Revisión orientada de un problema concreto',
+      'Resumen de siguientes pasos por escrito'
     ],
-    deliverables: ['Resumen de siguientes pasos por escrito'],
+    deliverables: ['Resumen de siguientes pasos por escrito (sin implementación incluida)'],
     process: ['Reserva en Cal.com', 'Sesión de 60 minutos', 'Entrega del resumen'],
-    technicalDetails: ['Cal.com para reserva y pago.'],
-    exclusions: ['No incluye implementación', 'No incluye auditoría completa'],
+    technicalDetails: ['Cal.com para reserva y pago del importe provisional publicado.'],
+    exclusions: [
+      'No incluye implementación',
+      'No incluye auditoría completa',
+      'La implementación solo entra con acuerdo aparte'
+    ],
     commercial: {
       priceEuros: provisionalPrices.sesionProfesional,
       priceStatus: 'provisional',
       payment:
-        'Pago al reservar en Cal.com. 50 % de descuento si aplicas el plan de una inspección (360º o vulnerabilidades)',
+        'Pago al reservar en Cal.com (importe provisional). 50 % de descuento si aplicas el plan de una inspección (360º o vulnerabilidades)',
       timeline: '60 minutos',
       delivery: 'Siguientes pasos por escrito en 1 día laborable',
       guarantee: 'Resumen entregado en 1 día laborable tras la sesión'
@@ -271,8 +277,8 @@ export const services: Service[] = [
     },
     action: {
       kind: 'contact',
-      label: 'Contactar',
-      href: '/contacto',
+      label: 'Pedir la inspección',
+      href: '/contacto?motivo=informacionCliente&servicio=auditoria-normativa-ciberseguridad',
       newTab: false
     }
   }
@@ -284,13 +290,14 @@ export const products = services;
 export const portalBase: PortalModule = {
   id: 'portal-inicio',
   title: 'Portal de inicio',
-  short: 'Landing clásica con página de gracias, formulario y publicación.',
+  short:
+    'Base: landing, página de gracias, formulario y publicación. Pago fraccionado, plazo desde encargo, sin CMS ni terceros fuera del alcance escrito.',
   priceEuros: portalBasePrice,
   payment: '50 % al encargo y 50 % al publicar, sin recargo',
-  timeline: '10 días laborables',
+  timeline: '10 días laborables desde el encargo acordado',
   delivery: 'Landing, página de gracias, formulario y publicación',
   guarantee:
-    '30 días naturales para corregir desviaciones del alcance escrito. Objetivos técnicos en rutas y entorno acordados: LCP ≤ 2,5 s (Lighthouse), axe 0 en esas rutas (no es conformidad WCAG completa) y contraste AA del tema',
+    '30 días naturales para corregir desviaciones del alcance escrito. Objetivos técnicos en rutas y entorno acordados: LCP ≤ 2,5 s (Lighthouse), axe 0 en esas rutas (no es conformidad WCAG completa) y contraste AA del tema. Mantenimiento y revisiones extra fuera de garantía se acuerdan aparte.',
   additive: false
 };
 
@@ -331,7 +338,7 @@ export const portalModules: PortalModule[] = [
   {
     id: 'contenidos',
     title: 'Panel de contenidos',
-    short: 'Publicaciones de fácil administración (partida de presupuesto; no CMS en este sitio).',
+    short: 'Un panel para publicar y actualizar contenidos sin modificar el código.',
     priceEuros: modulePrices.contenidos,
     payment: 'Incluido en el pago fraccionado del portal',
     timeline: '+5 días laborables',

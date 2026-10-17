@@ -27,27 +27,27 @@ const commercialFixture = {
     payment: 'Pago único antes de empezar',
     timeline: '5 días laborables',
     delivery:
-      'Dossier completo con hallazgos y necesidades junto a un plan completo para solucionar cada problema',
+      'Dossier con hallazgos, límites del análisis y plan priorizado de mejoras (sin implementación)',
     guarantee: 'Una ronda de aclaraciones en 10 días naturales',
     scope: [
-      'Posicionamiento en buscadores',
+      'SEO técnico básico y señales de posicionamiento',
       'Velocidad de carga y uso en móvil',
       'Accesibilidad al navegarlo',
       'Claridad de mensaje y camino a contacto',
-      'Priorización de hallazgos'
+      'Priorización de hallazgos con límites explícitos'
     ]
   },
   'sesion-profesional': {
     priceEuros: provisionalPrices.sesionProfesional,
     payment:
-      'Pago al reservar en Cal.com. 50 % de descuento si aplicas el plan de una inspección (360º o vulnerabilidades)',
+      'Pago al reservar en Cal.com (importe provisional). 50 % de descuento si aplicas el plan de una inspección (360º o vulnerabilidades)',
     timeline: '60 minutos',
     delivery: 'Siguientes pasos por escrito en 1 día laborable',
     guarantee: 'Resumen entregado en 1 día laborable tras la sesión',
     scope: [
       'Conversación de 60 minutos',
-      'Mejoras sobre tu página actual',
-      'Siguientes pasos escritos'
+      'Revisión orientada de un problema concreto',
+      'Resumen de siguientes pasos por escrito'
     ]
   },
   'auditoria-normativa-ciberseguridad': {

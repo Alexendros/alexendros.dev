@@ -26,6 +26,12 @@ export const projectSchema = z.object({
   featured: z.boolean(),
   /** Transferibilidad de la obra: sí = adquirible; no = no transfiere; reservado = titular actual. */
   availability: z.enum(['si', 'no', 'reservado']),
+  /**
+   * Origen declarado (no inferido por dominio):
+   * encargo = trabajo para un cliente; demostracion = muestra controlada;
+   * propio = iniciativa propia / open source.
+   */
+  workKind: z.enum(['encargo', 'demostracion', 'propio']),
   coverAlt: z.string().min(1),
   testimonial: z
     .object({
@@ -40,11 +46,12 @@ export const projectSchema = z.object({
 export type Project = z.infer<typeof projectSchema> & { cover: ImageMetadata };
 
 export type ProjectAvailability = Project['availability'];
+export type ProjectWorkKind = Project['workKind'];
 
-/** Etiquetas comerciales (no dependen solo del color). */
+/** Etiquetas de disponibilidad: consulta ≠ transferencia ≠ hueco de agenda. */
 export const availabilityLabels: Record<ProjectAvailability, string> = {
-  si: 'Disponible para consulta o encargo',
-  no: 'No transferible',
+  si: 'Disponible para consulta o encargo sobre esta obra',
+  no: 'No transferible (no se vende ni cede)',
   reservado: 'Reservado — titular actual; consulta posible'
 };
 
@@ -52,6 +59,12 @@ export const availabilityCtaLabels: Record<ProjectAvailability, string> = {
   si: 'Consultar sobre esta obra',
   no: 'Ver ficha',
   reservado: 'Preguntar por esta obra'
+};
+
+export const workKindLabels: Record<ProjectWorkKind, string> = {
+  encargo: 'Encargo',
+  demostracion: 'Demostración',
+  propio: 'Proyecto propio'
 };
 
 export const projects: Project[] = [
@@ -98,6 +111,7 @@ export const projects: Project[] = [
     published: '2025-07-13',
     featured: true,
     availability: 'si',
+    workKind: 'encargo',
     cover: coverFront,
     coverAlt:
       'Home de la web del restaurante Front Valencia: cabecera con foto del local, menú destacado y botón de reserva.'
@@ -108,7 +122,7 @@ export const projects: Project[] = [
     short:
       'Tienda online para un taller familiar que quería vender sus productos sin depender de terceros.',
     summary:
-      'Pasamos de presupuestos por email y teléfono a un catálogo online con precios claros y pago seguro, reduciendo el tiempo de venta de días a minutos.',
+      'Catálogo online con precios claros y pago seguro, pensado para sustituir presupuestos solo por email y teléfono.',
     role: 'Diseño del proceso de venta y desarrollo',
     context:
       'Las ventas dependían de llamadas y correos. Los presupuestos tardaban y se perdían pedidos.',
@@ -137,7 +151,12 @@ export const projects: Project[] = [
       'Pagos preparados para evitar cobros duplicados',
       'Sin depender de un CMS externo'
     ],
-    results: ['Presupuesto en minutos', 'Pedidos sin gestión manual', 'Menos tiempo de gestión'],
+    // Sin fuente/periodo/permiso de métricas de negocio: solo capacidades comprobadas.
+    results: [
+      'Capacidad comprobada: presupuestos calculados al momento',
+      'Capacidad comprobada: pedidos con panel interno',
+      'Capacidad comprobada: cobro online con webhooks idempotentes'
+    ],
     links: {
       prod: 'https://ecommerce-graficasnasve.vercel.app/',
       github: 'https://github.com/Soluciones-Alexendros/ecommerce-graficasnasve'
@@ -145,6 +164,7 @@ export const projects: Project[] = [
     published: '2023-11-20',
     featured: true,
     availability: 'si',
+    workKind: 'encargo',
     cover: coverNasve,
     coverAlt:
       'Tienda online de Gráficas Nasve: catálogo de productos con precios calculados al momento y pago online.'
@@ -180,11 +200,16 @@ export const projects: Project[] = [
       'Deduplicación configurable',
       'Código abierto'
     ],
-    results: ['Menos errores al migrar', 'Miles de contactos procesados', 'Uso recurrente'],
+    results: [
+      'Capacidad comprobada: limpieza y deduplicación de agendas',
+      'Capacidad comprobada: exportación a formatos útiles',
+      'Código abierto bajo licencia MIT (repositorio público)'
+    ],
     links: { github: 'https://github.com/Soluciones-Alexendros/zedazo' },
     published: '2024-01-10',
     featured: false,
     availability: 'reservado',
+    workKind: 'propio',
     cover: coverZedazo,
     coverAlt:
       'Interfaz de Zedazo, herramienta de código abierto para limpiar y unificar listados de contactos.'
@@ -217,7 +242,11 @@ export const projects: Project[] = [
       'Sin trackers de publicidad',
       'Contenido en Git'
     ],
-    results: ['Carga rápida', 'Lectura clara', 'Privacidad respetada'],
+    results: [
+      'Capacidad comprobada: lectura clara y contraste cuidado',
+      'Capacidad comprobada: sin trackers de publicidad',
+      'Capacidad comprobada: contenido versionado en Git'
+    ],
     links: {
       prod: 'https://alexendros.me',
       github: 'https://github.com/Soluciones-Alexendros/website-alexendrosme'
@@ -225,6 +254,7 @@ export const projects: Project[] = [
     published: '2024-01-15',
     featured: true,
     availability: 'no',
+    workKind: 'propio',
     cover: coverMe,
     coverAlt:
       'Home de Alexendros.me, web personal centrada en lectura cómoda, buen contraste y privacidad.'

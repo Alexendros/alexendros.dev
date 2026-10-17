@@ -60,6 +60,11 @@ const jsonLd = [
       <p class="mt-3 text-muted max-w-2xl">{service.short}</p>
       <p class="mt-4 text-sm text-muted max-w-2xl">{service.description}</p>
 
+      <p class="mt-4 text-xs text-muted max-w-2xl" data-product-tax-note>
+        Importes provisionales. El desglose de impuestos y el precio definitivo de reserva o encargo
+        se confirman en la propuesta; no se publican aquí como condición cerrada.
+      </p>
+
       <dl class="mt-8 grid gap-4 sm:grid-cols-2 text-sm" data-product-section="commercial">
         <div class="border border-border rounded-lg p-4 bg-card">
           <dt class="text-muted">Precio</dt>
@@ -132,7 +137,11 @@ const jsonLd = [
         <section data-product-section="next-step">
           <h2 class="text-2xl font-bold">Siguiente paso</h2>
           <p class="mt-2 text-sm text-muted max-w-2xl">
-            Continúa con la acción principal de este servicio.
+            {
+              service.action.kind === 'booking'
+                ? 'Reserva la sesión en Cal.com. El clic abre la reserva; no confirma una venta hasta completar el flujo allí.'
+                : 'Escríbeme desde el formulario con el contexto de este servicio. Revisaré tu mensaje y te responderé por el canal que indiques.'
+            }
           </p>
           <div class="mt-4">
             {
@@ -142,6 +151,8 @@ const jsonLd = [
                   target="_blank"
                   rel="noopener noreferrer"
                   data-product-action="primary"
+                  data-cal={service.action.kind === 'booking' ? '' : undefined}
+                  data-cal-offer={service.action.kind === 'booking' ? service.slug : undefined}
                 >
                   {service.action.label}
                 </Button>

@@ -3,7 +3,7 @@ export const site = {
   url: 'https://alexendros.dev',
   titleDefault: 'Alexendros — Diseño y desarrollo de productos web',
   descriptionDefault:
-    'Diseño y desarrollo de productos web, y revisión de claridad, funcionamiento y seguridad básica. Alcance acordado y trato directo. Valencia — remoto.',
+    'Diseño y desarrollo de productos web. También reviso los que necesitan mejorar: claridad, funcionamiento y seguridad básica. Alcance acordado y trato directo. Valencia — remoto.',
   locale: 'es',
   ogLocale: 'es_ES',
   nav: [

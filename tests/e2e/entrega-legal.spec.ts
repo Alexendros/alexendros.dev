@@ -32,13 +32,13 @@ test('F08: Identidad muestra NIF y CP sin calle', async ({ page }) => {
   await expect(main).toContainText('contratacion@alexendros.dev');
 });
 
-test('F09: /cookies explica en claro y ofrece Configuración informada', async ({ page }) => {
+test('F09: /cookies explica en claro y ofrece Configurar', async ({ page }) => {
   await page.goto('/cookies');
   const main = page.locator('main');
   await expect(main.getByRole('heading', { name: 'Cookies' })).toBeVisible();
   await expect(main.getByRole('heading', { name: 'En claro, sin jerga' })).toBeVisible();
-  await expect(main.getByText(/Aceptación desinformada/).first()).toBeVisible();
-  const trigger = main.getByRole('button', { name: 'Configuración informada' });
+  await expect(main.getByText(/Aceptar todas/).first()).toBeVisible();
+  const trigger = main.getByRole('button', { name: 'Configurar' });
   await expect(trigger).toBeVisible();
 });
 
