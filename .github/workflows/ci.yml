@@ -51,6 +51,8 @@ jobs:
 
       - run: pnpm run check:copy
 
+      - run: pnpm run check:contrast
+
   test:
     name: test
     runs-on: ubuntu-latest
@@ -150,6 +152,22 @@ jobs:
           CI: true
           SKIP_E2E_BUILD: '1'
 
+      - name: Upload Playwright report (e2e-critical)
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-report-e2e-critical
+          path: playwright-report/
+          if-no-files-found: warn
+
+      - name: Upload Playwright results (e2e-critical)
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-results-e2e-critical
+          path: test-results/
+          if-no-files-found: warn
+
   e2e:
     name: e2e
     if: ${{ (github.event_name == 'workflow_dispatch' && inputs.e2e) || (github.event_name == 'pull_request' && contains(join(github.event.pull_request.labels.*.name, ','), 'e2e')) }}
@@ -183,6 +201,22 @@ jobs:
         env:
           CI: true
           SKIP_E2E_BUILD: '1'
+
+      - name: Upload Playwright report (e2e)
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-report-e2e
+          path: playwright-report/
+          if-no-files-found: warn
+
+      - name: Upload Playwright results (e2e)
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-results-e2e
+          path: test-results/
+          if-no-files-found: warn
 
       - name: Lighthouse CI
         run: |
