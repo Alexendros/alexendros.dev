@@ -12,6 +12,30 @@ test.describe('critical paths', () => {
     await expect(page.locator('a[href="/contacto"]').first()).toBeVisible();
   });
 
+  test('header sticky no es transparente', async ({ page }) => {
+    await page.goto('/');
+    const header = page.locator('#site-header');
+    await expect(header).toHaveClass(/glass-bg/);
+    const alpha = await page.evaluate(() => {
+      const el = document.getElementById('site-header');
+      if (!el) return 0;
+      const raw = getComputedStyle(el).backgroundColor;
+      if (!raw || raw === 'transparent' || raw === 'rgba(0, 0, 0, 0)') return 0;
+      // rgb()/rgba() clásico
+      const comma = raw.match(/^rgba?\(([^)]+)\)$/);
+      if (comma) {
+        const parts = comma[1].split(',').map((part) => Number.parseFloat(part.trim()));
+        return parts.length === 4 ? (parts[3] ?? 0) : 1;
+      }
+      // color-mix → oklab()/color() con canal alfa tras «/»
+      const slash = raw.match(/\/\s*([\d.]+)\s*\)\s*$/);
+      if (slash) return Number.parseFloat(slash[1]);
+      // Sin canal alfa explícito: superficie opaca
+      return 1;
+    });
+    expect(alpha).toBeGreaterThan(0);
+  });
+
   test('contacto muestra formulario usable', async ({ page }) => {
     await page.goto('/contacto');
     await expect(page.getByRole('heading', { name: 'Formulario de contacto' })).toBeVisible();
