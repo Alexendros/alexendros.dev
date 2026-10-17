@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import {
+  buildContactMessage,
   escapeHtml,
   formatContactFieldErrors,
   isHoneypotFilled,
   parseContactBody,
+  portalModuleDisplayNames,
   validateContactStep
 } from './contactSchema';
 
@@ -74,6 +76,39 @@ describe('parseContactBody R04', () => {
         message: 'Hola <script>alert(1)</script> necesito ayuda ya.'
       }).success
     ).toBe(false);
+  });
+
+  it('CFG-02/05: módulos se normalizan a IDs permitidos únicos', () => {
+    const parsed = parseContactBody({
+      ...validCorreo,
+      modules: 'contenidos,tienda,tienda,<script>alert(1)</script>,precio,xxx'
+    });
+    expect(parsed.success).toBe(true);
+    if (!parsed.success) return;
+    expect(parsed.data.modules).toBe('tienda,contenidos');
+    expect(portalModuleDisplayNames(parsed.data.modules)).toMatch(/Tienda online/);
+    expect(portalModuleDisplayNames(parsed.data.modules)).toMatch(/Panel de contenidos/);
+    expect(portalModuleDisplayNames(parsed.data.modules)).not.toMatch(/script|precio/i);
+  });
+
+  it('CFG-05: cadena hostil larga de módulos no rompe ni inyecta', () => {
+    const hostile = `${'x'.repeat(5000)},tienda,<img onerror=1>,mensajeria`;
+    const parsed = parseContactBody({ ...validCorreo, modules: hostile });
+    expect(parsed.success).toBe(true);
+    if (!parsed.success) return;
+    expect(parsed.data.modules).toBe('tienda,mensajeria');
+    const msg = buildContactMessage(parsed.data);
+    expect(msg).toContain('Tienda online');
+    expect(msg).not.toContain('<img');
+    expect(msg).not.toContain('onerror');
+  });
+
+  it('contacto sin módulos sigue válido', () => {
+    expect(parseContactBody(validCorreo).success).toBe(true);
+    expect(parseContactBody({ ...validCorreo, modules: '' }).success).toBe(true);
+    expect(parseContactBody({ ...validCorreo, modules: 'nope,fake' }).success).toBe(true);
+    const onlyJunk = parseContactBody({ ...validCorreo, modules: 'nope,fake' });
+    expect(onlyJunk.success && onlyJunk.data.modules).toBeUndefined();
   });
 });
 

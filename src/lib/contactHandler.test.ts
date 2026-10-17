@@ -237,6 +237,46 @@ describe('handleContactPost', () => {
     expect(sendMail).not.toHaveBeenCalled();
   });
 
+  it('OPS-01: fallo CRM tras correo aceptado → 200 accepted, log sin PII', async () => {
+    const sendMail = vi.fn(async () => undefined);
+    const saveLead = vi.fn(async () => {
+      throw new Error('notion down');
+    });
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const res = await handleContactPost(postJson(validBody), deps({ sendMail, saveLead }));
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body).toEqual({
+      ok: true,
+      status: 'accepted',
+      requestId: 'req-test',
+      replay: false
+    });
+    expect(JSON.stringify(body)).not.toMatch(/notion|crm|registro|lead/i);
+    expect(sendMail).toHaveBeenCalledOnce();
+    expect(saveLead).toHaveBeenCalledOnce();
+    expect(errorSpy).toHaveBeenCalled();
+    const logged = String(errorSpy.mock.calls[0]?.[0] ?? '');
+    expect(logged).toContain('contact_crm_error');
+    expect(logged).not.toContain(validBody.email);
+    expect(logged).not.toContain(validBody.name);
+    expect(logged).not.toContain(validBody.message);
+    errorSpy.mockRestore();
+  });
+
+  it('OPS-01: CRM ok no altera accepted ni promete registro', async () => {
+    const saveLead = vi.fn(async () => undefined);
+    const res = await handleContactPost(postJson(validBody), deps({ saveLead }));
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({
+      ok: true,
+      status: 'accepted',
+      requestId: 'req-test',
+      replay: false
+    });
+    expect(saveLead).toHaveBeenCalledOnce();
+  });
+
   it('API-01: envío válido con store → un sendMail y accepted', async () => {
     const store = createMemoryContactIdempotencyStore();
     const sendMail = vi.fn(async () => undefined);

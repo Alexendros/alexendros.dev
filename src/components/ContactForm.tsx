@@ -1,4 +1,5 @@
-import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
+import { useEffect, useId, useMemo, useRef, useState, type FormEvent } from 'react';
+import { normalizePortalModuleIds, serializePortalModuleIds } from '../content/pricing';
 import { track } from '../lib/tracking/events';
 import {
   CONTACT_WIZARD_STEPS,
@@ -8,6 +9,7 @@ import {
   entityTypes,
   formatContactFieldErrors,
   parseContactBody,
+  portalModuleDisplayNames,
   reasonLabels,
   stepIndexForField,
   validateContactStep,
@@ -115,14 +117,20 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
   useEffect(() => {
     setHydrated(true);
     const params = new URLSearchParams(window.location.search);
+    // Solo motivo y módulos allowlisted. precio/plazo/otros params se ignoran.
     const reason = reasonFromSearch(params.get('motivo'));
-    const modules = params.get('modulos') ?? '';
+    const modules = serializePortalModuleIds(normalizePortalModuleIds(params.get('modulos')));
     setForm((prev) => ({
       ...prev,
       reason,
       modules
     }));
   }, []);
+
+  const moduleLabels = useMemo(
+    () => portalModuleDisplayNames(form.modules || undefined),
+    [form.modules]
+  );
 
   const step: ContactWizardStep = CONTACT_WIZARD_STEPS[stepIndex] ?? 'reason';
   const isLast = stepIndex === CONTACT_WIZARD_STEPS.length - 1;
@@ -385,9 +393,9 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
         />
       </div>
 
-      {form.modules ? (
-        <p className="text-sm text-muted">
-          Módulos indicados: <strong className="text-fg">{form.modules}</strong>
+      {moduleLabels ? (
+        <p className="text-sm text-muted" data-contact-modules>
+          Módulos indicados: <strong className="text-fg">{moduleLabels}</strong>
         </p>
       ) : null}
 

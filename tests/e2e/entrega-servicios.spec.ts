@@ -20,7 +20,7 @@ test.describe('F02 F03 F10 servicios y configurador', () => {
     expect(body).toContain(formatEuro(provisionalPrices.contenidos));
   });
 
-  test('F03: marcar los cuatro módulos deja el total igual a la suma', async ({ page }) => {
+  test('F03/CFG-01: marcar los cuatro módulos deja el total igual a la suma', async ({ page }) => {
     await page.goto('/servicios');
     const configurator = page.locator('[data-pricing-configurator]');
     await expect(configurator).toBeVisible();
@@ -36,6 +36,22 @@ test.describe('F02 F03 F10 servicios y configurador', () => {
     await expect(configurator.locator('[data-pricing-total]')).toHaveText(
       formatEuro(portalTotalWithModules)
     );
+    await expect(configurator).toContainText(
+      /estimación orientativa|no un presupuesto contractual/i
+    );
+    await expect(configurator).toContainText(/plazos.*no se suman/i);
+  });
+
+  test('CFG-03: contacto sin configurar está disponible', async ({ page }) => {
+    await page.goto('/servicios');
+    const configurator = page.locator('[data-pricing-configurator]');
+    await expect(
+      configurator.getByRole('link', { name: /Contactar sin configurar/i })
+    ).toHaveAttribute('href', '/contacto?motivo=informacionCliente');
+    await configurator.getByRole('link', { name: /Contactar sin configurar/i }).click();
+    await expect(page).toHaveURL(/\/contacto\?motivo=informacionCliente/);
+    await expect(page.getByRole('heading', { name: 'Formulario de contacto' })).toBeVisible();
+    await expect(page.locator('[data-contact-modules]')).toHaveCount(0);
   });
 
   test('F10: la barra móvil no dice gratis', async ({ page }) => {

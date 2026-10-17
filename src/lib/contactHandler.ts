@@ -349,16 +349,20 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
       .catch(() => {});
   }
 
+  // CRM Notion es opcional y secundario: el correo ya está aceptado.
+  // Fallo observable sin PII; la respuesta no promete registro en CRM.
   if (deps.saveLead) {
-    void deps
-      .saveLead({
+    try {
+      await deps.saveLead({
         name: fields.name,
         email: fields.email,
         subject: fields.subject,
         message: fields.message,
         consent: parsed.data.consent
-      })
-      .catch(() => {});
+      });
+    } catch {
+      logEvent('error', 'contact_crm_error', requestId, false);
+    }
   }
 
   return json(200, { ok: true, status: 'accepted', requestId, replay: false });

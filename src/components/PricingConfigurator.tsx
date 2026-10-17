@@ -1,27 +1,36 @@
 import { useId, useMemo, useState } from 'react';
-import { formatEuro, portalBasePrice, sumPortal } from '../content/pricing';
+import {
+  formatEuro,
+  modulePrices,
+  normalizePortalModuleIds,
+  portalBasePrice,
+  serializePortalModuleIds,
+  sumPortal,
+  type PortalModuleId
+} from '../content/pricing';
 import { portalModules } from '../content/services';
 
 export default function PricingConfigurator() {
   const liveId = useId();
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState<PortalModuleId[]>([]);
 
   const modulesTotal = useMemo(
-    () =>
-      selected.reduce((acc, id) => {
-        const mod = portalModules.find((m) => m.id === id);
-        return acc + (mod?.priceEuros ?? 0);
-      }, 0),
+    () => selected.reduce((acc, id) => acc + modulePrices[id], 0),
     [selected]
   );
   const total = useMemo(() => sumPortal(selected), [selected]);
 
-  const toggle = (id: string) => {
-    setSelected((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]));
+  const toggle = (id: PortalModuleId) => {
+    setSelected((prev) =>
+      normalizePortalModuleIds(
+        prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      )
+    );
   };
 
+  // Solo IDs y motivo; un precio en la URL no sería contractual ni se enviaría aquí.
   const query = selected.length
-    ? `?motivo=propuestaComercial&modulos=${encodeURIComponent(selected.join(','))}`
+    ? `?motivo=propuestaComercial&modulos=${encodeURIComponent(serializePortalModuleIds(selected))}`
     : '?motivo=propuestaComercial';
 
   return (
@@ -49,8 +58,8 @@ export default function PricingConfigurator() {
                 type="checkbox"
                 value={mod.id}
                 data-module={mod.id}
-                checked={selected.includes(mod.id)}
-                onChange={() => toggle(mod.id)}
+                checked={selected.includes(mod.id as PortalModuleId)}
+                onChange={() => toggle(mod.id as PortalModuleId)}
                 className="mt-1"
                 aria-describedby={liveId}
               />
