@@ -25,6 +25,18 @@ type Props = {
 
 const SUBMIT_TIMEOUT_MS = 25_000;
 
+/** Mapa campo Zod → id del control real (entityType → contact-entity). */
+const CONTROL_ID_BY_FIELD: Record<string, string> = {
+  reason: 'contact-reason',
+  name: 'contact-name',
+  entityType: 'contact-entity',
+  channel: 'contact-channel',
+  phone: 'contact-phone',
+  email: 'contact-email',
+  message: 'contact-message',
+  consent: 'contact-consent'
+};
+
 const inputClass =
   'focus-ring mt-1 w-full bg-bg border border-border-strong rounded-lg px-3 py-2 focus:outline-none';
 
@@ -39,13 +51,47 @@ function errorFor(field: string, errors: FieldError[]): FieldError | undefined {
   return errors.find((e) => e.field === field);
 }
 
+/** Identidad lógica del envío (sin Turnstile). */
+function logicalPayloadKey(data: ContactInput): string {
+  return JSON.stringify({
+    name: data.name,
+    entityType: data.entityType,
+    channel: data.channel,
+    phone: data.phone ?? null,
+    email: data.email ?? null,
+    reason: data.reason,
+    message: data.message,
+    modules: data.modules ?? null,
+    consent: data.consent
+  });
+}
+
+function newIdempotencyKey(): string {
+  return typeof crypto !== 'undefined' && 'randomUUID' in crypto
+    ? crypto.randomUUID()
+    : `contact-${Date.now()}`;
+}
+
 export default function ContactForm({ successMessage, errorMessage, turnstileSiteKey }: Props) {
   const formId = useId();
   const stepHeadingRef = useRef<HTMLHeadingElement>(null);
   const successRef = useRef<HTMLParagraphElement>(null);
   const inFlightRef = useRef(false);
+  /** Un solo destino de foco pendiente tras el render (evita carrera paso/error). */
+  const pendingFocusRef = useRef<string | null>(null);
+  const idempotencyKeyRef = useRef<string | null>(null);
+  const payloadKeyRef = useRef<string | null>(null);
   const [status, setStatus] = useState<
-    'idle' | 'ok' | 'error' | 'rate_limited' | 'unavailable' | 'loading' | 'timeout'
+    | 'idle'
+    | 'ok'
+    | 'error'
+    | 'rate_limited'
+    | 'unavailable'
+    | 'loading'
+    | 'timeout'
+    | 'processing'
+    | 'conflict'
+    | 'unknown'
   >('idle');
   const [fieldErrors, setFieldErrors] = useState<FieldError[]>([]);
   const [stepIndex, setStepIndex] = useState(0);
@@ -64,6 +110,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
   const [turnstileToken, setTurnstileToken] = useState('');
   const [turnstileKey, setTurnstileKey] = useState(0);
   const [hydrated, setHydrated] = useState(false);
+  const [focusTick, setFocusTick] = useState(0);
 
   useEffect(() => {
     setHydrated(true);
@@ -86,31 +133,40 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
     setTurnstileKey((k) => k + 1);
   };
 
-  const focusStep = () => {
-    requestAnimationFrame(() => {
-      stepHeadingRef.current?.focus();
-    });
+  const queueFocus = (target: string) => {
+    pendingFocusRef.current = target;
+    setFocusTick((t) => t + 1);
   };
 
-  const focusField = (field: string) => {
+  // Un solo aplicador de foco; no corre al hidratar sin destino pendiente.
+  useEffect(() => {
+    if (!hydrated) return;
+    const target = pendingFocusRef.current;
+    if (!target) return;
+    pendingFocusRef.current = null;
     requestAnimationFrame(() => {
-      const el = document.getElementById(`contact-${field}`);
+      if (target === 'step') {
+        stepHeadingRef.current?.focus();
+        return;
+      }
+      if (target === 'success') {
+        successRef.current?.focus();
+        return;
+      }
+      const id = CONTROL_ID_BY_FIELD[target] ?? `contact-${target}`;
+      const el = document.getElementById(id);
       if (el instanceof HTMLElement) {
         el.focus();
         return;
       }
       stepHeadingRef.current?.focus();
     });
-  };
-
-  useEffect(() => {
-    if (!hydrated) return;
-    focusStep();
-  }, [stepIndex, hydrated]);
+  }, [hydrated, stepIndex, fieldErrors, status, focusTick]);
 
   useEffect(() => {
     if (status === 'ok') {
-      requestAnimationFrame(() => successRef.current?.focus());
+      pendingFocusRef.current = 'success';
+      setFocusTick((t) => t + 1);
     }
   }, [status]);
 
@@ -119,22 +175,35 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
     const errors = validateContactStep(step, form);
     if (errors.length) {
       setFieldErrors(errors);
-      focusField(errors[0]?.field ?? '');
+      queueFocus(errors[0]?.field ?? 'step');
       return;
     }
     setFieldErrors([]);
     setStepIndex((i) => Math.min(i + 1, CONTACT_WIZARD_STEPS.length - 1));
+    queueFocus('step');
   };
 
   const goBack = () => {
     if (sending) return;
     setFieldErrors([]);
     setStepIndex((i) => Math.max(i - 1, 0));
+    queueFocus('step');
   };
 
   const fieldDescribedBy = (field: string, err?: FieldError) => {
     if (!err) return undefined;
     return `${formId}-${field}-error`;
+  };
+
+  const resolveIdempotencyKey = (data: ContactInput): string => {
+    const logical = logicalPayloadKey(data);
+    if (idempotencyKeyRef.current && payloadKeyRef.current === logical) {
+      return idempotencyKeyRef.current;
+    }
+    const key = newIdempotencyKey();
+    idempotencyKeyRef.current = key;
+    payloadKeyRef.current = logical;
+    return key;
   };
 
   const submit = async (e: FormEvent) => {
@@ -148,7 +217,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
     const consentErrors = validateContactStep('consent', form);
     if (consentErrors.length) {
       setFieldErrors(consentErrors);
-      focusField('consent');
+      queueFocus('consent');
       return;
     }
     const payload = {
@@ -170,7 +239,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
       setFieldErrors(errors);
       if (errors[0]) {
         setStepIndex(stepIndexForField(errors[0].field));
-        focusField(errors[0].field);
+        queueFocus(errors[0].field);
       }
       return;
     }
@@ -181,10 +250,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
 
     const controller = new AbortController();
     const timer = window.setTimeout(() => controller.abort(), SUBMIT_TIMEOUT_MS);
-    const idempotencyKey =
-      typeof crypto !== 'undefined' && 'randomUUID' in crypto
-        ? crypto.randomUUID()
-        : `contact-${Date.now()}`;
+    const idempotencyKey = resolveIdempotencyKey(parsed.data);
 
     try {
       const res = await fetch('/api/contact', {
@@ -196,14 +262,42 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
         body: JSON.stringify(parsed.data),
         signal: controller.signal
       });
+
+      let body: { ok?: boolean; status?: string; error?: string } = {};
+      try {
+        body = (await res.json()) as typeof body;
+      } catch {
+        body = {};
+      }
+
       if (res.status === 429) {
         setStatus('rate_limited');
         resetTurnstile();
         return;
       }
-      if (res.status === 503) {
-        setStatus('unavailable');
+      if (res.status === 202 || body.status === 'processing') {
+        // 202 es response.ok en fetch — no es éxito final
+        setStatus('processing');
         resetTurnstile();
+        return;
+      }
+      if (res.status === 409 || body.status === 'conflict') {
+        setStatus('conflict');
+        resetTurnstile();
+        return;
+      }
+      if (res.status === 503) {
+        if (body.status === 'unknown') {
+          setStatus('unknown');
+        } else {
+          setStatus('unavailable');
+        }
+        resetTurnstile();
+        return;
+      }
+      if (res.status === 200 && (body.status === 'accepted' || body.ok === true)) {
+        setStatus('ok');
+        track('contact_form_success');
         return;
       }
       if (!res.ok) {
@@ -211,8 +305,9 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
         resetTurnstile();
         return;
       }
-      setStatus('ok');
-      track('contact_form_success');
+      // 2xx inesperado (p. ej. 201) sin contrato accepted
+      setStatus('error');
+      resetTurnstile();
     } catch (err) {
       if (err instanceof DOMException && err.name === 'AbortError') {
         setStatus('timeout');
@@ -322,7 +417,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
             ))}
           </select>
           {reasonErr ? (
-            <p id={`${formId}-reason-error`} className="mt-1 text-sm text-danger">
+            <p id={`${formId}-reason-error`} role="alert" className="mt-1 text-sm text-danger">
               {reasonErr.cause}
             </p>
           ) : null}
@@ -345,7 +440,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
             onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
           />
           {nameErr ? (
-            <p id={`${formId}-name-error`} className="mt-1 text-sm text-danger">
+            <p id={`${formId}-name-error`} role="alert" className="mt-1 text-sm text-danger">
               {nameErr.cause}
             </p>
           ) : null}
@@ -378,7 +473,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
             ))}
           </select>
           {entityErr ? (
-            <p id={`${formId}-entityType-error`} className="mt-1 text-sm text-danger">
+            <p id={`${formId}-entityType-error`} role="alert" className="mt-1 text-sm text-danger">
               {entityErr.cause}
             </p>
           ) : null}
@@ -387,7 +482,14 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
 
       {step === 'channel' && (
         <>
-          <fieldset disabled={sending} aria-invalid={channelErr ? true : undefined}>
+          <fieldset
+            id="contact-channel"
+            disabled={sending}
+            aria-invalid={channelErr ? true : undefined}
+            aria-describedby={fieldDescribedBy('channel', channelErr)}
+            tabIndex={-1}
+            className="focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          >
             <legend className="text-sm">Canal de preferencia para respuesta*</legend>
             <div className="mt-2 flex flex-wrap gap-4">
               {contactChannels.map((ch) => (
@@ -404,7 +506,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
               ))}
             </div>
             {channelErr ? (
-              <p id={`${formId}-channel-error`} className="mt-1 text-sm text-danger">
+              <p id={`${formId}-channel-error`} role="alert" className="mt-1 text-sm text-danger">
                 {channelErr.cause}
               </p>
             ) : null}
@@ -427,7 +529,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
                 onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
               />
               {phoneErr ? (
-                <p id={`${formId}-phone-error`} className="mt-1 text-sm text-danger">
+                <p id={`${formId}-phone-error`} role="alert" className="mt-1 text-sm text-danger">
                   {phoneErr.cause}
                 </p>
               ) : null}
@@ -451,7 +553,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
                 onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
               />
               {emailErr ? (
-                <p id={`${formId}-email-error`} className="mt-1 text-sm text-danger">
+                <p id={`${formId}-email-error`} role="alert" className="mt-1 text-sm text-danger">
                   {emailErr.cause}
                 </p>
               ) : null}
@@ -477,7 +579,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
             placeholder="Describe qué necesitas o qué quieres preguntar."
           />
           {messageErr ? (
-            <p id={`${formId}-message-error`} className="mt-1 text-sm text-danger">
+            <p id={`${formId}-message-error`} role="alert" className="mt-1 text-sm text-danger">
               {messageErr.cause}
             </p>
           ) : null}
@@ -507,7 +609,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
             </span>
           </label>
           {consentErr ? (
-            <p id={`${formId}-consent-error`} className="mt-1 text-sm text-danger">
+            <p id={`${formId}-consent-error`} role="alert" className="mt-1 text-sm text-danger">
               {consentErr.cause}
             </p>
           ) : null}
@@ -532,7 +634,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
                   className="underline decoration-dotted underline-offset-2"
                   onClick={() => {
                     setStepIndex(stepIndexForField(err.field));
-                    focusField(err.field);
+                    queueFocus(err.field);
                   }}
                 >
                   {err.label}: {err.cause}
@@ -570,6 +672,37 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
       {status === 'unavailable' && (
         <p role="alert" className="text-sm text-danger">
           Servicio temporalmente no disponible. Escríbeme a{' '}
+          <a
+            href="mailto:contratacion@alexendros.dev"
+            className="underline decoration-dotted underline-offset-2"
+          >
+            contratacion@alexendros.dev
+          </a>
+          .
+        </p>
+      )}
+      {status === 'processing' && (
+        <p role="status" className="text-sm text-muted">
+          Tu petición se está procesando. Espera unos segundos antes de reintentar; no confirmamos
+          aún la recepción.
+        </p>
+      )}
+      {status === 'conflict' && (
+        <p role="alert" className="text-sm text-danger">
+          Esta petición no coincide con un envío anterior. Revisa los datos o escribe a{' '}
+          <a
+            href="mailto:contratacion@alexendros.dev"
+            className="underline decoration-dotted underline-offset-2"
+          >
+            contratacion@alexendros.dev
+          </a>
+          .
+        </p>
+      )}
+      {status === 'unknown' && (
+        <p role="alert" className="text-sm text-danger">
+          No podemos confirmar si el mensaje llegó. No reenvíes de inmediato; espera un momento o
+          escribe a{' '}
           <a
             href="mailto:contratacion@alexendros.dev"
             className="underline decoration-dotted underline-offset-2"
