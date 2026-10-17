@@ -4,6 +4,11 @@ on:
   push:
     branches: [main]
   pull_request:
+    # `labeled` es imprescindible: el job `e2e` (axe + LHCI) se activa con la
+    # etiqueta `e2e`, pero los tipos por defecto (opened/synchronize/reopened)
+    # no se disparan al etiquetar, así que sin esto la etiqueta nunca arrancaba
+    # la suite y el gate quedaba en `skipping`.
+    types: [opened, synchronize, reopened, labeled, unlabeled]
   workflow_dispatch:
     inputs:
       e2e:
