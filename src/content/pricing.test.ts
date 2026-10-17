@@ -55,13 +55,12 @@ describe('CFG-02: normalización de IDs', () => {
     expect(
       normalizePortalModuleIds(['contenidos', 'tienda', 'tienda', 'fake', 'usuarios', 'mensajeria'])
     ).toEqual(['tienda', 'mensajeria', 'usuarios', 'contenidos']);
-    expect(normalizePortalModuleIds('usuarios,tienda,<script>,precio')).toEqual([
-      'tienda',
-      'usuarios'
-    ]);
-    expect(serializePortalModuleIds(normalizePortalModuleIds('contenidos,tienda'))).toBe(
-      'tienda,contenidos'
-    );
+    expect(
+      normalizePortalModuleIds(['usuarios', 'tienda', '<script>', 'precio'].join(','))
+    ).toEqual(['tienda', 'usuarios']);
+    expect(
+      serializePortalModuleIds(normalizePortalModuleIds(['contenidos', 'tienda'].join(',')))
+    ).toBe(['tienda', 'contenidos'].join(','));
   });
 
   it('IDs desconocidos o duplicados no manipulan el total', () => {
