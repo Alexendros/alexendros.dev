@@ -35,11 +35,13 @@ export default function PricingConfigurator() {
 
   return (
     <div data-pricing-configurator className="rounded-lg border border-border bg-card p-6 md:p-8">
-      <h3 className="text-xl font-bold">Configurador de portal</h3>
+      <h2 id="portal-heading" className="text-xl font-bold">
+        Configura los módulos que querrás en tu portal web
+      </h2>
       <p className="mt-2 text-sm text-muted">
-        Parte del portal de inicio y añade módulos. Los importes son provisionales y son una
-        estimación orientativa, no un presupuesto contractual. Los plazos de cada módulo no se suman
-        automáticamente: el calendario se acuerda tras revisar el alcance.
+        Configura la base y los módulos. El total es una estimación provisional, no un presupuesto
+        contractual. Los plazos de cada módulo no se suman automáticamente: el calendario se acuerda
+        tras revisar el alcance.
       </p>
 
       <ul className="mt-6 space-y-3" data-pricing-list>

@@ -1,11 +1,10 @@
 ---
-// Cabecera de página cianotipo: cajetín mono encima del título y regla
-// hairline debajo. Unifica las portadas de sección (servicios, casos,
-// contacto, proceso, legales) con el lenguaje de plano.
+// Cabecera de página: título, regla hairline y descripción opcional.
+// El kicker mono (ÍNDICE · …, CONTACTO, etc.) queda fuera del patrón vivo.
 import Eyebrow from './Eyebrow.astro';
 
 interface Props {
-  kicker: string;
+  kicker?: string;
   title: string;
   description?: string;
 }
@@ -13,8 +12,8 @@ const { kicker, title, description } = Astro.props;
 ---
 
 <div>
-  <Eyebrow>{kicker}</Eyebrow>
-  <h1 class="mt-2 text-4xl font-bold max-w-3xl">{title}</h1>
+  {kicker ? <Eyebrow>{kicker}</Eyebrow> : null}
+  <h1 class:list={[kicker ? 'mt-2' : null, 'text-4xl font-bold max-w-3xl']}>{title}</h1>
   <div class="pagehead-rule mt-4 h-px bg-border" aria-hidden="true"></div>
   {description && <p class="text-muted mt-3 max-w-2xl">{description}</p>}
 </div>

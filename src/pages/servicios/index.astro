@@ -10,11 +10,10 @@ import { serviceProducts } from '../../content/services';
 
 <Layout
   title="Servicios — Alexendros"
-  description="Informe comercial, sesión profesional, auditoría de normativa y ciberseguridad, y portal de inicio configurable por módulos."
+  description="Informe 360º, sesión profesional, inspección de cumplimiento normativo y vulnerabilidades, y portal web configurable por módulos."
 >
   <Container class="py-16 md:py-24">
     <PageHead
-      kicker="ÍNDICE · SERVICIOS"
       title="Servicios"
       description="Catálogo con precio, pago, plazo, entrega y garantía. Los importes son provisionales."
     />
@@ -29,14 +28,7 @@ import { serviceProducts } from '../../content/services';
     </Grid>
 
     <section class="mt-16" aria-labelledby="portal-heading">
-      <h2 id="portal-heading" class="text-2xl font-bold">Portal de inicio</h2>
-      <p class="mt-2 text-sm text-muted max-w-2xl">
-        Configura la base y los módulos. El total es una estimación provisional, no un presupuesto
-        contractual.
-      </p>
-      <div class="mt-8">
-        <PricingConfigurator client:load />
-      </div>
+      <PricingConfigurator client:load />
     </section>
   </Container>
 </Layout>

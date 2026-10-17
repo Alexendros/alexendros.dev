@@ -143,11 +143,11 @@ export const services: Service[] = [
   {
     slug: 'informe-comercial',
     kind: 'service',
-    title: 'Informe comercial',
+    title: 'Informe 360º',
     short:
-      'Inspección metodológica de tu dominio y presencia en internet, con dossier de hallazgos y recomendaciones.',
+      'Informe completo de tu website actual: posicionamiento en buscadores, velocidad de carga, accesibilidad al navegarlo y plan de mejoras.',
     description:
-      'Reviso tu dominio web y tu presencia en internet. Te envío un dossier con detecciones, hallazgos, áreas a corregir ya y recomendaciones para construir algo más eficiente para tu negocio.',
+      'Reviso tu website actual de punta a punta: puntuación en posicionamiento de buscadores, velocidad de carga, accesibilidad al navegarlo y claridad del camino a contacto. Te entrego un dossier con hallazgos, necesidades y un plan completo para solucionar cada problema.',
     audience: ['Negocios y profesionales que necesitan saber por dónde empezar antes de invertir.'],
     problems: [
       'La web no trae contactos',
@@ -155,20 +155,20 @@ export const services: Service[] = [
       'Has recibido propuestas difíciles de priorizar'
     ],
     scope: [
-      'Dominio web y presencia pública',
+      'Posicionamiento en buscadores',
+      'Velocidad de carga y uso en móvil',
+      'Accesibilidad al navegarlo',
       'Claridad de mensaje y camino a contacto',
-      'Velocidad y uso en móvil',
       'Priorización de hallazgos'
     ],
     deliverables: [
-      'Dossier informativo de detecciones y hallazgos',
-      'Áreas a corregir ya',
-      'Recomendaciones de siguiente paso'
+      'Dossier completo con hallazgos y necesidades',
+      'Plan completo para solucionar cada problema'
     ],
     process: [
       'Encargo y acceso al dominio',
-      'Inspección metodológica',
-      'Redacción del dossier',
+      'Inspección 360º',
+      'Redacción del dossier y del plan',
       'Entrega y ronda de aclaraciones'
     ],
     technicalDetails: ['Análisis CWV, SEO técnico básico, revisión de contenidos y accesibilidad.'],
@@ -181,7 +181,8 @@ export const services: Service[] = [
       priceStatus: 'provisional',
       payment: 'Pago único antes de empezar',
       timeline: '5 días laborables',
-      delivery: 'Dossier con hallazgos priorizados y recomendaciones',
+      delivery:
+        'Dossier completo con hallazgos y necesidades junto a un plan completo para solucionar cada problema',
       guarantee: 'Una ronda de aclaraciones en 10 días naturales'
     },
     action: {
@@ -195,17 +196,20 @@ export const services: Service[] = [
     slug: 'sesion-profesional',
     kind: 'service',
     title: 'Sesión profesional',
-    short:
-      'Sesión de trabajo para desbloquear un problema concreto o decidir el siguiente paso técnico.',
+    short: 'Sesión de mejoras sobre tu página actual.',
     description:
-      'Una hora de trabajo enfocado. Sales con siguientes pasos por escrito en el siguiente día laborable.',
+      'Sesión de mejoras sobre tu página actual. Sales con siguientes pasos por escrito en el siguiente día laborable. 50 % de descuento si la sesión aplica el plan de soluciones de una de mis inspecciones (Informe 360º o inspección de vulnerabilidades).',
     audience: ['Quien necesita desbloquear una decisión técnica o de producto con plazo corto.'],
     problems: [
       'Hay un bloqueo concreto',
       'Necesitas decidir el siguiente paso',
       'No quieres un proyecto completo todavía'
     ],
-    scope: ['Conversación de 60 minutos', 'Priorización del problema', 'Siguientes pasos escritos'],
+    scope: [
+      'Conversación de 60 minutos',
+      'Mejoras sobre tu página actual',
+      'Siguientes pasos escritos'
+    ],
     deliverables: ['Resumen de siguientes pasos por escrito'],
     process: ['Reserva en Cal.com', 'Sesión de 60 minutos', 'Entrega del resumen'],
     technicalDetails: ['Cal.com para reserva y pago.'],
@@ -213,7 +217,8 @@ export const services: Service[] = [
     commercial: {
       priceEuros: provisionalPrices.sesionProfesional,
       priceStatus: 'provisional',
-      payment: 'Pago al reservar en Cal.com',
+      payment:
+        'Pago al reservar en Cal.com. 50 % de descuento si aplicas el plan de una inspección (360º o vulnerabilidades)',
       timeline: '60 minutos',
       delivery: 'Siguientes pasos por escrito en 1 día laborable',
       guarantee: 'Resumen entregado en 1 día laborable tras la sesión'
@@ -228,11 +233,11 @@ export const services: Service[] = [
   {
     slug: 'auditoria-normativa-ciberseguridad',
     kind: 'service',
-    title: 'Auditoría de normativa y ciberseguridad',
+    title: 'Inspección de cumplimiento normativo y vulnerabilidades',
     short:
-      'Informe de RGPD/LSSI y seguridad básica, con severidad y corrección recomendada por hallazgo.',
+      'Inspección de RGPD/LSSI y vulnerabilidades básicas, con severidad y corrección recomendada por hallazgo.',
     description:
-      'Revisión de cumplimiento normativo y de seguridad básica de tu presencia web. Cada hallazgo lleva severidad y corrección recomendada. No incluye pentest ni certificación.',
+      'Inspección de cumplimiento normativo y de vulnerabilidades de tu presencia web. Cada hallazgo lleva severidad y corrección recomendada. No incluye pentest ni certificación.',
     audience: ['Negocios que necesitan un informe accionable antes de endurecer su sitio.'],
     problems: [
       'Dudas de cumplimiento RGPD/LSSI',
@@ -292,7 +297,7 @@ export const portalBase: PortalModule = {
 export const portalModules: PortalModule[] = [
   {
     id: 'tienda',
-    title: 'Tienda online',
+    title: 'Catálogo y tienda online',
     short: 'Catálogo y pasarela de pagos.',
     priceEuros: modulePrices.tienda,
     payment: 'Incluido en el pago fraccionado del portal',

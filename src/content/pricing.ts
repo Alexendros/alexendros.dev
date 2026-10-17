@@ -1,13 +1,13 @@
 /** Importes provisionales. Un solo sitio para sustituirlos cuando se fijen. */
 export const provisionalPrices = {
-  informeComercial: 650,
-  sesionProfesional: 150,
-  auditoria: 1500,
-  portalInicio: 990,
-  tienda: 1400,
-  mensajeria: 400,
-  usuarios: 700,
-  contenidos: 410
+  informeComercial: 120,
+  sesionProfesional: 300,
+  auditoria: 200,
+  portalInicio: 495,
+  tienda: 700,
+  mensajeria: 200,
+  usuarios: 350,
+  contenidos: 205
 } as const;
 
 export const portalBasePrice = provisionalPrices.portalInicio;
