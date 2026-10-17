@@ -14,7 +14,7 @@ import {
 
 describe('precios provisionales', () => {
   it('R01: discounted resta el 15 % y redondea a céntimos', () => {
-    expect(discounted(provisionalPrices.informeComercial)).toBe(552.5);
+    expect(discounted(provisionalPrices.informeComercial)).toBe(102);
     expect(discounted(100)).toBe(85);
     expect(discounted(99.99)).toBe(84.99);
   });
@@ -27,7 +27,7 @@ describe('precios provisionales', () => {
       modulePrices.usuarios +
       modulePrices.contenidos;
     expect(sum).toBe(portalTotalWithModules);
-    expect(sum).toBe(3900);
+    expect(sum).toBe(1950);
   });
 });
 

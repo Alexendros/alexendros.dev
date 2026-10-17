@@ -4,10 +4,12 @@ import { formatEuro, portalTotalWithModules, provisionalPrices } from '../../src
 test.describe('F02 F03 F10 servicios y configurador', () => {
   test('F02: /servicios muestra las tres fichas y cada importe del módulo', async ({ page }) => {
     await page.goto('/servicios');
-    await expect(page.getByRole('heading', { name: 'Informe comercial' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Informe 360º' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Sesión profesional' })).toBeVisible();
     await expect(
-      page.getByRole('heading', { name: 'Auditoría de normativa y ciberseguridad' })
+      page.getByRole('heading', {
+        name: 'Inspección de cumplimiento normativo y vulnerabilidades'
+      })
     ).toBeVisible();
     const body = await page.locator('main').innerText();
     expect(body).toContain(formatEuro(provisionalPrices.informeComercial));

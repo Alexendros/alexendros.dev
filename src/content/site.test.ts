@@ -2,10 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { site } from './site';
 
 describe('navegación y pie públicos', () => {
-  it('R06: site.nav es Servicios, Publicaciones, Metodología, Valores', () => {
+  it('R06: site.nav es Servicios, Trabajos realizados, Metodología, Valores', () => {
     expect(site.nav.map((i) => i.label)).toEqual([
       'Servicios',
-      'Publicaciones',
+      'Trabajos realizados',
       'Metodología',
       'Valores'
     ]);

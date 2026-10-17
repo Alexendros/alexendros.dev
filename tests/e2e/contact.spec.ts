@@ -196,7 +196,9 @@ test('CFG-04: motivo y módulos válidos muestran nombres', async ({ page }) => 
   });
   const modules = page.locator('[data-contact-modules]');
   await expect(modules).toBeVisible();
-  await expect(modules.locator('strong')).toHaveText('Tienda online, Panel de contenidos');
+  await expect(modules.locator('strong')).toHaveText(
+    'Catálogo y tienda online, Panel de contenidos'
+  );
 });
 
 test('CFG-05: params hostiles no inventan condiciones ni XSS', async ({ page }) => {
@@ -208,7 +210,7 @@ test('CFG-05: params hostiles no inventan condiciones ni XSS', async ({ page }) 
   });
   const modules = page.locator('[data-contact-modules]');
   await expect(modules).toBeVisible();
-  await expect(modules.locator('strong')).toHaveText('Tienda online');
+  await expect(modules.locator('strong')).toHaveText('Catálogo y tienda online');
   await expect(modules).not.toContainText(/script|evil|precio|1\s*€/i);
   await expect(page.locator('body')).not.toContainText('alert(1)');
 });

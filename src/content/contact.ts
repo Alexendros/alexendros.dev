@@ -77,15 +77,15 @@ export const contact = contactSchema.parse({
   },
   bookings: {
     heading: 'Opciones de contacto',
-    intro: 'Informe comercial por formulario. Sesión profesional con reserva y pago en Cal.com.',
+    intro: 'Informe 360º por formulario. Sesión profesional con reserva y pago en Cal.com.',
     offers: [
       {
         kind: 'form',
         id: 'informe-comercial',
-        title: 'Informe comercial',
+        title: 'Informe 360º',
         priceLabel: formatEuro(provisionalPrices.informeComercial),
         summary:
-          'Inspección metodológica de tu dominio y presencia en internet. Dossier con hallazgos y recomendaciones.',
+          'Informe completo de tu website actual: posicionamiento, velocidad, accesibilidad y plan de mejoras.',
         cta: 'Rellenar formulario',
         href: '#escribir'
       },
@@ -97,7 +97,7 @@ export const contact = contactSchema.parse({
         title: 'Sesión profesional',
         priceLabel: formatEuro(provisionalPrices.sesionProfesional),
         summary:
-          'Sesión de 60 minutos para desbloquear un problema concreto. Siguientes pasos por escrito en 1 día laborable.',
+          'Sesión de mejoras sobre tu página actual. 50 % de descuento si aplicas el plan de una inspección.',
         cta: 'Reservar sesión profesional'
       }
     ]
