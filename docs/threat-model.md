@@ -41,16 +41,11 @@
 | **D**enial of Service      | Flood API               | Upstash Ratelimit (10/min/IP)     | ✅         |
 | **E**levation of Privilege | N/A (sin auth)          | —                                 | —          |
 
-### Lead Magnet (`/api/lead-magnet`)
+### Lead magnet / newsletter (retirados)
 
-| STRIDE                     | Amenaza                 | Mitigación actual                 | Gap        |
-| -------------------------- | ----------------------- | --------------------------------- | ---------- |
-| **S**poofing               | Falsificación remitente | Turnstile (configurado), honeypot | ✅         |
-| **T**ampering              | Inyección en payload    | Zod schema validation             | ✅         |
-| **R**epudiation            | Negación envío          | Log estructurado ausente          | ❌ Logging |
-| **I**nformation Disclosure | Fuga emails en error    | Respuesta genérica                | ✅         |
-| **D**enial of Service      | Flood API               | Upstash Ratelimit (5/min/IP)      | ✅         |
-| **E**levation of Privilege | N/A (sin auth)          | —                                 | —          |
+`/api/lead-magnet`, `/api/newsletter/*` y el doble opt-in Resend se eliminaron del árbol
+publicado (PR-E). No hay superficie de amenaza activa; las redirecciones históricas
+`/servicios/web-para` siguen apuntando a `/servicios`.
 
 ### Frontend estático (Astro + islas React)
 

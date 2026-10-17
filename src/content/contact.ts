@@ -20,8 +20,7 @@ export const bookingOfferSchema = z.discriminatedUnion('kind', [
     title: z.string().min(1),
     priceLabel: z.string().min(1),
     summary: z.string().min(1),
-    cta: z.string().min(1),
-    qrLabel: z.string().min(1)
+    cta: z.string().min(1)
   })
 ]);
 
@@ -42,7 +41,6 @@ export const contactSchema = z.object({
   bookings: z.object({
     heading: z.string().min(1),
     intro: z.string().min(1),
-    scanLabel: z.string().min(1),
     offers: z.array(bookingOfferSchema).length(2)
   })
 });
@@ -80,7 +78,6 @@ export const contact = contactSchema.parse({
   bookings: {
     heading: 'Opciones de contacto',
     intro: 'Informe comercial por formulario. Sesión profesional con reserva y pago en Cal.com.',
-    scanLabel: 'Escanea para reservar',
     offers: [
       {
         kind: 'form',
@@ -101,8 +98,7 @@ export const contact = contactSchema.parse({
         priceLabel: formatEuro(provisionalPrices.sesionProfesional),
         summary:
           'Sesión de 60 minutos para desbloquear un problema concreto. Siguientes pasos por escrito en 1 día laborable.',
-        cta: 'Reservar sesión profesional',
-        qrLabel: `Código QR para reservar Sesión profesional (${formatEuro(provisionalPrices.sesionProfesional)}) en Cal.com`
+        cta: 'Reservar sesión profesional'
       }
     ]
   }

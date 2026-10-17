@@ -31,7 +31,7 @@ Quien eres: role Full Stack · Auditor · Consultor, summary conversion-focused,
 - ServiceCard.astro / ProjectCard.astro: fichas de catálogo y publicaciones con availability
 - ContactForm.tsx: isla React `client:load`, asistente de 6 pasos (motivo → nombre → categoría → canal → petición → consentimiento), errores por campo, honeypot, Turnstile opcional
 - CookieBanner.tsx: isla CMP `vanilla-cookieconsent` v3 (`client:idle`); Consent Mode v2 default-deny
-- BookingOptions.astro / LeadMagnet.astro: componentes residuales **no montados** en rutas publicadas; reserva de sesión vía enlace Cal.com en ficha
+- Reserva de sesión profesional: enlace Cal.com en ficha (sin QR embebido ni lead magnet)
 
 ## Paginas
 

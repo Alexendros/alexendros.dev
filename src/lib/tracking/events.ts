@@ -14,8 +14,7 @@ export type FunnelEvent =
   | 'form_step'
   | 'form_submit'
   | 'contact_form_success'
-  | 'form_abandon_step'
-  | 'lead_magnet_download';
+  | 'form_abandon_step';
 
 type Props = Record<string, string | number | boolean | null | undefined>;
 
@@ -32,7 +31,7 @@ function metaEvent(event: FunnelEvent, props: Props): void {
   if (typeof target.fbq !== 'function') return;
   target.fbq('trackCustom', event, props);
   // Los eventos de conversión se reenvían también como estándar de Meta.
-  if (event === 'form_submit' || event === 'lead_magnet_download') {
+  if (event === 'form_submit') {
     target.fbq('track', 'Lead', props);
   }
 }
