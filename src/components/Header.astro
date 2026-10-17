@@ -126,13 +126,33 @@ const path = Astro.url.pathname;
         iconClose?.classList.add('hidden');
       }
     };
+    const restoreMenuButtonFocus = (): void => {
+      menuButton.focus({ preventScroll: true });
+      // Doble rAF: el CMP u otros listeners en bubble pueden mover el foco
+      // en el mismo turno tras Escape.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (document.activeElement !== menuButton) {
+            menuButton.focus({ preventScroll: true });
+          }
+        });
+      });
+    };
     menuButton.addEventListener('click', () => setMenuOpen(!isMenuOpen()));
-    mobileNav.addEventListener('keydown', (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+    // Escape cierra aunque el foco esté en el botón o fuera del <nav>
+    // (p. ej. tras Tab al chrome); el listener en solo mobileNav no bastaba.
+    // capture + stopImmediatePropagation evita que el CMP robe Escape/foco.
+    document.addEventListener(
+      'keydown',
+      (event: KeyboardEvent) => {
+        if (event.key !== 'Escape' || !isMenuOpen()) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
         setMenuOpen(false);
-        menuButton.focus();
-      }
-    });
+        restoreMenuButtonFocus();
+      },
+      true
+    );
     menuLinks.forEach((link) => link.addEventListener('click', () => setMenuOpen(false)));
   }
 

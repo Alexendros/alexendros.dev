@@ -6,11 +6,14 @@ const routes = [
   '/servicios',
   '/servicios/informe-comercial',
   '/servicios/sesion-profesional',
+  '/servicios/auditoria-normativa-ciberseguridad',
   '/proyectos',
   '/proyectos/front-valencia',
   '/proceso-y-entrega',
   '/identidad',
-  '/contacto'
+  '/contacto',
+  '/cookies',
+  '/privacidad'
 ];
 
 for (const route of routes) {
