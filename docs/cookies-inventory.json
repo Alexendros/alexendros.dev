@@ -16,6 +16,13 @@
       "duration": "12 meses"
     },
     {
+      "name": "alexendros_ref",
+      "owner": "alexendros.dev",
+      "category": "necessary",
+      "purpose": "Guarda un código de referido técnico si llegas con ?ref= o /r/<code>, para atribuir la visita sin perfilado publicitario.",
+      "duration": "90 días"
+    },
+    {
       "name": "_ga",
       "owner": "Google Analytics",
       "category": "analytics",

@@ -48,4 +48,39 @@ test.describe('critical paths', () => {
     await expect(page.locator('script[data-tracker]')).toHaveCount(0);
     expect(await page.evaluate(() => 'gtag' in window)).toBe(false);
   });
+
+  test('a 320px el CMP queda por encima del sticky CTA (sin solape de apilado)', async ({
+    page
+  }) => {
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'webdriver', { get: () => false });
+    });
+    await page.setViewportSize({ width: 320, height: 720 });
+    await page.goto('/');
+    await expect(page.locator('#cc-main .cm')).toBeVisible();
+    // Forzar sticky CTA visible para medir z-index relativo al CMP.
+    await page.evaluate(() => {
+      document.getElementById('sticky-cta')?.classList.remove('hidden');
+    });
+    const stack = await page.evaluate(() => {
+      const cmp = document.querySelector('#cc-main');
+      const sticky = document.getElementById('sticky-cta');
+      const header = document.getElementById('site-header');
+      if (!cmp || !sticky || !header) return null;
+      const z = (el: Element) => {
+        let node: Element | null = el;
+        let max = 0;
+        while (node && node !== document.documentElement) {
+          const value = Number.parseFloat(getComputedStyle(node).zIndex);
+          if (!Number.isNaN(value)) max = Math.max(max, value);
+          node = node.parentElement;
+        }
+        return max;
+      };
+      return { cmp: z(cmp), sticky: z(sticky), header: z(header) };
+    });
+    expect(stack).not.toBeNull();
+    expect(stack!.cmp).toBeGreaterThan(stack!.sticky);
+    expect(stack!.cmp).toBeGreaterThan(stack!.header);
+  });
 });
