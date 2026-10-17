@@ -112,6 +112,21 @@ const path = Astro.url.pathname;
     const iconClose = document.getElementById('menu-icon-close');
     const menuLinks = Array.from(mobileNav.querySelectorAll('a'));
     const isMenuOpen = (): boolean => menuButton.getAttribute('aria-expanded') === 'true';
+    const focusWithRetry = (el: HTMLElement): void => {
+      const tryFocus = (): void => {
+        if (document.activeElement !== el) el.focus({ preventScroll: true });
+      };
+      tryFocus();
+      // rAF + timeouts: Enter/Escape y el CMP pueden mover el foco tras el
+      // primer paint o al ocultar el nav (el enlace enfocado deja de ser focusable).
+      requestAnimationFrame(() => {
+        tryFocus();
+        requestAnimationFrame(tryFocus);
+      });
+      for (const ms of [0, 32, 80]) {
+        window.setTimeout(tryFocus, ms);
+      }
+    };
     const setMenuOpen = (open: boolean): void => {
       menuButton.setAttribute('aria-expanded', String(open));
       menuButton.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
@@ -119,7 +134,8 @@ const path = Astro.url.pathname;
         mobileNav.removeAttribute('hidden');
         iconOpen?.classList.add('hidden');
         iconClose?.classList.remove('hidden');
-        menuLinks[0]?.focus();
+        const first = menuLinks[0];
+        if (first) focusWithRetry(first);
       } else {
         mobileNav.setAttribute('hidden', '');
         iconOpen?.classList.remove('hidden');
@@ -127,16 +143,7 @@ const path = Astro.url.pathname;
       }
     };
     const restoreMenuButtonFocus = (): void => {
-      menuButton.focus({ preventScroll: true });
-      // Doble rAF: el CMP u otros listeners en bubble pueden mover el foco
-      // en el mismo turno tras Escape.
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          if (document.activeElement !== menuButton) {
-            menuButton.focus({ preventScroll: true });
-          }
-        });
-      });
+      focusWithRetry(menuButton);
     };
     menuButton.addEventListener('click', () => setMenuOpen(!isMenuOpen()));
     // Escape cierra aunque el foco esté en el botón o fuera del <nav>

@@ -1,65 +1,59 @@
-# Checkpoint — AXD contacto / medición / UI / a11y
+# Checkpoint — AXD contacto / medición / UI / a11y / SEO
 
 ```text
-Checkpoint: CP-00…CP-09 (+ publish A–D+CP-08)
-Estado: CP-08/09 listos para PR; A–D+CP-08 en main @ 9a3cdf0 (v1.24.10)
-SHA base merge A–D+CP-08: 9a3cdf0ca0817f2126250795b510943bb2a16bc9
-Rama CP-09: cursor/cp09-a11y-ux
+Checkpoint: CP-00…CP-10
+Estado: CP-08/09 en main (v1.24.11 @ 7b6bd8a); CP-10 en rama cursor/cp10-seo-edge
 ```
 
-## Paquetes A–D (merged #121)
+## Paquetes A–D + CP-08/09 (merged)
 
-- Lead solo tras `accepted` no-replay; mailto hasta hidratación; Vercel gated; revocación mismo documento; contexto `servicio`/`proyecto`.
-- Catálogo con límites; portfolio `workKind`/`availability`; CMP neutro.
+- Lead/consent/contexto/catálogo/portfolio/CMP; matriz UI; teclado menú/axe (PR #121, #122).
 
-## CP-08 — matriz UI (merged #121)
+## CP-10 — SEO público y edge (este cierre)
 
-- e2e `tests/e2e/ui-matrix.spec.ts`: viewports 320/390/768/1280 × claro/oscuro × motion; CMP/sticky; contacto/servicios 320.
-- Hardening tipográfico/layout en fichas de proyecto (`min-w-0`, `text-pretty`, cover recortada).
-- CI: `e2e-critical` construye con `E2E_TRACKER_ENV` (no reutiliza artefacto prod sin IDs).
+### Local (preview estático)
 
-## CP-09 — UX / teclado / a11y (este cierre)
+| Comprobación                                                 | Resultado |
+| ------------------------------------------------------------ | --------- |
+| ROUTE-01…04 (previos)                                        | PASS      |
+| ROUTE-05 canonical/og:url sin query en `/contacto?…`         | PASS      |
+| ROUTE-06 titles únicos + description + H1 (semilla 11 rutas) | PASS      |
+| ROUTE-07 robots.txt Allow + Sitemap apex                     | PASS      |
 
-### Defecto corregido
+Canonical ya usa solo `pathname` en `Layout.astro` (sin query); sin cambio de código necesario.
 
-- Menú móvil: Escape en captura de documento cierra el menú y recupera el foco en el botón; evita que el CMP robe el Escape.
+### Inventario semilla (build local + apex)
 
-### Automatización bloqueante
+| URL                                   | HTTP | robots  | canonical                  | H1  |
+| ------------------------------------- | ---- | ------- | -------------------------- | --- |
+| `/`                                   | 200  | index   | apex `/`                   | sí  |
+| `/servicios` + 3 fichas               | 200  | index   | path limpio                | sí  |
+| `/proyectos`                          | 200  | index   | path limpio                | sí  |
+| `/proceso-y-entrega`                  | 200  | index   | path limpio                | sí  |
+| `/contacto`                           | 200  | index   | path limpio (ignora query) | sí  |
+| `/identidad` `/privacidad` `/cookies` | 200  | index   | path limpio                | sí  |
+| `/design-system`                      | 200  | noindex | —                          | sí  |
+| slug servicios inexistente            | 404  | —       | —                          | 404 |
 
-- `tests/e2e/cp09-a11y-ux.spec.ts`: landmarks/H1, menú teclado, CMP teclado, contacto aria-invalid+axe, recorridos A–D muestreo, reflow 320, zoom 200 %, axe post-rechazo.
-- `tests/e2e/a11y.spec.ts`: rutas ampliadas (auditoría, cookies, privacidad).
-- Job `e2e-critical` incluye `cp09-a11y-ux` + `skip-link`.
+### Edge producción (`seo-edge-prod.spec.ts`)
 
-### Límites
+- www → apex 308; todos los redirects de path en `vercel.json` → destino 200 sin bucle (muestreo `:path*` = `web-para/muestra-cp10`).
+- Rutas retiradas ausentes del sitemap y del nav de home.
 
-- No se declara conformidad WCAG completa.
-- Lector de pantalla real: **NOT_VERIFIED**.
-- Recorridos F–I (timeouts form, fallo parcial hidratación exhaustivo) cubiertos en parte por `contact.spec` / `consent.spec` previos; no se reabren aquí.
+### Defectos de producto
 
-## CP-13 residual (lectura segura producción)
-
-- `https://alexendros.dev/` /contacto /servicios → HTTP 200; ruta inexistente → 404.
-- Sin marcadores de IDs e2e (`G-E2E`, `GTM-E2E`, etc.) en HTML de home (muestreo).
-- Deploy post-merge A–D+CP-08 verificado a nivel HTTP; SMTP real sigue NOT_VERIFIED.
-
-## Pruebas (CP-09 local)
-
-| Comando                            | Resultado         |
-| ---------------------------------- | ----------------- |
-| Playwright cp09 + skip-link + a11y | PASS 28/28        |
-| typecheck / vitest / lint:css      | (gate pre-commit) |
+Ninguno detectado en este tramo.
 
 ## Hallazgos
 
-| ID                         | Estado                                       |
-| -------------------------- | -------------------------------------------- |
-| AXD-001…012                | corregido en main (v1.24.10)                 |
-| CP-08                      | PASS (merged)                                |
-| CP-09                      | PASS parcial (automatizado; SR NOT_VERIFIED) |
-| CP-10 SEO edge             | pendiente                                    |
-| CP-11 LHCI / SEM           | pendiente                                    |
-| CP-12/13 publish A–D+CP-08 | PASS (merge + release + lectura HTTP)        |
+| ID               | Estado                         |
+| ---------------- | ------------------------------ |
+| AXD-001…012      | corregido en main              |
+| CP-08            | PASS                           |
+| CP-09            | PASS parcial (SR NOT_VERIFIED) |
+| CP-10            | PASS (GSC NOT_VERIFIED)        |
+| CP-11 LHCI / SEM | pendiente                      |
 
 ## NOT_VERIFIED
 
-SMTP real, SDK Clarity/LinkedIn opt-out en runtime real, GTM externo export, lector de pantalla, SEO edge aliases, Lighthouse ×3, SEM con datos reales.
+SMTP real, SDK Clarity/LinkedIn opt-out real, GTM export, lector de pantalla, Search Console (rankings/tráfico), Lighthouse ×3, SEM con datos reales.

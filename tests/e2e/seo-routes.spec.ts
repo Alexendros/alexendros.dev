@@ -190,3 +190,60 @@ test('ROUTE-04: embudo retirado no anuncia lead-magnet ni newsletter', async ({ 
   const webPara = await request.get('/servicios/web-para');
   expect(webPara.status(), 'web-para no debe ser una ficha 200').not.toBe(200);
 });
+
+/** Semilla CP-10: títulos/descripciones deben ser específicos (no vacíos ni clonados). */
+const TITLE_SEED_PATHS = [
+  '/',
+  '/servicios',
+  '/servicios/informe-comercial',
+  '/servicios/sesion-profesional',
+  '/servicios/auditoria-normativa-ciberseguridad',
+  '/proyectos',
+  '/proceso-y-entrega',
+  '/contacto',
+  '/identidad',
+  '/privacidad',
+  '/cookies'
+] as const;
+
+test('ROUTE-05: canonical y og:url ignoran query de contacto', async ({ page }) => {
+  await page.goto('/contacto?servicio=informe-comercial&proyecto=front-valencia&utm_source=test');
+  const canonical = page.locator('link[rel="canonical"]');
+  await expect(canonical).toHaveCount(1);
+  const href = await canonical.getAttribute('href');
+  expect(href).toBeTruthy();
+  expect(href!).toMatch(/^https:\/\/alexendros\.dev\/contacto\/?$/);
+  expect(href!).not.toMatch(/[?&]/);
+
+  const ogUrl = await page.locator('meta[property="og:url"]').getAttribute('content');
+  expect(ogUrl).toBeTruthy();
+  expect(ogUrl!).toMatch(/^https:\/\/alexendros\.dev\/contacto\/?$/);
+  expect(ogUrl!).not.toMatch(/[?&]/);
+});
+
+test('ROUTE-06: titles únicos y meta description en la semilla pública', async ({ page }) => {
+  const titles: string[] = [];
+  for (const path of TITLE_SEED_PATHS) {
+    await page.goto(path);
+    const title = (await page.title()).trim();
+    expect(title.length, `${path}: title vacío`).toBeGreaterThan(8);
+    titles.push(title);
+
+    const description = await page.locator('meta[name="description"]').getAttribute('content');
+    expect(description?.trim().length ?? 0, `${path}: description vacía`).toBeGreaterThan(20);
+
+    const h1 = page.getByRole('heading', { level: 1 });
+    await expect(h1, `${path}: falta H1`).toHaveCount(1);
+  }
+  expect(new Set(titles).size, `titles duplicados: ${titles.join(' | ')}`).toBe(titles.length);
+});
+
+test('ROUTE-07: robots.txt permite indexación y apunta al sitemap apex', async ({ request }) => {
+  const response = await request.get('/robots.txt');
+  expect(response.status()).toBe(200);
+  const body = await response.text();
+  expect(body).toMatch(/User-agent:\s*\*/i);
+  expect(body).toMatch(/Allow:\s*\//i);
+  expect(body).toContain('Sitemap: https://alexendros.dev/sitemap-index.xml');
+  expect(body, 'no debe bloquear todo el sitio').not.toMatch(/Disallow:\s*\/\s*$/m);
+});

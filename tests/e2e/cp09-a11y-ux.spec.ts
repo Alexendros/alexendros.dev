@@ -62,18 +62,29 @@ test.describe('CP-09 teclado — menú móvil', () => {
     await expect(menuBtn).toHaveAttribute('aria-label', 'Cerrar menú');
     const mobileNav = page.locator('#mobile-nav');
     await expect(mobileNav).toBeVisible();
-    // El script enfoca el primer enlace del menú.
-    await expect(mobileNav.getByRole('link').first()).toBeFocused();
+    // Tras Enter el foco puede estabilizarse un frame después (CMP / rAF).
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const nav = document.getElementById('mobile-nav');
+            const first = nav?.querySelector('a');
+            return first != null && document.activeElement === first;
+          }),
+        { timeout: 10_000 }
+      )
+      .toBe(true);
 
     await page.keyboard.press('Escape');
     await expect(menuBtn).toHaveAttribute('aria-expanded', 'false');
     await expect(menuBtn).toHaveAttribute('aria-label', 'Abrir menú');
     await expect(mobileNav).toBeHidden();
-    // El CMP u otros handlers pueden mover el foco un frame; poll hasta
-    // que el botón del menú lo recupere (comportamiento a11y exigido).
+    // El CMP u otros handlers pueden mover el foco tras ocultar el nav.
     await expect
-      .poll(async () =>
-        page.evaluate(() => document.activeElement?.hasAttribute('data-menu-button') ?? false)
+      .poll(
+        async () =>
+          page.evaluate(() => document.activeElement?.hasAttribute('data-menu-button') ?? false),
+        { timeout: 10_000 }
       )
       .toBe(true);
   });
