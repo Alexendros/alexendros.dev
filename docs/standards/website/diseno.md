@@ -11,7 +11,7 @@
 1. **Fuente única de verdad.** Todo color vive en `src/styles/global.css` (capa `@layer tokens`). `tailwind.config.mjs` solo referencia `var()`/`color-mix()`; los guardrails los validan `scripts/check-contrast.mjs` (fuente única) y Stylelint (`pnpm lint:css`, sin literales fuera de la capa de tokens).
 2. **Tres capas.** Primitivos (`--blue-*`, `--ink-*`, `--paper-*`, `--line`, `--ok/--warn/--err`) → semánticos (`--bg`, `--fg`, `--fg-muted`, `--brand`, `--brand-hover`, `--brand-fg`, `--border`, `--card`, `--danger`, `--bg-subtle`, `--focus-ring`) → componentes (clases Tailwind `bg-bg`, `text-fg`, `bg-primary`, `text-ink`, `text-muted`, `border-border`, `bg-card`, `text-danger`…). **Los componentes nunca consumen primitivos directamente.**
 3. **Reglas duras.** Sin `!important` (Stylelint lo prohíbe), sin `transition: all`, sin colores literales en CSS fuera de `@layer tokens`, sin valores mágicos donde exista un token (`--space-*`, `--step-*`, `--radius-*`, `--dur-*`, `--ease-*`).
-4. **Tema claro por defecto, oscuro opcional.** El tema oscuro se publica solo si `pnpm check:contrast` valida todos los pares en ambos temas (22/22 PASS). Sin toggle de UI: `prefers-color-scheme` + `data-theme`.
+4. **Tema claro por defecto, oscuro opcional.** El tema oscuro se publica solo si `pnpm check:contrast` valida todos los pares en ambos temas (28/28 PASS). Sin toggle de UI: `prefers-color-scheme` + `data-theme`.
 5. **Accesibilidad medible.** Pares de contraste WCAG AA en ambos temas (≥4.5:1 texto, ≥3:1 indicadores de foco), objetivo táctil ≥44px, foco visible siempre (`.focus-ring`), reduced-motion respetado en toda animación (media query + `.force-reduced-motion` para demos).
 
 ## 2. Tokens
@@ -21,6 +21,10 @@ Definidos en `src/styles/global.css` (`@layer tokens`). Tipografía fluida `--st
 ## 3. Componentes
 
 Todos en `src/components/`. Clases utilidad de Tailwind permitidas; valores de color y espaciado siempre vía tokens.
+
+### Foco
+
+Un solo sistema: la clase `.focus-ring` (outline 2px `--brand` con offset 2px + anillo `--focus-ring`, ≥3:1 en ambos temas) aplicada a todo interactivo — Button, Link, navegación móvil, islas React (`ContactForm`, `PricingConfigurator`) y barra CTA. No usar utilidades sueltas `focus-visible:outline*` ni depender del outline por defecto del navegador. El foco de hidratación y el mapa campo→control del formulario de contacto se tratan en el paquete de idempotencia/foco de contacto, no aquí.
 
 ### Button
 
