@@ -256,6 +256,21 @@
       "context": "Cierre de producción: contrato Zod y plantilla única de fichas. Publicar el portal como ficha duplicaría el configurador y rompería D-01 del ciclo.",
       "decision": "Publicar tres fichas con schema canónico (audience/problems/scope/deliverables/process/exclusions/technicalDetails, commercial.priceStatus provisional, action tipada). No generar /servicios/portal-inicio; el portal sigue solo en el índice vía PricingConfigurator.",
       "consequences": "DET-07 no aplica. serviceProducts enumera solo los tres slugs. Tests CAT y products-structure always-on en e2e-critical."
+    },
+    {
+      "id": "0018",
+      "sequence": 18,
+      "timestamp": "2026-10-17T17:00:00Z",
+      "active": true,
+      "title": "Proceso y entrega unifica Metodología y Valores",
+      "summary": "Nav Servicios / Proyectos realizados / Cómo trabajo; canónica /proceso-y-entrega; aliases 308 desde metodología, valores, como-trabajo y sobre-mi.",
+      "recordType": "decision",
+      "status": "aceptada",
+      "supersedes": [],
+      "supersededBy": null,
+      "context": "Metodología y Valores estaban en desarrollo y dividían la confianza comercial. El PR #119 había renombrado Publicaciones a Trabajos realizados; este cambio fija Proyectos realizados y retira las dos páginas editoriales.",
+      "decision": "Una página /proceso-y-entrega con etiqueta Cómo trabajo; Proyectos realizados en /proyectos; redirects permanentes directos desde /metodologia, /valores, /como-trabajo y /sobre-mi; copy sin euros ni promesas universales de 12 meses o 2 días laborables. Retirar ese texto público no modifica acuerdos existentes. 0014 sigue vigente para CMP, home mínima y availability.",
+      "consequences": "Sitemap y smoke apuntan a la ruta nueva. Sticky CTA del Informe 360º se oculta en /proceso-y-entrega. process-page.spec.ts entra en e2e-critical."
     }
   ]
 }

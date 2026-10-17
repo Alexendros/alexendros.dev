@@ -1,19 +1,26 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-type Redirect = { source: string; destination: string; permanent?: boolean };
+type Redirect = { source: string; destination: string; permanent?: boolean; has?: unknown[] };
 
 describe('redirecciones permanentes', () => {
-  it('R08: vercel.json redirige las rutas retiradas', () => {
+  it('R08: vercel.json redirige las rutas retiradas al destino canónico', () => {
     const raw = JSON.parse(readFileSync(resolve(process.cwd(), 'vercel.json'), 'utf8')) as {
       redirects: Redirect[];
     };
-    const bySource = new Map(raw.redirects.map((r) => [r.source, r]));
+    const unconditional = raw.redirects.filter((r) => !r.has);
+    const bySource = new Map(unconditional.map((r) => [r.source, r]));
 
     const expected: Array<[string, string]> = [
-      ['/como-trabajo', '/metodologia'],
-      ['/sobre-mi', '/valores'],
+      ['/metodologia', '/proceso-y-entrega'],
+      ['/metodologia/', '/proceso-y-entrega'],
+      ['/valores', '/proceso-y-entrega'],
+      ['/valores/', '/proceso-y-entrega'],
+      ['/como-trabajo', '/proceso-y-entrega'],
+      ['/como-trabajo/', '/proceso-y-entrega'],
+      ['/sobre-mi', '/proceso-y-entrega'],
+      ['/sobre-mi/', '/proceso-y-entrega'],
       ['/aviso-legal', '/identidad'],
       ['/afiliados', '/'],
       ['/servicios/produccion-sitios-web', '/servicios'],
@@ -28,5 +35,33 @@ describe('redirecciones permanentes', () => {
       expect(rule?.destination).toBe(destination);
       expect(rule?.permanent).toBe(true);
     }
+
+    const retired = [
+      '/metodologia',
+      '/metodologia/',
+      '/valores',
+      '/valores/',
+      '/como-trabajo',
+      '/como-trabajo/',
+      '/sobre-mi',
+      '/sobre-mi/'
+    ];
+    for (const source of retired) {
+      const matches = unconditional.filter((r) => r.source === source);
+      expect(matches, `una sola regla para ${source}`).toHaveLength(1);
+      expect(matches[0]?.destination).toBe('/proceso-y-entrega');
+      expect(retired).not.toContain(matches[0]?.destination);
+    }
+
+    const destinations = new Set(unconditional.map((r) => r.destination));
+    for (const source of retired) {
+      expect(destinations.has(source), `${source} no debe ser destino`).toBe(false);
+    }
+  });
+
+  it('las páginas retiradas ya no existen como rutas públicas', () => {
+    expect(existsSync(resolve(process.cwd(), 'src/pages/metodologia.astro'))).toBe(false);
+    expect(existsSync(resolve(process.cwd(), 'src/pages/valores.astro'))).toBe(false);
+    expect(existsSync(resolve(process.cwd(), 'src/pages/proceso-y-entrega.astro'))).toBe(true);
   });
 });

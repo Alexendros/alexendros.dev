@@ -8,9 +8,8 @@ export const site = {
   ogLocale: 'es_ES',
   nav: [
     { label: 'Servicios', href: '/servicios' },
-    { label: 'Trabajos realizados', href: '/proyectos' },
-    { label: 'Metodología', href: '/metodologia' },
-    { label: 'Valores', href: '/valores' }
+    { label: 'Proyectos realizados', href: '/proyectos' },
+    { label: 'Cómo trabajo', href: '/proceso-y-entrega' }
   ],
   footerNav: [
     { label: 'Identidad', href: '/identidad' },

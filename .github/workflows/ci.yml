@@ -151,8 +151,8 @@ jobs:
 
       - run: npx playwright install --with-deps chromium
 
-      - name: Playwright críticos (home, contacto, consent, fichas, SEO)
-        run: pnpm exec playwright test tests/e2e/critical.spec.ts tests/e2e/products-structure.spec.ts tests/e2e/consent.spec.ts tests/e2e/seo-routes.spec.ts
+      - name: Playwright críticos (home, contacto, consent, fichas, SEO, proceso)
+        run: pnpm exec playwright test tests/e2e/critical.spec.ts tests/e2e/products-structure.spec.ts tests/e2e/consent.spec.ts tests/e2e/seo-routes.spec.ts tests/e2e/process-page.spec.ts
         env:
           CI: true
           SKIP_E2E_BUILD: '1'

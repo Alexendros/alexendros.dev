@@ -25,10 +25,10 @@ Quien eres: role Full Stack · Auditor · Consultor, summary conversion-focused,
 
 ## Componentes
 
-- Header.astro: sticky blur; nav Servicios / Publicaciones / Metodología / Valores; CTA Contactar
+- Header.astro: sticky blur; nav Servicios / Proyectos realizados / Cómo trabajo; CTA Contactar
 - Footer.astro: marca + nav + legal; tracking solo con consentimiento (CMP)
 - Hero.astro: H1 estable de contratación (decisión 0016); subtítulo de alcance; CTAs «Cuéntame qué necesitas» y «Explorar servicios»
-- ServiceCard.astro / ProjectCard.astro: fichas de catálogo y publicaciones con availability
+- ServiceCard.astro / ProjectCard.astro: fichas de catálogo y proyectos con availability
 - ContactForm.tsx: isla React `client:load`, asistente de 6 pasos (motivo → nombre → categoría → canal → petición → consentimiento), errores por campo, honeypot, Turnstile opcional
 - CookieBanner.tsx: isla CMP `vanilla-cookieconsent` v3 (`client:idle`); Consent Mode v2 default-deny
 - Reserva de sesión profesional: enlace Cal.com en ficha (sin QR embebido ni lead magnet)
@@ -37,8 +37,8 @@ Quien eres: role Full Stack · Auditor · Consultor, summary conversion-focused,
 
 - index.astro: solo Hero (home mínima 0014)
 - servicios/: catálogo + configurador de portal; fichas con precio/pago/plazo/entrega/garantía
-- proyectos/: Publicaciones con availability si|no|reservado
-- metodologia.astro, valores.astro, identidad.astro
+- proyectos/: Proyectos realizados con availability si|no|reservado
+- proceso-y-entrega.astro (Cómo trabajo), identidad.astro
 - contacto.astro: formulario asistente + mailto; sin embed Cal en página
 - api/contact.ts: Zod, honeypot, rate-limit Upstash, idempotencia Redis (estados accepted/processing/conflict/unknown; no exactly-once Redis+SMTP), Proton SMTP; sin CAPI Lead (falta consentimiento publicidad)
 - privacidad.astro / cookies.astro: textos alineados al CMP; Identidad como aviso del prestador

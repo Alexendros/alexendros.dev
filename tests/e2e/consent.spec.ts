@@ -79,6 +79,27 @@ async function waitForCmp(page: Page): Promise<void> {
   await expect(page.locator('#cc-main .cm')).toBeVisible();
 }
 
+/**
+ * CMP listo (CookieBanner marcó data-cmp-ready tras CookieConsent.run).
+ * Sirve con o sin aviso .cm (p. ej. tras una decisión previa).
+ */
+async function waitForCmpReady(page: Page): Promise<void> {
+  await expect(page.locator('html[data-cmp-ready="true"]')).toBeAttached({ timeout: 30_000 });
+}
+
+/**
+ * Abre el panel desde el botón de /cookies tras hidratar el island (client:idle).
+ */
+async function openPreferencesFromCookies(page: Page) {
+  await waitForCmpReady(page);
+  const trigger = page.locator('main').getByRole('button', { name: 'Configuración informada' });
+  await expect(trigger).toBeVisible();
+  const panel = page.locator('#cc-main .pm');
+  await trigger.click();
+  await expect(panel).toBeVisible({ timeout: 10_000 });
+  return panel;
+}
+
 function readConsentCookie(page: Page): Promise<Record<string, unknown> | null> {
   return page.evaluate((key) => {
     const prefix = `${encodeURIComponent(key)}=`;
@@ -126,11 +147,7 @@ function expectAnalyticsLoaded(tags: string[]): void {
 /** Flujo real de usuario: abre el panel desde /cookies y guarda solo analítica. */
 async function acceptOnlyAnalytics(page: Page): Promise<void> {
   await page.goto('/cookies');
-  await waitForCmp(page);
-  await page.locator('main').getByRole('button', { name: 'Configuración informada' }).click();
-
-  const panel = page.locator('#cc-main .pm');
-  await expect(panel).toBeVisible();
+  const panel = await openPreferencesFromCookies(page);
   await panel
     .locator('label.section__toggle-wrapper:has(input.section__toggle[value="analytics"])')
     .click();
@@ -423,9 +440,7 @@ test('PRIV-03: revocar tras aceptar corta emisiones futuras de analytics y publi
 
   // Tras decidir, el aviso (.cm) no vuelve: se revoca desde /cookies.
   await page.goto('/cookies');
-  await page.locator('main').getByRole('button', { name: 'Configuración informada' }).click();
-  const panel = page.locator('#cc-main .pm');
-  await expect(panel).toBeVisible();
+  const panel = await openPreferencesFromCookies(page);
   await panel.getByRole('button', { name: 'Sí a lo esencial' }).click();
   await expect.poll(async () => (await readConsentStorage(page))?.analytics).toBe(false);
   await expect.poll(async () => (await readConsentStorage(page))?.marketing).toBe(false);
@@ -542,11 +557,7 @@ test('PRIV-05: en vista no-bot el aviso y el panel de preferencias son visibles 
   await expect(configure).toHaveAttribute('aria-label', /cookies/i);
 
   await page.goto('/cookies');
-  await waitForCmp(page);
-  await page.locator('main').getByRole('button', { name: 'Configuración informada' }).click();
-
-  const panel = page.locator('#cc-main .pm');
-  await expect(panel).toBeVisible();
+  const panel = await openPreferencesFromCookies(page);
   await expect(panel.getByRole('heading', { name: 'Elige qué se activa' })).toBeVisible();
   await expect(panel.locator('input.section__toggle')).toHaveCount(4);
   await expect(panel.locator('input.section__toggle[value="necessary"]')).toBeDisabled();

@@ -8,8 +8,7 @@ const routes = [
   '/servicios/sesion-profesional',
   '/proyectos',
   '/proyectos/front-valencia',
-  '/metodologia',
-  '/valores',
+  '/proceso-y-entrega',
   '/identidad',
   '/contacto'
 ];
