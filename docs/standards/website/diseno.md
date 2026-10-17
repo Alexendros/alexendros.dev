@@ -54,7 +54,7 @@ Un solo sistema: la clase `.focus-ring` (outline 2px `--brand` con offset 2px + 
 ### Section / SectionHeader
 
 - **Section:** `as?`, `cv?` (default true, `content-visibility`), `reveal?` (`data-reveal`), padding vertical de tokens. Componer con Container dentro.
-- **SectionHeader:** `index` ("FIG. 0X" vía Eyebrow), `title`, `description?`, `linkHref?/linkText?` (Link arrow), `align?: 'start'|'center'`. `FigureHead` sigue existiendo como wrapper de compatibilidad: las páginas nuevas usan SectionHeader directamente.
+- **SectionHeader:** `index` ("FIG. 0X" vía Eyebrow), `title`, `description?`, `linkHref?/linkText?` (Link arrow), `align?: 'start'|'center'`.
 
 ### Container / Stack / Grid
 
@@ -81,10 +81,9 @@ Extraído de Layout: primer foco de la página, salta a `#contenido`, visible so
 
 ## 4. Excepciones de color fijo (deliberadas)
 
-| Elemento              | Valor                         | Motivo                                                                            |
-| --------------------- | ----------------------------- | --------------------------------------------------------------------------------- |
-| QR de reserva Cal.com | `bg-white`                    | Funcional: el QR debe escanearse; el azul de marca baja la legibilidad del código |
-| Marca Cal.com (embed) | `#FFC53D` (su propio dominio) | Marca de terceros: no es UI del tema                                              |
+| Elemento              | Valor                         | Motivo                               |
+| --------------------- | ----------------------------- | ------------------------------------ |
+| Marca Cal.com (embed) | `#FFC53D` (su propio dominio) | Marca de terceros: no es UI del tema |
 
 Documentado en Fase 1 (commit `a86528d`) y validado como excepción en la auditoría; no introducir nuevas excepciones sin justificarlo aquí.
 

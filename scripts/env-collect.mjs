@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import { chromium } from '@playwright/test';
-import { randomBytes } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
@@ -99,21 +98,9 @@ const TARGETS = [
     manual: true
   },
   {
-    keys: ['RESEND_API_KEY'],
-    label: 'Resend → API Keys → Sending access',
-    url: 'https://resend.com/api-keys',
-    patterns: [/\bre_[A-Za-z0-9]{8,}/]
-  },
-  {
     keys: ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS'],
     label: 'Proton → Settings → IMAP/SMTP → token SMTP',
     url: 'https://account.proton.me/mail/imap-smtp',
-    manual: true
-  },
-  {
-    keys: [],
-    label: 'Resend → Domains → verificar alexendros.dev (SPF/DKIM)',
-    url: 'https://resend.com/domains',
     manual: true
   },
   {
@@ -196,8 +183,6 @@ function report(status, label, detail = '') {
 
 async function main() {
   const found = new Map(Object.entries(CONSTANTS));
-  if (!found.has('UNSUBSCRIBE_SECRET'))
-    found.set('UNSUBSCRIBE_SECRET', randomBytes(32).toString('hex'));
 
   const browser = await chromium.connectOverCDP(CDP_URL).catch((error) => {
     console.error(`No se pudo conectar a Vivaldi en ${CDP_URL}`);
