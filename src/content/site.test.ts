@@ -2,19 +2,15 @@ import { describe, expect, it } from 'vitest';
 import { site } from './site';
 
 describe('navegación y pie públicos', () => {
-  it('R06: site.nav es Servicios, Trabajos realizados, Metodología, Valores', () => {
+  it('R06: site.nav es Servicios, Proyectos realizados, Cómo trabajo', () => {
     expect(site.nav.map((i) => i.label)).toEqual([
       'Servicios',
-      'Trabajos realizados',
-      'Metodología',
-      'Valores'
+      'Proyectos realizados',
+      'Cómo trabajo'
     ]);
-    expect(site.nav.map((i) => i.href)).toEqual([
-      '/servicios',
-      '/proyectos',
-      '/metodologia',
-      '/valores'
-    ]);
+    expect(site.nav.map((i) => i.href)).toEqual(['/servicios', '/proyectos', '/proceso-y-entrega']);
+    expect(site.nav.map((i) => i.href)).not.toContain('/metodologia');
+    expect(site.nav.map((i) => i.href)).not.toContain('/valores');
   });
 
   it('R07: el pie usa contratacion@ y no incluye Afiliados', () => {

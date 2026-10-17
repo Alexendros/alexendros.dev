@@ -1,0 +1,130 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/Button.astro';
+import { processPage } from '../content/process';
+
+const {
+  seo,
+  hero,
+  processSection,
+  steps,
+  qualitySection,
+  criteria,
+  evidence,
+  termsSection,
+  terms,
+  faqs,
+  close
+} = processPage;
+---
+
+<Layout title={seo.title} description={seo.description}>
+  <div class="delivery-page">
+    <section class="delivery-hero" aria-labelledby="delivery-hero-title">
+      <div>
+        <h1 id="delivery-hero-title" class="delivery-title">
+          {hero.h1Lead}{' '}
+          <span class="delivery-title-accent">{hero.h1Accent}</span>
+        </h1>
+        <p class="delivery-lead">{hero.lead}</p>
+        <div class="delivery-actions">
+          <Button href={hero.primaryCta.href}>{hero.primaryCta.label}</Button>
+          <a class="delivery-secondary" href={hero.secondaryCta.href}>{hero.secondaryCta.label}</a>
+        </div>
+      </div>
+      <aside class="delivery-summary" aria-labelledby="delivery-summary-title">
+        <h2 id="delivery-summary-title">{hero.summaryTitle}</h2>
+        <ul class="delivery-checklist">
+          {hero.agreementPoints.map((point) => <li>{point}</li>)}
+        </ul>
+      </aside>
+    </section>
+
+    <section id="proceso" class="delivery-section" aria-labelledby="delivery-process-heading">
+      <h2 id="delivery-process-heading" class="delivery-heading">{processSection.heading}</h2>
+      <p class="delivery-intro">{processSection.intro}</p>
+      <ol class="delivery-steps">
+        {
+          steps.map((step, index) => (
+            <li class="delivery-step">
+              <span class="delivery-number" aria-hidden="true">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <h3>{step.title}</h3>
+              <p>{step.description}</p>
+              <p class="delivery-output">
+                <strong>Resultado:</strong> {step.output}
+              </p>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section class="delivery-section" aria-labelledby="delivery-quality-heading">
+      <h2 id="delivery-quality-heading" class="delivery-heading">{qualitySection.heading}</h2>
+      <p class="delivery-intro">{qualitySection.intro}</p>
+      <div class="delivery-grid">
+        {
+          criteria.map((criterion) => (
+            <article class="delivery-card">
+              <h3>{criterion.title}</h3>
+              <p>{criterion.benefit}</p>
+              <p class="delivery-proof">
+                <strong>Comprobación:</strong> {criterion.verification}
+              </p>
+            </article>
+          ))
+        }
+      </div>
+      <div class="delivery-evidence">
+        <h3>{evidence.heading}</h3>
+        <p>{evidence.body}</p>
+        <p>
+          <a href={evidence.linkHref}>{evidence.linkLabel}</a>
+        </p>
+      </div>
+    </section>
+
+    <section class="delivery-section" aria-labelledby="delivery-terms-heading">
+      <div class="delivery-terms">
+        <div>
+          <h2 id="delivery-terms-heading" class="delivery-heading">{termsSection.heading}</h2>
+          <p class="delivery-intro">{termsSection.intro}</p>
+        </div>
+        <ul class="delivery-terms-list">
+          {
+            terms.map((term) => (
+              <li>
+                <h3>{term.title}</h3>
+                <p>{term.description}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <section class="delivery-section" aria-labelledby="delivery-faq-heading">
+      <h2 id="delivery-faq-heading" class="delivery-heading">Las dudas importantes, resueltas</h2>
+      <div class="delivery-details">
+        {
+          faqs.map((faq) => (
+            <details>
+              <summary>{faq.question}</summary>
+              <p>{faq.answer}</p>
+            </details>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="delivery-close" aria-labelledby="delivery-close-heading">
+      <div>
+        <h2 id="delivery-close-heading" class="delivery-heading">{close.heading}</h2>
+        <p>{close.body}</p>
+      </div>
+      <Button href={close.cta.href}>{close.cta.label}</Button>
+    </section>
+  </div>
+</Layout>
