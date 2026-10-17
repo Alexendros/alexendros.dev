@@ -25,6 +25,10 @@ Inventario operativo a 2026-10-17. Verificar en producción con sesión limpia t
 - `accepted` = aceptación de aplicación/SMTP; no demuestra bandeja ni lectura.
 - Clic Cal.com (`data-cal`) = `cal_click` (salida), no reserva confirmada.
 
+## Rótulos CMP (AXD-012)
+
+- Aceptar todas · Rechazar opcionales · Configurar (equivalencia funcional granular conservada).
+
 ## Pruebas mínimas
 
 1. Primera visita sin decisión → sin etiquetas no esenciales ni `/_vercel/*`.

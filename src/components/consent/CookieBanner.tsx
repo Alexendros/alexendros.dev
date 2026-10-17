@@ -28,9 +28,8 @@ export default function CookieBanner() {
 
     const retargetPreferencesBtn = () => {
       const buttons = document.querySelectorAll('#cc-main button');
-      const btn = [...buttons].find((el) =>
-        /configuración informada/i.test(el.textContent ?? '')
-      ) as HTMLButtonElement | undefined;
+      const btn = [...buttons].find((el) => /^configurar$/i.test((el.textContent ?? '').trim())) as
+        HTMLButtonElement | undefined;
       if (!btn || btn.dataset.ccPolicy === '1') return;
       btn.dataset.ccPolicy = '1';
       btn.setAttribute(
@@ -98,16 +97,16 @@ export default function CookieBanner() {
               title: 'Valoramos tu privacidad',
               description:
                 'Guardamos un dato técnico para recordar tu decisión. El resto (medición de visitas y publicidad) no se enciende hasta que tú lo permitas. ' +
-                '«Aceptación desinformada» activa todo. «Sí a lo esencial» deja solo lo técnico. ' +
+                '«Aceptar todas» activa analítica y publicidad. «Rechazar opcionales» deja solo lo técnico. «Configurar» abre el detalle por categoría. ' +
                 '<a href="/cookies">Explicación completa en Cookies</a>.',
-              acceptAllBtn: 'Aceptación desinformada',
-              acceptNecessaryBtn: 'Sí a lo esencial',
-              showPreferencesBtn: 'Configuración informada'
+              acceptAllBtn: 'Aceptar todas',
+              acceptNecessaryBtn: 'Rechazar opcionales',
+              showPreferencesBtn: 'Configurar'
             },
             preferencesModal: {
               title: 'Elige qué se activa',
-              acceptAllBtn: 'Aceptación desinformada',
-              acceptNecessaryBtn: 'Sí a lo esencial',
+              acceptAllBtn: 'Aceptar todas',
+              acceptNecessaryBtn: 'Rechazar opcionales',
               savePreferencesBtn: 'Guardar esta elección',
               closeIconLabel: 'Cerrar panel de cookies',
               sections: [

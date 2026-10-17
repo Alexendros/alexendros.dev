@@ -96,7 +96,7 @@ async function waitForCmpReady(page: Page): Promise<void> {
  */
 async function openPreferencesFromCookies(page: Page) {
   await waitForCmpReady(page);
-  const trigger = page.locator('main').getByRole('button', { name: 'Configuración informada' });
+  const trigger = page.locator('main').getByRole('button', { name: 'Configurar' });
   await expect(trigger).toBeVisible();
   const panel = page.locator('#cc-main .pm');
   await trigger.click();
@@ -179,25 +179,25 @@ test('TEST-CMP-01: sin consentimiento no hay trackers activos', async ({ page })
   ).toHaveCount(0);
 });
 
-test('F06: el banner resume, acepta todo o esencial, y Configuración informada va a /cookies', async ({
+test('F06: el banner resume, acepta todo o esencial, y Configurar va a /cookies', async ({
   page
 }) => {
   await page.goto('/');
   await expect(page.locator('.cc-normative')).toHaveCount(0);
 
-  const accept = page.getByRole('button', { name: 'Aceptación desinformada' }).first();
+  const accept = page.getByRole('button', { name: 'Aceptar todas' }).first();
   if (!(await accept.isVisible().catch(() => false))) {
     await page.goto('/cookies');
     await expect(page.getByRole('heading', { name: 'Cookies' })).toBeVisible();
-    await expect(page.getByText(/Aceptación desinformada/).first()).toBeVisible();
+    await expect(page.getByText(/Aceptar todas/).first()).toBeVisible();
     return;
   }
 
   await expect(page.getByRole('heading', { name: 'Valoramos tu privacidad' })).toBeVisible();
   await expect(page.getByText(/Guardamos un dato técnico/)).toBeVisible();
 
-  const reject = page.getByRole('button', { name: 'Sí a lo esencial' }).first();
-  const configure = page.getByRole('button', { name: /Configuración informada/ }).first();
+  const reject = page.getByRole('button', { name: 'Rechazar opcionales' }).first();
+  const configure = page.getByRole('button', { name: /Configurar/ }).first();
 
   await expect(accept).toBeVisible();
   await expect(reject).toBeVisible();
@@ -224,7 +224,7 @@ test('TEST-CMP-02b: al elegir lo esencial analytics y marketing quedan a false',
 }) => {
   await page.goto('/');
 
-  const reject = page.getByRole('button', { name: 'Sí a lo esencial' }).first();
+  const reject = page.getByRole('button', { name: 'Rechazar opcionales' }).first();
   if (!(await reject.isVisible().catch(() => false))) {
     await expect(page.locator('script[data-tracker]')).toHaveCount(0);
     return;
@@ -239,10 +239,10 @@ test('TEST-CMP-02b: al elegir lo esencial analytics y marketing quedan a false',
   expect(consent?.necessary).toBe(true);
 });
 
-test('TEST-CMP-02c: Configuración informada lleva a /cookies y abre el panel', async ({ page }) => {
+test('TEST-CMP-02c: Configurar lleva a /cookies y abre el panel', async ({ page }) => {
   await page.goto('/');
 
-  const configure = page.getByRole('button', { name: /Configuración informada/ }).first();
+  const configure = page.getByRole('button', { name: /Configurar/ }).first();
   const fromBanner = await configure.isVisible().catch(() => false);
   if (fromBanner) {
     await configure.click();
@@ -252,14 +252,14 @@ test('TEST-CMP-02c: Configuración informada lleva a /cookies y abre el panel', 
   await expect(page).toHaveURL(/\/cookies/);
   await expect(page.getByRole('heading', { name: 'Cookies' })).toBeVisible();
 
-  const trigger = page.locator('main').getByRole('button', { name: 'Configuración informada' });
+  const trigger = page.locator('main').getByRole('button', { name: 'Configurar' });
   await expect(trigger).toBeVisible();
   if (!fromBanner) return;
   await trigger.click();
 
   await expect(page.getByText('Elige qué se activa')).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Aceptación desinformada' }).first()).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Sí a lo esencial' }).first()).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Aceptar todas' }).first()).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Rechazar opcionales' }).first()).toBeVisible();
   await expect(page.getByText('Técnicas (obligatorias)').first()).toBeVisible();
   await expect(page.getByText('Publicidad').first()).toBeVisible();
   await expect(page.locator('.pm input[type="checkbox"][disabled]')).toHaveCount(1);
@@ -313,7 +313,7 @@ test('PRIV-01b: rechazo expreso y la navegación sigue sin terceros', async ({ p
 
   await page.goto('/');
   await waitForCmp(page);
-  await page.locator('#cc-main .cm').getByRole('button', { name: 'Sí a lo esencial' }).click();
+  await page.locator('#cc-main .cm').getByRole('button', { name: 'Rechazar opcionales' }).click();
 
   await expect.poll(async () => (await readConsentStorage(page))?.analytics).toBe(false);
   const consent = await readConsentStorage(page);
@@ -336,10 +336,7 @@ test('PRIV-01c: control positivo, con consentimiento total los trackers sí carg
 
   await page.goto('/');
   await waitForCmp(page);
-  await page
-    .locator('#cc-main .cm')
-    .getByRole('button', { name: 'Aceptación desinformada' })
-    .click();
+  await page.locator('#cc-main .cm').getByRole('button', { name: 'Aceptar todas' }).click();
   await expect.poll(async () => (await readConsentStorage(page))?.marketing).toBe(true);
 
   const tags = await trackerTags(page);
@@ -364,7 +361,7 @@ test('PRIV-01d: build tipo Vercel no pide /_vercel/* sin consentimiento', async 
 
   expect(seen.filter((request) => request.pathname.startsWith('/_vercel'))).toEqual([]);
 
-  await page.locator('#cc-main .cm').getByRole('button', { name: 'Sí a lo esencial' }).click();
+  await page.locator('#cc-main .cm').getByRole('button', { name: 'Rechazar opcionales' }).click();
   await expect.poll(async () => (await readConsentStorage(page))?.analytics).toBe(false);
   await page.waitForLoadState('networkidle');
   expect(seen.filter((request) => request.pathname.startsWith('/_vercel'))).toEqual([]);
@@ -435,10 +432,7 @@ test('PRIV-03: revocar tras aceptar corta emisiones futuras de analytics y publi
 
   await page.goto('/');
   await waitForCmp(page);
-  await page
-    .locator('#cc-main .cm')
-    .getByRole('button', { name: 'Aceptación desinformada' })
-    .click();
+  await page.locator('#cc-main .cm').getByRole('button', { name: 'Aceptar todas' }).click();
   await expect.poll(async () => (await readConsentStorage(page))?.marketing).toBe(true);
 
   const beforeRevoke = seen.length;
@@ -446,7 +440,7 @@ test('PRIV-03: revocar tras aceptar corta emisiones futuras de analytics y publi
   // Tras decidir, el aviso (.cm) no vuelve: se revoca desde /cookies.
   await page.goto('/cookies');
   const panel = await openPreferencesFromCookies(page);
-  await panel.getByRole('button', { name: 'Sí a lo esencial' }).click();
+  await panel.getByRole('button', { name: 'Rechazar opcionales' }).click();
   await expect.poll(async () => (await readConsentStorage(page))?.analytics).toBe(false);
   await expect.poll(async () => (await readConsentStorage(page))?.marketing).toBe(false);
 
@@ -469,10 +463,7 @@ test('PRIV-03b: revocación en el mismo documento emite opt-out sin reiniciar', 
   await instrumentNetwork(page);
   await page.goto('/');
   await waitForCmp(page);
-  await page
-    .locator('#cc-main .cm')
-    .getByRole('button', { name: 'Aceptación desinformada' })
-    .click();
+  await page.locator('#cc-main .cm').getByRole('button', { name: 'Aceptar todas' }).click();
   await expect.poll(async () => (await readConsentStorage(page))?.marketing).toBe(true);
   await expect.poll(async () => (await trackerTags(page)).length).toBeGreaterThan(0);
 
@@ -486,7 +477,7 @@ test('PRIV-03b: revocación en el mismo documento emite opt-out sin reiniciar', 
   await page.getByRole('button', { name: 'Abrir preferencias e2e' }).click();
   const panel = page.locator('#cc-main .pm');
   await expect(panel).toBeVisible();
-  await panel.getByRole('button', { name: 'Sí a lo esencial' }).click();
+  await panel.getByRole('button', { name: 'Rechazar opcionales' }).click();
   await expect.poll(async () => (await readConsentStorage(page))?.analytics).toBe(false);
   await expect.poll(async () => (await readConsentStorage(page))?.marketing).toBe(false);
 
@@ -572,10 +563,7 @@ test('PRIV-04: el formulario no envía email, teléfono ni mensaje a tracking', 
 
   await page.goto('/');
   await waitForCmp(page);
-  await page
-    .locator('#cc-main .cm')
-    .getByRole('button', { name: 'Aceptación desinformada' })
-    .click();
+  await page.locator('#cc-main .cm').getByRole('button', { name: 'Aceptar todas' }).click();
   await expect.poll(async () => (await readConsentStorage(page))?.marketing).toBe(true);
 
   await page.goto('/contacto');
@@ -624,14 +612,14 @@ test('PRIV-05: en vista no-bot el aviso y el panel de preferencias son visibles 
   await waitForCmp(page);
   await expect(banner).toHaveAttribute('role', 'dialog');
   await expect(banner.getByRole('heading', { name: 'Valoramos tu privacidad' })).toBeVisible();
-  await expect(banner.getByRole('button', { name: 'Aceptación desinformada' })).toBeVisible();
-  await expect(banner.getByRole('button', { name: 'Sí a lo esencial' })).toBeVisible();
+  await expect(banner.getByRole('button', { name: 'Aceptar todas' })).toBeVisible();
+  await expect(banner.getByRole('button', { name: 'Rechazar opcionales' })).toBeVisible();
   // El botón de configuración se localiza por su rol de datos y su rótulo
   // visible: el CMP le reescribe el aria-label para explicar que lleva a
   // /cookies, así que su nombre accesible no es el texto del botón.
   const configure = banner.locator('button[data-role="show"]');
   await expect(configure).toBeVisible();
-  await expect(configure).toHaveText('Configuración informada');
+  await expect(configure).toHaveText('Configurar');
   await expect(configure).toHaveAttribute('aria-label', /cookies/i);
 
   await page.goto('/cookies');

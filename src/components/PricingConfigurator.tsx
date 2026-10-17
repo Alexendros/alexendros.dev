@@ -1,4 +1,4 @@
-import { useId, useMemo, useState } from 'react';
+import { useEffect, useId, useMemo, useState } from 'react';
 import {
   formatEuro,
   modulePrices,
@@ -8,11 +8,16 @@ import {
   sumPortal,
   type PortalModuleId
 } from '../content/pricing';
-import { portalModules } from '../content/services';
+import { portalBase, portalModules } from '../content/services';
 
 export default function PricingConfigurator() {
   const liveId = useId();
   const [selected, setSelected] = useState<PortalModuleId[]>([]);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   const modulesTotal = useMemo(
     () => selected.reduce((acc, id) => acc + modulePrices[id], 0),
@@ -21,6 +26,7 @@ export default function PricingConfigurator() {
   const total = useMemo(() => sumPortal(selected), [selected]);
 
   const toggle = (id: PortalModuleId) => {
+    if (!hydrated) return;
     setSelected((prev) =>
       normalizePortalModuleIds(
         prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
@@ -39,22 +45,39 @@ export default function PricingConfigurator() {
         Configura los módulos que querrás en tu portal web
       </h2>
       <p className="mt-2 text-sm text-muted">
-        Configura la base y los módulos. El total es una estimación provisional, no un presupuesto
+        Base del portal: {portalBase.delivery}. Pago: {portalBase.payment}. Plazo:{' '}
+        {portalBase.timeline}. El total es una estimación provisional, no un presupuesto
         contractual. Los plazos de cada módulo no se suman automáticamente: el calendario se acuerda
-        tras revisar el alcance.
+        tras revisar el alcance. El desglose de impuestos se confirma en la propuesta.
       </p>
+
+      {!hydrated ? (
+        <p className="mt-4 text-sm text-muted" role="status">
+          Preparando el configurador… Mientras tanto puedes{' '}
+          <a
+            href="/contacto?motivo=propuestaComercial"
+            className="underline decoration-dotted underline-offset-2 text-primary"
+          >
+            pedir una propuesta
+          </a>{' '}
+          por correo o formulario.
+        </p>
+      ) : null}
 
       <ul className="mt-6 space-y-3" data-pricing-list>
         <li className="flex items-start justify-between gap-4 text-sm">
           <span>
             <strong>Portal de inicio</strong>
-            <span className="block text-muted">Base incluida siempre</span>
+            <span className="block text-muted">{portalBase.short}</span>
           </span>
           <span className="shrink-0 font-medium">{formatEuro(portalBasePrice)}</span>
         </li>
         {portalModules.map((mod) => (
           <li key={mod.id} className="flex items-start justify-between gap-4 text-sm">
-            <label className="flex items-start gap-3 cursor-pointer" htmlFor={`mod-${mod.id}`}>
+            <label
+              className={`flex items-start gap-3 ${hydrated ? 'cursor-pointer' : 'cursor-not-allowed opacity-80'}`}
+              htmlFor={`mod-${mod.id}`}
+            >
               <input
                 id={`mod-${mod.id}`}
                 type="checkbox"
@@ -62,6 +85,7 @@ export default function PricingConfigurator() {
                 data-module={mod.id}
                 checked={selected.includes(mod.id as PortalModuleId)}
                 onChange={() => toggle(mod.id as PortalModuleId)}
+                disabled={!hydrated}
                 className="mt-1"
                 aria-describedby={liveId}
               />

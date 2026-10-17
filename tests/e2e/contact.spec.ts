@@ -228,7 +228,7 @@ test('CFG-06: servicio y proyecto allowlisted; desconocidos se descartan', async
 
 test('CFG-07: ficha de servicio llega con contexto editable', async ({ page }) => {
   await page.goto('/servicios/informe-comercial');
-  await page.locator('#contenido').getByRole('link', { name: 'Contactar' }).click();
+  await page.locator('#contenido').getByRole('link', { name: 'Pedir el informe' }).click();
   await expect(page).toHaveURL(/servicio=informe-comercial/);
   await expect(page.locator('#contact-service')).toHaveValue('informe-comercial', {
     timeout: 10_000

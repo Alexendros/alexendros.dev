@@ -15,8 +15,12 @@ import { serviceProducts } from '../../content/services';
   <Container class="py-16 md:py-24">
     <PageHead
       title="Servicios"
-      description="Catálogo con precio, pago, plazo, entrega y garantía. Los importes son provisionales."
+      description="Elige crear una web (portal por módulos) o revisar la actual (informe, sesión o inspección). Precio, pago, plazo, entrega y garantía son provisionales; el desglose fiscal se confirma en la propuesta."
     />
+    <p class="mt-4 max-w-2xl text-sm text-muted">
+      Tres vías de revisión y un portal configurable. Los importes son provisionales y no incluyen
+      un desglose de impuestos publicado: se confirma en la propuesta.
+    </p>
     <Grid gap="6" class="mt-8 md:grid-cols-3" data-services-grid>
       {
         serviceProducts.map((product, i) => (
@@ -29,6 +33,18 @@ import { serviceProducts } from '../../content/services';
 
     <section class="mt-16" aria-labelledby="portal-heading">
       <PricingConfigurator client:load />
+      <noscript>
+        <p class="mt-4 rounded-lg border border-border bg-card p-4 text-sm">
+          Sin JavaScript el configurador no actualiza el total. Puedes{' '}
+          <a
+            href="/contacto?motivo=propuestaComercial"
+            class="underline decoration-dotted underline-offset-2 text-primary"
+          >
+            pedir una propuesta
+          </a>{' '}
+          indicando los módulos que te interesan.
+        </p>
+      </noscript>
     </section>
   </Container>
 </Layout>
