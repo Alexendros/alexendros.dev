@@ -142,6 +142,8 @@ const jsonLd = [
                   target="_blank"
                   rel="noopener noreferrer"
                   data-product-action="primary"
+                  data-cal={service.action.kind === 'booking' ? '' : undefined}
+                  data-cal-offer={service.action.kind === 'booking' ? service.slug : undefined}
                 >
                   {service.action.label}
                 </Button>

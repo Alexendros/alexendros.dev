@@ -188,7 +188,7 @@ export const services: Service[] = [
     action: {
       kind: 'contact',
       label: 'Contactar',
-      href: '/contacto',
+      href: '/contacto?motivo=informacionCliente&servicio=informe-comercial',
       newTab: false
     }
   },
@@ -272,7 +272,7 @@ export const services: Service[] = [
     action: {
       kind: 'contact',
       label: 'Contactar',
-      href: '/contacto',
+      href: '/contacto?motivo=informacionCliente&servicio=auditoria-normativa-ciberseguridad',
       newTab: false
     }
   }

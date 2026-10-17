@@ -147,7 +147,10 @@ const { project } = Astro.props;
             }
           </div>
         </div>
-        <Button href={`/contacto?motivo=informacionCliente`} class="w-full">
+        <Button
+          href={`/contacto?motivo=informacionCliente&proyecto=${encodeURIComponent(project.slug)}`}
+          class="w-full"
+        >
           {availabilityCtaLabels[project.availability]}
         </Button>
       </div>

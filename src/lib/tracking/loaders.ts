@@ -1,3 +1,5 @@
+import { inject as injectVercelAnalytics } from '@vercel/analytics';
+import { injectSpeedInsights } from '@vercel/speed-insights';
 import { hasConsent, onConsentUpdate } from './consent';
 
 type Fbq = ((...args: unknown[]) => void) & { queue?: unknown[][] };
@@ -12,7 +14,10 @@ type PostHogFn = {
   init?: (key: string, options?: unknown) => void;
   capture?: (event: string, properties?: unknown) => void;
   push?: (args: unknown[]) => void;
+  opt_out_capturing?: () => void;
+  opt_in_capturing?: () => void;
 };
+type ClarityFn = ((...args: unknown[]) => void) & { q?: unknown[][] };
 
 const loaded = new Set<string>();
 
@@ -50,6 +55,54 @@ function syncMetaConsent(): void {
   const target = window as Window & { fbq?: Fbq };
   if (typeof target.fbq !== 'function') return;
   target.fbq('consent', hasConsent('marketing') ? 'grant' : 'revoke');
+}
+
+function syncPostHogConsent(): void {
+  if (typeof window === 'undefined') return;
+  const target = window as Window & { posthog?: PostHogFn };
+  const posthog = target.posthog;
+  if (!posthog) return;
+  if (hasConsent('analytics')) {
+    posthog.opt_in_capturing?.();
+  } else {
+    posthog.opt_out_capturing?.();
+  }
+}
+
+/** Clarity: API pública `clarity('consent', boolean)`. Sin stub cargado, no-op. */
+function syncClarityConsent(): void {
+  if (typeof window === 'undefined') return;
+  const target = window as Window & { clarity?: ClarityFn };
+  if (typeof target.clarity !== 'function') return;
+  target.clarity('consent', hasConsent('analytics'));
+}
+
+/**
+ * LinkedIn Insight no documenta un opt-out fiable en cliente tras la carga.
+ * Se limpia el partner id local; la revocación interna del SDK queda
+ * NOT_VERIFIED en el informe de cierre.
+ */
+function syncLinkedInConsent(): void {
+  if (typeof window === 'undefined') return;
+  if (hasConsent('marketing')) return;
+  const target = window as Window & {
+    _linkedin_partner_id?: string;
+    _linkedin_data_partner_ids?: string[];
+  };
+  if ('_linkedin_partner_id' in target) {
+    target._linkedin_partner_id = '';
+  }
+  if (Array.isArray(target._linkedin_data_partner_ids)) {
+    target._linkedin_data_partner_ids.length = 0;
+  }
+}
+
+function syncAllProviderConsent(): void {
+  syncGtagConsent();
+  syncMetaConsent();
+  syncPostHogConsent();
+  syncClarityConsent();
+  syncLinkedInConsent();
 }
 
 export function loadGA4(): void {
@@ -113,7 +166,9 @@ export function loadMetaPixel(): void {
       } as Fbq;
       target.fbq = fbq;
     }
+    target.fbq('consent', 'revoke');
     target.fbq('init', id);
+    syncMetaConsent();
     target.fbq('track', 'PageView');
     injectScript('https://connect.facebook.net/en_US/fbevents.js', 'meta-pixel');
   });
@@ -124,6 +179,16 @@ export function loadClarity(): void {
   const id = import.meta.env.PUBLIC_CLARITY_ID as string | undefined;
   if (!id) return;
   once('clarity', () => {
+    const target = window as Window & { clarity?: ClarityFn };
+    if (typeof target.clarity !== 'function') {
+      const queue: unknown[][] = [];
+      const clarity = ((...args: unknown[]) => {
+        queue.push(args);
+      }) as ClarityFn;
+      clarity.q = queue;
+      target.clarity = clarity;
+    }
+    syncClarityConsent();
     injectScript(`https://www.clarity.ms/tag/${id}`, 'clarity');
   });
 }
@@ -151,6 +216,12 @@ export function loadPostHog(): void {
       };
       posthog.push = (args) => {
         queue.push(args);
+      };
+      posthog.opt_out_capturing = () => {
+        queue.push(['opt_out_capturing']);
+      };
+      posthog.opt_in_capturing = () => {
+        queue.push(['opt_in_capturing']);
       };
       target.posthog = posthog;
     }
@@ -184,6 +255,20 @@ export function loadLinkedIn(): void {
   });
 }
 
+/**
+ * Analytics y Speed Insights de Vercel: solo builds con `__IS_VERCEL__` y
+ * consentimiento de analítica. No se montan en el HTML inicial.
+ */
+export function loadVercelPlatform(): void {
+  if (typeof window === 'undefined') return;
+  if (typeof __IS_VERCEL__ === 'undefined' || !__IS_VERCEL__) return;
+  if (!hasConsent('analytics')) return;
+  once('vercel-platform', () => {
+    injectVercelAnalytics();
+    injectSpeedInsights();
+  });
+}
+
 function loadAll(): void {
   loadGA4();
   loadGTM();
@@ -191,8 +276,8 @@ function loadAll(): void {
   loadClarity();
   loadPostHog();
   loadLinkedIn();
-  syncGtagConsent();
-  syncMetaConsent();
+  loadVercelPlatform();
+  syncAllProviderConsent();
 }
 
 export function initTracking(): void {

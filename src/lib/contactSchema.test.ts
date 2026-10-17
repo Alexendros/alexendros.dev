@@ -110,6 +110,32 @@ describe('parseContactBody R04', () => {
     const onlyJunk = parseContactBody({ ...validCorreo, modules: 'nope,fake' });
     expect(onlyJunk.success && onlyJunk.data.modules).toBeUndefined();
   });
+
+  it('CFG-06: servicio y proyecto allowlisted; desconocidos se descartan', () => {
+    const parsed = parseContactBody({
+      ...validCorreo,
+      serviceSlug: 'informe-comercial',
+      projectSlug: 'front-valencia'
+    });
+    expect(parsed.success).toBe(true);
+    if (!parsed.success) return;
+    expect(parsed.data.serviceSlug).toBe('informe-comercial');
+    expect(parsed.data.projectSlug).toBe('front-valencia');
+    const msg = buildContactMessage(parsed.data);
+    expect(msg).toMatch(/Informe 360/);
+    expect(msg).toMatch(/Front Valencia/);
+
+    const junk = parseContactBody({
+      ...validCorreo,
+      serviceSlug: 'evil-slug',
+      projectSlug: '<script>x</script>',
+      precio: '1'
+    } as typeof validCorreo & { serviceSlug: string; projectSlug: string; precio: string });
+    expect(junk.success).toBe(true);
+    if (!junk.success) return;
+    expect(junk.data.serviceSlug).toBeUndefined();
+    expect(junk.data.projectSlug).toBeUndefined();
+  });
 });
 
 describe('validateContactStep', () => {

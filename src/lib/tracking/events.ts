@@ -30,8 +30,8 @@ function metaEvent(event: FunnelEvent, props: Props): void {
   const target = window as Window & { fbq?: Fbq };
   if (typeof target.fbq !== 'function') return;
   target.fbq('trackCustom', event, props);
-  // Los eventos de conversión se reenvían también como estándar de Meta.
-  if (event === 'form_submit') {
+  // Lead solo tras aceptación contractual del formulario (no en el intento).
+  if (event === 'contact_form_success') {
     target.fbq('track', 'Lead', props);
   }
 }
@@ -45,9 +45,12 @@ function postHogEvent(event: FunnelEvent, props: Props): void {
 /**
  * Emite un evento del embudo de conversión a todos los destinos con
  * consentimiento concedido. Nunca rompe si un proveedor no está cargado.
+ * form_submit = intento; contact_form_success = aceptación (no replay).
  */
 export function track(event: FunnelEvent, props: Props = {}): void {
-  trackVercel(event, props);
+  if (hasConsent('analytics')) {
+    trackVercel(event, props);
+  }
   gtagEvent(event, props);
   metaEvent(event, props);
   postHogEvent(event, props);
@@ -77,7 +80,8 @@ export function setupFunnelTracking(): void {
     if (!anchor) return;
     const href = anchor.getAttribute('href') ?? '';
     if (anchor.hasAttribute('data-cal')) {
-      track('cal_click', { href });
+      const offer = anchor.getAttribute('data-cal-offer') ?? undefined;
+      track('cal_click', { href, ...(offer ? { offer } : {}) });
       return;
     }
     if (href.startsWith('/contacto')) {

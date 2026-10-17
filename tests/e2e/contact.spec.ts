@@ -215,6 +215,74 @@ test('CFG-05: params hostiles no inventan condiciones ni XSS', async ({ page }) 
   await expect(page.locator('body')).not.toContainText('alert(1)');
 });
 
+test('CFG-06: servicio y proyecto allowlisted; desconocidos se descartan', async ({ page }) => {
+  await page.goto(
+    '/contacto?servicio=informe-comercial&proyecto=front-valencia&precio=999&servicio=evil'
+  );
+  await expect(page.locator('#contact-service')).toHaveValue('informe-comercial', {
+    timeout: 10_000
+  });
+  await expect(page.locator('#contact-project')).toHaveValue('front-valencia');
+  await expect(page.locator('body')).not.toContainText('999');
+});
+
+test('CFG-07: ficha de servicio llega con contexto editable', async ({ page }) => {
+  await page.goto('/servicios/informe-comercial');
+  await page.locator('#contenido').getByRole('link', { name: 'Contactar' }).click();
+  await expect(page).toHaveURL(/servicio=informe-comercial/);
+  await expect(page.locator('#contact-service')).toHaveValue('informe-comercial', {
+    timeout: 10_000
+  });
+  await page.locator('#contact-service').selectOption('');
+  await expect(page.locator('#contact-service')).toHaveValue('');
+});
+
+test('T-CON-07: 200 ok sin status accepted no es éxito', async ({ page }) => {
+  await mockContact(page, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ ok: true })
+    });
+  });
+  await page.goto('/contacto');
+  await fillWizardToConsent(page);
+  await page.getByRole('button', { name: /Enviar/ }).click();
+  await expect(page.getByRole('alert')).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByText(/Mensaje enviado/i)).toHaveCount(0);
+});
+
+test('T-CON-01b: accepted con replay true muestra éxito sin exigir segundo Lead', async ({
+  page
+}) => {
+  await mockContact(page, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        ok: true,
+        status: 'accepted',
+        requestId: 'replay-1',
+        replay: true
+      })
+    });
+  });
+  await page.goto('/contacto');
+  await fillWizardToConsent(page);
+  await page.getByRole('button', { name: /Enviar/ }).click();
+  await expect(page.getByRole('status')).toContainText(/Mensaje enviado/i, { timeout: 10_000 });
+});
+
+test('AXD-005: correo visible si el inline corre pero la isla no hidrata', async ({ page }) => {
+  await page.route('**/ContactForm*.js', (route) => route.abort());
+  await page.route('**/ContactForm*.mjs', (route) => route.abort());
+  await page.goto('/contacto');
+  const nojs = page.locator('[data-contact-nojs]');
+  await expect(nojs).toBeVisible({ timeout: 10_000 });
+  await expect(nojs.getByRole('link', { name: /contratacion@alexendros\.dev/i })).toBeVisible();
+  await expect(page.locator('html')).not.toHaveAttribute('data-contact-hydrated', 'true');
+});
+
 test.describe('UI-07: sin JavaScript', () => {
   test.use({ javaScriptEnabled: false });
 

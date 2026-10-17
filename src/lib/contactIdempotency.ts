@@ -62,6 +62,8 @@ export function normalizeContactPayload(data: ContactInput): string {
     reason: data.reason,
     message: data.message,
     modules: data.modules ?? null,
+    serviceSlug: data.serviceSlug ?? null,
+    projectSlug: data.projectSlug ?? null,
     consent: data.consent
   });
 }

@@ -38,20 +38,24 @@ function isTrackerHost(hostname: string): boolean {
 }
 
 /**
- * Registra cada petición de la página y responde a los hosts de trackers con
- * un stub local: se observa la intención de red sin alcanzar nunca la API
- * real (determinismo y cero tráfico a terceros desde las pruebas).
+ * Intercepta en el contexto (cubre páginas nuevas) trackers y /_vercel.
+ * Observa intención de red sin alcanzar APIs reales.
  */
 async function instrumentNetwork(page: Page): Promise<SeenRequest[]> {
   const seen: SeenRequest[] = [];
+  const context = page.context();
   page.on('request', (request) => {
     const url = new URL(request.url());
     seen.push({ hostname: url.hostname, pathname: url.pathname });
   });
-  await page.route(
-    (url) => isTrackerHost(url.hostname),
+  await context.route(
+    (url) => isTrackerHost(url.hostname) || url.pathname.startsWith('/_vercel'),
     (route) =>
-      route.fulfill({ status: 200, contentType: 'application/javascript', body: '/* e2e */' })
+      route.fulfill({
+        status: 200,
+        contentType: 'application/javascript',
+        body: '/* e2e */'
+      })
   );
   return seen;
 }
@@ -339,13 +343,8 @@ test('PRIV-01c: control positivo, con consentimiento total los trackers sí carg
   await expect.poll(async () => (await readConsentStorage(page))?.marketing).toBe(true);
 
   const tags = await trackerTags(page);
-  test.skip(
-    tags.length === 0,
-    'El preview se construyó sin IDs de tracker (artefacto de CI): el camino positivo no es observable. Ver playwright.config.ts.'
-  );
-
-  // Si las etiquetas cargan con consentimiento, PRIV-01a/PRIV-01b no pasan por
-  // vacuidad cuando el build sí trae IDs.
+  // Sin IDs en el build el control positivo debe fallar (no omitir).
+  expect(tags.length).toBeGreaterThan(0);
   expect(requestsOutsidePreview(seen).length).toBeGreaterThan(0);
   expect(tags).toEqual(
     expect.arrayContaining(['ga4', 'gtm', 'meta-pixel', 'clarity', 'posthog', 'linkedin'])
@@ -353,18 +352,10 @@ test('PRIV-01c: control positivo, con consentimiento total los trackers sí carg
 });
 
 /**
- * Gap conocido y no cubrible con el preview local: en un build con `VERCEL=1`
- * (el que hace Vercel en producción) `__IS_VERCEL__` monta Analytics y Speed
- * Insights en cada página, y el navegador pide `/_vercel/insights/script.js` y
- * `/_vercel/speed-insights/script.js` sin consentimiento. El preview local se
- * construye sin `VERCEL`, así que `__IS_VERCEL__` es false y PRIV-01a no puede
- * observarlo. Reproducción: `VERCEL=1 pnpm build` + servir + mirar la red.
- * Decisión pendiente de producto: gatearlos por consentimiento o declararlos
- * exentos (cookieless) y relajar entonces esta comprobación.
+ * P2: el webServer de Playwright construye con VERCEL=1 (`__IS_VERCEL__`).
+ * Analytics/Speed Insights solo se inyectan tras consentimiento de analítica.
  */
-test.fixme('PRIV-01d: en un build tipo Vercel los scripts /_vercel/* tampoco deberían pedirse sin consentimiento', async ({
-  page
-}) => {
+test('PRIV-01d: build tipo Vercel no pide /_vercel/* sin consentimiento', async ({ page }) => {
   const seen = await instrumentNetwork(page);
 
   await page.goto('/');
@@ -372,6 +363,20 @@ test.fixme('PRIV-01d: en un build tipo Vercel los scripts /_vercel/* tampoco deb
   await page.waitForLoadState('networkidle');
 
   expect(seen.filter((request) => request.pathname.startsWith('/_vercel'))).toEqual([]);
+
+  await page.locator('#cc-main .cm').getByRole('button', { name: 'Sí a lo esencial' }).click();
+  await expect.poll(async () => (await readConsentStorage(page))?.analytics).toBe(false);
+  await page.waitForLoadState('networkidle');
+  expect(seen.filter((request) => request.pathname.startsWith('/_vercel'))).toEqual([]);
+});
+
+test('PRIV-01e: con analítica en build Vercel sí hay intención /_vercel (stub)', async ({
+  page
+}) => {
+  const seen = await instrumentNetwork(page);
+  await acceptOnlyAnalytics(page);
+  await page.waitForLoadState('networkidle');
+  expect(seen.some((request) => request.pathname.startsWith('/_vercel'))).toBe(true);
 });
 
 test('PRIV-02: aceptar solo analítica no enciende ningún proveedor de publicidad', async ({
@@ -454,6 +459,79 @@ test('PRIV-03: revocar tras aceptar corta emisiones futuras de analytics y publi
   expect(requestsForHosts(postRevoke, MARKETING_HOSTS)).toEqual([]);
   await expect(page.locator('script[data-tracker]')).toHaveCount(0);
   void beforeRevoke;
+});
+
+/**
+ * T-PRIV-REV-SAME-DOC: revoca sin page.goto que reinicie el runtime de trackers.
+ * Comprueba comandos de opt-out en el documento actual.
+ */
+test('PRIV-03b: revocación en el mismo documento emite opt-out sin reiniciar', async ({ page }) => {
+  await instrumentNetwork(page);
+  await page.goto('/');
+  await waitForCmp(page);
+  await page
+    .locator('#cc-main .cm')
+    .getByRole('button', { name: 'Aceptación desinformada' })
+    .click();
+  await expect.poll(async () => (await readConsentStorage(page))?.marketing).toBe(true);
+  await expect.poll(async () => (await trackerTags(page)).length).toBeGreaterThan(0);
+
+  // Abrir preferencias en el mismo documento (sin navegación).
+  await page.evaluate(() => {
+    const btn = document.createElement('button');
+    btn.setAttribute('data-cc', 'show-preferencesModal');
+    btn.textContent = 'Abrir preferencias e2e';
+    document.body.appendChild(btn);
+  });
+  await page.getByRole('button', { name: 'Abrir preferencias e2e' }).click();
+  const panel = page.locator('#cc-main .pm');
+  await expect(panel).toBeVisible();
+  await panel.getByRole('button', { name: 'Sí a lo esencial' }).click();
+  await expect.poll(async () => (await readConsentStorage(page))?.analytics).toBe(false);
+  await expect.poll(async () => (await readConsentStorage(page))?.marketing).toBe(false);
+
+  const optOut = await page.evaluate(() => {
+    const dataLayer = (window as Window & { dataLayer?: unknown[] }).dataLayer ?? [];
+    const gtagDenied = dataLayer.some((entry) => {
+      if (!Array.isArray(entry)) return false;
+      return (
+        entry[0] === 'consent' &&
+        entry[1] === 'update' &&
+        typeof entry[2] === 'object' &&
+        entry[2] !== null &&
+        (entry[2] as { analytics_storage?: string }).analytics_storage === 'denied'
+      );
+    });
+    const fbq = (window as Window & { fbq?: { queue?: unknown[][] } }).fbq;
+    const fbqRevoke = (fbq?.queue ?? []).some(
+      (call) => Array.isArray(call) && call[0] === 'consent' && call[1] === 'revoke'
+    );
+    const posthog = (window as Window & { posthog?: { _i?: unknown[][] } }).posthog;
+    const phOut = (posthog?._i ?? []).some(
+      (call) => Array.isArray(call) && call[0] === 'opt_out_capturing'
+    );
+    const clarity = (window as Window & { clarity?: { q?: unknown[][] } }).clarity;
+    const clarityConsent = (clarity?.q ?? []).some(
+      (call) => Array.isArray(call) && call[0] === 'consent' && call[1] === false
+    );
+    return { gtagDenied, fbqRevoke, phOut, clarityConsent };
+  });
+
+  expect(optOut.gtagDenied).toBe(true);
+  expect(optOut.fbqRevoke).toBe(true);
+  expect(optOut.phOut).toBe(true);
+  expect(optOut.clarityConsent).toBe(true);
+
+  // Actividad posterior en el mismo documento no debe reinyectar marketing.
+  await page.evaluate(() => {
+    document.dispatchEvent(new Event('astro:page-load'));
+  });
+  await expect(page.locator('script[data-tracker="meta-pixel"]')).toHaveCount(1);
+  expect(
+    await page.evaluate(
+      () => (window as Window & { _linkedin_partner_id?: string })._linkedin_partner_id
+    )
+  ).toBe('');
 });
 
 test('PRIV-04: el formulario no envía email, teléfono ni mensaje a tracking', async ({ page }) => {

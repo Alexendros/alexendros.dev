@@ -1,4 +1,10 @@
 import { useEffect, useId, useMemo, useRef, useState, type FormEvent } from 'react';
+import {
+  contactProjectOptions,
+  contactServiceOptions,
+  normalizeProjectSlug,
+  normalizeServiceSlug
+} from '../content/contactContext';
 import { normalizePortalModuleIds, serializePortalModuleIds } from '../content/pricing';
 import { track } from '../lib/tracking/events';
 import {
@@ -64,6 +70,8 @@ function logicalPayloadKey(data: ContactInput): string {
     reason: data.reason,
     message: data.message,
     modules: data.modules ?? null,
+    serviceSlug: data.serviceSlug ?? null,
+    projectSlug: data.projectSlug ?? null,
     consent: data.consent
   });
 }
@@ -106,6 +114,8 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
     reason: 'informacionCliente' as ContactInput['reason'],
     message: '',
     modules: '',
+    serviceSlug: '',
+    projectSlug: '',
     consent: false,
     honeypot: ''
   });
@@ -113,18 +123,29 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
   const [turnstileKey, setTurnstileKey] = useState(0);
   const [hydrated, setHydrated] = useState(false);
   const [focusTick, setFocusTick] = useState(0);
+  /** Una aceptación lógica ya emitida (evita Lead duplicado en replay). */
+  const successTrackedRef = useRef(false);
 
   useEffect(() => {
     setHydrated(true);
+    document.documentElement.setAttribute('data-contact-hydrated', 'true');
+    document.getElementById('contact-nojs')?.setAttribute('hidden', '');
     const params = new URLSearchParams(window.location.search);
-    // Solo motivo y módulos allowlisted. precio/plazo/otros params se ignoran.
+    // Solo motivo, módulos, servicio y proyecto allowlisted. precio/plazo se ignoran.
     const reason = reasonFromSearch(params.get('motivo'));
     const modules = serializePortalModuleIds(normalizePortalModuleIds(params.get('modulos')));
+    const serviceSlug = normalizeServiceSlug(params.get('servicio')) ?? '';
+    const projectSlug = normalizeProjectSlug(params.get('proyecto')) ?? '';
     setForm((prev) => ({
       ...prev,
       reason,
-      modules
+      modules,
+      serviceSlug,
+      projectSlug
     }));
+    return () => {
+      document.documentElement.removeAttribute('data-contact-hydrated');
+    };
   }, []);
 
   const moduleLabels = useMemo(
@@ -237,6 +258,8 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
       reason: form.reason,
       message: form.message,
       modules: form.modules || undefined,
+      serviceSlug: form.serviceSlug || undefined,
+      projectSlug: form.projectSlug || undefined,
       consent: form.consent as true,
       honeypot: form.honeypot,
       turnstileToken: turnstileToken || undefined
@@ -271,7 +294,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
         signal: controller.signal
       });
 
-      let body: { ok?: boolean; status?: string; error?: string } = {};
+      let body: { ok?: boolean; status?: string; error?: string; replay?: boolean } = {};
       try {
         body = (await res.json()) as typeof body;
       } catch {
@@ -303,9 +326,13 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
         resetTurnstile();
         return;
       }
-      if (res.status === 200 && (body.status === 'accepted' || body.ok === true)) {
+      // Solo el contrato accepted cuenta como éxito; ok:true sin status no basta.
+      if (res.status === 200 && body.status === 'accepted') {
         setStatus('ok');
-        track('contact_form_success');
+        if (body.replay !== true && !successTrackedRef.current) {
+          successTrackedRef.current = true;
+          track('contact_form_success');
+        }
         return;
       }
       if (!res.ok) {
@@ -398,6 +425,55 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
           Módulos indicados: <strong className="text-fg">{moduleLabels}</strong>
         </p>
       ) : null}
+
+      <div className="space-y-3 rounded-lg border border-border bg-card p-3 text-sm">
+        <p className="text-xs text-muted">
+          Contexto de la consulta (opcional). Puedes cambiarlo o dejarlo vacío. No altera precio ni
+          condiciones.
+        </p>
+        <div>
+          <label htmlFor="contact-service" className="text-sm">
+            Servicio de referencia
+          </label>
+          <select
+            id="contact-service"
+            name="serviceSlug"
+            className={inputClass}
+            value={form.serviceSlug}
+            disabled={sending}
+            data-contact-service
+            onChange={(e) => setForm((f) => ({ ...f, serviceSlug: e.target.value }))}
+          >
+            <option value="">Ninguno</option>
+            {contactServiceOptions.map((o) => (
+              <option key={o.slug} value={o.slug}>
+                {o.title}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="contact-project" className="text-sm">
+            Trabajo de referencia
+          </label>
+          <select
+            id="contact-project"
+            name="projectSlug"
+            className={inputClass}
+            value={form.projectSlug}
+            disabled={sending}
+            data-contact-project
+            onChange={(e) => setForm((f) => ({ ...f, projectSlug: e.target.value }))}
+          >
+            <option value="">Ninguno</option>
+            {contactProjectOptions.map((o) => (
+              <option key={o.slug} value={o.slug}>
+                {o.title}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
 
       {step === 'reason' && (
         <div>

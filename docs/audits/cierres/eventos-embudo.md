@@ -18,6 +18,8 @@ No sustituye a ciegas los nombres actuales. Convención viva en `src/lib/trackin
 
 ## Distinciones obligatorias
 
-- `form_submit` ≠ éxito. `contact_form_success` solo tras respuesta OK.
-- Clic en reserva ≠ reserva confirmada.
+- `form_submit` ≠ éxito. `contact_form_success` solo tras `200` + `status: accepted` (no replay).
+- Meta estándar `Lead` solo en `contact_form_success`, nunca en el intento.
+- Clic en reserva (`data-cal`) = `cal_click` (salida) ≠ reserva confirmada.
 - Prohibido: nombre, email, teléfono, texto libre o IDs de alta cardinalidad innecesarios.
+- Contexto comercial (`servicio` / `proyecto`) allowlisted en formulario y correo; no se emite en eventos.

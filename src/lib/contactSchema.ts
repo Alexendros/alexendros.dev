@@ -1,5 +1,11 @@
 import { z } from 'zod';
 import {
+  normalizeProjectSlug,
+  normalizeServiceSlug,
+  projectTitle,
+  serviceTitle
+} from '../content/contactContext';
+import {
   normalizePortalModuleIds,
   serializePortalModuleIds,
   type PortalModuleId
@@ -63,6 +69,8 @@ export const contactSchema = z
       const ids = normalizePortalModuleIds(v);
       return ids.length > 0 ? serializePortalModuleIds(ids) : undefined;
     }, z.string().optional()),
+    serviceSlug: z.preprocess((v) => normalizeServiceSlug(v), z.string().optional()),
+    projectSlug: z.preprocess((v) => normalizeProjectSlug(v), z.string().optional()),
     consent: z.literal(true),
     honeypot: z.string().optional(),
     turnstileToken: z.string().max(4096).optional()
@@ -127,6 +135,8 @@ export const fieldLabels: Record<string, string> = {
   reason: 'Motivo',
   message: 'Tu petición',
   modules: 'Módulos',
+  serviceSlug: 'Servicio',
+  projectSlug: 'Trabajo',
   consent: 'Consentimiento'
 };
 
@@ -183,6 +193,8 @@ export type ContactFormSlice = {
   reason: ContactInput['reason'];
   message: string;
   modules?: string;
+  serviceSlug?: string;
+  projectSlug?: string;
   consent: boolean;
 };
 
@@ -233,5 +245,9 @@ export function buildContactMessage(input: ContactInput): string {
     const names = portalModuleDisplayNames(input.modules);
     if (names) lines.push(`Módulos de portal: ${names}`);
   }
+  const serviceLabel = serviceTitle(input.serviceSlug);
+  if (serviceLabel) lines.push(`Servicio de referencia: ${serviceLabel}`);
+  const projectLabel = projectTitle(input.projectSlug);
+  if (projectLabel) lines.push(`Trabajo de referencia: ${projectLabel}`);
   return lines.join('\n');
 }
