@@ -1,57 +1,58 @@
-# Aceptación del candidato — cierre de producción (sin promote)
+# Aceptación del candidato — cierre de producción (sin F-02 autorizado)
 
-Fecha UTC de este informe: 2026-10-17T01:15:00Z  
-Alcance: fases A–E + F-01 del plan de cierre. **F-02/F-03 (publicación y observación en producción) fuera de alcance.**
+Fecha UTC de cierre documental: 2026-10-17T10:30:00Z  
+Alcance ejecutado: fases A–E + F-01. **F-02 smoke real / correo a buzón y F-03 observación 24h–7d no ejecutados como procedimiento autorizado** (quedan a decisión del mantenedor).
+
+En este repo Hobby, `main` despliega Production automáticamente. El SHA de Production observado al redactar coincide con el candidato; eso **no** sustituye REL-02 (smoke de dominio + contacto real autorizado).
 
 ## Línea base
 
-| Referencia                   | SHA / nota                                                       |
-| ---------------------------- | ---------------------------------------------------------------- |
-| Plan baseline                | `91ae5fe` (merge #107)                                           |
-| Candidato (main al redactar) | `0e2b2c0` (merge #113 PR-E)                                      |
-| PR-D pendiente al redactar   | #114 (`cursor/cierre-pr-d-contexto`) — actualizar SHA tras merge |
+| Referencia                    | SHA / nota                   |
+| ----------------------------- | ---------------------------- |
+| Plan baseline                 | `91ae5fe` (merge #107)       |
+| Candidato en `main`           | `53a20b6` (merge #114)       |
+| Release                       | `v1.24.4`                    |
+| Production Vercel (observado) | deployment con SHA `53a20b6` |
 
 ## Paquetes integrados
 
-| Paquete                   | PR      | Estado            |
-| ------------------------- | ------- | ----------------- |
-| PR-A disposición #104     | #109    | MERGED            |
-| PR-B idempotencia y foco  | #110    | MERGED            |
-| PR-C contrato y fichas    | #108    | MERGED            |
-| PR-D configurador/CRM     | #114    | OPEN (auto-merge) |
-| PR-E consentimiento/rutas | #113    | MERGED            |
-| PR-F CI candidato         | este PR | candidato         |
+| Paquete                   | PR   | Estado |
+| ------------------------- | ---- | ------ |
+| PR-A disposición #104     | #109 | MERGED |
+| PR-B idempotencia y foco  | #110 | MERGED |
+| PR-C contrato y fichas    | #108 | MERGED |
+| PR-D configurador/CRM     | #114 | MERGED |
+| PR-E consentimiento/rutas | #113 | MERGED |
+| PR-F CI candidato         | #115 | MERGED |
 
 ## Decisiones de ciclo
 
 - **D-01**: excepción — sin ficha `/servicios/portal-inicio` (decisión 0017).
 - **D-02**: importes provisionales explícitos; cifras sin cambio.
-- **D-03**: sin copy comercial nuevo; COM-03 `BLOCKED`.
+- **D-03**: sin copy comercial nuevo; COM-03 `BLOCKED` hasta firma del mantenedor.
 - **D-04**: Notion opcional / fallo observable; sin promesa de CRM.
-- **D-05**: sin retirada masiva de embudos; Cal.com conservado.
+- **D-05**: limpieza selectiva en #113; Cal.com conservado; #104 no fusionado en bloque.
 - **D-06**: contrato 200/202/409/503 en contacto.
 
-## Gates de este PR-F (resultado obtenido)
+## Gates — resultado obtenido
 
-Registrar tras CI del PR:
+| Gate                                | Resultado obtenido                           | Commit / run                             | Entorno                             |
+| ----------------------------------- | -------------------------------------------- | ---------------------------------------- | ----------------------------------- |
+| quality (+ `check:contrast`)        | PASS                                         | #115 run `38990016709` job quality       | CI PR                               |
+| test / build / smoke / e2e-critical | PASS                                         | #114 merge run `38990380625` (`53a20b6`) | CI main                             |
+| e2e completo + LHCI (label `e2e`)   | PASS                                         | #115 run `38990016709` job e2e           | CI PR (label)                       |
+| e2e en push a `main`                | SKIPPED (esperado: sin label / sin dispatch) | `38990380625`                            | CI main                             |
+| OPS-02 buzón real                   | BLOCKED                                      | —                                        | requiere autorización               |
+| REL-02 / REL-03 procedimiento       | BLOCKED / no ejecutado                       | —                                        | mantenedor                          |
+| SEC-01 CSP Preview dedicado         | BLOCKED como PASS formal                     | —                                        | no auditado como evidencia separada |
+| COM-03 firma mantenedor             | BLOCKED                                      | —                                        | —                                   |
 
-| Gate                                | Resultado obtenido                           | Commit | Entorno               |
-| ----------------------------------- | -------------------------------------------- | ------ | --------------------- |
-| quality (+ `check:contrast`)        | PENDIENTE                                    |        | CI                    |
-| test / build / smoke / e2e-critical | PENDIENTE                                    |        | CI                    |
-| e2e completo + LHCI (label `e2e`)   | PENDIENTE — activar label en este PR         |        | CI                    |
-| OPS-02 buzón real                   | BLOCKED                                      | —      | requiere autorización |
-| REL-02 / REL-03 producción          | fuera de alcance                             | —      | —                     |
-| SEC-01 CSP Preview                  | BLOCKED si no hay URL autorizada de este SHA | —      | —                     |
-| COM-03 firma mantenedor             | BLOCKED                                      | —      | —                     |
+## Rollback
 
-## Rollback (descriptivo)
-
-- Mecanismo: revertir el merge commit del PR en `main` vía PR de revert (ruleset PR-only); o redeploy del deployment Vercel anterior al promote.
-- **No se ejecuta promote en este ciclo**; el rollback de producción no aplica hasta F-02.
-- Responsable de rollback tras F-02: mantenedor + agente de release.
+Ver [rollback.md](./rollback.md). Mecanismo: revert por PR o rollback de deployment Vercel. No se ha ejecutado rollback en este ciclo.
 
 ## Excepciones explícitas
 
-- #104 permanece abierto; no fusionar en bloque.
-- Suite completa + LHCI solo cuentan si el job `e2e` se ejecuta (label o `workflow_dispatch`), no si queda `skipped`.
+- #104 permanece abierto; no fusionar en bloque (matriz en `91ae5fe/104-disposition.md`).
+- Suite completa + LHCI acreditadas en el PR #115 con label `e2e`, no en el push a `main` posterior.
+- Production auto-deploy ≠ aceptación REL-02 (contacto real, consentimiento en apex sin datos previos, etc.).
