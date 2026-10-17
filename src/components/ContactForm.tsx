@@ -38,7 +38,7 @@ const CONTROL_ID_BY_FIELD: Record<string, string> = {
 };
 
 const inputClass =
-  'mt-1 w-full bg-bg border border-border-strong rounded-lg px-3 py-2 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
+  'focus-ring mt-1 w-full bg-bg border border-border-strong rounded-lg px-3 py-2 focus:outline-none';
 
 function reasonFromSearch(value: string | null): ContactInput['reason'] {
   if (value && (contactReasons as readonly string[]).includes(value)) {
@@ -327,7 +327,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
         ref={successRef}
         role="status"
         tabIndex={-1}
-        className="rounded-lg border border-primarySoft bg-primaryGhost p-4 text-sm focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        className="focus-ring rounded-lg border border-primarySoft bg-primaryGhost p-4 text-sm focus:outline-none"
       >
         {successMessage}
       </p>
@@ -368,7 +368,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
         id={`${formId}-step-title`}
         ref={stepHeadingRef}
         tabIndex={-1}
-        className="text-base font-bold focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        className="focus-ring text-base font-bold focus:outline-none"
       >
         {stepTitles[step]}
       </h2>
@@ -737,7 +737,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
             type="button"
             onClick={goBack}
             disabled={sending}
-            className="btn inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-border px-6 py-3 font-medium transition-colors hover:border-primary hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-60"
+            className="btn focus-ring inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-border px-6 py-3 font-medium transition-colors hover:border-primary hover:text-primary disabled:opacity-60"
           >
             Atrás
           </button>
@@ -747,7 +747,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
             type="button"
             onClick={goNext}
             disabled={sending || !hydrated}
-            className="btn inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-ink transition-colors hover:bg-primaryHover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-60"
+            className="btn focus-ring inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-ink transition-colors hover:bg-primaryHover disabled:opacity-60"
           >
             Continuar
           </button>
@@ -756,7 +756,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
           <button
             type="submit"
             disabled={sending || !hydrated}
-            className="btn inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-ink transition-colors hover:bg-primaryHover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-60"
+            className="btn focus-ring inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-ink transition-colors hover:bg-primaryHover disabled:opacity-60"
           >
             {sending ? 'Enviando…' : 'Enviar'}
           </button>

@@ -98,6 +98,10 @@
        suavidad. */
     --focus-ring: 0 0 0 3px color-mix(in srgb, var(--brand) 55%, transparent);
 
+    /* Superficies derivadas de marca (clases bg-primarySoft/bg-primaryGhost
+       de Tailwind las referencian; fuente única aquí). */
+    --primary-ghost: color-mix(in srgb, var(--brand) 8%, transparent);
+
     /* Tipografía fluida. */
     /* stylelint-disable-next-line custom-property-pattern --
        la escala incluye el step negativo --step--1 por convención */
@@ -244,6 +248,7 @@
 
   ::selection {
     background: color-mix(in srgb, var(--brand) 25%, transparent);
+    color: var(--fg);
   }
 
   /* Micro-motion sobria: solo transiciones de color, sin desplazamientos;
@@ -522,6 +527,31 @@
     opacity: 1;
   }
 
+  /* Superficies translúcidas (header, barra CTA, muestras del design
+     system): fallback sólido con el token primero; color-mix después lo
+     mejora donde hay soporte. Tailwind v3 no compila /<alpha> sobre
+     var(), así que viven aquí (tailwind.config.mjs). */
+  .glass-bg {
+    background: var(--bg);
+    background: color-mix(in oklab, var(--bg) 80%, transparent);
+  }
+
+  .glass-card {
+    background: var(--card);
+    background: color-mix(in oklab, var(--card) 95%, transparent);
+  }
+
+  @supports (backdrop-filter: blur(4px)) {
+    .glass-card {
+      background: color-mix(in oklab, var(--card) 80%, transparent);
+    }
+  }
+
+  .swatch-brand {
+    background: var(--brand);
+    background: color-mix(in oklab, var(--brand) 60%, transparent);
+  }
+
   /* Indicador de página activa en la nav de escritorio: subrayado que
      crece con scaleX. */
   .site-nav a {
@@ -609,17 +639,158 @@
     contain-intrinsic-size: auto 480px;
   }
 
+  /* Prosa legal (cookies, privacidad, identidad): un único bloque bajo
+     lint, con tokens tipográficos fluidos y de espaciado. */
+  /* stylelint-disable custom-property-pattern --
+     el step negativo --step--1 ya existe en :root (convención de escala) */
   .legal-prose h1 {
-    font-size: 1.875rem;
+    font-size: var(--step-2);
     font-weight: 700;
-    margin-bottom: 1rem;
+    line-height: var(--leading-tight);
+    margin-bottom: var(--space-4);
+  }
+
+  .legal-prose h2 {
+    font-size: var(--step-1);
+    font-weight: 600;
+    line-height: var(--leading-tight);
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-2);
   }
 
   .legal-prose p {
     color: var(--fg-muted);
+    font-size: var(--step--1);
     line-height: 1.7;
-    font-size: 0.95rem;
   }
+
+  .legal-prose ul,
+  .legal-prose ol {
+    margin-top: var(--space-4);
+    padding-left: var(--space-5);
+    color: var(--fg-muted);
+    font-size: var(--step--1);
+    line-height: 1.7;
+  }
+
+  .legal-prose ul {
+    list-style: disc;
+  }
+
+  .legal-prose ol {
+    list-style: decimal;
+  }
+
+  .legal-prose li + li {
+    margin-top: var(--space-2);
+  }
+
+  .legal-prose h2 + p {
+    margin-top: var(--space-2);
+  }
+
+  .legal-prose a {
+    color: var(--brand);
+    text-decoration: underline;
+  }
+
+  .legal-prose code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.85em;
+  }
+
+  .legal-prose .table-wrap {
+    margin-top: var(--space-5);
+    overflow-x: auto;
+  }
+
+  .legal-prose table {
+    width: 100%;
+    min-width: 48rem;
+    border-collapse: collapse;
+    font-size: var(--step--1);
+    line-height: 1.5;
+  }
+
+  .legal-prose th,
+  .legal-prose td {
+    border: 1px solid var(--border);
+    padding: var(--space-2) var(--space-3);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .legal-prose th {
+    background: var(--bg-subtle);
+    color: var(--fg);
+    font-weight: 600;
+  }
+
+  .legal-prose td {
+    color: var(--fg-muted);
+  }
+  /* stylelint-enable custom-property-pattern */
+
+  /* CMP (vanilla-cookieconsent v3): sus custom properties se mapean a los
+     tokens del sitio. Un solo set sirve para claro y oscuro porque
+     --card/--fg/… ya reaccionan a prefers-color-scheme y data-theme. */
+  #cc-main {
+    --cc-font-family: 'Inter Variable', system-ui, sans-serif;
+    --cc-bg: var(--card);
+    --cc-primary-color: var(--fg);
+    --cc-secondary-color: var(--fg-muted);
+    --cc-link-color: var(--brand);
+    --cc-btn-primary-bg: var(--brand);
+    --cc-btn-primary-color: var(--brand-fg);
+    --cc-btn-primary-border-color: var(--brand);
+    --cc-btn-primary-hover-bg: var(--brand-hover);
+    --cc-btn-primary-hover-color: var(--brand-fg);
+    --cc-btn-primary-hover-border-color: var(--brand-hover);
+    --cc-btn-secondary-bg: transparent;
+    --cc-btn-secondary-color: var(--fg);
+    --cc-btn-secondary-border-color: var(--border-strong);
+    --cc-btn-secondary-hover-bg: var(--primary-ghost);
+    --cc-btn-secondary-hover-color: var(--brand);
+    --cc-btn-secondary-hover-border-color: var(--brand);
+    --cc-separator-border-color: var(--border);
+    --cc-footer-bg: var(--bg);
+    --cc-footer-color: var(--fg-muted);
+    --cc-footer-border-color: var(--border);
+    --cc-cookie-category-block-bg: var(--bg-subtle);
+    --cc-cookie-category-block-border: var(--border);
+    --cc-cookie-category-block-hover-bg: var(--bg-subtle);
+    --cc-cookie-category-block-hover-border: var(--border-strong);
+    --cc-cookie-category-expanded-block-bg: transparent;
+    --cc-cookie-category-expanded-block-hover-bg: var(--border);
+    --cc-section-category-border: var(--border);
+    --cc-toggle-on-bg: var(--brand);
+    --cc-toggle-on-knob-bg: var(--brand-fg);
+    --cc-toggle-enabled-icon-color: var(--brand);
+    --cc-toggle-off-bg: var(--border-strong);
+    --cc-toggle-off-knob-bg: var(--card);
+    --cc-toggle-disabled-icon-color: var(--border-strong);
+    --cc-toggle-readonly-bg: var(--border);
+    --cc-toggle-readonly-knob-bg: var(--fg-muted);
+    --cc-toggle-readonly-knob-icon-color: var(--card);
+    --cc-overlay-bg: color-mix(in oklab, var(--blue-950) 55%, transparent);
+    --cc-webkit-scrollbar-bg: var(--border);
+    --cc-webkit-scrollbar-hover-bg: var(--border-strong);
+    --cc-btn-border-radius: var(--radius-md);
+    --cc-modal-border-radius: var(--radius-lg);
+  }
+
+  #cc-main a:focus-visible,
+  #cc-main button:focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+
+  /* stylelint-disable selector-class-pattern --
+     clases BEM del vendor (vanilla-cookieconsent) */
+  #cc-main .section__toggle:focus-visible ~ .toggle__icon {
+    box-shadow: 0 0 0 2px var(--brand);
+  }
+  /* stylelint-enable selector-class-pattern */
 
   .pb-safe {
     padding-bottom: max(0px, env(safe-area-inset-bottom));
