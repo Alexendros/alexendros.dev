@@ -9,7 +9,7 @@ import {
   type ContactDeps
 } from '../../lib/contactHandler';
 import { verifyTurnstileToken } from '../../lib/turnstile';
-import { CONTACT_IDEMPOTENCY_TTL_SECONDS } from '../../lib/contactHandler';
+import { createRedisContactIdempotencyStore } from '../../lib/contactIdempotency';
 import { createNotionLeadsStore } from '../../lib/calNotionClient';
 
 export const prerender = false;
@@ -64,18 +64,16 @@ function createProductionDeps(): ContactDeps {
     },
     // Meta CAPI Lead no se emite desde el formulario: solo hay consentimiento
     // de respuesta, no de publicidad (CIERRE-21).
-    claimIdempotency: async (key) => {
-      const redis = getContactRedis();
-      const result = await redis.set(key, '1', {
-        nx: true,
-        ex: CONTACT_IDEMPOTENCY_TTL_SECONDS
-      });
-      return Boolean(result);
-    },
-    releaseIdempotency: async (key) => {
-      const redis = getContactRedis();
-      await redis.del(key);
-    },
+    idempotencyStore: createRedisContactIdempotencyStore({
+      get: async (key) => getContactRedis().get(key),
+      set: async (key, value, opts) => {
+        const redis = getContactRedis();
+        if (opts.nx) {
+          return redis.set(key, value, { nx: true, ex: opts.ex });
+        }
+        return redis.set(key, value, { ex: opts.ex });
+      }
+    }),
     saveLead: async ({ name, email, subject, message }) => {
       const token = import.meta.env.NOTION_TOKEN;
       const dataSourceId =

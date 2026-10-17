@@ -24,10 +24,12 @@ Astro 7.3 hybrid + islas React (`ContactForm` con `client:load`, CMP `CookieBann
 
 ## APIs
 
-- `POST /api/contact` — Zod, honeypot, rate-limit Upstash, Proton SMTP, Turnstile si hay secreto. Fail-closed (503) sin Redis/SMTP.
+- `POST /api/contact` — Zod, honeypot, rate-limit Upstash, Proton SMTP, Turnstile si hay secreto. Fail-closed (503) sin Redis/SMTP. Idempotencia con estados `processing` | `accepted` | `retryable_failure` | `unknown` (contrato HTTP: 200 accepted/+replay, 202 processing + `Retry-After`, 409 conflict, 503 retryable_failure|unknown). Un claim ocupado no es éxito final.
 - `POST /api/cal/webhook` — HMAC `X-Cal-Signature-256`, upsert Notion Leads, Redis solo idempotencia.
 
 Variables: [`.env.example`](.env.example) y [docs/standards/protocols/env-vars.md](docs/standards/protocols/env-vars.md). Nunca en git.
+
+**Límite (contacto):** Redis (claim/estado) y Proton SMTP no forman una transacción. No se promete exactly-once: el transporte puede aceptar un correo sin persistir `accepted`, o el estado puede quedar `unknown` sin reenvío ciego.
 
 ## CI y release
 
