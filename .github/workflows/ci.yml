@@ -143,19 +143,15 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Download static artifact
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        with:
-          name: site-static
-          path: .vercel/output/static
-
+      # No reutilizar el artefacto de `build`: ese es producción-like (sin
+      # PUBLIC_* ni VERCEL). Playwright construye con E2E_TRACKER_ENV de
+      # playwright.config.ts para que PRIV-01c/01e/03b midan el wiring real.
       - run: npx playwright install --with-deps chromium
 
       - name: Playwright críticos (home, contacto, consent, fichas, SEO, proceso)
         run: pnpm exec playwright test tests/e2e/critical.spec.ts tests/e2e/products-structure.spec.ts tests/e2e/consent.spec.ts tests/e2e/seo-routes.spec.ts tests/e2e/process-page.spec.ts
         env:
           CI: true
-          SKIP_E2E_BUILD: '1'
 
       - name: Upload Playwright report (e2e-critical)
         if: always()
@@ -193,19 +189,13 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Download static artifact
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        with:
-          name: site-static
-          path: .vercel/output/static
-
+      # Mismo criterio que e2e-critical: build propio con E2E_TRACKER_ENV.
       - run: npx playwright install --with-deps chromium
 
       - name: Playwright (axe + contacto)
         run: pnpm exec playwright test
         env:
           CI: true
-          SKIP_E2E_BUILD: '1'
 
       - name: Upload Playwright report (e2e)
         if: always()
