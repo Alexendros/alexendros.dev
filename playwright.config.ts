@@ -30,6 +30,8 @@ export default defineConfig({
     env: E2E_TRACKER_ENV
   },
   use: {
-    baseURL: 'http://127.0.0.1:4321'
+    baseURL: 'http://127.0.0.1:4321',
+    trace: 'retain-on-failure',
+    screenshot: 'only-on-failure'
   }
 });
