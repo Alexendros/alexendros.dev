@@ -127,12 +127,20 @@ const path = Astro.url.pathname;
       }
     };
     menuButton.addEventListener('click', () => setMenuOpen(!isMenuOpen()));
-    mobileNav.addEventListener('keydown', (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+    // Escape cierra aunque el foco esté en el botón o fuera del <nav>
+    // (p. ej. tras Tab al chrome); el listener en solo mobileNav no bastaba.
+    // stopPropagation evita que el CMP (si sigue montado) robe el foco al cerrar.
+    document.addEventListener(
+      'keydown',
+      (event: KeyboardEvent) => {
+        if (event.key !== 'Escape' || !isMenuOpen()) return;
+        event.preventDefault();
+        event.stopPropagation();
         setMenuOpen(false);
-        menuButton.focus();
-      }
-    });
+        requestAnimationFrame(() => menuButton.focus());
+      },
+      true
+    );
     menuLinks.forEach((link) => link.addEventListener('click', () => setMenuOpen(false)));
   }
 
