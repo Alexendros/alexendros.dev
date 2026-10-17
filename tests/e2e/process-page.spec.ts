@@ -9,8 +9,11 @@ for (const width of [320, 390, 768, 1280]) {
     const response = await page.goto(route);
     expect(response?.status()).toBe(200);
     await expect(page.locator('h1')).toHaveCount(1);
-    await expect(page.locator('h1')).toHaveText(/Un proceso claro\.\s*Una entrega comprobable\./);
+    await expect(page.locator('h1')).toContainText('Un proceso claro.');
+    await expect(page.locator('h1')).toContainText('Una entrega comprobable.');
     await expect(page.locator('main a[href="/contacto"]').first()).toBeVisible();
+    await expect(page.locator('.delivery-page')).toHaveCount(0);
+    await expect(page.locator('.pagehead-rule')).toHaveCount(1);
     const overflows = await page.evaluate(
       () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1
     );
@@ -36,6 +39,7 @@ test('proceso: contenido esencial sin JavaScript', async ({ browser, baseURL }) 
   await expect(page.locator('h1')).toBeVisible();
   await expect(page.locator('#proceso')).toBeVisible();
   await expect(page.locator('main a[href="/contacto"]').first()).toBeVisible();
+  await expect(page.locator('.delivery-page')).toHaveCount(0);
   await context.close();
 });
 
@@ -61,8 +65,9 @@ test('proceso: ancla bajo la cabecera y sticky ausente', async ({ page }) => {
 
 test('proceso: FAQ abre con teclado', async ({ page }) => {
   await page.goto(route);
-  const firstSummary = page.locator('.delivery-faq-summary').first();
+  const firstFaq = page.locator('main details').first();
+  const firstSummary = firstFaq.locator('summary.focus-ring');
   await firstSummary.focus();
   await page.keyboard.press('Enter');
-  await expect(page.locator('details.delivery-stack-item').first()).toHaveAttribute('open', '');
+  await expect(firstFaq).toHaveAttribute('open', '');
 });

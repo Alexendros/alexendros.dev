@@ -7,11 +7,6 @@
    capas base/components/utilities ya ordenadas aquí. */
 @layer reset, tokens, base, components, utilities;
 
-/* Página /proceso-y-entrega: selectores delivery-* en @layer components.
-   Se importa aquí (no desde .astro) para que PostCSS/Tailwind vea las
-   directivas @tailwind del mismo árbol y no falle el build. */
-@import url('./process.css');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

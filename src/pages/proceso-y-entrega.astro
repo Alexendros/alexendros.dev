@@ -1,6 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Container from '../components/Container.astro';
+import Grid from '../components/Grid.astro';
 import Button from '../components/Button.astro';
+import Link from '../components/Link.astro';
 import { processPage } from '../content/process';
 
 const {
@@ -19,91 +22,101 @@ const {
 ---
 
 <Layout title={seo.title} description={seo.description}>
-  <div class="delivery-page">
-    <section class="delivery-section delivery-section-hero" aria-labelledby="delivery-hero-title">
-      <div class="delivery-split delivery-split-hero">
-        <div>
-          <h1 id="delivery-hero-title" class="delivery-title">
-            {hero.h1Lead}{' '}
-            <span class="delivery-title-accent">{hero.h1Accent}</span>
-          </h1>
-          <p class="delivery-lead">{hero.lead}</p>
-          <div class="delivery-actions">
-            <Button href={hero.primaryCta.href}>{hero.primaryCta.label}</Button>
-            <a class="delivery-link" href={hero.secondaryCta.href}>{hero.secondaryCta.label}</a>
-          </div>
+  <Container class="py-16 md:py-24">
+    <div class="grid gap-10 md:grid-cols-[1.35fr_0.85fr] md:items-start">
+      <div>
+        <h1 id="delivery-hero-title" class="text-4xl font-bold max-w-3xl">
+          {hero.h1Lead}{' '}
+          <span class="text-primary">{hero.h1Accent}</span>
+        </h1>
+        <div class="pagehead-rule mt-4 h-px bg-border" aria-hidden="true"></div>
+        <p class="text-muted mt-3 max-w-2xl">{hero.lead}</p>
+        <div class="mt-8 flex flex-wrap items-center gap-5">
+          <Button href={hero.primaryCta.href}>{hero.primaryCta.label}</Button>
+          <Link href={hero.secondaryCta.href} variant="inline">{hero.secondaryCta.label}</Link>
         </div>
-        <aside class="delivery-panel" aria-labelledby="delivery-summary-title">
-          <h2 id="delivery-summary-title" class="delivery-subheading">{hero.summaryTitle}</h2>
-          <ul class="delivery-stack">
-            {hero.agreementPoints.map((point) => <li class="delivery-stack-item">{point}</li>)}
-          </ul>
-        </aside>
       </div>
-    </section>
+      <aside
+        class="border border-border rounded-lg p-5 bg-card"
+        aria-labelledby="delivery-summary-title"
+      >
+        <h2 id="delivery-summary-title" class="font-bold text-sm">{hero.summaryTitle}</h2>
+        <ul class="mt-3 list-disc pl-5 text-sm text-muted space-y-1">
+          {hero.agreementPoints.map((point) => <li>{point}</li>)}
+        </ul>
+      </aside>
+    </div>
 
-    <section id="proceso" class="delivery-section" aria-labelledby="delivery-process-heading">
-      <header class="delivery-header">
-        <h2 id="delivery-process-heading" class="delivery-heading">{processSection.heading}</h2>
-        <p class="delivery-muted">{processSection.intro}</p>
-      </header>
-      <ol class="delivery-grid delivery-grid-steps">
+    <section
+      id="proceso"
+      class="mt-16 scroll-mt-[calc(var(--header-h)+var(--space-6))]"
+      aria-labelledby="delivery-process-heading"
+    >
+      <h2 id="delivery-process-heading" class="text-2xl font-bold max-w-2xl">
+        {processSection.heading}
+      </h2>
+      <p class="text-sm text-muted mt-2 max-w-2xl">{processSection.intro}</p>
+      <Grid as="ol" gap="6" class="mt-8 md:grid-cols-2 lg:grid-cols-4 list-none p-0">
         {
           steps.map((step, index) => (
-            <li class="delivery-item delivery-item-ruled">
-              <span class="delivery-number" aria-hidden="true">
+            <li class="min-w-0 border-t-2 border-primary pt-5">
+              <span class="block font-mono text-sm text-primary" aria-hidden="true">
                 {String(index + 1).padStart(2, '0')}
               </span>
-              <h3 class="delivery-subheading">{step.title}</h3>
-              <p class="delivery-muted">{step.description}</p>
-              <p class="delivery-note">
+              <h3 class="font-bold text-lg mt-2">{step.title}</h3>
+              <p class="mt-3 text-sm text-muted">{step.description}</p>
+              <p class="mt-4 text-sm">
                 <strong>Resultado:</strong> {step.output}
               </p>
             </li>
           ))
         }
-      </ol>
+      </Grid>
     </section>
 
-    <section class="delivery-section" aria-labelledby="delivery-quality-heading">
-      <header class="delivery-header">
-        <h2 id="delivery-quality-heading" class="delivery-heading">{qualitySection.heading}</h2>
-        <p class="delivery-muted">{qualitySection.intro}</p>
-      </header>
-      <div class="delivery-grid delivery-grid-cards">
+    <section class="mt-16" aria-labelledby="delivery-quality-heading">
+      <h2 id="delivery-quality-heading" class="text-2xl font-bold max-w-2xl">
+        {qualitySection.heading}
+      </h2>
+      <p class="text-sm text-muted mt-2 max-w-2xl">{qualitySection.intro}</p>
+      <Grid gap="6" class="mt-8 md:grid-cols-2">
         {
           criteria.map((criterion) => (
-            <article class="delivery-panel">
-              <h3 class="delivery-subheading">{criterion.title}</h3>
-              <p class="delivery-muted">{criterion.benefit}</p>
-              <p class="delivery-note">
+            <article class="border border-border rounded-lg p-5 bg-card h-full">
+              <h3 class="font-bold text-lg">{criterion.title}</h3>
+              <p class="mt-3 text-sm text-muted">{criterion.benefit}</p>
+              <p class="mt-4 pt-4 border-t border-border text-sm">
                 <strong>Comprobación:</strong> {criterion.verification}
               </p>
             </article>
           ))
         }
-      </div>
-      <aside class="delivery-panel delivery-panel-soft">
-        <h3 class="delivery-subheading">{evidence.heading}</h3>
-        <p class="delivery-muted">{evidence.body}</p>
-        <p>
-          <a class="delivery-link" href={evidence.linkHref}>{evidence.linkLabel}</a>
+      </Grid>
+      <aside class="mt-8 border border-border rounded-lg p-5 bg-[var(--bg-subtle)]">
+        <h3 class="font-bold text-sm">{evidence.heading}</h3>
+        <p class="mt-2 text-sm text-muted">{evidence.body}</p>
+        <p class="mt-3">
+          <Link href={evidence.linkHref} variant="arrow" class="text-sm">
+            {evidence.linkLabel}
+          </Link>
         </p>
       </aside>
     </section>
 
-    <section class="delivery-section" aria-labelledby="delivery-terms-heading">
-      <div class="delivery-split delivery-split-terms">
-        <header class="delivery-header">
-          <h2 id="delivery-terms-heading" class="delivery-heading">{termsSection.heading}</h2>
-          <p class="delivery-muted">{termsSection.intro}</p>
-        </header>
-        <ul class="delivery-stack">
+    <section class="mt-16" aria-labelledby="delivery-terms-heading">
+      <div class="grid gap-10 md:grid-cols-[0.9fr_1.1fr] md:items-start">
+        <div>
+          <h2 id="delivery-terms-heading" class="text-2xl font-bold">
+            {termsSection.heading}
+          </h2>
+          <p class="text-sm text-muted mt-2 max-w-2xl">{termsSection.intro}</p>
+        </div>
+        <ul class="space-y-6 list-none p-0 m-0">
           {
             terms.map((term) => (
-              <li class="delivery-stack-item">
-                <h3 class="delivery-subheading">{term.title}</h3>
-                <p class="delivery-muted">{term.description}</p>
+              <li>
+                <h3 class="font-bold">{term.title}</h3>
+                <p class="text-sm text-muted mt-1">{term.description}</p>
               </li>
             ))
           }
@@ -111,33 +124,32 @@ const {
       </div>
     </section>
 
-    <section class="delivery-section" aria-labelledby="delivery-faq-heading">
-      <header class="delivery-header">
-        <h2 id="delivery-faq-heading" class="delivery-heading">Las dudas importantes, resueltas</h2>
-      </header>
-      <div class="delivery-stack delivery-stack-narrow">
+    <section class="mt-16" aria-labelledby="delivery-faq-heading">
+      <h2 id="delivery-faq-heading" class="text-2xl font-bold">Las dudas importantes, resueltas</h2>
+      <div class="mt-8 max-w-3xl space-y-4">
         {
           faqs.map((faq) => (
-            <details class="delivery-stack-item">
-              <summary class="delivery-faq-summary">{faq.question}</summary>
-              <p class="delivery-muted">{faq.answer}</p>
+            <details class="border border-border rounded-lg p-5 bg-card">
+              <summary class="font-bold text-sm cursor-pointer focus-ring rounded">
+                {faq.question}
+              </summary>
+              <p class="mt-3 text-sm text-muted">{faq.answer}</p>
             </details>
           ))
         }
       </div>
     </section>
 
-    <section
-      class="delivery-section delivery-section-close"
-      aria-labelledby="delivery-close-heading"
-    >
-      <div class="delivery-panel delivery-panel-soft delivery-split delivery-split-close">
-        <header class="delivery-header">
-          <h2 id="delivery-close-heading" class="delivery-heading">{close.heading}</h2>
-          <p class="delivery-muted">{close.body}</p>
-        </header>
-        <Button href={close.cta.href}>{close.cta.label}</Button>
+    <section class="mt-16" aria-labelledby="delivery-close-heading">
+      <div
+        class="border border-border rounded-lg p-5 bg-[var(--bg-subtle)] flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div>
+          <h2 id="delivery-close-heading" class="text-2xl font-bold">{close.heading}</h2>
+          <p class="text-sm text-muted mt-2 max-w-2xl">{close.body}</p>
+        </div>
+        <Button href={close.cta.href} class="shrink-0">{close.cta.label}</Button>
       </div>
     </section>
-  </div>
+  </Container>
 </Layout>
