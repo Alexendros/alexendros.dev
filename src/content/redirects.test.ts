@@ -14,9 +14,13 @@ describe('redirecciones permanentes', () => {
 
     const expected: Array<[string, string]> = [
       ['/metodologia', '/proceso-y-entrega'],
+      ['/metodologia/', '/proceso-y-entrega'],
       ['/valores', '/proceso-y-entrega'],
+      ['/valores/', '/proceso-y-entrega'],
       ['/como-trabajo', '/proceso-y-entrega'],
+      ['/como-trabajo/', '/proceso-y-entrega'],
       ['/sobre-mi', '/proceso-y-entrega'],
+      ['/sobre-mi/', '/proceso-y-entrega'],
       ['/aviso-legal', '/identidad'],
       ['/afiliados', '/'],
       ['/servicios/produccion-sitios-web', '/servicios'],
@@ -32,7 +36,16 @@ describe('redirecciones permanentes', () => {
       expect(rule?.permanent).toBe(true);
     }
 
-    const retired = ['/metodologia', '/valores', '/como-trabajo', '/sobre-mi'];
+    const retired = [
+      '/metodologia',
+      '/metodologia/',
+      '/valores',
+      '/valores/',
+      '/como-trabajo',
+      '/como-trabajo/',
+      '/sobre-mi',
+      '/sobre-mi/'
+    ];
     for (const source of retired) {
       const matches = unconditional.filter((r) => r.source === source);
       expect(matches, `una sola regla para ${source}`).toHaveLength(1);
