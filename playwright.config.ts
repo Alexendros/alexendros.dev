@@ -10,6 +10,8 @@ export default defineConfig({
     timeout: 180_000
   },
   use: {
-    baseURL: 'http://127.0.0.1:4321'
+    baseURL: 'http://127.0.0.1:4321',
+    trace: 'retain-on-failure',
+    screenshot: 'only-on-failure'
   }
 });
