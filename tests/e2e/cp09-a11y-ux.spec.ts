@@ -69,7 +69,13 @@ test.describe('CP-09 teclado — menú móvil', () => {
     await expect(menuBtn).toHaveAttribute('aria-expanded', 'false');
     await expect(menuBtn).toHaveAttribute('aria-label', 'Abrir menú');
     await expect(mobileNav).toBeHidden();
-    await expect(menuBtn).toBeFocused();
+    // El CMP u otros handlers pueden mover el foco un frame; poll hasta
+    // que el botón del menú lo recupere (comportamiento a11y exigido).
+    await expect
+      .poll(async () =>
+        page.evaluate(() => document.activeElement?.hasAttribute('data-menu-button') ?? false)
+      )
+      .toBe(true);
   });
 });
 
