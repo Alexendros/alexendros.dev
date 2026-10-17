@@ -4,7 +4,7 @@
 Checkpoint: CP-00…CP-05 (alcance A+B) + gates locales parciales
 Estado: READY_LOCAL (escrituras externas NO autorizadas)
 SHA base: a3c7a689c55013573655ac53a887e37c74e42269 (origin/main)
-SHA candidato: (commit local de esta rama; ver git log)
+SHA candidato: de95e96797b82e2e6f4032a35b7280535874d1be
 Objetivo y alcance autorizado: paquetes A y B; rama cursor/contacto-medicion; sin push/PR
 ```
 
