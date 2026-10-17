@@ -21,7 +21,43 @@ function toCategories(cookie: CookieValue | undefined): ConsentCategory[] {
 
 export default function CookieBanner() {
   useEffect(() => {
-    CookieConsent.run({
+    let cancelled = false;
+    const observer = new MutationObserver(() => {
+      retargetPreferencesBtn();
+    });
+
+    const retargetPreferencesBtn = () => {
+      const buttons = document.querySelectorAll('#cc-main button');
+      const btn = [...buttons].find((el) =>
+        /configuración informada/i.test(el.textContent ?? '')
+      ) as HTMLButtonElement | undefined;
+      if (!btn || btn.dataset.ccPolicy === '1') return;
+      btn.dataset.ccPolicy = '1';
+      btn.setAttribute(
+        'aria-label',
+        'Ir a Cookies: explicación completa y panel para elegir categoría a categoría'
+      );
+      btn.addEventListener(
+        'click',
+        (event) => {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          window.location.assign('/cookies');
+        },
+        true
+      );
+    };
+
+    const openPreferences = (event: Event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const trigger = target.closest('[data-cc="show-preferencesModal"]');
+      if (!trigger) return;
+      event.preventDefault();
+      CookieConsent.showPreferences();
+    };
+
+    void CookieConsent.run({
       revision: consentVersion(),
       cookie: {
         name: CONSENT_COOKIE,
@@ -109,45 +145,17 @@ export default function CookieBanner() {
           }
         }
       }
+    }).then(() => {
+      if (cancelled) return;
+      document.documentElement.dataset.cmpReady = 'true';
+      retargetPreferencesBtn();
+      observer.observe(document.body, { childList: true, subtree: true });
+      document.addEventListener('click', openPreferences);
     });
 
-    const retargetPreferencesBtn = () => {
-      const buttons = document.querySelectorAll('#cc-main button');
-      const btn = [...buttons].find((el) =>
-        /configuración informada/i.test(el.textContent ?? '')
-      ) as HTMLButtonElement | undefined;
-      if (!btn || btn.dataset.ccPolicy === '1') return;
-      btn.dataset.ccPolicy = '1';
-      btn.setAttribute(
-        'aria-label',
-        'Ir a Cookies: explicación completa y panel para elegir categoría a categoría'
-      );
-      btn.addEventListener(
-        'click',
-        (event) => {
-          event.preventDefault();
-          event.stopImmediatePropagation();
-          window.location.assign('/cookies');
-        },
-        true
-      );
-    };
-
-    retargetPreferencesBtn();
-    const observer = new MutationObserver(retargetPreferencesBtn);
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    const openPreferences = (event: Event) => {
-      const target = event.target;
-      if (!(target instanceof Element)) return;
-      const trigger = target.closest('[data-cc="show-preferencesModal"]');
-      if (!trigger) return;
-      event.preventDefault();
-      CookieConsent.showPreferences();
-    };
-    document.addEventListener('click', openPreferences);
-
     return () => {
+      cancelled = true;
+      delete document.documentElement.dataset.cmpReady;
       observer.disconnect();
       document.removeEventListener('click', openPreferences);
     };
