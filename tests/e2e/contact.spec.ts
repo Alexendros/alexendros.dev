@@ -1,17 +1,17 @@
 import { test, expect, type Page, type Route } from '@playwright/test';
 
-async function fillWizardToConsent(page: Page) {
-  await page.getByRole('button', { name: /Continuar/ }).click(); // Motivo
-  await page.getByRole('textbox', { name: 'Tu nombre' }).fill('Test Cliente');
-  await page.getByRole('button', { name: /Continuar/ }).click();
-  await page.getByRole('button', { name: /Continuar/ }).click(); // Categoría
+async function fillContactForm(
+  page: Page,
+  opts: { name?: string; message?: string; email?: string } = {}
+) {
+  const name = opts.name ?? 'Test Cliente';
+  const message = opts.message ?? 'Necesito información sobre el informe comercial.';
+  const email = opts.email ?? 'test@example.com';
+  await page.locator('#contact-reason').selectOption('informacionCliente');
+  await page.getByLabel('Mensaje*').fill(message);
+  await page.getByLabel('Nombre*').fill(name);
   await page.getByRole('radio', { name: 'Correo electrónico' }).check();
-  await page.getByLabel('Correo electrónico*').fill('test@example.com');
-  await page.getByRole('button', { name: /Continuar/ }).click();
-  await page
-    .getByRole('textbox', { name: 'Tu petición' })
-    .fill('Necesito información sobre el informe comercial.');
-  await page.getByRole('button', { name: /Continuar/ }).click();
+  await page.getByLabel('Correo electrónico*').fill(email);
   await page.getByLabel(/Acepto/).check();
 }
 
@@ -45,22 +45,15 @@ test('F04: contacto valida canal y envía', async ({ page }) => {
   await page.goto('/contacto');
   await expect(page.getByRole('heading', { name: 'Formulario de contacto' })).toBeVisible();
 
-  await page.getByRole('button', { name: /Continuar/ }).click(); // Motivo
-  await page.getByRole('textbox', { name: 'Tu nombre' }).fill('A');
-  await page.getByRole('button', { name: /Continuar/ }).click();
-  await expect(page.getByRole('alert')).toBeVisible();
-
-  await page.getByRole('textbox', { name: 'Tu nombre' }).fill('Test Cliente');
-  await page.getByRole('button', { name: /Continuar/ }).click();
-  await page.getByRole('button', { name: /Continuar/ }).click(); // Categoría
+  await page.getByLabel('Mensaje*').fill('Necesito información sobre el informe comercial.');
+  await page.getByLabel('Nombre*').fill('A');
   await page.getByRole('radio', { name: 'Correo electrónico' }).check();
   await page.getByLabel('Correo electrónico*').fill('test@example.com');
-  await page.getByRole('button', { name: /Continuar/ }).click();
-  await page
-    .getByRole('textbox', { name: 'Tu petición' })
-    .fill('Necesito información sobre el informe comercial.');
-  await page.getByRole('button', { name: /Continuar/ }).click();
   await page.getByLabel(/Acepto/).check();
+  await page.getByRole('button', { name: /Enviar/ }).click();
+  await expect(page.getByRole('alert')).toBeVisible();
+
+  await page.getByLabel('Nombre*').fill('Test Cliente');
   await page.getByRole('button', { name: /Enviar/ }).click();
   await expect(page.getByRole('status')).toContainText(/Mensaje enviado/i, { timeout: 10000 });
 });
@@ -77,12 +70,11 @@ test('F04: WhatsApp sin teléfono no envía', async ({ page }) => {
   });
 
   await page.goto('/contacto');
-  await page.getByRole('button', { name: /Continuar/ }).click();
-  await page.getByRole('textbox', { name: 'Tu nombre' }).fill('Test Cliente');
-  await page.getByRole('button', { name: /Continuar/ }).click();
-  await page.getByRole('button', { name: /Continuar/ }).click();
+  await page.getByLabel('Mensaje*').fill('Necesito información sobre el informe comercial.');
+  await page.getByLabel('Nombre*').fill('Test Cliente');
   await page.getByRole('radio', { name: 'WhatsApp' }).check();
-  await page.getByRole('button', { name: /Continuar/ }).click();
+  await page.getByLabel(/Acepto/).check();
+  await page.getByRole('button', { name: /Enviar/ }).click();
   await expect(page.getByRole('alert')).toBeVisible();
   expect(posted).toBe(false);
 });
@@ -106,33 +98,25 @@ test('contacto muestra canales horizontales y sin servicios de entrada', async (
 
 test('UI-01: hidratación no roba el foco', async ({ page }) => {
   await page.goto('/contacto');
-  await expect(page.getByRole('button', { name: /Continuar/ })).toBeEnabled({ timeout: 10000 });
+  await expect(page.getByRole('button', { name: /Enviar/ })).toBeEnabled({ timeout: 10000 });
   const active = await page.evaluate(() => {
     const el = document.activeElement;
     if (!el) return null;
     return { tag: el.tagName, id: el.id, text: el.textContent?.slice(0, 40) ?? '' };
   });
-  // No debe enfocarse el encabezado del paso al hidratar
   expect(active?.tag).not.toBe('H2');
 });
 
-test('UI-02: errores de paso con aria-invalid', async ({ page }) => {
+test('UI-02: errores de envío con aria-invalid', async ({ page }) => {
   await page.goto('/contacto');
-  await page.getByRole('button', { name: /Continuar/ }).click();
-  await page.getByRole('button', { name: /Continuar/ }).click(); // nombre vacío
-  const name = page.getByRole('textbox', { name: 'Tu nombre' });
+  await page.getByRole('button', { name: /Enviar/ }).click();
+  const name = page.getByLabel('Nombre*');
   await expect(name).toHaveAttribute('aria-invalid', 'true');
   await expect(page.getByRole('alert').or(page.locator('[id$="-name-error"]'))).toBeVisible();
 });
 
 test('UI-03: entityType enfoca contact-entity', async ({ page }) => {
   await page.goto('/contacto');
-  await page.getByRole('button', { name: /Continuar/ }).click();
-  await page.getByRole('textbox', { name: 'Tu nombre' }).fill('Test Cliente');
-  await page.getByRole('button', { name: /Continuar/ }).click();
-  // Forzar error de categoría vaciando vía evaluate (select siempre tiene valor);
-  // en su lugar validamos el mapa: al listar errores de schema forzados en canal.
-  // Comprobamos que el control existe con el id correcto.
   await expect(page.locator('#contact-entity')).toBeVisible();
   await page.locator('#contact-entity').focus();
   await expect(page.locator('#contact-entity')).toBeFocused();
@@ -147,13 +131,10 @@ test('UI-04: datos conservados tras 503', async ({ page }) => {
     });
   });
   await page.goto('/contacto');
-  await fillWizardToConsent(page);
+  await fillContactForm(page);
   await page.getByRole('button', { name: /Enviar/ }).click();
   await expect(page.getByRole('alert')).toContainText(/no disponible/i);
-  await page.getByRole('button', { name: /Atrás/ }).click();
-  await expect(page.getByRole('textbox', { name: 'Tu petición' })).toHaveValue(
-    /informe comercial/i
-  );
+  await expect(page.getByLabel('Mensaje*')).toHaveValue(/informe comercial/i);
 });
 
 test('UI-05: reintento conserva Idempotency-Key', async ({ page }) => {
@@ -164,7 +145,6 @@ test('UI-05: reintento conserva Idempotency-Key', async ({ page }) => {
     const key = route.request().headers()['idempotency-key'] ?? '';
     keys.push(key);
     if (calls === 1) {
-      // Primer intento: no confirma éxito (corte de red). La clave se conserva.
       await route.abort('connectionfailed');
       return;
     }
@@ -176,7 +156,7 @@ test('UI-05: reintento conserva Idempotency-Key', async ({ page }) => {
   });
 
   await page.goto('/contacto');
-  await fillWizardToConsent(page);
+  await fillContactForm(page);
   await page.getByRole('button', { name: /Enviar/ }).click();
   await expect(page.getByRole('alert')).toContainText(/No se pudo enviar|tarda más|no sabemos/i, {
     timeout: 10000
@@ -246,7 +226,7 @@ test('T-CON-07: 200 ok sin status accepted no es éxito', async ({ page }) => {
     });
   });
   await page.goto('/contacto');
-  await fillWizardToConsent(page);
+  await fillContactForm(page);
   await page.getByRole('button', { name: /Enviar/ }).click();
   await expect(page.getByRole('alert')).toBeVisible({ timeout: 10_000 });
   await expect(page.getByText(/Mensaje enviado/i)).toHaveCount(0);
@@ -268,7 +248,7 @@ test('T-CON-01b: accepted con replay true muestra éxito sin exigir segundo Lead
     });
   });
   await page.goto('/contacto');
-  await fillWizardToConsent(page);
+  await fillContactForm(page);
   await page.getByRole('button', { name: /Enviar/ }).click();
   await expect(page.getByRole('status')).toContainText(/Mensaje enviado/i, { timeout: 10_000 });
 });
@@ -326,7 +306,7 @@ test('UI-06: 202 no es éxito; 200 accepted sí; 409 comprensible', async ({ pag
   });
 
   await page.goto('/contacto');
-  await fillWizardToConsent(page);
+  await fillContactForm(page);
 
   await page.getByRole('button', { name: /Enviar/ }).click();
   await expect(page.getByRole('status')).toContainText(/procesando/i);
@@ -336,10 +316,9 @@ test('UI-06: 202 no es éxito; 200 accepted sí; 409 comprensible', async ({ pag
   await page.getByRole('button', { name: /Enviar/ }).click();
   await expect(page.getByRole('status')).toContainText(/Mensaje enviado/i);
 
-  // Nueva visita para conflicto (formulario ya en éxito)
   mode = 'conflict';
   await page.goto('/contacto');
-  await fillWizardToConsent(page);
+  await fillContactForm(page);
   await page.getByRole('button', { name: /Enviar/ }).click();
   await expect(page.getByRole('alert')).toContainText(/no coincide|envío anterior/i);
 });

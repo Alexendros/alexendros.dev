@@ -362,7 +362,7 @@ export const services: Service[] = [
     action: {
       kind: 'contact',
       label: 'Pedir propuesta de software',
-      href: '/contacto?motivo=propuestaComercial&servicio=software-a-medida',
+      href: '/contacto?motivo=propuestaComercial&origen=servicios&servicio=software-a-medida',
       newTab: false
     }
   }

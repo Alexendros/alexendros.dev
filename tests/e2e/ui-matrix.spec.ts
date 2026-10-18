@@ -133,19 +133,19 @@ test.describe('CP-08 matriz UI — overflow y apilado', () => {
     await expect(page.locator('#cc-main .cm')).toBeHidden({ timeout: 10_000 });
   });
 
-  test('320px contacto: contexto y mailto no desbordan; Continuar usable', async ({ page }) => {
+  test('320px contacto: contexto y mailto no desbordan; Enviar usable', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: VIEWPORT_HEIGHT });
     await page.goto('/contacto');
     await expect(page.locator('#contact-service')).toBeVisible({ timeout: 10_000 });
     await assertNoOverflow(page, '/contacto@320');
-    const continueBtn = page.getByRole('button', { name: /Continuar/ });
-    await expect(continueBtn).toBeEnabled();
-    const box = await continueBtn.boundingBox();
+    const sendBtn = page.getByRole('button', { name: /Enviar/ });
+    await expect(sendBtn).toBeEnabled();
+    const box = await sendBtn.boundingBox();
     expect(box).not.toBeNull();
     expect(box!.width).toBeGreaterThan(40);
     expect(box!.height).toBeGreaterThanOrEqual(36);
-    await continueBtn.click({ force: false });
-    await expect(page.getByRole('textbox', { name: 'Tu nombre' })).toBeVisible();
+    await sendBtn.click({ force: false });
+    await expect(page.getByLabel('Nombre*')).toBeVisible();
   });
 
   test('servicios 320: configurador y CTA Pedir propuesta sin overflow', async ({ page }) => {

@@ -39,8 +39,8 @@ test.describe('critical paths', () => {
   test('contacto muestra formulario usable', async ({ page }) => {
     await page.goto('/contacto');
     await expect(page.getByRole('heading', { name: 'Formulario de contacto' })).toBeVisible();
-    await expect(page.getByRole('combobox', { name: 'Motivo de la consulta' })).toBeVisible();
-    await expect(page.getByRole('button', { name: /Continuar/ })).toBeVisible();
+    await expect(page.getByLabel('Motivo*')).toBeVisible();
+    await expect(page.getByRole('button', { name: /Enviar/ })).toBeVisible();
   });
 
   test('sin consentimiento no hay trackers data-tracker', async ({ page }) => {

@@ -567,32 +567,20 @@ test('PRIV-04: el formulario no envía email, teléfono ni mensaje a tracking', 
   await expect.poll(async () => (await readConsentStorage(page))?.marketing).toBe(true);
 
   await page.goto('/contacto');
-  await page.getByRole('button', { name: /Continuar/ }).click();
-  await page.getByRole('textbox', { name: 'Tu nombre' }).fill('Cliente PII');
-  await page.getByRole('button', { name: /Continuar/ }).click();
-  await page.getByRole('button', { name: /Continuar/ }).click();
+  await page.getByLabel('Mensaje*').fill(markerMessage);
+  await page.getByLabel('Nombre*').fill('Cliente PII');
   await page.getByRole('radio', { name: 'WhatsApp' }).check();
   await page.getByLabel('Teléfono WhatsApp*').fill(markerPhone);
-  await page.getByRole('button', { name: /Continuar/ }).click();
-  await page.getByRole('textbox', { name: 'Tu petición' }).fill(markerMessage);
-  await page.getByRole('button', { name: /Continuar/ }).click();
-  // Paso consentimiento: también rellenar email si el wizard lo pide en canal correo;
-  // con WhatsApp el marcador de email se inyecta vía evaluate al payload de red no aplica.
   await page.getByLabel(/Acepto/).check();
   await page.getByRole('button', { name: /Enviar/ }).click();
   await expect(page.getByRole('status')).toContainText(/Mensaje enviado/i, { timeout: 10000 });
 
   // Segundo recorrido con correo para cubrir ese canal.
   await page.goto('/contacto');
-  await page.getByRole('button', { name: /Continuar/ }).click();
-  await page.getByRole('textbox', { name: 'Tu nombre' }).fill('Cliente PII Mail');
-  await page.getByRole('button', { name: /Continuar/ }).click();
-  await page.getByRole('button', { name: /Continuar/ }).click();
+  await page.getByLabel('Mensaje*').fill(markerMessage);
+  await page.getByLabel('Nombre*').fill('Cliente PII Mail');
   await page.getByRole('radio', { name: 'Correo electrónico' }).check();
   await page.getByLabel('Correo electrónico*').fill(markerEmail);
-  await page.getByRole('button', { name: /Continuar/ }).click();
-  await page.getByRole('textbox', { name: 'Tu petición' }).fill(markerMessage);
-  await page.getByRole('button', { name: /Continuar/ }).click();
   await page.getByLabel(/Acepto/).check();
   await page.getByRole('button', { name: /Enviar/ }).click();
   await expect(page.getByRole('status')).toContainText(/Mensaje enviado/i, { timeout: 10000 });

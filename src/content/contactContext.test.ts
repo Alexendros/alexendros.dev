@@ -15,8 +15,12 @@ describe('contactContext allowlists', () => {
     expect(normalizeProjectSlug('')).toBeUndefined();
   });
 
-  it('las opciones de servicio coinciden con el catálogo publicado', () => {
-    expect(contactServiceOptions.map((o) => o.slug)).toEqual([...PUBLISHED_SERVICE_SLUGS]);
+  it('las opciones incluyen Portal web y el catálogo publicado', () => {
+    expect(contactServiceOptions.map((o) => o.slug)).toEqual([
+      'portal-web',
+      ...PUBLISHED_SERVICE_SLUGS
+    ]);
+    expect(normalizeServiceSlug('portal-web')).toBe('portal-web');
     expect(PUBLISHED_PROJECT_SLUGS).toHaveLength(4);
   });
 });

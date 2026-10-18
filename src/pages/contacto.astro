@@ -5,7 +5,25 @@ import Container from '../components/Container.astro';
 import Link from '../components/Link.astro';
 import ContactForm from '../components/ContactForm';
 import { contact } from '../content/contact';
+import { normalizeProjectSlug, normalizeServiceSlug } from '../content/contactContext';
+import { normalizePortalModuleIds, serializePortalModuleIds } from '../content/pricing';
+import { contactOrigins, contactReasons, type ContactInput } from '../lib/contactSchema';
 import { site } from '../content/site';
+
+const params = Astro.url.searchParams;
+const motivoParam = params.get('motivo');
+const initialReason: ContactInput['reason'] =
+  motivoParam && (contactReasons as readonly string[]).includes(motivoParam)
+    ? (motivoParam as ContactInput['reason'])
+    : 'informacionCliente';
+const origenParam = params.get('origen');
+const initialOrigin: ContactInput['origin'] | '' =
+  origenParam && (contactOrigins as readonly string[]).includes(origenParam)
+    ? (origenParam as ContactInput['origin'])
+    : '';
+const initialServiceSlug = normalizeServiceSlug(params.get('servicio')) ?? '';
+const initialProjectSlug = normalizeProjectSlug(params.get('proyecto')) ?? '';
+const initialModules = serializePortalModuleIds(normalizePortalModuleIds(params.get('modulos')));
 ---
 
 <Layout
@@ -21,6 +39,11 @@ import { site } from '../content/site';
         successMessage={contact.messages.success}
         errorMessage={contact.messages.error}
         turnstileSiteKey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
+        initialReason={initialReason}
+        initialOrigin={initialOrigin}
+        initialServiceSlug={initialServiceSlug}
+        initialProjectSlug={initialProjectSlug}
+        initialModules={initialModules}
       />
     </div>
 

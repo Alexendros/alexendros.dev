@@ -8,7 +8,6 @@ import {
 import { normalizePortalModuleIds, serializePortalModuleIds } from '../content/pricing';
 import { track } from '../lib/tracking/events';
 import {
-  CONTACT_WIZARD_STEPS,
   contactChannels,
   contactOrigins,
   contactReasons,
@@ -18,10 +17,7 @@ import {
   parseContactBody,
   portalModuleDisplayNames,
   reasonLabels,
-  stepIndexForField,
-  validateContactStep,
   type ContactInput,
-  type ContactWizardStep,
   type FieldError
 } from '../lib/contactSchema';
 import TurnstileWidget from './TurnstileWidget';
@@ -30,6 +26,12 @@ type Props = {
   successMessage: string;
   errorMessage: string;
   turnstileSiteKey?: string;
+  /** Valores iniciales desde la URL (SSR); evita HTML con motivo por defecto. */
+  initialReason?: ContactInput['reason'];
+  initialOrigin?: ContactInput['origin'] | '';
+  initialServiceSlug?: string;
+  initialProjectSlug?: string;
+  initialModules?: string;
 };
 
 const SUBMIT_TIMEOUT_MS = 25_000;
@@ -49,14 +51,14 @@ const CONTROL_ID_BY_FIELD: Record<string, string> = {
 const inputClass =
   'focus-ring mt-1 w-full bg-bg border border-border-strong rounded-lg px-3 py-2 focus:outline-none';
 
-function reasonFromSearch(value: string | null): ContactInput['reason'] {
+function reasonFromSearch(value: string | null | undefined): ContactInput['reason'] {
   if (value && (contactReasons as readonly string[]).includes(value)) {
     return value as ContactInput['reason'];
   }
   return 'informacionCliente';
 }
 
-function originFromSearch(value: string | null): ContactInput['origin'] | '' {
+function originFromSearch(value: string | null | undefined): ContactInput['origin'] | '' {
   if (value && (contactOrigins as readonly string[]).includes(value)) {
     return value as ContactInput['origin'];
   }
@@ -91,12 +93,20 @@ function newIdempotencyKey(): string {
     : `contact-${Date.now()}`;
 }
 
-export default function ContactForm({ successMessage, errorMessage, turnstileSiteKey }: Props) {
+export default function ContactForm({
+  successMessage,
+  errorMessage,
+  turnstileSiteKey,
+  initialReason,
+  initialOrigin,
+  initialServiceSlug,
+  initialProjectSlug,
+  initialModules
+}: Props) {
   const formId = useId();
-  const stepHeadingRef = useRef<HTMLHeadingElement>(null);
+  const formHeadingRef = useRef<HTMLHeadingElement>(null);
   const successRef = useRef<HTMLParagraphElement>(null);
   const inFlightRef = useRef(false);
-  /** Un solo destino de foco pendiente tras el render (evita carrera paso/error). */
   const pendingFocusRef = useRef<string | null>(null);
   const idempotencyKeyRef = useRef<string | null>(null);
   const payloadKeyRef = useRef<string | null>(null);
@@ -113,40 +123,44 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
     | 'unknown'
   >('idle');
   const [fieldErrors, setFieldErrors] = useState<FieldError[]>([]);
-  const [stepIndex, setStepIndex] = useState(0);
   const [form, setForm] = useState({
     name: '',
     entityType: 'particular' as ContactInput['entityType'],
     channel: 'correo' as ContactInput['channel'],
     phone: '',
     email: '',
-    reason: 'informacionCliente' as ContactInput['reason'],
+    reason: reasonFromSearch(initialReason),
     message: '',
-    modules: '',
-    serviceSlug: '',
-    projectSlug: '',
-    origin: '' as ContactInput['origin'] | '',
+    modules: initialModules ?? '',
+    serviceSlug: initialServiceSlug ?? '',
+    projectSlug: initialProjectSlug ?? '',
+    origin: (initialOrigin ?? '') as ContactInput['origin'] | '',
     consent: false,
     honeypot: ''
   });
   const [turnstileToken, setTurnstileToken] = useState('');
   const [turnstileKey, setTurnstileKey] = useState(0);
-  const [hydrated, setHydrated] = useState(false);
   const [focusTick, setFocusTick] = useState(0);
-  /** Una aceptación lógica ya emitida (evita Lead duplicado en replay). */
   const successTrackedRef = useRef(false);
 
   useEffect(() => {
-    setHydrated(true);
     document.documentElement.setAttribute('data-contact-hydrated', 'true');
     document.getElementById('contact-nojs')?.setAttribute('hidden', '');
     const params = new URLSearchParams(window.location.search);
-    // Solo motivo, módulos, servicio, proyecto y origen allowlisted. precio/plazo se ignoran.
-    const reason = reasonFromSearch(params.get('motivo'));
-    const modules = serializePortalModuleIds(normalizePortalModuleIds(params.get('modulos')));
-    const serviceSlug = normalizeServiceSlug(params.get('servicio')) ?? '';
-    const projectSlug = normalizeProjectSlug(params.get('proyecto')) ?? '';
-    const origin = originFromSearch(params.get('origen'));
+    const reason = reasonFromSearch(params.get('motivo') ?? initialReason);
+    const modules =
+      serializePortalModuleIds(normalizePortalModuleIds(params.get('modulos'))) ||
+      initialModules ||
+      '';
+    const serviceSlug =
+      normalizeServiceSlug(params.get('servicio')) ??
+      normalizeServiceSlug(initialServiceSlug) ??
+      '';
+    const projectSlug =
+      normalizeProjectSlug(params.get('proyecto')) ??
+      normalizeProjectSlug(initialProjectSlug) ??
+      '';
+    const origin = originFromSearch(params.get('origen') ?? initialOrigin);
     setForm((prev) => ({
       ...prev,
       reason,
@@ -158,15 +172,13 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
     return () => {
       document.documentElement.removeAttribute('data-contact-hydrated');
     };
-  }, []);
+  }, [initialReason, initialOrigin, initialServiceSlug, initialProjectSlug, initialModules]);
 
   const moduleLabels = useMemo(
     () => portalModuleDisplayNames(form.modules || undefined),
     [form.modules]
   );
 
-  const step: ContactWizardStep = CONTACT_WIZARD_STEPS[stepIndex] ?? 'reason';
-  const isLast = stepIndex === CONTACT_WIZARD_STEPS.length - 1;
   const sending = status === 'loading';
 
   const resetTurnstile = () => {
@@ -179,15 +191,13 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
     setFocusTick((t) => t + 1);
   };
 
-  // Un solo aplicador de foco; no corre al hidratar sin destino pendiente.
   useEffect(() => {
-    if (!hydrated) return;
     const target = pendingFocusRef.current;
     if (!target) return;
     pendingFocusRef.current = null;
     requestAnimationFrame(() => {
-      if (target === 'step') {
-        stepHeadingRef.current?.focus();
+      if (target === 'form') {
+        formHeadingRef.current?.focus();
         return;
       }
       if (target === 'success') {
@@ -200,9 +210,9 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
         el.focus();
         return;
       }
-      stepHeadingRef.current?.focus();
+      formHeadingRef.current?.focus();
     });
-  }, [hydrated, stepIndex, fieldErrors, status, focusTick]);
+  }, [fieldErrors, status, focusTick]);
 
   useEffect(() => {
     if (status === 'ok') {
@@ -210,26 +220,6 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
       setFocusTick((t) => t + 1);
     }
   }, [status]);
-
-  const goNext = () => {
-    if (sending) return;
-    const errors = validateContactStep(step, form);
-    if (errors.length) {
-      setFieldErrors(errors);
-      queueFocus(errors[0]?.field ?? 'step');
-      return;
-    }
-    setFieldErrors([]);
-    setStepIndex((i) => Math.min(i + 1, CONTACT_WIZARD_STEPS.length - 1));
-    queueFocus('step');
-  };
-
-  const goBack = () => {
-    if (sending) return;
-    setFieldErrors([]);
-    setStepIndex((i) => Math.max(i - 1, 0));
-    queueFocus('step');
-  };
 
   const fieldDescribedBy = (field: string, err?: FieldError) => {
     if (!err) return undefined;
@@ -249,18 +239,8 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!isLast) {
-      goNext();
-      return;
-    }
     if (inFlightRef.current || sending) return;
 
-    const consentErrors = validateContactStep('consent', form);
-    if (consentErrors.length) {
-      setFieldErrors(consentErrors);
-      queueFocus('consent');
-      return;
-    }
     const payload = {
       name: form.name,
       entityType: form.entityType,
@@ -281,10 +261,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
     if (!parsed.success) {
       const errors = formatContactFieldErrors(parsed.error);
       setFieldErrors(errors);
-      if (errors[0]) {
-        setStepIndex(stepIndexForField(errors[0].field));
-        queueFocus(errors[0].field);
-      }
+      if (errors[0]) queueFocus(errors[0].field);
       return;
     }
     setFieldErrors([]);
@@ -320,7 +297,6 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
         return;
       }
       if (res.status === 202 || body.status === 'processing') {
-        // 202 es response.ok en fetch — no es éxito final
         setStatus('processing');
         resetTurnstile();
         return;
@@ -339,7 +315,6 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
         resetTurnstile();
         return;
       }
-      // Solo el contrato accepted cuenta como éxito; ok:true sin status no basta.
       if (res.status === 200 && body.status === 'accepted') {
         setStatus('ok');
         if (body.replay !== true && !successTrackedRef.current) {
@@ -353,7 +328,6 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
         resetTurnstile();
         return;
       }
-      // 2xx inesperado (p. ej. 201) sin contrato accepted
       setStatus('error');
       resetTurnstile();
     } catch (err) {
@@ -391,37 +365,18 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
   const messageErr = errorFor('message', fieldErrors);
   const consentErr = errorFor('consent', fieldErrors);
 
-  const stepTitles: Record<ContactWizardStep, string> = {
-    reason: 'Motivo de la consulta',
-    name: 'Tu nombre',
-    entity: 'Categoría',
-    channel: 'Canal de respuesta',
-    message: 'Tu petición',
-    consent: 'Consentimiento y envío'
-  };
-
   return (
-    <form onSubmit={submit} className="space-y-4" noValidate aria-busy={sending}>
-      {!hydrated ? (
-        <p className="text-sm text-muted" role="status">
-          Preparando el formulario…
-        </p>
-      ) : null}
-
-      <p className="text-xs font-mono text-muted">
-        Paso {stepIndex + 1} de {CONTACT_WIZARD_STEPS.length}
-      </p>
-
+    <form onSubmit={submit} className="relative space-y-4" noValidate aria-busy={sending}>
       <h2
-        id={`${formId}-step-title`}
-        ref={stepHeadingRef}
+        id={`${formId}-heading`}
+        ref={formHeadingRef}
         tabIndex={-1}
         className="focus-ring text-base font-bold focus:outline-none"
       >
-        {stepTitles[step]}
+        Tu petición
       </h2>
 
-      <div className="sr-only" aria-hidden="true">
+      <div className="honeypot" aria-hidden="true">
         <label htmlFor="contact-website">Sitio web</label>
         <input
           id="contact-website"
@@ -440,11 +395,200 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
         </p>
       ) : null}
 
+      <div>
+        <label htmlFor="contact-reason" className="text-sm">
+          Motivo*
+        </label>
+        <select
+          id="contact-reason"
+          name="reason"
+          className={inputClass}
+          value={form.reason}
+          aria-required="true"
+          aria-invalid={reasonErr ? true : undefined}
+          aria-describedby={fieldDescribedBy('reason', reasonErr)}
+          disabled={sending}
+          onChange={(e) =>
+            setForm((f) => ({
+              ...f,
+              reason: e.target.value as ContactInput['reason']
+            }))
+          }
+        >
+          {contactReasons.map((r) => (
+            <option key={r} value={r}>
+              {reasonLabels[r]}
+            </option>
+          ))}
+        </select>
+        {reasonErr ? (
+          <p id={`${formId}-reason-error`} role="alert" className="mt-1 text-sm text-danger">
+            {reasonErr.cause}
+          </p>
+        ) : null}
+      </div>
+
+      <div>
+        <label htmlFor="contact-message" className="text-sm">
+          Mensaje*
+        </label>
+        <textarea
+          id="contact-message"
+          name="message"
+          rows={5}
+          className={inputClass}
+          value={form.message}
+          aria-required="true"
+          aria-invalid={messageErr ? true : undefined}
+          aria-describedby={fieldDescribedBy('message', messageErr)}
+          disabled={sending}
+          onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
+          placeholder="Describe qué necesitas o qué quieres preguntar."
+        />
+        {messageErr ? (
+          <p id={`${formId}-message-error`} role="alert" className="mt-1 text-sm text-danger">
+            {messageErr.cause}
+          </p>
+        ) : null}
+      </div>
+
+      <div>
+        <label htmlFor="contact-name" className="text-sm">
+          Nombre*
+        </label>
+        <input
+          id="contact-name"
+          name="name"
+          autoComplete="name"
+          className={inputClass}
+          value={form.name}
+          aria-required="true"
+          aria-invalid={nameErr ? true : undefined}
+          aria-describedby={fieldDescribedBy('name', nameErr)}
+          disabled={sending}
+          onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+        />
+        {nameErr ? (
+          <p id={`${formId}-name-error`} role="alert" className="mt-1 text-sm text-danger">
+            {nameErr.cause}
+          </p>
+        ) : null}
+      </div>
+
+      <fieldset
+        id="contact-channel"
+        disabled={sending}
+        aria-invalid={channelErr ? true : undefined}
+        aria-describedby={fieldDescribedBy('channel', channelErr)}
+        tabIndex={-1}
+        className="focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+      >
+        <legend className="text-sm">Preferencia de respuesta*</legend>
+        <div className="mt-2 flex flex-wrap gap-4">
+          {contactChannels.map((ch) => (
+            <label key={ch} className="inline-flex items-center gap-2 text-sm">
+              <input
+                type="radio"
+                name="channel"
+                value={ch}
+                checked={form.channel === ch}
+                onChange={() => setForm((f) => ({ ...f, channel: ch }))}
+              />
+              {ch === 'whatsapp' ? 'WhatsApp' : 'Correo electrónico'}
+            </label>
+          ))}
+        </div>
+        {channelErr ? (
+          <p id={`${formId}-channel-error`} role="alert" className="mt-1 text-sm text-danger">
+            {channelErr.cause}
+          </p>
+        ) : null}
+      </fieldset>
+
+      {form.channel === 'whatsapp' && (
+        <div>
+          <label htmlFor="contact-phone" className="text-sm">
+            Teléfono WhatsApp*
+          </label>
+          <input
+            id="contact-phone"
+            name="phone"
+            type="tel"
+            autoComplete="tel"
+            className={inputClass}
+            value={form.phone}
+            aria-invalid={phoneErr ? true : undefined}
+            aria-describedby={fieldDescribedBy('phone', phoneErr)}
+            disabled={sending}
+            onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+          />
+          {phoneErr ? (
+            <p id={`${formId}-phone-error`} role="alert" className="mt-1 text-sm text-danger">
+              {phoneErr.cause}
+            </p>
+          ) : null}
+        </div>
+      )}
+      {form.channel === 'correo' && (
+        <div>
+          <label htmlFor="contact-email" className="text-sm">
+            Correo electrónico*
+          </label>
+          <input
+            id="contact-email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            className={inputClass}
+            value={form.email}
+            aria-invalid={emailErr ? true : undefined}
+            aria-describedby={fieldDescribedBy('email', emailErr)}
+            disabled={sending}
+            onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+          />
+          {emailErr ? (
+            <p id={`${formId}-email-error`} role="alert" className="mt-1 text-sm text-danger">
+              {emailErr.cause}
+            </p>
+          ) : null}
+        </div>
+      )}
+
       <div className="space-y-3 rounded-lg border border-border bg-card p-3 text-sm">
         <p className="text-xs text-muted">
-          Contexto de la consulta (opcional). Puedes cambiarlo o dejarlo vacío. No altera precio ni
-          condiciones.
+          Opcional. Puedes dejarlo vacío; no altera precio ni condiciones.
         </p>
+        <div>
+          <label htmlFor="contact-entity" className="text-sm">
+            Categoría
+          </label>
+          <select
+            id="contact-entity"
+            name="entityType"
+            className={inputClass}
+            value={form.entityType}
+            aria-invalid={entityErr ? true : undefined}
+            aria-describedby={fieldDescribedBy('entityType', entityErr)}
+            disabled={sending}
+            onChange={(e) =>
+              setForm((f) => ({
+                ...f,
+                entityType: e.target.value as ContactInput['entityType']
+              }))
+            }
+          >
+            {entityTypes.map((t) => (
+              <option key={t} value={t}>
+                {entityLabels[t]}
+              </option>
+            ))}
+          </select>
+          {entityErr ? (
+            <p id={`${formId}-entityType-error`} role="alert" className="mt-1 text-sm text-danger">
+              {entityErr.cause}
+            </p>
+          ) : null}
+        </div>
         <div>
           <label htmlFor="contact-service" className="text-sm">
             Servicio de referencia
@@ -489,237 +633,38 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
         </div>
       </div>
 
-      {step === 'reason' && (
-        <div>
-          <select
-            id="contact-reason"
-            name="reason"
-            className={inputClass}
-            value={form.reason}
-            aria-labelledby={`${formId}-step-title`}
-            aria-required="true"
-            aria-invalid={reasonErr ? true : undefined}
-            aria-describedby={fieldDescribedBy('reason', reasonErr)}
-            disabled={sending}
-            onChange={(e) =>
-              setForm((f) => ({
-                ...f,
-                reason: e.target.value as ContactInput['reason']
-              }))
-            }
-          >
-            {contactReasons.map((r) => (
-              <option key={r} value={r}>
-                {reasonLabels[r]}
-              </option>
-            ))}
-          </select>
-          {reasonErr ? (
-            <p id={`${formId}-reason-error`} role="alert" className="mt-1 text-sm text-danger">
-              {reasonErr.cause}
-            </p>
-          ) : null}
-        </div>
-      )}
-
-      {step === 'name' && (
-        <div>
-          <input
-            id="contact-name"
-            name="name"
-            autoComplete="name"
-            className={inputClass}
-            value={form.name}
-            aria-labelledby={`${formId}-step-title`}
-            aria-required="true"
-            aria-invalid={nameErr ? true : undefined}
-            aria-describedby={fieldDescribedBy('name', nameErr)}
-            disabled={sending}
-            onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-          />
-          {nameErr ? (
-            <p id={`${formId}-name-error`} role="alert" className="mt-1 text-sm text-danger">
-              {nameErr.cause}
-            </p>
-          ) : null}
-        </div>
-      )}
-
-      {step === 'entity' && (
-        <div>
-          <select
-            id="contact-entity"
-            name="entityType"
-            className={inputClass}
-            value={form.entityType}
-            aria-labelledby={`${formId}-step-title`}
-            aria-required="true"
-            aria-invalid={entityErr ? true : undefined}
-            aria-describedby={fieldDescribedBy('entityType', entityErr)}
-            disabled={sending}
-            onChange={(e) =>
-              setForm((f) => ({
-                ...f,
-                entityType: e.target.value as ContactInput['entityType']
-              }))
-            }
-          >
-            {entityTypes.map((t) => (
-              <option key={t} value={t}>
-                {entityLabels[t]}
-              </option>
-            ))}
-          </select>
-          {entityErr ? (
-            <p id={`${formId}-entityType-error`} role="alert" className="mt-1 text-sm text-danger">
-              {entityErr.cause}
-            </p>
-          ) : null}
-        </div>
-      )}
-
-      {step === 'channel' && (
-        <>
-          <fieldset
-            id="contact-channel"
-            disabled={sending}
-            aria-invalid={channelErr ? true : undefined}
-            aria-describedby={fieldDescribedBy('channel', channelErr)}
-            tabIndex={-1}
-            className="focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-          >
-            <legend className="text-sm">Canal de preferencia para respuesta*</legend>
-            <div className="mt-2 flex flex-wrap gap-4">
-              {contactChannels.map((ch) => (
-                <label key={ch} className="inline-flex items-center gap-2 text-sm">
-                  <input
-                    type="radio"
-                    name="channel"
-                    value={ch}
-                    checked={form.channel === ch}
-                    onChange={() => setForm((f) => ({ ...f, channel: ch }))}
-                  />
-                  {ch === 'whatsapp' ? 'WhatsApp' : 'Correo electrónico'}
-                </label>
-              ))}
-            </div>
-            {channelErr ? (
-              <p id={`${formId}-channel-error`} role="alert" className="mt-1 text-sm text-danger">
-                {channelErr.cause}
-              </p>
-            ) : null}
-          </fieldset>
-          {form.channel === 'whatsapp' && (
-            <div>
-              <label htmlFor="contact-phone" className="text-sm">
-                Teléfono WhatsApp*
-              </label>
-              <input
-                id="contact-phone"
-                name="phone"
-                type="tel"
-                autoComplete="tel"
-                className={inputClass}
-                value={form.phone}
-                aria-invalid={phoneErr ? true : undefined}
-                aria-describedby={fieldDescribedBy('phone', phoneErr)}
-                disabled={sending}
-                onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-              />
-              {phoneErr ? (
-                <p id={`${formId}-phone-error`} role="alert" className="mt-1 text-sm text-danger">
-                  {phoneErr.cause}
-                </p>
-              ) : null}
-            </div>
-          )}
-          {form.channel === 'correo' && (
-            <div>
-              <label htmlFor="contact-email" className="text-sm">
-                Correo electrónico*
-              </label>
-              <input
-                id="contact-email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                className={inputClass}
-                value={form.email}
-                aria-invalid={emailErr ? true : undefined}
-                aria-describedby={fieldDescribedBy('email', emailErr)}
-                disabled={sending}
-                onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-              />
-              {emailErr ? (
-                <p id={`${formId}-email-error`} role="alert" className="mt-1 text-sm text-danger">
-                  {emailErr.cause}
-                </p>
-              ) : null}
-            </div>
-          )}
-        </>
-      )}
-
-      {step === 'message' && (
-        <div>
-          <textarea
-            id="contact-message"
-            name="message"
-            rows={5}
-            className={inputClass}
-            value={form.message}
-            aria-labelledby={`${formId}-step-title`}
-            aria-required="true"
-            aria-invalid={messageErr ? true : undefined}
-            aria-describedby={fieldDescribedBy('message', messageErr)}
-            disabled={sending}
-            onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-            placeholder="Describe qué necesitas o qué quieres preguntar."
-          />
-          {messageErr ? (
-            <p id={`${formId}-message-error`} role="alert" className="mt-1 text-sm text-danger">
-              {messageErr.cause}
-            </p>
-          ) : null}
-        </div>
-      )}
-
-      {step === 'consent' && (
-        <>
-          <label className="flex items-start gap-2 text-sm" htmlFor="contact-consent">
-            <input
-              id="contact-consent"
-              type="checkbox"
-              name="consent"
-              checked={form.consent}
-              aria-invalid={consentErr ? true : undefined}
-              aria-describedby={fieldDescribedBy('consent', consentErr)}
-              disabled={sending}
-              onChange={(e) => setForm((f) => ({ ...f, consent: e.target.checked }))}
-              className="mt-1"
-            />
-            <span>
-              Acepto el tratamiento de mis datos para responder a esta petición según la{' '}
-              <a href="/privacidad" className="underline decoration-dotted underline-offset-2">
-                política de privacidad
-              </a>
-              .
-            </span>
-          </label>
-          {consentErr ? (
-            <p id={`${formId}-consent-error`} role="alert" className="mt-1 text-sm text-danger">
-              {consentErr.cause}
-            </p>
-          ) : null}
-          {turnstileSiteKey ? (
-            <TurnstileWidget
-              key={turnstileKey}
-              siteKey={turnstileSiteKey}
-              onToken={setTurnstileToken}
-            />
-          ) : null}
-        </>
-      )}
+      <label className="flex items-start gap-2 text-sm" htmlFor="contact-consent">
+        <input
+          id="contact-consent"
+          type="checkbox"
+          name="consent"
+          checked={form.consent}
+          aria-invalid={consentErr ? true : undefined}
+          aria-describedby={fieldDescribedBy('consent', consentErr)}
+          disabled={sending}
+          onChange={(e) => setForm((f) => ({ ...f, consent: e.target.checked }))}
+          className="mt-1"
+        />
+        <span>
+          Acepto el tratamiento de mis datos para responder a esta petición según la{' '}
+          <a href="/privacidad" className="underline decoration-dotted underline-offset-2">
+            política de privacidad
+          </a>
+          .
+        </span>
+      </label>
+      {consentErr ? (
+        <p id={`${formId}-consent-error`} role="alert" className="mt-1 text-sm text-danger">
+          {consentErr.cause}
+        </p>
+      ) : null}
+      {turnstileSiteKey ? (
+        <TurnstileWidget
+          key={turnstileKey}
+          siteKey={turnstileSiteKey}
+          onToken={setTurnstileToken}
+        />
+      ) : null}
 
       {fieldErrors.length > 1 && (
         <div role="alert" className="space-y-1 text-sm text-danger">
@@ -730,10 +675,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
                 <button
                   type="button"
                   className="underline decoration-dotted underline-offset-2"
-                  onClick={() => {
-                    setStepIndex(stepIndexForField(err.field));
-                    queueFocus(err.field);
-                  }}
+                  onClick={() => queueFocus(err.field)}
                 >
                   {err.label}: {err.cause}
                 </button>
@@ -829,37 +771,13 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
         </p>
       ) : null}
 
-      <div className="flex flex-wrap gap-3">
-        {stepIndex > 0 && (
-          <button
-            type="button"
-            onClick={goBack}
-            disabled={sending}
-            className="btn focus-ring inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-border px-6 py-3 font-medium transition-colors hover:border-primary hover:text-primary disabled:opacity-60"
-          >
-            Atrás
-          </button>
-        )}
-        {!isLast && (
-          <button
-            type="button"
-            onClick={goNext}
-            disabled={sending || !hydrated}
-            className="btn focus-ring inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-ink transition-colors hover:bg-primaryHover disabled:opacity-60"
-          >
-            Continuar
-          </button>
-        )}
-        {isLast && (
-          <button
-            type="submit"
-            disabled={sending || !hydrated}
-            className="btn focus-ring inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-ink transition-colors hover:bg-primaryHover disabled:opacity-60"
-          >
-            {sending ? 'Enviando…' : 'Enviar'}
-          </button>
-        )}
-      </div>
+      <button
+        type="submit"
+        disabled={sending}
+        className="btn focus-ring inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-ink transition-colors hover:bg-primaryHover disabled:opacity-60"
+      >
+        {sending ? 'Enviando…' : 'Enviar'}
+      </button>
     </form>
   );
 }

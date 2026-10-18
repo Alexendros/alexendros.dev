@@ -937,6 +937,16 @@
     content: counter(step, decimal-leading-zero);
   }
 
+  /* Honeypot: fuera de pantalla (no display:none; algunos bots lo ignoran). */
+  .honeypot {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
   /* Linework azul tenue para el motivo esquemático (aria-hidden). El SVG
      aplica stroke-opacity 0.14 (y fade 0.35 en desktop): el color se da
      sólido para que el trazo se perciba como azul pálido sobre papel. */

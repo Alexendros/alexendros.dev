@@ -112,16 +112,14 @@ test.describe('CP-09 teclado — CMP', () => {
 });
 
 test.describe('CP-09 contacto — foco, errores y axe', () => {
-  test('Continuar sin datos marca aria-invalid y axe sin violaciones', async ({ page }) => {
+  test('Enviar sin datos marca aria-invalid y axe sin violaciones', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/contacto');
     await expect(page.locator('#contact-service')).toBeVisible({ timeout: 10_000 });
 
-    // Avanzar al paso de nombre (motivo tiene valor por defecto usable).
-    await page.getByRole('button', { name: /Continuar/ }).click();
-    const name = page.getByRole('textbox', { name: 'Tu nombre' });
+    const name = page.getByLabel('Nombre*');
     await expect(name).toBeVisible();
-    await page.getByRole('button', { name: /Continuar/ }).click();
+    await page.getByRole('button', { name: /Enviar/ }).click();
     await expect(name).toHaveAttribute('aria-invalid', 'true');
     await expect(name).toBeFocused();
 
@@ -189,19 +187,19 @@ test.describe('CP-09 reflow 320 y zoom 200%', () => {
     }
   });
 
-  test('zoom 200%: contacto mantiene H1 y Continuar usable', async ({ page }) => {
+  test('zoom 200%: contacto mantiene H1 y Enviar usable', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/contacto');
     await page.evaluate(() => {
       document.documentElement.style.zoom = '2';
     });
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    const continueBtn = page.getByRole('button', { name: /Continuar/ });
-    await expect(continueBtn).toBeVisible();
-    const box = await continueBtn.boundingBox();
+    const sendBtn = page.getByRole('button', { name: /Enviar/ });
+    await expect(sendBtn).toBeVisible();
+    const box = await sendBtn.boundingBox();
     expect(box).not.toBeNull();
     expect(box!.height).toBeGreaterThanOrEqual(24);
-    await continueBtn.click({ force: false });
+    await sendBtn.click({ force: false });
   });
 });
 
