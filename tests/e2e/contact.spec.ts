@@ -112,7 +112,7 @@ test('UI-02: errores de envío con aria-invalid', async ({ page }) => {
   await page.getByRole('button', { name: /Enviar/ }).click();
   const name = page.getByLabel('Nombre*');
   await expect(name).toHaveAttribute('aria-invalid', 'true');
-  await expect(page.getByRole('alert').or(page.locator('[id$="-name-error"]'))).toBeVisible();
+  await expect(page.locator('[id$="-name-error"]')).toBeVisible();
 });
 
 test('UI-03: entityType enfoca contact-entity', async ({ page }) => {
