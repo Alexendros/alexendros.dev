@@ -28,42 +28,42 @@ const commercialFixture = {
     payment: 'Pago único antes de empezar',
     timeline: '5 días laborables',
     delivery:
-      'Dossier con problemas, límites del análisis y plan priorizado de mejoras (sin implementación)',
+      'Informe técnico SEO, métricas de partida y plan priorizado de ajustes (sin implementación)',
     guarantee: 'Una ronda de aclaraciones en 10 días naturales',
     scope: [
-      'SEO técnico básico y señales de posicionamiento',
-      'Velocidad de carga y uso en móvil',
-      'Accesibilidad al navegarlo',
-      'Claridad de mensaje y camino a contacto',
-      'Priorización de problemas con límites explícitos'
+      'SEO técnico: indexación, estructura, metadatos y señales on-page',
+      'Rendimiento y uso en móvil ligados al posicionamiento',
+      'Claridad del camino a contacto desde resultados de búsqueda',
+      'Plan priorizado de ajustes con métricas de referencia',
+      'Límites explícitos del análisis (sin garantía de ranking)'
     ]
   },
-  'sesion-profesional': {
+  'cumplimiento-normativo': {
     mode: 'fixed' as const,
-    priceEuros: provisionalPrices.sesionProfesional,
-    payment:
-      'Pago al reservar en Cal.com (importe orientativo). 50 % de descuento si aplicas el plan de una inspección (360º o vulnerabilidades)',
-    timeline: '60 minutos',
-    delivery: 'Siguientes pasos por escrito en 1 día laborable',
-    guarantee: 'Resumen entregado en 1 día laborable tras la sesión',
-    scope: [
-      'Conversación de 60 minutos',
-      'Revisión orientada de un problema concreto',
-      'Resumen de siguientes pasos por escrito'
-    ]
-  },
-  'auditoria-normativa-ciberseguridad': {
-    mode: 'fixed' as const,
-    priceEuros: provisionalPrices.auditoria,
+    priceEuros: provisionalPrices.cumplimiento,
     payment: '50 % al encargo y 50 % a la entrega, sin recargo',
     timeline: '10 días laborables',
     delivery:
-      'Informe RGPD/LSSI y seguridad básica; cada problema con severidad y corrección recomendada',
+      'Informe de protección de datos, cookies y accesibilidad; cada problema con severidad y corrección recomendada',
     guarantee: 'Corrección de desviaciones del alcance escrito en 15 días naturales',
     scope: [
-      'RGPD y LSSI en la superficie pública',
-      'Seguridad básica (cabeceras, secretos expuestos, superficies evidentes)',
+      'Protección de datos en la superficie pública (RGPD y LSSI aplicables)',
+      'Políticas de cookies y consentimiento',
+      'Accesibilidad al navegarlo (revisión práctica, no certificación)',
       'Priorización por severidad'
+    ]
+  },
+  ciberseguridad: {
+    mode: 'fixed' as const,
+    priceEuros: provisionalPrices.ciberseguridad,
+    payment: '50 % al encargo y 50 % a la entrega, sin recargo',
+    timeline: '10 días laborables',
+    delivery: 'Informe de seguridad básica; cada problema con severidad y corrección recomendada',
+    guarantee: 'Corrección de desviaciones del alcance escrito en 15 días naturales',
+    scope: [
+      'Seguridad básica (cabeceras, secretos expuestos, superficies evidentes)',
+      'Priorización por severidad',
+      'Corrección recomendada por problema'
     ]
   },
   'software-a-medida': {
@@ -74,10 +74,10 @@ const commercialFixture = {
     delivery: 'Código, documentación y accesos de la fase acordada',
     guarantee: 'Si algo no cumple lo acordado en esa fase, lo corrijo sin coste.',
     scope: [
-      'Descubrimiento del problema y del alcance de la primera versión',
-      'Diseño y construcción de la primera versión usable',
+      'Alineación con el equipo y el alcance de la fase',
+      'Diseño y construcción de entregables acordados',
       'Mejoras por fases con precio y plazo escritos antes de cada una',
-      'Entrega de código, documentación y accesos al terminar de pagar'
+      'Entrega de código, documentación y accesos al terminar de pagar la fase'
     ]
   }
 } as const;
@@ -146,7 +146,7 @@ describe('CAT catálogo de servicios', () => {
       serviceActionSchema.safeParse({
         kind: 'booking',
         label: 'Reservar',
-        href: 'https://cal.com/alexendros/sesion-tecnica',
+        href: 'https://cal.com/alexendros/diagnostico',
         newTab: true
       }).success
     ).toBe(true);

@@ -1,8 +1,8 @@
 /** Importes provisionales. Un solo sitio para sustituirlos cuando se fijen. */
 export const provisionalPrices = {
   informeComercial: 120,
-  sesionProfesional: 300,
-  auditoria: 200,
+  cumplimiento: 200,
+  ciberseguridad: 200,
   portalInicio: 495,
   tienda: 700,
   mensajeria: 200,

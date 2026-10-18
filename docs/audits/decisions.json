@@ -276,16 +276,31 @@
       "id": "0019",
       "sequence": 19,
       "timestamp": "2026-10-18T16:30:00Z",
-      "active": true,
+      "active": false,
       "title": "Proceso comercial, software a medida y páginas de confianza",
       "summary": "Reescribe /proceso-y-entrega con plazos y precios ya publicados; añade ficha software-a-medida sin cifra inventada; home con tres caminos; restaura /sobre-mi.",
       "recordType": "decision",
-      "status": "aceptada",
+      "status": "superseded",
       "supersedes": ["0014", "0016", "0017", "0018"],
-      "supersededBy": null,
+      "supersededBy": "0020",
       "context": "El plan comercial exige densidad baja, plazos y pago visibles en Cómo trabajo, una vía de software a medida y coherencia home/servicios/proyectos. 0014/0016 fijaban home solo-hero; 0017 limitaba a tres fichas; 0018 prohibía euros en proceso y redirigía /sobre-mi.",
       "decision": "Acotar 0018: /proceso-y-entrega puede mostrar euros y plazos solo donde pricing.ts y el catálogo ya los tienen; se mantienen nav Cómo trabajo y 308 de /como-trabajo, /metodologia y /valores. Restaurar /sobre-mi como página (profile.ts) y retirar su 308. Acotar 0014/0016: home conserva H1 estable y CTAs del hero; añade tres caminos, tira Cómo trabajo y un caso. Acotar 0017: cuarta ficha /servicios/software-a-medida sin precio «desde» inventado (precio por fase en la propuesta); portal sigue solo en el configurador. Precios visibles como + IVA y una sola nota de provisionalidad. origen allowlist en contacto junto a motivo.",
-      "consequences": "Tests de proceso, products-structure (cuatro slugs), home-grid-nav, redirects y sitemap se actualizan. OG propia de proceso y de la ficha nueva. Artículos estáticos y README alineados al catálogo."
+      "consequences": "Superseded por 0020 (catálogo). Nav Cómo trabajo, home con caminos, /sobre-mi y software por fases siguen vigentes vía 0020."
+    },
+    {
+      "id": "0020",
+      "sequence": 20,
+      "timestamp": "2026-10-18T18:20:00Z",
+      "active": true,
+      "title": "Hoja de Servicios: catálogo SEO, cumplimiento, ciberseguridad y colaboración",
+      "summary": "Retira sesión profesional; parte la inspección en cumplimiento y ciberseguridad; renombra informe y software; índice como Hoja de Servicios.",
+      "recordType": "decision",
+      "status": "aceptada",
+      "supersedes": ["0019"],
+      "supersededBy": null,
+      "context": "El catálogo de 0019 mezclaba normativa y vulnerabilidades, ofrecía sesión de pago como ficha y titulaba el informe como 360º sin foco SEO comercial.",
+      "decision": "Publicar cuatro fichas: informe-comercial (Posicionamiento comercial en buscadores), cumplimiento-normativo, ciberseguridad y software-a-medida (Colaboración en proyectos de software). Retirar sesion-profesional con 308 a /servicios; redirigir auditoria-normativa-ciberseguridad a cumplimiento-normativo. Índice H1 «Hoja de Servicios». Portal solo en configurador. Conservar de 0019: nav Cómo trabajo, home con tres caminos, /sobre-mi, euros/plazos en proceso donde ya existan, y software sin precio «desde» inventado.",
+      "consequences": "Allowlist de contacto, products-structure, OG por slug, README y redirects actualizados. Contacto ya no ofrece reserva Cal de sesión profesional."
     }
   ]
 }

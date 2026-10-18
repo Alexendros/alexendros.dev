@@ -121,8 +121,8 @@ export const processPage = {
     },
     {
       id: 'software',
-      title: 'Software a medida',
-      body: 'Una herramienta por fases, empezando por una versión pequeña.',
+      title: 'Colaboración en software',
+      body: 'Me integro en proyectos grandes con el equipo, por fases.',
       priceLabel: 'Precio por fase en la propuesta',
       href: `/servicios/software-a-medida?${ORIGIN}`,
       linkLabel: 'Ver cómo se plantea'
@@ -130,10 +130,10 @@ export const processPage = {
     {
       id: 'revision',
       title: 'Revisar tu web',
-      body: 'Te digo qué falla y por dónde empezar.',
+      body: 'Informe SEO con métricas y plan de ajustes.',
       priceLabel: `Desde ${formatEuro(provisionalPrices.informeComercial)} + IVA`,
       href: `/servicios/informe-comercial?${ORIGIN}`,
-      linkLabel: 'Ver Informe 360º'
+      linkLabel: 'Ver posicionamiento en buscadores'
     }
   ] satisfies ProcessPathCard[],
   featuredCase: {

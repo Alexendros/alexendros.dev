@@ -124,7 +124,7 @@ describe('parseContactBody R04', () => {
     expect(parsed.data.projectSlug).toBe('front-valencia');
     expect(parsed.data.origin).toBe('proceso');
     const msg = buildContactMessage(parsed.data);
-    expect(msg).toMatch(/Informe 360/);
+    expect(msg).toMatch(/Posicionamiento comercial en buscadores/);
     expect(msg).toMatch(/Front Valencia/);
     expect(msg).toMatch(/Origen de página: proceso/);
 

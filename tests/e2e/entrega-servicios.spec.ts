@@ -4,20 +4,19 @@ import { formatEuro, portalTotalWithModules, provisionalPrices } from '../../src
 test.describe('F02 F03 F10 servicios y configurador', () => {
   test('F02: /servicios muestra las cuatro fichas y cada importe del módulo', async ({ page }) => {
     await page.goto('/servicios');
-    await expect(page.getByRole('heading', { name: 'Informe 360º' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Sesión profesional' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Hoja de Servicios' })).toBeVisible();
     await expect(
-      page.getByRole('heading', {
-        name: 'Inspección de cumplimiento normativo y vulnerabilidades'
-      })
+      page.getByRole('heading', { name: 'Posicionamiento comercial en buscadores' })
     ).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Cumplimiento normativo' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Ciberseguridad' })).toBeVisible();
     await expect(
-      page.getByRole('heading', { name: 'Producto de software a medida' })
+      page.getByRole('heading', { name: 'Colaboración en proyectos de software' })
     ).toBeVisible();
     const body = await page.locator('main').innerText();
     expect(body).toContain(formatEuro(provisionalPrices.informeComercial));
-    expect(body).toContain(formatEuro(provisionalPrices.sesionProfesional));
-    expect(body).toContain(formatEuro(provisionalPrices.auditoria));
+    expect(body).toContain(formatEuro(provisionalPrices.cumplimiento));
+    expect(body).toContain(formatEuro(provisionalPrices.ciberseguridad));
     expect(body).toContain(formatEuro(provisionalPrices.portalInicio));
     expect(body).toContain(formatEuro(provisionalPrices.tienda));
     expect(body).toContain(formatEuro(provisionalPrices.mensajeria));

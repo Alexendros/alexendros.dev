@@ -24,7 +24,11 @@ describe('redirecciones permanentes', () => {
       ['/servicios/produccion-sitios-web', '/servicios'],
       ['/servicios/auditorias', '/servicios/informe-comercial'],
       ['/servicios/consultoria-tecnologica', '/servicios'],
-      ['/servicios/landing-10-dias', '/servicios']
+      ['/servicios/landing-10-dias', '/servicios'],
+      ['/servicios/sesion-profesional', '/servicios'],
+      ['/servicios/sesion-profesional/', '/servicios'],
+      ['/servicios/auditoria-normativa-ciberseguridad', '/servicios/cumplimiento-normativo'],
+      ['/servicios/auditoria-normativa-ciberseguridad/', '/servicios/cumplimiento-normativo']
     ];
 
     for (const [source, destination] of expected) {

@@ -1,28 +1,15 @@
 import { z } from 'zod';
 import { formatEuro, provisionalPrices } from './pricing';
-import { calEventUrl } from '../lib/calBooking';
 
-export const bookingOfferSchema = z.discriminatedUnion('kind', [
-  z.object({
-    kind: z.literal('form'),
-    id: z.literal('informe-comercial'),
-    title: z.string().min(1),
-    priceLabel: z.string().min(1),
-    summary: z.string().min(1),
-    cta: z.string().min(1),
-    href: z.string().min(1)
-  }),
-  z.object({
-    kind: z.literal('cal'),
-    id: z.literal('sesion-profesional'),
-    calLink: z.string().regex(/^alexendros\/[a-z0-9-]+$/),
-    url: z.string().url(),
-    title: z.string().min(1),
-    priceLabel: z.string().min(1),
-    summary: z.string().min(1),
-    cta: z.string().min(1)
-  })
-]);
+export const bookingOfferSchema = z.object({
+  kind: z.literal('form'),
+  id: z.enum(['informe-comercial', 'cumplimiento-normativo', 'ciberseguridad']),
+  title: z.string().min(1),
+  priceLabel: z.string().min(1),
+  summary: z.string().min(1),
+  cta: z.string().min(1),
+  href: z.string().min(1)
+});
 
 export const contactChannelSchema = z.object({
   id: z.string().min(1),
@@ -41,7 +28,7 @@ export const contactSchema = z.object({
   bookings: z.object({
     heading: z.string().min(1),
     intro: z.string().min(1),
-    offers: z.array(bookingOfferSchema).length(2)
+    offers: z.array(bookingOfferSchema).min(1).max(3)
   })
 });
 
@@ -76,33 +63,50 @@ export const contact = contactSchema.parse({
   },
   bookings: {
     heading: 'Opciones de contacto',
-    intro: 'Informe 360º por formulario. Sesión profesional con reserva y pago en Cal.com.',
+    intro:
+      'Posicionamiento en buscadores, cumplimiento normativo y ciberseguridad se piden por formulario.',
     offers: [
       {
         kind: 'form',
         id: 'informe-comercial',
-        title: 'Informe 360º',
+        title: 'Posicionamiento comercial en buscadores',
         priceLabel: formatEuro(provisionalPrices.informeComercial),
         summary:
-          'Informe completo de tu website actual: posicionamiento, velocidad, accesibilidad y plan de mejoras.',
+          'Informe técnico SEO y plan de ajustes con métricas verificables para mejorar el posicionamiento.',
         cta: 'Rellenar formulario',
         href: '#escribir'
       },
       {
-        kind: 'cal',
-        id: 'sesion-profesional',
-        calLink: 'alexendros/sesion-tecnica',
-        url: calEventUrl('alexendros/sesion-tecnica'),
-        title: 'Sesión profesional',
-        priceLabel: formatEuro(provisionalPrices.sesionProfesional),
+        kind: 'form',
+        id: 'cumplimiento-normativo',
+        title: 'Cumplimiento normativo',
+        priceLabel: formatEuro(provisionalPrices.cumplimiento),
+        summary: 'Revisión de protección de datos, políticas de cookies y accesibilidad en tu web.',
+        cta: 'Rellenar formulario',
+        href: '#escribir'
+      },
+      {
+        kind: 'form',
+        id: 'ciberseguridad',
+        title: 'Ciberseguridad',
+        priceLabel: formatEuro(provisionalPrices.ciberseguridad),
         summary:
-          'Sesión de mejoras sobre tu página actual. 50 % de descuento si aplicas el plan de una inspección.',
-        cta: 'Reservar sesión profesional'
+          'Revisión de vulnerabilidades básicas con severidad y corrección recomendada por problema.',
+        cta: 'Rellenar formulario',
+        href: '#escribir'
       }
     ]
   }
 });
 
-export const publicBookingEvents = contact.bookings.offers.filter(
-  (o): o is Extract<(typeof contact.bookings.offers)[number], { kind: 'cal' }> => o.kind === 'cal'
-);
+/** Ya no hay ofertas Cal.com en la página de contacto; se conserva el tipo vacío. */
+export const publicBookingEvents: Array<{
+  kind: 'cal';
+  calLink: string;
+  url: string;
+  title: string;
+  priceLabel: string;
+  summary: string;
+  cta: string;
+  id: string;
+}> = [];

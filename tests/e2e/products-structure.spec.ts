@@ -37,8 +37,8 @@ test.describe('DET estructura común de fichas', () => {
   test('catálogo publicado: cuatro slugs sin portal-inicio', () => {
     expect(products.map((p) => p.slug)).toEqual([
       'informe-comercial',
-      'sesion-profesional',
-      'auditoria-normativa-ciberseguridad',
+      'cumplimiento-normativo',
+      'ciberseguridad',
       'software-a-medida'
     ]);
     expect(products.some((p) => p.slug === 'portal-inicio')).toBe(false);

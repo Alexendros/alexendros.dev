@@ -17,7 +17,7 @@ test('F01: home es hero estable + caminos + proceso + caso', async ({ page }) =>
 
   const h1 = page.getByRole('heading', {
     level: 1,
-    name: /Diseño y desarrollo de webs y software a medida/
+    name: /Webs y software a medida\. Y revisión de la tuya\./
   });
   await expect(h1).toBeVisible();
   await expect(page.getByText(/Tres caminos claros/)).toBeVisible();
@@ -45,4 +45,6 @@ test('F01: home es hero estable + caminos + proceso + caso', async ({ page }) =>
   await expect(page.getByRole('heading', { name: 'Cómo trabajo', exact: true })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Un caso', exact: true })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Ver el proceso completo' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Ver posicionamiento en buscadores' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Ver colaboración en software' })).toBeVisible();
 });
