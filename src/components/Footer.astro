@@ -96,7 +96,7 @@ const iconClass = 'shrink-0';
         <div class="font-medium mb-2">Navegación</div>
         <ul class="space-y-1 text-muted">
           {
-            site.nav.map((i) => (
+            [...site.nav, ...site.footerExtraNav].map((i) => (
               <li>
                 <Link href={i.href} variant="nav">
                   {i.label}

@@ -17,5 +17,7 @@ describe('navegación y pie públicos', () => {
     expect(site.social.email).toBe('mailto:contratacion@alexendros.dev');
     expect(site.footerNav.map((i) => i.label)).not.toContain('Afiliados');
     expect(site.footerNav.some((i) => i.href.includes('afiliados'))).toBe(false);
+    expect(site.footerNav.map((i) => i.label)).toEqual(['Identidad', 'Privacidad', 'Cookies']);
+    expect(site.footerExtraNav.map((i) => i.label)).toEqual(['Sobre mí', 'Contacto']);
   });
 });
