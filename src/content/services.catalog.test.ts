@@ -72,7 +72,7 @@ const commercialFixture = {
     payment: 'Se acuerda por fase en la propuesta (suele ser 50 % al empezar y 50 % a la entrega)',
     timeline: 'Por fases; cada una con su plazo escrito',
     delivery: 'Código, documentación y accesos de la fase acordada',
-    guarantee: 'Corrección de desviaciones del alcance escrito de esa fase',
+    guarantee: 'Si algo no cumple lo acordado en esa fase, lo corrijo sin coste.',
     scope: [
       'Descubrimiento del problema y del alcance de la primera versión',
       'Diseño y construcción de la primera versión usable',

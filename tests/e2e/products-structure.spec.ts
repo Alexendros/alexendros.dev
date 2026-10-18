@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { products } from '../../src/content/services';
 import { site } from '../../src/content/site';
 
-const sections = [
+const sectionsDefault = [
   'commercial',
   'audience',
   'problems',
@@ -14,7 +14,24 @@ const sections = [
   'technical'
 ] as const;
 
-const listSections = ['audience', 'problems', 'scope', 'deliverables', 'exclusions'] as const;
+const sectionsSoftware = [
+  'commercial',
+  'audience',
+  'process',
+  'deliverables',
+  'exclusions',
+  'next-step',
+  'technical'
+] as const;
+
+const listSectionsDefault = [
+  'audience',
+  'problems',
+  'scope',
+  'deliverables',
+  'exclusions'
+] as const;
+const listSectionsSoftware = ['audience', 'deliverables', 'exclusions'] as const;
 
 test.describe('DET estructura común de fichas', () => {
   test('catálogo publicado: cuatro slugs sin portal-inicio', () => {
@@ -32,6 +49,9 @@ test.describe('DET estructura común de fichas', () => {
       await page.goto(`/servicios/${product.slug}`);
       const detail = page.locator('[data-product-detail]');
       await expect(detail).toHaveAttribute('data-product-detail', product.slug);
+      const isSoftware = product.slug === 'software-a-medida';
+      const sections = isSoftware ? sectionsSoftware : sectionsDefault;
+      const listSections = isSoftware ? listSectionsSoftware : listSectionsDefault;
 
       // DET-02: un H1 y H2 comunes
       await expect(detail.getByRole('heading', { level: 1 })).toHaveText(product.title);

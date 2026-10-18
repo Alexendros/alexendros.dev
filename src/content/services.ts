@@ -345,7 +345,6 @@ export const services: Service[] = [
       'Caso de referencia: Zedazo (herramienta de contactos de código abierto).'
     ],
     exclusions: [
-      'No incluye un precio «desde» fijo en esta página',
       'No incluye mantenimiento continuo salvo acuerdo aparte',
       'No garantiza ventas ni adopción del producto'
     ],
@@ -357,7 +356,7 @@ export const services: Service[] = [
         'Se acuerda por fase en la propuesta (suele ser 50 % al empezar y 50 % a la entrega)',
       timeline: 'Por fases; cada una con su plazo escrito',
       delivery: 'Código, documentación y accesos de la fase acordada',
-      guarantee: 'Corrección de desviaciones del alcance escrito de esa fase'
+      guarantee: 'Si algo no cumple lo acordado en esa fase, lo corrijo sin coste.'
     },
     action: {
       kind: 'contact',
