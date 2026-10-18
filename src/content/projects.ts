@@ -51,7 +51,12 @@ export type ProjectAvailability = Project['availability'];
 export type ProjectWorkKind = Project['workKind'];
 export type ProjectProductType = Project['productType'];
 
-/** Etiquetas de disponibilidad: consulta ≠ transferencia ≠ hueco de agenda. */
+/**
+ * Disponibilidad habla de consulta o transferencia de la obra, no de hueco de
+ * agenda laboral. Los resultados listados son capacidades comprobadas o
+ * evidencias con permiso; no son testimonios inventados. (Nota editorial: no
+ * publicar este párrafo en la vista.)
+ */
 export const availabilityLabels: Record<ProjectAvailability, string> = {
   si: 'Disponible para consulta o encargo sobre esta obra',
   no: 'No transferible (no se vende ni cede)',
@@ -161,11 +166,10 @@ export const projects: Project[] = [
       'Pagos preparados para evitar cobros duplicados',
       'Sin depender de un CMS externo'
     ],
-    // Sin fuente/periodo/permiso de métricas de negocio: solo capacidades comprobadas.
     results: [
-      'Capacidad comprobada: presupuestos calculados al momento',
-      'Capacidad comprobada: pedidos con panel interno',
-      'Capacidad comprobada: cobro online con webhooks idempotentes'
+      'Presupuestos calculados al momento',
+      'Pedidos con panel interno',
+      'Cobro online con webhooks idempotentes'
     ],
     links: {
       prod: 'https://ecommerce-graficasnasve.vercel.app/',
@@ -211,11 +215,7 @@ export const projects: Project[] = [
       'Deduplicación configurable',
       'Código abierto'
     ],
-    results: [
-      'Capacidad comprobada: limpieza y deduplicación de agendas',
-      'Capacidad comprobada: exportación a formatos útiles',
-      'Código abierto bajo licencia MIT (repositorio público)'
-    ],
+    results: ['Binario de ~3 MB, sin instalación pesada', 'Licencia MIT', 'Código público'],
     links: { github: 'https://github.com/Soluciones-Alexendros/zedazo' },
     published: '2024-01-10',
     featured: false,
@@ -255,9 +255,9 @@ export const projects: Project[] = [
       'Contenido en Git'
     ],
     results: [
-      'Capacidad comprobada: lectura clara y contraste cuidado',
-      'Capacidad comprobada: sin trackers de publicidad',
-      'Capacidad comprobada: contenido versionado en Git'
+      'Lectura clara y contraste cuidado',
+      'Sin trackers de publicidad',
+      'Contenido versionado en Git'
     ],
     links: {
       prod: 'https://alexendros.me',
