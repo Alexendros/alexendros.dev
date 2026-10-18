@@ -93,6 +93,20 @@ await writeOg(
   'Webs claras y útiles',
   'Para profesionales y pequeños negocios'
 );
+await writeOg('home.png', 'ALEXENDROS.DEV', 'Webs y software a medida', 'Y revisión de la tuya');
+await writeOg('servicios.png', 'SERVICIOS', 'Qué puedo hacer por ti', 'Web, software y revisión');
+await writeOg(
+  'proyectos.png',
+  'CASOS',
+  'Trabajos de principio a fin',
+  'Webs, tiendas y herramientas'
+);
+await writeOg(
+  'contacto.png',
+  'CONTACTO',
+  'Cuéntame qué necesitas',
+  'Respuesta en un día laborable'
+);
 await writeOg(
   'proceso-y-entrega.png',
   'CÓMO TRABAJO',

@@ -16,6 +16,7 @@ interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  ogImageAlt?: string;
   robots?: string;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
@@ -23,9 +24,11 @@ const {
   title = site.titleDefault,
   description = site.descriptionDefault,
   ogImage = '/og/default.png',
+  ogImageAlt,
   robots,
   jsonLd
 } = Astro.props;
+const resolvedOgAlt = ogImageAlt ?? title;
 const extraJsonLd = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 const pathname = Astro.url.pathname;
 const canonical = new URL(pathname, site.url).href;
@@ -58,7 +61,7 @@ const ogImageUrl = new URL(ogImage, site.url).href;
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="theme-color" content="#f6f8fc" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0a1224" media="(prefers-color-scheme: dark)" />
-    <meta property="og:image:alt" content="Alexendros.dev — webs claras y útiles" />
+    <meta property="og:image:alt" content={resolvedOgAlt} />
     <script is:inline>
       // Gate de JS antes del primer paint: activa las animaciones de
       // entrada del hero y el fundido de imágenes. Sin JS la clase no
