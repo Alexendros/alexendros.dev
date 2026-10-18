@@ -13,19 +13,22 @@ const paths = [
     title: 'Una web o landing',
     body: 'Para que te encuentren y te escriban.',
     price: `Desde ${formatEuro(provisionalPrices.portalInicio)} + IVA`,
-    href: '/servicios?origen=home#portal-heading'
+    href: '/servicios?origen=home#portal-heading',
+    linkLabel: 'Ver webs y landings'
   },
   {
     title: 'Software a medida',
     body: 'Una herramienta por fases, empezando por una versión pequeña y útil.',
     price: 'Precio por fase en la propuesta',
-    href: '/servicios/software-a-medida?origen=home'
+    href: '/servicios/software-a-medida?origen=home',
+    linkLabel: 'Ver software a medida'
   },
   {
     title: 'Revisar tu web',
     body: 'Te digo qué falla y por dónde empezar.',
     price: `Desde ${formatEuro(provisionalPrices.informeComercial)} + IVA`,
-    href: '/servicios/informe-comercial?origen=home'
+    href: '/servicios/informe-comercial?origen=home',
+    linkLabel: 'Ver el Informe 360º'
   }
 ];
 
@@ -39,7 +42,7 @@ const howSteps = [
 const featured = projects.find((p) => p.slug === 'zedazo')!;
 ---
 
-<Layout>
+<Layout ogImage="/og/home.png" ogImageAlt="Alexendros.dev — webs y software a medida">
   <Hero />
   <Container class="pb-16 md:pb-24">
     <section aria-labelledby="home-paths-heading" class="mt-4">
@@ -53,7 +56,7 @@ const featured = projects.find((p) => p.slug === 'zedazo')!;
               <p class="mt-4 text-sm font-medium">{path.price}</p>
               <p class="mt-3">
                 <Link href={path.href} variant="arrow" class="text-sm">
-                  Ver en servicios
+                  {path.linkLabel}
                 </Link>
               </p>
             </article>
@@ -64,13 +67,11 @@ const featured = projects.find((p) => p.slug === 'zedazo')!;
 
     <section aria-labelledby="home-process-heading" class="mt-16">
       <h2 id="home-process-heading" class="text-2xl font-bold">Cómo trabajo</h2>
-      <ol class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 list-none p-0 m-0">
+      <ol class="steps mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 list-none p-0 m-0" role="list">
         {
-          howSteps.map((step, index) => (
+          howSteps.map((step) => (
             <li class="border-t-2 border-primary pt-4">
-              <span class="block font-mono text-sm text-primary" aria-hidden="true">
-                {String(index + 1).padStart(2, '0')}
-              </span>
+              <span class="steps-num block font-mono text-sm text-primary" aria-hidden="true" />
               <p class="mt-2 text-sm font-medium">{step}</p>
             </li>
           ))

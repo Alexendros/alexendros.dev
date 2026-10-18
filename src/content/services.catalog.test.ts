@@ -28,21 +28,21 @@ const commercialFixture = {
     payment: 'Pago único antes de empezar',
     timeline: '5 días laborables',
     delivery:
-      'Dossier con hallazgos, límites del análisis y plan priorizado de mejoras (sin implementación)',
+      'Dossier con problemas, límites del análisis y plan priorizado de mejoras (sin implementación)',
     guarantee: 'Una ronda de aclaraciones en 10 días naturales',
     scope: [
       'SEO técnico básico y señales de posicionamiento',
       'Velocidad de carga y uso en móvil',
       'Accesibilidad al navegarlo',
       'Claridad de mensaje y camino a contacto',
-      'Priorización de hallazgos con límites explícitos'
+      'Priorización de problemas con límites explícitos'
     ]
   },
   'sesion-profesional': {
     mode: 'fixed' as const,
     priceEuros: provisionalPrices.sesionProfesional,
     payment:
-      'Pago al reservar en Cal.com (importe provisional). 50 % de descuento si aplicas el plan de una inspección (360º o vulnerabilidades)',
+      'Pago al reservar en Cal.com (importe orientativo). 50 % de descuento si aplicas el plan de una inspección (360º o vulnerabilidades)',
     timeline: '60 minutos',
     delivery: 'Siguientes pasos por escrito en 1 día laborable',
     guarantee: 'Resumen entregado en 1 día laborable tras la sesión',
@@ -58,7 +58,7 @@ const commercialFixture = {
     payment: '50 % al encargo y 50 % a la entrega, sin recargo',
     timeline: '10 días laborables',
     delivery:
-      'Informe RGPD/LSSI y seguridad básica; cada hallazgo con severidad y corrección recomendada',
+      'Informe RGPD/LSSI y seguridad básica; cada problema con severidad y corrección recomendada',
     guarantee: 'Corrección de desviaciones del alcance escrito en 15 días naturales',
     scope: [
       'RGPD y LSSI en la superficie pública',
@@ -72,7 +72,7 @@ const commercialFixture = {
     payment: 'Se acuerda por fase en la propuesta (suele ser 50 % al empezar y 50 % a la entrega)',
     timeline: 'Por fases; cada una con su plazo escrito',
     delivery: 'Código, documentación y accesos de la fase acordada',
-    guarantee: 'Corrección de desviaciones del alcance escrito de esa fase',
+    guarantee: 'Si algo no cumple lo acordado en esa fase, lo corrijo sin coste.',
     scope: [
       'Descubrimiento del problema y del alcance de la primera versión',
       'Diseño y construcción de la primera versión usable',

@@ -15,10 +15,10 @@ const pageUrl = new URL(`/servicios/${service.slug}`, site.url).href;
 const priceStatusLabel =
   service.commercial.priceStatus === 'provisional' ? 'orientativo' : 'confirmado';
 const priceLabel = servicePriceLabel(service.commercial);
-const relatedCase =
-  service.slug === 'software-a-medida'
-    ? { href: '/proyectos/zedazo', label: 'Ver caso Zedazo (herramienta)' }
-    : null;
+const isSoftware = service.slug === 'software-a-medida';
+const relatedCase = isSoftware
+  ? { href: '/proyectos/zedazo', label: 'Ver caso Zedazo (herramienta)' }
+  : null;
 const jsonLd = [
   {
     '@type': 'Service',
@@ -53,6 +53,7 @@ const jsonLd = [
   title={`${service.title} — Alexendros`}
   description={service.short}
   ogImage={`/og/servicios/${service.slug}.png`}
+  ogImageAlt={`Ficha de ${service.title}`}
   jsonLd={jsonLd}
 >
   <Container size="narrow" class="py-16 md:py-24">
@@ -74,7 +75,7 @@ const jsonLd = [
           <dt class="text-muted">Precio</dt>
           <dd class="font-bold mt-1">
             {priceLabel}
-            <span class="font-normal text-muted"> · {priceStatusLabel}</span>
+            {!isSoftware && <span class="font-normal text-muted"> · {priceStatusLabel}</span>}
           </dd>
         </div>
         <div class="border border-border rounded-lg p-4 bg-card">
@@ -97,39 +98,79 @@ const jsonLd = [
 
       <div class="mt-10 space-y-8">
         <section data-product-section="audience">
-          <h2 class="text-2xl font-bold">Para quién es</h2>
+          <h2 class="text-2xl font-bold">{isSoftware ? 'Para quién' : 'Para quién es'}</h2>
           <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
             {service.audience.map((item) => <li>{item}</li>)}
           </ul>
         </section>
 
-        <section data-product-section="problems">
-          <h2 class="text-2xl font-bold">Qué problema aborda</h2>
-          <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
-            {service.problems.map((item) => <li>{item}</li>)}
-          </ul>
-        </section>
+        {
+          !isSoftware && (
+            <section data-product-section="problems">
+              <h2 class="text-2xl font-bold">Qué problema aborda</h2>
+              <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
+                {service.problems.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
 
-        <section data-product-section="scope">
-          <h2 class="text-2xl font-bold">Qué incluye</h2>
-          <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
-            {service.scope.map((item) => <li>{item}</li>)}
-          </ul>
-        </section>
+        {
+          !isSoftware && (
+            <section data-product-section="scope">
+              <h2 class="text-2xl font-bold">Qué incluye</h2>
+              <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
+                {service.scope.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
 
-        <section data-product-section="deliverables">
-          <h2 class="text-2xl font-bold">Qué recibes</h2>
-          <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
-            {service.deliverables.map((item) => <li>{item}</li>)}
-          </ul>
-        </section>
-
-        <section data-product-section="process">
-          <h2 class="text-2xl font-bold">Cómo se desarrolla</h2>
-          <ol class="mt-2 list-decimal pl-5 text-sm text-muted space-y-1">
-            {service.process.map((item) => <li>{item}</li>)}
-          </ol>
-        </section>
+        {
+          isSoftware ? (
+            <>
+              <section data-product-section="process">
+                <h2 class="text-2xl font-bold">Cómo se hace</h2>
+                <ol class="mt-2 list-decimal pl-5 text-sm text-muted space-y-1">
+                  {service.process.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ol>
+              </section>
+              <section data-product-section="deliverables">
+                <h2 class="text-2xl font-bold">Qué recibes</h2>
+                <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
+                  {service.deliverables.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </section>
+            </>
+          ) : (
+            <>
+              <section data-product-section="deliverables">
+                <h2 class="text-2xl font-bold">Qué recibes</h2>
+                <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
+                  {service.deliverables.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </section>
+              <section data-product-section="process">
+                <h2 class="text-2xl font-bold">Cómo se desarrolla</h2>
+                <ol class="mt-2 list-decimal pl-5 text-sm text-muted space-y-1">
+                  {service.process.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ol>
+              </section>
+            </>
+          )
+        }
 
         <section data-product-section="exclusions">
           <h2 class="text-2xl font-bold">Qué no incluye</h2>

@@ -921,6 +921,32 @@
     border: 0;
   }
 
+  /* Numeración visual de pasos: el contador vive en un span aria-hidden
+     para no duplicar la lectura del <ol> (Safari con list-style: none). */
+  .steps {
+    counter-reset: step;
+    list-style: none;
+    padding: 0;
+  }
+
+  .steps > li {
+    counter-increment: step;
+  }
+
+  .steps > li > .steps-num::before {
+    content: counter(step, decimal-leading-zero);
+  }
+
+  /* Honeypot: fuera de pantalla (no display:none; algunos bots lo ignoran). */
+  .honeypot {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
   /* Linework azul tenue para el motivo esquemático (aria-hidden). El SVG
      aplica stroke-opacity 0.14 (y fade 0.35 en desktop): el color se da
      sólido para que el trazo se perciba como azul pálido sobre papel. */

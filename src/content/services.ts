@@ -167,7 +167,7 @@ export const services: Service[] = [
     short:
       'Reviso tu web y te entrego los problemas detectados, sus límites y un plan priorizado de mejoras.',
     description:
-      'Reviso tu website actual: SEO técnico básico, velocidad de carga, accesibilidad al navegarlo y claridad del camino a contacto. Te entrego un dossier con hallazgos, límites del análisis y un plan priorizado de mejoras. No promete posiciones en buscadores ni resolver cada problema sin encargo aparte.',
+      'Reviso tu website actual: SEO técnico básico, velocidad de carga, accesibilidad al navegarlo y claridad del camino a contacto. Te entrego un dossier con problemas, límites del análisis y un plan priorizado de mejoras. No promete posiciones en buscadores ni resolver cada problema sin encargo aparte.',
     audience: ['Negocios y profesionales que necesitan saber por dónde empezar antes de invertir.'],
     problems: [
       'La web no trae contactos',
@@ -179,10 +179,10 @@ export const services: Service[] = [
       'Velocidad de carga y uso en móvil',
       'Accesibilidad al navegarlo',
       'Claridad de mensaje y camino a contacto',
-      'Priorización de hallazgos con límites explícitos'
+      'Priorización de problemas con límites explícitos'
     ],
     deliverables: [
-      'Dossier con hallazgos, necesidades y límites del análisis',
+      'Dossier con problemas, necesidades y límites del análisis',
       'Plan priorizado de mejoras (sin implementación incluida)'
     ],
     process: [
@@ -194,7 +194,7 @@ export const services: Service[] = [
     technicalDetails: ['Análisis CWV, SEO técnico básico, revisión de contenidos y accesibilidad.'],
     exclusions: [
       'No incluye implementación de las mejoras',
-      'No incluye pentest ni certificación oficial',
+      'No incluye prueba de intrusión ni certificación oficial',
       'No garantiza posiciones en buscadores'
     ],
     commercial: {
@@ -204,7 +204,7 @@ export const services: Service[] = [
       payment: 'Pago único antes de empezar',
       timeline: '5 días laborables',
       delivery:
-        'Dossier con hallazgos, límites del análisis y plan priorizado de mejoras (sin implementación)',
+        'Dossier con problemas, límites del análisis y plan priorizado de mejoras (sin implementación)',
       guarantee: 'Una ronda de aclaraciones en 10 días naturales'
     },
     action: {
@@ -235,7 +235,7 @@ export const services: Service[] = [
     ],
     deliverables: ['Resumen de siguientes pasos por escrito (sin implementación incluida)'],
     process: ['Reserva en Cal.com', 'Sesión de 60 minutos', 'Entrega del resumen'],
-    technicalDetails: ['Cal.com para reserva y pago del importe provisional publicado.'],
+    technicalDetails: ['Cal.com para reserva y pago del importe orientativo publicado.'],
     exclusions: [
       'No incluye implementación',
       'No incluye auditoría completa',
@@ -246,7 +246,7 @@ export const services: Service[] = [
       priceEuros: provisionalPrices.sesionProfesional,
       priceStatus: 'provisional',
       payment:
-        'Pago al reservar en Cal.com (importe provisional). 50 % de descuento si aplicas el plan de una inspección (360º o vulnerabilidades)',
+        'Pago al reservar en Cal.com (importe orientativo). 50 % de descuento si aplicas el plan de una inspección (360º o vulnerabilidades)',
       timeline: '60 minutos',
       delivery: 'Siguientes pasos por escrito en 1 día laborable',
       guarantee: 'Resumen entregado en 1 día laborable tras la sesión'
@@ -265,12 +265,12 @@ export const services: Service[] = [
     short:
       'Inspección de RGPD/LSSI y vulnerabilidades básicas, con severidad y corrección recomendada por hallazgo.',
     description:
-      'Inspección de cumplimiento normativo y de vulnerabilidades de tu presencia web. Cada hallazgo lleva severidad y corrección recomendada. No incluye pentest ni certificación.',
+      'Inspección de cumplimiento normativo y de vulnerabilidades de tu presencia web. Cada problema lleva severidad y corrección recomendada. No incluye prueba de intrusión ni certificación.',
     audience: ['Negocios que necesitan un informe accionable antes de endurecer su sitio.'],
     problems: [
       'Dudas de cumplimiento RGPD/LSSI',
       'Superficie de seguridad sin priorizar',
-      'Necesitas un informe, no un pentest'
+      'Necesitas un informe, no una prueba de intrusión'
     ],
     scope: [
       'RGPD y LSSI en la superficie pública',
@@ -278,13 +278,13 @@ export const services: Service[] = [
       'Priorización por severidad'
     ],
     deliverables: [
-      'Informe con hallazgos de normativa y seguridad básica',
+      'Informe con problemas de normativa y seguridad básica',
       'Severidad y corrección por hallazgo'
     ],
     process: ['Alcance del encargo', 'Análisis', 'Redacción del informe', 'Entrega'],
     technicalDetails: ['Revisión proporcional OWASP ASVS L1, CSP, cookies y formularios.'],
     exclusions: [
-      'No incluye pentest',
+      'No incluye prueba de intrusión',
       'No incluye certificación oficial',
       'No incluye implementación de remedios'
     ],
@@ -295,7 +295,7 @@ export const services: Service[] = [
       payment: '50 % al encargo y 50 % a la entrega, sin recargo',
       timeline: '10 días laborables',
       delivery:
-        'Informe RGPD/LSSI y seguridad básica; cada hallazgo con severidad y corrección recomendada',
+        'Informe RGPD/LSSI y seguridad básica; cada problema con severidad y corrección recomendada',
       guarantee: 'Corrección de desviaciones del alcance escrito en 15 días naturales'
     },
     action: {
@@ -345,7 +345,6 @@ export const services: Service[] = [
       'Caso de referencia: Zedazo (herramienta de contactos de código abierto).'
     ],
     exclusions: [
-      'No incluye un precio «desde» fijo en esta página',
       'No incluye mantenimiento continuo salvo acuerdo aparte',
       'No garantiza ventas ni adopción del producto'
     ],
@@ -357,12 +356,12 @@ export const services: Service[] = [
         'Se acuerda por fase en la propuesta (suele ser 50 % al empezar y 50 % a la entrega)',
       timeline: 'Por fases; cada una con su plazo escrito',
       delivery: 'Código, documentación y accesos de la fase acordada',
-      guarantee: 'Corrección de desviaciones del alcance escrito de esa fase'
+      guarantee: 'Si algo no cumple lo acordado en esa fase, lo corrijo sin coste.'
     },
     action: {
       kind: 'contact',
       label: 'Pedir propuesta de software',
-      href: '/contacto?motivo=propuestaComercial&servicio=software-a-medida',
+      href: '/contacto?motivo=propuestaComercial&origen=servicios&servicio=software-a-medida',
       newTab: false
     }
   }

@@ -11,11 +11,15 @@ export const site = {
     { label: 'Proyectos realizados', href: '/proyectos' },
     { label: 'Cómo trabajo', href: '/proceso-y-entrega' }
   ],
+  /** Enlaces legales del pie (Sobre mí y Contacto van en la columna Navegación). */
   footerNav: [
-    { label: 'Sobre mí', href: '/sobre-mi' },
     { label: 'Identidad', href: '/identidad' },
     { label: 'Privacidad', href: '/privacidad' },
     { label: 'Cookies', href: '/cookies' }
+  ],
+  footerExtraNav: [
+    { label: 'Sobre mí', href: '/sobre-mi' },
+    { label: 'Contacto', href: '/contacto' }
   ],
   social: {
     github: 'https://github.com/alexendros',

@@ -38,6 +38,7 @@ Workflow: `.github/workflows/pr-mergeable.yml`.
 - `CHANGELOG.md` / `package.json` en `main` pueden desfasarse respecto al tag; la fuente de verdad de versión es el **tag GitHub**.
 - **Versionado ≠ promote.** Vercel Production = merge a `main`.
 - Si Release falla tras un merge: no implica automáticamente sitio caído; verificar Production y re-lanzar Release con `workflow_dispatch` tras el fix.
+- **Caché HTML:** `vercel.json` fija `Cache-Control: public, max-age=0, s-maxage=60, stale-while-revalidate=600` en documentos; `/_astro/` y `/_image` siguen `immutable`. Tras un deploy, si `verify-site.sh` (sección 2: hash normal vs `?cb=`) marca diferencias, purgar la caché del proyecto Vercel `alexendros-dev` (Dashboard → Caching → Purge) y repetir la verificación.
 
 ## Vigilancia de main y Production (`main-watch`)
 

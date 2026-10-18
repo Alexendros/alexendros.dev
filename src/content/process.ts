@@ -1,5 +1,5 @@
 import { formatEuro, provisionalPrices } from './pricing';
-import { site } from './site';
+import { calEventUrl } from '../lib/calBooking';
 
 export type ProcessStep = {
   id: string;
@@ -36,7 +36,7 @@ const ORIGIN = 'origen=proceso';
 
 export const processPage = {
   seo: {
-    title: 'Cómo trabajo: de la idea a tu web publicada — Alexendros',
+    title: 'Cómo trabajo: de la idea a tu proyecto publicado — Alexendros',
     description:
       'Precio y plazo por escrito, avances que puedes ver y entrega probada contigo. Así trabajo en webs y software a medida.',
     ogTitle: 'Así trabajo: claro desde el primer día'
@@ -60,7 +60,7 @@ export const processPage = {
     ]
   },
   processSection: {
-    heading: 'De la idea a la web publicada',
+    heading: 'De la idea a tu proyecto publicado',
     intro: 'Cuatro pasos: qué pasa, cuánto tarda, qué recibes y cuándo pagas.'
   },
   steps: [
@@ -77,7 +77,7 @@ export const processPage = {
       duration: '1–2 días',
       description: 'Qué incluye, qué no, cuánto cuesta y cuándo se entrega.',
       receive: 'Un acuerdo claro.',
-      payment: 'Empiezo al pagar el 50 % (portal e inspección).'
+      payment: 'Web: 50 % al empezar; software por fase.'
     },
     {
       id: 'construyo',
@@ -93,11 +93,11 @@ export const processPage = {
       duration: '2–3 días',
       description: 'Revisamos juntos que funciona. Te enseño a usarlo.',
       receive: 'Proyecto online, instrucciones y accesos.',
-      payment: '50 % restante al publicar (portal e inspección).'
+      payment: 'Web: 50 % al publicar; software por fase.'
     }
   ] satisfies ProcessStep[],
   alwaysIncludes: {
-    heading: 'Qué incluye siempre',
+    heading: 'En toda web que construyo',
     items: [
       'Funciona en móvil',
       'Teclado y lector de pantalla',
@@ -178,20 +178,7 @@ export const processPage = {
     } satisfies ProcessCta,
     secondaryCta: {
       label: 'Reservar una llamada',
-      href: site.social.cal
+      href: calEventUrl('alexendros/diagnostico')
     } satisfies ProcessCta
   }
 } as const;
-
-/** Términos del glosario comercial a evitar en esta página. */
-export const PROCESS_JARGON = [
-  'recorridos',
-  'hallazgos',
-  'pentest',
-  'cabeceras',
-  'entrega comprobable',
-  'controles automáticos',
-  'exposición de datos',
-  'hitos de revisión',
-  'continuidad definida'
-] as const;

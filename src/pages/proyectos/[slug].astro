@@ -7,7 +7,6 @@ import Dimension from '../../components/Dimension.astro';
 import { Image } from 'astro:assets';
 import {
   availabilityCtaLabels,
-  availabilityLabels,
   productTypeLabels,
   projects,
   workKindLabels
@@ -17,12 +16,19 @@ export async function getStaticPaths() {
   return projects.map((p) => ({ params: { slug: p.slug }, props: { project: p } }));
 }
 const { project } = Astro.props;
+const statusLabel =
+  project.slug === 'zedazo'
+    ? 'Herramienta propia, de código abierto'
+    : `${productTypeLabels[project.productType]} · ${workKindLabels[project.workKind]}`;
+const changedItems =
+  project.results && project.results.length > 0 ? project.results : project.highlights;
 ---
 
 <Layout
   title={`${project.title} — Alexendros`}
   description={project.short}
   ogImage={`/og/proyectos/${project.slug}.png`}
+  ogImageAlt={`Ficha de ${project.title}`}
 >
   <Container size="narrow" class="pt-12 pb-16" data-reveal>
     <div class="text-xs text-muted">
@@ -30,15 +36,7 @@ const { project } = Astro.props;
     </div>
     <h1 class="mt-3 text-3xl font-bold sm:text-4xl text-balance">{project.title}</h1>
     <p class="mt-3 text-muted text-pretty">{project.summary}</p>
-    <p class="mt-3 text-sm font-mono text-muted text-pretty break-words">
-      {productTypeLabels[project.productType]} · {workKindLabels[project.workKind]} ·{' '}
-      {availabilityLabels[project.availability]}
-    </p>
-    <p class="mt-2 text-xs text-muted max-w-2xl text-pretty">
-      Disponibilidad habla de consulta o transferencia de la obra, no de hueco de agenda laboral.
-      Los resultados listados son capacidades comprobadas o evidencias con permiso; no son
-      testimonios inventados.
-    </p>
+    <p class="mt-3 text-sm font-mono text-muted text-pretty break-words">{statusLabel}</p>
     <div class="mt-4 h-px bg-border" aria-hidden="true"></div>
     <figure class="mt-6 overflow-hidden rounded-lg border border-border">
       <Image
@@ -51,19 +49,6 @@ const { project } = Astro.props;
         decoding="async"
       />
     </figure>
-
-    {
-      project.results && project.results.length > 0 && (
-        <div class="mt-4">
-          <h2 class="font-bold text-sm">Resultados</h2>
-          <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
-            {project.results.map((r) => (
-              <li>{r}</li>
-            ))}
-          </ul>
-        </div>
-      )
-    }
 
     {
       project.metrics && project.metrics.length > 0 && (
@@ -103,46 +88,29 @@ const { project } = Astro.props;
         <div>
           <h2 class="font-bold">Qué hice</h2>
           <p class="text-muted mt-1 text-pretty">{project.solution}</p>
-          <p class="text-muted mt-2 text-pretty">{project.challenge}</p>
         </div>
         <div>
           <h2 class="font-bold">Qué cambió</h2>
-          {
-            project.results && project.results.length > 0 ? (
-              <ul class="list-disc pl-5 text-muted space-y-1 mt-1">
-                {project.results.map((r) => (
-                  <li>{r}</li>
-                ))}
-              </ul>
-            ) : (
-              <ul class="list-disc pl-5 text-muted space-y-1 mt-1">
-                {project.highlights.map((h) => (
-                  <li>{h}</li>
-                ))}
-              </ul>
-            )
-          }
-        </div>
-        <div>
-          <h2 class="font-bold">Qué incluyó el trabajo</h2>
           <ul class="list-disc pl-5 text-muted space-y-1 mt-1">
-            {project.responsibilities.map((r) => <li>{r}</li>)}
+            {changedItems.map((item) => <li>{item}</li>)}
           </ul>
         </div>
       </div>
       <div class="min-w-0 space-y-6 cv-auto">
-        <div class="border border-border rounded-lg p-5 bg-card">
-          <h2 class="font-bold text-sm">Aspectos clave</h2>
-          <ul class="mt-2 list-disc pl-5 text-xs text-muted space-y-1">
-            {project.highlights.map((h) => <li>{h}</li>)}
-          </ul>
-        </div>
-        <details class="border border-border rounded-lg p-5 bg-card">
+        <details class="border border-border rounded-lg p-5 bg-card" open>
           <summary class="font-bold text-sm cursor-pointer focus-ring rounded"
             >Detalles técnicos</summary
           >
-          <div class="mt-3 space-y-2 text-xs text-muted">
-            {project.technologies.map((t) => <p>{t}</p>)}
+          <div class="mt-3 space-y-4 text-xs text-muted">
+            <ul class="list-disc pl-5 space-y-1">
+              {project.highlights.map((h) => <li>{h}</li>)}
+            </ul>
+            <ul class="list-disc pl-5 space-y-1">
+              {project.responsibilities.map((r) => <li>{r}</li>)}
+            </ul>
+            <div class="space-y-2">
+              {project.technologies.map((t) => <p>{t}</p>)}
+            </div>
           </div>
         </details>
         <div class="border border-border rounded-lg p-5 bg-card">
