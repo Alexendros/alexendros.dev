@@ -1,6 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import { formatEuro, provisionalPrices } from './pricing';
-import { PROCESS_JARGON, processPage, type ProcessFaq, type ProcessStep } from './process';
+import { processPage, type ProcessFaq, type ProcessStep } from './process';
+
+/** Términos del glosario comercial a evitar en la página pública. */
+const PROCESS_JARGON = [
+  'recorridos',
+  'hallazgos',
+  'pentest',
+  'cabeceras',
+  'entrega comprobable',
+  'controles automáticos',
+  'exposición de datos',
+  'hitos de revisión',
+  'continuidad definida'
+] as const;
 
 function nonEmpty(value: string, label: string) {
   expect(value.trim().length, label).toBeGreaterThan(0);

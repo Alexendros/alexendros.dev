@@ -182,16 +182,3 @@ export const processPage = {
     } satisfies ProcessCta
   }
 } as const;
-
-/** Términos del glosario comercial a evitar en esta página. */
-export const PROCESS_JARGON = [
-  'recorridos',
-  'hallazgos',
-  'pentest',
-  'cabeceras',
-  'entrega comprobable',
-  'controles automáticos',
-  'exposición de datos',
-  'hitos de revisión',
-  'continuidad definida'
-] as const;
