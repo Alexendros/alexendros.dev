@@ -64,13 +64,11 @@ const featured = projects.find((p) => p.slug === 'zedazo')!;
 
     <section aria-labelledby="home-process-heading" class="mt-16">
       <h2 id="home-process-heading" class="text-2xl font-bold">Cómo trabajo</h2>
-      <ol class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 list-none p-0 m-0">
+      <ol class="steps mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 list-none p-0 m-0" role="list">
         {
-          howSteps.map((step, index) => (
+          howSteps.map((step) => (
             <li class="border-t-2 border-primary pt-4">
-              <span class="block font-mono text-sm text-primary" aria-hidden="true">
-                {String(index + 1).padStart(2, '0')}
-              </span>
+              <span class="steps-num block font-mono text-sm text-primary" aria-hidden="true" />
               <p class="mt-2 text-sm font-medium">{step}</p>
             </li>
           ))
