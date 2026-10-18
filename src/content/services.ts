@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { modulePrices, portalBasePrice, provisionalPrices } from './pricing';
+import { formatEuro, modulePrices, portalBasePrice, provisionalPrices } from './pricing';
 
 const nonEmptyTrimmed = z.string().trim().min(1);
 const nonEmptyList = z.array(nonEmptyTrimmed).min(1);
@@ -69,16 +69,34 @@ export const serviceActionSchema = z
 
 export type ServiceAction = z.infer<typeof serviceActionSchema>;
 
-export const serviceCommercialSchema = z.object({
-  priceEuros: z.number().positive(),
+const commercialBase = {
   priceStatus: z.enum(['provisional', 'confirmed']),
   payment: nonEmptyTrimmed,
   timeline: nonEmptyTrimmed,
   delivery: nonEmptyTrimmed,
   guarantee: nonEmptyTrimmed
-});
+};
+
+export const serviceCommercialSchema = z.discriminatedUnion('mode', [
+  z.object({
+    mode: z.literal('fixed'),
+    priceEuros: z.number().positive(),
+    ...commercialBase
+  }),
+  z.object({
+    mode: z.literal('quote'),
+    priceLabel: nonEmptyTrimmed,
+    ...commercialBase
+  })
+]);
 
 export type ServiceCommercial = z.infer<typeof serviceCommercialSchema>;
+
+export function isFixedCommercial(
+  commercial: ServiceCommercial
+): commercial is Extract<ServiceCommercial, { mode: 'fixed' }> {
+  return commercial.mode === 'fixed';
+}
 
 export const serviceSchema = z.object({
   slug: nonEmptyTrimmed,
@@ -108,7 +126,8 @@ export const productCardSchema = z.object({
   slug: z.string().min(1),
   title: z.string().min(1),
   short: z.string().min(1),
-  priceEuros: z.number().positive(),
+  priceEuros: z.number().positive().optional(),
+  priceLabel: z.string().min(1),
   priceStatus: z.enum(['provisional', 'confirmed']),
   href: z.string().min(1),
   ctaLabel: z.string().min(1)
@@ -132,11 +151,12 @@ export const portalModuleSchema = z.object({
 
 export type PortalModule = z.infer<typeof portalModuleSchema>;
 
-/** Slugs publicados como ficha `/servicios/[slug]` (excepción D-01 / decisión 0017). */
+/** Slugs publicados como ficha `/servicios/[slug]` (decisión 0019; portal sin ficha). */
 export const PUBLISHED_SERVICE_SLUGS = [
   'informe-comercial',
   'sesion-profesional',
-  'auditoria-normativa-ciberseguridad'
+  'auditoria-normativa-ciberseguridad',
+  'software-a-medida'
 ] as const;
 
 export const services: Service[] = [
@@ -178,6 +198,7 @@ export const services: Service[] = [
       'No garantiza posiciones en buscadores'
     ],
     commercial: {
+      mode: 'fixed',
       priceEuros: provisionalPrices.informeComercial,
       priceStatus: 'provisional',
       payment: 'Pago único antes de empezar',
@@ -221,6 +242,7 @@ export const services: Service[] = [
       'La implementación solo entra con acuerdo aparte'
     ],
     commercial: {
+      mode: 'fixed',
       priceEuros: provisionalPrices.sesionProfesional,
       priceStatus: 'provisional',
       payment:
@@ -267,6 +289,7 @@ export const services: Service[] = [
       'No incluye implementación de remedios'
     ],
     commercial: {
+      mode: 'fixed',
       priceEuros: provisionalPrices.auditoria,
       priceStatus: 'provisional',
       payment: '50 % al encargo y 50 % a la entrega, sin recargo',
@@ -279,6 +302,67 @@ export const services: Service[] = [
       kind: 'contact',
       label: 'Pedir la inspección',
       href: '/contacto?motivo=informacionCliente&servicio=auditoria-normativa-ciberseguridad',
+      newTab: false
+    }
+  },
+  {
+    slug: 'software-a-medida',
+    kind: 'service',
+    title: 'Producto de software a medida',
+    short:
+      'Una herramienta o aplicación por fases: primero una versión pequeña y útil, luego mejoras.',
+    description:
+      'Diseño y desarrollo de un producto de software para un proceso de tu negocio. Empezamos por descubrir el problema, entregamos una primera versión usable y seguimos con mejoras acordadas. Cada fase lleva su precio y plazo en la propuesta. No es una web de escaparate ni un pack cerrado.',
+    audience: [
+      'Equipos pequeños o emprendedores con un proceso manual que quieren digitalizar',
+      'Pymes que necesitan una herramienta propia sin construir una plataforma enorme de golpe'
+    ],
+    problems: [
+      'Un proceso se hace a mano o con hojas de cálculo frágiles',
+      'Las herramientas genéricas no encajan y pierdes tiempo',
+      'Quieres validar una idea con una primera versión real'
+    ],
+    scope: [
+      'Descubrimiento del problema y del alcance de la primera versión',
+      'Diseño y construcción de la primera versión usable',
+      'Mejoras por fases con precio y plazo escritos antes de cada una',
+      'Entrega de código, documentación y accesos al terminar de pagar'
+    ],
+    deliverables: [
+      'Propuesta por fase con precio y plazo',
+      'Primera versión publicada o instalable según el acuerdo',
+      'Código, documentación breve e instrucciones de uso',
+      'Accesos al entorno acordado'
+    ],
+    process: [
+      'Descubrimiento y propuesta de la primera fase',
+      'Construcción de la primera versión',
+      'Prueba conjunta y entrega',
+      'Mejoras siguientes solo si las acordamos por escrito'
+    ],
+    technicalDetails: [
+      'Stack según el problema (web, CLI u otra superficie acordada).',
+      'Caso de referencia: Zedazo (herramienta de contactos de código abierto).'
+    ],
+    exclusions: [
+      'No incluye un precio «desde» fijo en esta página',
+      'No incluye mantenimiento continuo salvo acuerdo aparte',
+      'No garantiza ventas ni adopción del producto'
+    ],
+    commercial: {
+      mode: 'quote',
+      priceLabel: 'Precio por fase en la propuesta',
+      priceStatus: 'provisional',
+      payment:
+        'Se acuerda por fase en la propuesta (suele ser 50 % al empezar y 50 % a la entrega)',
+      timeline: 'Por fases; cada una con su plazo escrito',
+      delivery: 'Código, documentación y accesos de la fase acordada',
+      guarantee: 'Corrección de desviaciones del alcance escrito de esa fase'
+    },
+    action: {
+      kind: 'contact',
+      label: 'Pedir propuesta de software',
+      href: '/contacto?motivo=propuestaComercial&servicio=software-a-medida',
       newTab: false
     }
   }
@@ -348,19 +432,25 @@ export const portalModules: PortalModule[] = [
   }
 ];
 
+export function servicePriceLabel(commercial: ServiceCommercial): string {
+  if (commercial.mode === 'quote') return commercial.priceLabel;
+  return `${formatEuro(commercial.priceEuros)} + IVA`;
+}
+
 /** Fichas del índice: mismas claves, mismos CTA; datos desde el catálogo vivo. */
 export const serviceProducts: ProductCard[] = services.map((s) => ({
   slug: s.slug,
   title: s.title,
   short: s.short,
-  priceEuros: s.commercial.priceEuros,
+  priceEuros: isFixedCommercial(s.commercial) ? s.commercial.priceEuros : undefined,
+  priceLabel: servicePriceLabel(s.commercial),
   priceStatus: s.commercial.priceStatus,
   href: `/servicios/${s.slug}`,
   ctaLabel: SERVICE_PRODUCT_CTA
 }));
 
 export const catalogEntries: CatalogEntry[] = [
-  ...services.map((s) => ({
+  ...services.filter(isFixedService).map((s) => ({
     id: s.slug,
     kind: 'service' as const,
     title: s.title,
@@ -392,6 +482,12 @@ export const catalogEntries: CatalogEntry[] = [
   }))
 ];
 
+function isFixedService(
+  service: Service
+): service is Service & { commercial: Extract<ServiceCommercial, { mode: 'fixed' }> } {
+  return isFixedCommercial(service.commercial);
+}
+
 export function assertUniqueServiceSlugs(items: readonly { slug: string }[]): void {
   const seen = new Set<string>();
   for (const item of items) {
@@ -421,7 +517,7 @@ for (const slug of PUBLISHED_SERVICE_SLUGS) {
   }
 }
 if (slugs.has('portal-inicio')) {
-  throw new Error('portal-inicio no debe publicarse como ficha de servicio (decisión 0017)');
+  throw new Error('portal-inicio no debe publicarse como ficha de servicio (decisión 0019)');
 }
 
 serviceProducts.forEach((p, i) => {

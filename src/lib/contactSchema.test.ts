@@ -115,26 +115,36 @@ describe('parseContactBody R04', () => {
     const parsed = parseContactBody({
       ...validCorreo,
       serviceSlug: 'informe-comercial',
-      projectSlug: 'front-valencia'
+      projectSlug: 'front-valencia',
+      origin: 'proceso'
     });
     expect(parsed.success).toBe(true);
     if (!parsed.success) return;
     expect(parsed.data.serviceSlug).toBe('informe-comercial');
     expect(parsed.data.projectSlug).toBe('front-valencia');
+    expect(parsed.data.origin).toBe('proceso');
     const msg = buildContactMessage(parsed.data);
     expect(msg).toMatch(/Informe 360/);
     expect(msg).toMatch(/Front Valencia/);
+    expect(msg).toMatch(/Origen de página: proceso/);
 
     const junk = parseContactBody({
       ...validCorreo,
       serviceSlug: 'evil-slug',
       projectSlug: '<script>x</script>',
+      origin: 'evil',
       precio: '1'
-    } as typeof validCorreo & { serviceSlug: string; projectSlug: string; precio: string });
+    } as typeof validCorreo & {
+      serviceSlug: string;
+      projectSlug: string;
+      origin: string;
+      precio: string;
+    });
     expect(junk.success).toBe(true);
     if (!junk.success) return;
     expect(junk.data.serviceSlug).toBeUndefined();
     expect(junk.data.projectSlug).toBeUndefined();
+    expect(junk.data.origin).toBeUndefined();
   });
 });
 

@@ -12,18 +12,17 @@ test('F02: home sin scroll horizontal a 320, 390 y 768px', async ({ page }) => {
   }
 });
 
-test('F01: home es hero estable + nav; sin secciones en página', async ({ page }) => {
+test('F01: home es hero estable + caminos + proceso + caso', async ({ page }) => {
   await page.goto('/');
 
   const h1 = page.getByRole('heading', {
     level: 1,
-    name: /Diseño y desarrollo de productos web/
+    name: /Diseño y desarrollo de webs y software a medida/
   });
   await expect(h1).toBeVisible();
-  await expect(page.getByText(/alcance acordado y trato directo/)).toBeVisible();
+  await expect(page.getByText(/Tres caminos claros/)).toBeVisible();
   await expect(page.locator('.hero-slot-item')).toHaveCount(0);
   await expect(page.getByText(/Pare las rotativas/)).toHaveCount(0);
-  await expect(page.getByText(/SI TIENES UN NEGOCIO/i)).toHaveCount(0);
 
   const banner = page.getByRole('banner');
   await expect(banner.getByRole('link', { name: 'Contactar' })).toBeVisible();
@@ -33,9 +32,6 @@ test('F01: home es hero estable + nav; sin secciones en página', async ({ page 
   await expect(
     page.locator('[data-hero]').getByRole('link', { name: 'Explorar servicios' })
   ).toBeVisible();
-  await expect(page.getByRole('contentinfo').getByRole('link', { name: 'Contactar' })).toHaveCount(
-    0
-  );
 
   await expect(banner.getByRole('link', { name: 'Servicios', exact: true })).toBeVisible();
   await expect(
@@ -44,18 +40,9 @@ test('F01: home es hero estable + nav; sin secciones en página', async ({ page 
   await expect(banner.getByRole('link', { name: 'Cómo trabajo', exact: true })).toBeVisible();
   await expect(banner.getByRole('link', { name: 'Metodología', exact: true })).toHaveCount(0);
   await expect(banner.getByRole('link', { name: 'Valores', exact: true })).toHaveCount(0);
-  await expect(banner.getByRole('link', { name: 'Trabajos realizados', exact: true })).toHaveCount(
-    0
-  );
-  await expect(banner.getByRole('link', { name: 'Publicaciones', exact: true })).toHaveCount(0);
 
-  await expect(page.getByRole('heading', { name: 'Servicios', exact: true })).toHaveCount(0);
-  await expect(
-    page.getByRole('heading', { name: 'Proyectos realizados', exact: true })
-  ).toHaveCount(0);
-  await expect(page.getByRole('heading', { name: 'Cómo trabajo', exact: true })).toHaveCount(0);
-  await expect(page.getByRole('heading', { name: 'Metodología', exact: true })).toHaveCount(0);
-  await expect(page.getByRole('heading', { name: 'Valores', exact: true })).toHaveCount(0);
-  await expect(page.getByText('DISEÑO WEB · VALENCIA')).toHaveCount(0);
-  await expect(page.getByText('Disponible para nuevos proyectos')).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: '¿Qué necesitas?', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Cómo trabajo', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Un caso', exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Ver el proceso completo' })).toBeVisible();
 });

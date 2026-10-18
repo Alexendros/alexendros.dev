@@ -1,175 +1,197 @@
+import { formatEuro, provisionalPrices } from './pricing';
+import { site } from './site';
+
 export type ProcessStep = {
   id: string;
   title: string;
+  duration: string;
   description: string;
-  output: string;
-};
-
-export type QualityCriterion = {
-  id: string;
-  title: string;
-  benefit: string;
-  verification: string;
-};
-
-export type WorkingTerm = {
-  id: string;
-  title: string;
-  description: string;
+  receive: string;
+  payment?: string;
 };
 
 export type ProcessFaq = { question: string; answer: string };
 
 export type ProcessCta = { label: string; href: string };
 
+export type ProcessPathCard = {
+  id: string;
+  title: string;
+  body: string;
+  priceLabel: string;
+  href: string;
+  linkLabel: string;
+};
+
+export type ProcessCase = {
+  title: string;
+  before: string;
+  did: string;
+  after: string;
+  href: string;
+  linkLabel: string;
+};
+
+const ORIGIN = 'origen=proceso';
+
 export const processPage = {
   seo: {
-    title: 'Cómo trabajo: proceso y entrega — Alexendros',
+    title: 'Cómo trabajo: de la idea a tu web publicada — Alexendros',
     description:
-      'Alcance y presupuesto por escrito, revisiones durante el trabajo y una entrega contrastada con lo acordado. Así trabajo en cada servicio.'
+      'Precio y plazo por escrito, avances que puedes ver y entrega probada contigo. Así trabajo en webs y software a medida.',
+    ogTitle: 'Así trabajo: claro desde el primer día'
   },
   hero: {
-    h1Lead: 'Un proceso claro.',
-    h1Accent: 'Una entrega comprobable.',
-    lead: 'Antes de empezar, sabes qué incluye el proyecto. Antes de cerrar, revisamos lo acordado. Trabajo contigo de forma directa, desde el primer encargo hasta la entrega.',
-    primaryCta: { label: 'Cuéntame qué necesitas', href: '/contacto' } satisfies ProcessCta,
-    secondaryCta: { label: 'Ver el proceso', href: '#proceso' } satisfies ProcessCta,
-    summaryTitle: 'Qué queda por escrito',
-    agreementPoints: [
-      'Qué incluye y qué queda fuera.',
-      'Presupuesto y forma de pago.',
-      'Calendario y momentos de revisión.',
-      'Entregables y condiciones de seguimiento.'
+    h1Lead: 'Así trabajamos:',
+    h1Accent: 'claro desde el primer día',
+    lead: 'Sabrás qué recibes, cuánto cuesta y cuándo, antes de pagar. Hablas conmigo de principio a fin.',
+    primaryCta: {
+      label: 'Pedir presupuesto',
+      href: `/contacto?motivo=propuestaComercial&${ORIGIN}`
+    } satisfies ProcessCta,
+    secondaryCta: {
+      label: 'Ver precios',
+      href: `/servicios?${ORIGIN}`
+    } satisfies ProcessCta,
+    guarantees: [
+      'Precio y plazo por escrito, antes de empezar.',
+      'Ves avances y das tu opinión durante el trabajo.',
+      'Lo probamos juntos antes de dar por terminado.'
     ]
   },
   processSection: {
-    heading: 'Del encargo a la entrega',
-    intro:
-      'Un recorrido común, adaptado al servicio. Desarrollar un producto, revisar una web y resolver una consulta tienen entregables distintos.'
+    heading: 'De la idea a la web publicada',
+    intro: 'Cuatro pasos: qué pasa, cuánto tarda, qué recibes y cuándo pagas.'
   },
   steps: [
     {
-      id: 'definir',
-      title: 'Definimos el encargo',
-      description: 'Revisamos qué necesitas y qué debe resolver el trabajo.',
-      output: 'Alcance, presupuesto y plazos por escrito.'
+      id: 'hablamos',
+      title: 'Hablamos',
+      duration: '30 min, sin coste',
+      description: 'Me cuentas qué necesitas y qué quieres conseguir.',
+      receive: 'Propuesta con precio y plazo en 1 día laborable.'
     },
     {
-      id: 'desarrollar-o-analizar',
-      title: 'Desarrollo o analizo',
+      id: 'escrito',
+      title: 'Lo dejamos por escrito',
+      duration: '1–2 días',
+      description: 'Qué incluye, qué no, cuánto cuesta y cuándo se entrega.',
+      receive: 'Un acuerdo claro.',
+      payment: 'Empiezo al pagar el 50 % (portal e inspección).'
+    },
+    {
+      id: 'construyo',
+      title: 'Lo construyo',
+      duration: 'Desde 10 días laborables en una web sencilla',
       description:
-        'Ejecuto el servicio contratado. Las decisiones que cambian el alcance se acuerdan antes.',
-      output: 'Avance revisable o hallazgos documentados.'
+        'Te enseño avances en 2–3 momentos. Si añades algo, te digo el cambio de precio y plazo.',
+      receive: 'Versiones para ver y comentar.'
     },
     {
-      id: 'revisar',
-      title: 'Revisamos lo acordado',
-      description: 'Compruebo los recorridos o hallazgos incluidos y te presento el resultado.',
-      output: 'Revisión de entrega y pendientes identificados.'
-    },
-    {
-      id: 'entregar',
-      title: 'Entrego y dejamos el siguiente paso claro',
-      description:
-        'Recibes los entregables del servicio y las condiciones de cualquier seguimiento.',
-      output: 'Trabajo entregado y continuidad definida.'
+      id: 'publico',
+      title: 'Lo probamos y lo publico',
+      duration: '2–3 días',
+      description: 'Revisamos juntos que funciona. Te enseño a usarlo.',
+      receive: 'Proyecto online, instrucciones y accesos.',
+      payment: '50 % restante al publicar (portal e inspección).'
     }
   ] satisfies ProcessStep[],
-  qualitySection: {
-    heading: 'La calidad se concreta en comprobaciones',
-    intro:
-      'Los controles se definen según el servicio y el alcance. Si detecto límites o pendientes, deben quedar identificados, no escondidos tras una puntuación.'
+  alwaysIncludes: {
+    heading: 'Qué incluye siempre',
+    items: [
+      'Funciona en móvil',
+      'Teclado y lector de pantalla',
+      'Carga rápido',
+      'Formulario de contacto',
+      'Instrucciones de uso'
+    ]
   },
-  criteria: [
+  pathsSection: {
+    heading: '¿Qué necesitas?',
+    intro: 'Importes orientativos; el final va en la propuesta.'
+  },
+  paths: [
     {
-      id: 'claridad',
-      title: 'Claridad y coherencia',
-      benefit:
-        'El contenido y la interfaz deben explicar la oferta y permitir encontrar el siguiente paso.',
-      verification: 'Revisión de mensajes y recorridos incluidos.'
+      id: 'web',
+      title: 'Una web o landing',
+      body: 'Para que te encuentren y te escriban.',
+      priceLabel: `Desde ${formatEuro(provisionalPrices.portalInicio)} + IVA`,
+      href: `/servicios?${ORIGIN}#portal-heading`,
+      linkLabel: 'Ver portal por módulos'
     },
     {
-      id: 'funcionamiento',
-      title: 'Funcionamiento y uso',
-      benefit: 'Reviso las funciones incluidas, el uso en móvil y la navegación con teclado.',
-      verification: 'Pruebas de los recorridos acordados y controles automáticos y manuales.'
+      id: 'software',
+      title: 'Software a medida',
+      body: 'Una herramienta por fases, empezando por una versión pequeña.',
+      priceLabel: 'Precio por fase en la propuesta',
+      href: `/servicios/software-a-medida?${ORIGIN}`,
+      linkLabel: 'Ver cómo se plantea'
     },
     {
-      id: 'seguridad',
-      title: 'Seguridad y privacidad proporcionales',
-      benefit:
-        'El alcance puede incluir controles sobre formularios, permisos, cabeceras y exposición de datos.',
-      verification:
-        'Controles aplicados y hallazgos pendientes, sin presentar la revisión básica como un pentest.'
-    },
-    {
-      id: 'continuidad',
-      title: 'Continuidad y mantenimiento',
-      benefit:
-        'La entrega identifica qué recibes y qué necesita mantenimiento o contratación adicional.',
-      verification: 'Documentación y condiciones de seguimiento aplicables al servicio.'
+      id: 'revision',
+      title: 'Revisar tu web',
+      body: 'Te digo qué falla y por dónde empezar.',
+      priceLabel: `Desde ${formatEuro(provisionalPrices.informeComercial)} + IVA`,
+      href: `/servicios/informe-comercial?${ORIGIN}`,
+      linkLabel: 'Ver Informe 360º'
     }
-  ] satisfies QualityCriterion[],
-  evidence: {
-    heading: 'Trabajo que puedes consultar',
-    body: 'Puedes revisar proyectos reales y su alcance publicado. Si hay un caso autorizado y documentado, se muestra con lo encargado, lo entregado y cómo se revisó.',
-    linkLabel: 'Trabajo que puedes consultar',
-    linkHref: '/proyectos'
+  ] satisfies ProcessPathCard[],
+  featuredCase: {
+    title: 'Zedazo — Herramienta de contactos',
+    before: 'Tenía agendas con duplicados y formatos rotos.',
+    did: 'Hice una herramienta que limpia y exporta contactos.',
+    after: 'Ahora puedes migrar agendas sin el trabajo manual de siempre.',
+    href: '/proyectos/zedazo',
+    linkLabel: 'Ver el caso'
+  } satisfies ProcessCase,
+  faqsSection: {
+    heading: 'Dudas rápidas'
   },
-  termsSection: {
-    heading: 'Lo que acordamos antes de empezar',
-    intro: 'Condiciones claras para decidir con información y evitar expectativas distintas.'
-  },
-  terms: [
-    {
-      id: 'alcance',
-      title: 'Alcance y presupuesto por escrito',
-      description:
-        'Antes de empezar se acuerdan entregables, exclusiones y calendario. Si aparece una necesidad nueva, revisamos su coste y plazo antes de incorporarla.'
-    },
-    {
-      id: 'condiciones-servicio',
-      title: 'Condiciones según el servicio',
-      description:
-        'El pago, las revisiones y los plazos de corrección se indican en la ficha y la propuesta. No todos los servicios incluyen lo mismo.'
-    },
-    {
-      id: 'publicacion-seguimiento',
-      title: 'Publicación y seguimiento definidos',
-      description:
-        'En proyectos de desarrollo se concreta quién gestiona dominio, alojamiento y accesos. El mantenimiento, su duración y sus límites deben figurar expresamente en la propuesta.'
-    }
-  ] satisfies WorkingTerm[],
   faqs: [
     {
-      question: '¿Este proceso se aplica igual a todos los servicios?',
-      answer:
-        'El acuerdo y la revisión de entrega son comunes. En desarrollo recibes una implementación; en una inspección, un informe; en una sesión, un resumen de próximos pasos. Solo se implementan cambios cuando están incluidos.'
+      question: '¿Cuánto tarda?',
+      answer: 'Web sencilla: desde 10 días laborables. Software: por fases con plazo cada una.'
     },
     {
-      question: '¿Qué pasa si necesito añadir algo?',
-      answer:
-        'El cambio se valora antes de ejecutarlo. Si modifica entregables, coste o plazo, se incorpora al acuerdo. No se considera incluido por aparecer durante el trabajo.'
-    },
-    {
-      question: '¿Qué significa una entrega comprobable?',
-      answer:
-        'Que los entregables se contrastan con el alcance acordado y se identifican los pendientes. Si se utilizan métricas, se indica qué se midió, con qué herramienta y en qué condiciones.'
+      question: '¿Y si quiero cambiar algo a mitad?',
+      answer: 'Dímelo. Te cuento coste y retraso, y tú decides.'
     },
     {
       question: '¿Incluye mantenimiento?',
-      answer:
-        'Solo cuando el servicio o la propuesta lo incluyan expresamente. Publicar una web, renovar un dominio, corregir incidencias y cambiar contenidos son tareas distintas.'
+      answer: 'Solo si lo acordamos. Publicar, dominio e incidencias son cosas distintas.'
     },
     {
-      question: '¿Garantizas ventas, cumplimiento o seguridad total?',
-      answer:
-        'No. El trabajo se compromete a un alcance y unos controles definidos. No se prometen ventas, posiciones en buscadores, ausencia absoluta de vulnerabilidades ni certificaciones no contratadas.'
+      question: '¿Quién es el dueño del resultado?',
+      answer: 'Tú. Recibes código, contenidos y accesos al terminar de pagar.'
     }
   ] satisfies ProcessFaq[],
+  limits: {
+    heading: 'Límites',
+    body: 'No prometo ventas ni posiciones en Google. Una revisión básica no es una auditoría completa. Una certificación se ve aparte.'
+  },
   close: {
-    heading: 'Empecemos por lo que necesitas resolver',
-    body: 'Cuéntame qué tienes y qué quieres mejorar. Con esa información podemos concretar el servicio y su alcance.',
-    cta: { label: 'Cuéntame qué necesitas', href: '/contacto' } satisfies ProcessCta
+    heading: 'Cuéntame qué necesitas',
+    body: 'Te respondo en 1 día laborable.',
+    primaryCta: {
+      label: 'Pedir presupuesto',
+      href: `/contacto?motivo=propuestaComercial&${ORIGIN}`
+    } satisfies ProcessCta,
+    secondaryCta: {
+      label: 'Reservar una llamada',
+      href: site.social.cal
+    } satisfies ProcessCta
   }
 } as const;
+
+/** Términos del glosario comercial a evitar en esta página. */
+export const PROCESS_JARGON = [
+  'recorridos',
+  'hallazgos',
+  'pentest',
+  'cabeceras',
+  'entrega comprobable',
+  'controles automáticos',
+  'exposición de datos',
+  'hitos de revisión',
+  'continuidad definida'
+] as const;

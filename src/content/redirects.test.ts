@@ -19,8 +19,6 @@ describe('redirecciones permanentes', () => {
       ['/valores/', '/proceso-y-entrega'],
       ['/como-trabajo', '/proceso-y-entrega'],
       ['/como-trabajo/', '/proceso-y-entrega'],
-      ['/sobre-mi', '/proceso-y-entrega'],
-      ['/sobre-mi/', '/proceso-y-entrega'],
       ['/aviso-legal', '/identidad'],
       ['/afiliados', '/'],
       ['/servicios/produccion-sitios-web', '/servicios'],
@@ -36,15 +34,16 @@ describe('redirecciones permanentes', () => {
       expect(rule?.permanent).toBe(true);
     }
 
+    expect(bySource.has('/sobre-mi')).toBe(false);
+    expect(bySource.has('/sobre-mi/')).toBe(false);
+
     const retired = [
       '/metodologia',
       '/metodologia/',
       '/valores',
       '/valores/',
       '/como-trabajo',
-      '/como-trabajo/',
-      '/sobre-mi',
-      '/sobre-mi/'
+      '/como-trabajo/'
     ];
     for (const source of retired) {
       const matches = unconditional.filter((r) => r.source === source);
@@ -59,9 +58,10 @@ describe('redirecciones permanentes', () => {
     }
   });
 
-  it('las páginas retiradas ya no existen como rutas públicas', () => {
+  it('las páginas retiradas ya no existen; sobre-mi y proceso sí', () => {
     expect(existsSync(resolve(process.cwd(), 'src/pages/metodologia.astro'))).toBe(false);
     expect(existsSync(resolve(process.cwd(), 'src/pages/valores.astro'))).toBe(false);
     expect(existsSync(resolve(process.cwd(), 'src/pages/proceso-y-entrega.astro'))).toBe(true);
+    expect(existsSync(resolve(process.cwd(), 'src/pages/sobre-mi.astro'))).toBe(true);
   });
 });

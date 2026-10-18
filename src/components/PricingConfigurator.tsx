@@ -1,4 +1,4 @@
-import { useEffect, useId, useMemo, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
 import {
   formatEuro,
   modulePrices,
@@ -13,11 +13,6 @@ import { portalBase, portalModules } from '../content/services';
 export default function PricingConfigurator() {
   const liveId = useId();
   const [selected, setSelected] = useState<PortalModuleId[]>([]);
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
-    setHydrated(true);
-  }, []);
 
   const modulesTotal = useMemo(
     () => selected.reduce((acc, id) => acc + modulePrices[id], 0),
@@ -26,7 +21,6 @@ export default function PricingConfigurator() {
   const total = useMemo(() => sumPortal(selected), [selected]);
 
   const toggle = (id: PortalModuleId) => {
-    if (!hydrated) return;
     setSelected((prev) =>
       normalizePortalModuleIds(
         prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
@@ -46,23 +40,10 @@ export default function PricingConfigurator() {
       </h2>
       <p className="mt-2 text-sm text-muted">
         Base del portal: {portalBase.delivery}. Pago: {portalBase.payment}. Plazo:{' '}
-        {portalBase.timeline}. El total es una estimación provisional, no un presupuesto
-        contractual. Los plazos de cada módulo no se suman automáticamente: el calendario se acuerda
-        tras revisar el alcance. El desglose de impuestos se confirma en la propuesta.
+        {portalBase.timeline}. El total es orientativo (+ IVA); el importe final va en la propuesta.
+        Los plazos de cada módulo no se suman solos: el calendario se acuerda tras revisar el
+        alcance.
       </p>
-
-      {!hydrated ? (
-        <p className="mt-4 text-sm text-muted" role="status">
-          Preparando el configurador… Mientras tanto puedes{' '}
-          <a
-            href="/contacto?motivo=propuestaComercial"
-            className="underline decoration-dotted underline-offset-2 text-primary"
-          >
-            pedir una propuesta
-          </a>{' '}
-          por correo o formulario.
-        </p>
-      ) : null}
 
       <ul className="mt-6 space-y-3" data-pricing-list>
         <li className="flex items-start justify-between gap-4 text-sm">
@@ -70,14 +51,11 @@ export default function PricingConfigurator() {
             <strong>Portal de inicio</strong>
             <span className="block text-muted">{portalBase.short}</span>
           </span>
-          <span className="shrink-0 font-medium">{formatEuro(portalBasePrice)}</span>
+          <span className="shrink-0 font-medium">{formatEuro(portalBasePrice)} + IVA</span>
         </li>
         {portalModules.map((mod) => (
           <li key={mod.id} className="flex items-start justify-between gap-4 text-sm">
-            <label
-              className={`flex items-start gap-3 ${hydrated ? 'cursor-pointer' : 'cursor-not-allowed opacity-80'}`}
-              htmlFor={`mod-${mod.id}`}
-            >
+            <label className="flex items-start gap-3 cursor-pointer" htmlFor={`mod-${mod.id}`}>
               <input
                 id={`mod-${mod.id}`}
                 type="checkbox"
@@ -85,7 +63,6 @@ export default function PricingConfigurator() {
                 data-module={mod.id}
                 checked={selected.includes(mod.id as PortalModuleId)}
                 onChange={() => toggle(mod.id as PortalModuleId)}
-                disabled={!hydrated}
                 className="mt-1"
                 aria-describedby={liveId}
               />
@@ -95,7 +72,7 @@ export default function PricingConfigurator() {
                 <span className="block text-muted">{mod.timeline}</span>
               </span>
             </label>
-            <span className="shrink-0 font-medium">+{formatEuro(mod.priceEuros)}</span>
+            <span className="shrink-0 font-medium">+{formatEuro(mod.priceEuros)} + IVA</span>
           </li>
         ))}
       </ul>
@@ -103,22 +80,22 @@ export default function PricingConfigurator() {
       <div className="mt-6 space-y-2 border-t border-border pt-4 text-sm">
         <p className="flex justify-between gap-4">
           <span className="text-muted">Base</span>
-          <span>{formatEuro(portalBasePrice)}</span>
+          <span>{formatEuro(portalBasePrice)} + IVA</span>
         </p>
         <p className="flex justify-between gap-4">
           <span className="text-muted">Módulos seleccionados</span>
-          <span>{formatEuro(modulesTotal)}</span>
+          <span>{formatEuro(modulesTotal)} + IVA</span>
         </p>
         <p className="flex flex-wrap items-center justify-between gap-4">
           <span>
-            Total provisional:{' '}
+            Total orientativo:{' '}
             <strong data-pricing-total className="text-lg">
-              {formatEuro(total)}
+              {formatEuro(total)} + IVA
             </strong>
           </span>
         </p>
         <p id={liveId} className="sr-only" aria-live="polite" aria-atomic="true">
-          Total provisional {formatEuro(total)}
+          Total orientativo {formatEuro(total)} más IVA
         </p>
       </div>
 

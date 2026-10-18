@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import {
   availabilityCtaLabels,
   availabilityLabels,
+  productTypeLabels,
   workKindLabels,
   type Project
 } from '../content/projects';
@@ -40,7 +41,8 @@ const Heading = headingLevel;
     </Heading>
     <p class="mt-2 text-sm text-muted">{project.short}</p>
     <p class="mt-2 text-xs font-mono text-muted text-pretty break-words">
-      {workKindLabels[project.workKind]} · {availabilityLabels[project.availability]}
+      {productTypeLabels[project.productType]} · {workKindLabels[project.workKind]} ·{' '}
+      {availabilityLabels[project.availability]}
     </p>
     {
       project.metrics && project.metrics.length > 0 && (

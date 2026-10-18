@@ -3,8 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Container from '../../components/Container.astro';
 import Button from '../../components/Button.astro';
 import Link from '../../components/Link.astro';
-import { formatEuro } from '../../content/pricing';
-import { services } from '../../content/services';
+import { isFixedCommercial, servicePriceLabel, services } from '../../content/services';
 import { site } from '../../content/site';
 
 export async function getStaticPaths() {
@@ -14,7 +13,12 @@ export async function getStaticPaths() {
 const { service } = Astro.props;
 const pageUrl = new URL(`/servicios/${service.slug}`, site.url).href;
 const priceStatusLabel =
-  service.commercial.priceStatus === 'provisional' ? 'provisional' : 'confirmado';
+  service.commercial.priceStatus === 'provisional' ? 'orientativo' : 'confirmado';
+const priceLabel = servicePriceLabel(service.commercial);
+const relatedCase =
+  service.slug === 'software-a-medida'
+    ? { href: '/proyectos/zedazo', label: 'Ver caso Zedazo (herramienta)' }
+    : null;
 const jsonLd = [
   {
     '@type': 'Service',
@@ -61,15 +65,15 @@ const jsonLd = [
       <p class="mt-4 text-sm text-muted max-w-2xl">{service.description}</p>
 
       <p class="mt-4 text-xs text-muted max-w-2xl" data-product-tax-note>
-        Importes provisionales. El desglose de impuestos y el precio definitivo de reserva o encargo
-        se confirman en la propuesta; no se publican aquí como condición cerrada.
+        Precios orientativos; el importe final va en la propuesta.
+        {isFixedCommercial(service.commercial) ? ' Los importes publicados se muestran + IVA.' : ''}
       </p>
 
       <dl class="mt-8 grid gap-4 sm:grid-cols-2 text-sm" data-product-section="commercial">
         <div class="border border-border rounded-lg p-4 bg-card">
           <dt class="text-muted">Precio</dt>
           <dd class="font-bold mt-1">
-            {formatEuro(service.commercial.priceEuros)}
+            {priceLabel}
             <span class="font-normal text-muted"> · {priceStatusLabel}</span>
           </dd>
         </div>
@@ -164,6 +168,16 @@ const jsonLd = [
             }
           </div>
         </section>
+
+        {
+          relatedCase && (
+            <p class="text-sm">
+              <Link href={relatedCase.href} variant="arrow">
+                {relatedCase.label}
+              </Link>
+            </p>
+          )
+        }
 
         <section data-product-section="technical">
           <details class="border border-border rounded-lg p-5 bg-card">

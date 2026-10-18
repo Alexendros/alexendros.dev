@@ -35,7 +35,7 @@ Quien eres: role Full Stack · Auditor · Consultor, summary conversion-focused,
 
 ## Paginas
 
-- index.astro: solo Hero (home mínima 0014)
+- index.astro: Hero + caminos + Cómo trabajo + caso (decisión 0019)
 - servicios/: catálogo + configurador de portal; fichas con precio/pago/plazo/entrega/garantía
 - proyectos/: Proyectos realizados con availability si|no|reservado
 - proceso-y-entrega.astro (Cómo trabajo), identidad.astro

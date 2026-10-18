@@ -4,19 +4,20 @@ Sitio profesional de [alexendros.dev](https://alexendros.dev): webs que explican
 
 ## En qué puedo ayudarte
 
-| Servicio                                                                             | Para quién                                                                                 |
-| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
-| [Web nueva o renovación](https://alexendros.dev/servicios/produccion-sitios-web/)    | Profesionales y negocios locales que necesitan una web clara y lista para captar consultas |
-| [Revisión y plan de mejora](https://alexendros.dev/servicios/auditorias/)            | Quienes quieren saber qué mejorar primero, con prioridades y presupuesto realista          |
-| [Consultoría tecnológica](https://alexendros.dev/servicios/consultoria-tecnologica/) | Decisiones técnicas sin humo: stack, alcance y siguientes pasos                            |
-| [Landing en 10 días](https://alexendros.dev/servicios/landing-10-dias/)              | Una página de oferta concreta, publicada en plazo corto                                    |
+| Servicio                                                                                                        | Para quién                                                                               |
+| --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| [Portal de inicio (web/landing)](https://alexendros.dev/servicios/#portal-heading)                              | Profesionales y negocios locales que necesitan una web clara lista para captar consultas |
+| [Informe 360º](https://alexendros.dev/servicios/informe-comercial/)                                             | Quienes quieren saber qué mejorar primero, con prioridades y presupuesto realista        |
+| [Sesión profesional](https://alexendros.dev/servicios/sesion-profesional/)                                      | Decisiones concretas en 60 minutos, con siguientes pasos por escrito                     |
+| [Inspección normativa y vulnerabilidades](https://alexendros.dev/servicios/auditoria-normativa-ciberseguridad/) | Informe accionable de RGPD/LSSI y seguridad básica                                       |
+| [Software a medida](https://alexendros.dev/servicios/software-a-medida/)                                        | Herramientas por fases para un proceso de negocio                                        |
 
-Más detalle y precios orientativos en [Servicios](https://alexendros.dev/servicios/). Proyectos reales en [Proyectos](https://alexendros.dev/proyectos/).
+Más detalle y precios orientativos (+ IVA) en [Servicios](https://alexendros.dev/servicios/). Cómo trabajo en [Proceso y entrega](https://alexendros.dev/proceso-y-entrega/). Proyectos reales en [Proyectos](https://alexendros.dev/proyectos/).
 
 ## Cómo empezamos
 
-1. Cuéntame tu situación en [Contacto](https://alexendros.dev/contacto/) o escribe a [hola@alexendros.dev](mailto:hola@alexendros.dev).
-2. Si prefieres una cita: [diagnóstico](https://cal.com/alexendros/diagnostico) o [sesión técnica](https://cal.com/alexendros/sesion-tecnica).
+1. Cuéntame tu situación en [Contacto](https://alexendros.dev/contacto/) o escribe a [contratacion@alexendros.dev](mailto:contratacion@alexendros.dev).
+2. Si prefieres una cita: [Cal.com](https://cal.com/alexendros) o [sesión técnica](https://cal.com/alexendros/sesion-tecnica).
 3. Acordamos alcance, plazos y entregables antes de empezar.
 
 Trabajo desde Valencia (remoto o presencial según el proyecto). El sitio prioriza claridad, accesibilidad y velocidad; el tracking comercial solo se carga con consentimiento previo y granular.

@@ -71,8 +71,7 @@ export const contact = contactSchema.parse({
     }
   ],
   messages: {
-    success:
-      'Mensaje enviado. Te responderé en menos de 24 horas laborables por el canal que hayas elegido.',
+    success: 'Mensaje enviado. Te respondo en 1 día laborable por el canal que hayas elegido.',
     error: 'No se pudo enviar. Escríbeme a contratacion@alexendros.dev'
   },
   bookings: {

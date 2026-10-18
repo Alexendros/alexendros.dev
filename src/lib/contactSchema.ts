@@ -20,6 +20,8 @@ export const contactReasons = [
   'informacionCliente'
 ] as const;
 
+export const contactOrigins = ['proceso', 'servicios', 'home', 'proyectos'] as const;
+
 const PORTAL_MODULE_TITLES: Record<PortalModuleId, string> = Object.fromEntries(
   portalModules.map((m) => [m.id, m.title])
 ) as Record<PortalModuleId, string>;
@@ -71,6 +73,12 @@ export const contactSchema = z
     }, z.string().optional()),
     serviceSlug: z.preprocess((v) => normalizeServiceSlug(v), z.string().optional()),
     projectSlug: z.preprocess((v) => normalizeProjectSlug(v), z.string().optional()),
+    origin: z.preprocess((v) => {
+      if (typeof v !== 'string') return undefined;
+      const trimmed = v.trim();
+      if (!(contactOrigins as readonly string[]).includes(trimmed)) return undefined;
+      return trimmed;
+    }, z.enum(contactOrigins).optional()),
     consent: z.literal(true),
     honeypot: z.string().optional(),
     turnstileToken: z.string().max(4096).optional()
@@ -249,5 +257,6 @@ export function buildContactMessage(input: ContactInput): string {
   if (serviceLabel) lines.push(`Servicio de referencia: ${serviceLabel}`);
   const projectLabel = projectTitle(input.projectSlug);
   if (projectLabel) lines.push(`Trabajo de referencia: ${projectLabel}`);
+  if (input.origin) lines.push(`Origen de página: ${input.origin}`);
   return lines.join('\n');
 }

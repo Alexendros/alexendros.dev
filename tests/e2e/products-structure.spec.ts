@@ -17,11 +17,12 @@ const sections = [
 const listSections = ['audience', 'problems', 'scope', 'deliverables', 'exclusions'] as const;
 
 test.describe('DET estructura común de fichas', () => {
-  test('catálogo publicado: exactamente tres slugs sin portal-inicio', () => {
+  test('catálogo publicado: cuatro slugs sin portal-inicio', () => {
     expect(products.map((p) => p.slug)).toEqual([
       'informe-comercial',
       'sesion-profesional',
-      'auditoria-normativa-ciberseguridad'
+      'auditoria-normativa-ciberseguridad',
+      'software-a-medida'
     ]);
     expect(products.some((p) => p.slug === 'portal-inicio')).toBe(false);
   });
@@ -93,14 +94,15 @@ test.describe('DET estructura común de fichas', () => {
     });
   }
 
-  test('índice: tres tarjetas con data-product-card y un solo enlace', async ({ page }) => {
+  test('índice: cuatro tarjetas con data-product-card y un solo enlace', async ({ page }) => {
     await page.goto('/servicios');
     for (const product of products) {
       const card = page.locator(`[data-product-card="${product.slug}"]`);
       await expect(card).toHaveCount(1);
       await expect(card.locator('a')).toHaveCount(1);
-      await expect(card.locator('[data-product-card-price]')).toContainText('provisional');
+      await expect(card.locator('[data-product-card-price]')).toContainText('orientativo');
     }
     await expect(page.locator('[data-product-card="portal-inicio"]')).toHaveCount(0);
+    await expect(page.getByText('Preparando el configurador')).toHaveCount(0);
   });
 });

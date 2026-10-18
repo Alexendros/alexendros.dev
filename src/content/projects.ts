@@ -32,6 +32,8 @@ export const projectSchema = z.object({
    * propio = iniciativa propia / open source.
    */
   workKind: z.enum(['encargo', 'demostracion', 'propio']),
+  /** Etiqueta comercial para filtrar y presentar: Web · Tienda · Herramienta. */
+  productType: z.enum(['web', 'tienda', 'herramienta']),
   coverAlt: z.string().min(1),
   testimonial: z
     .object({
@@ -47,6 +49,7 @@ export type Project = z.infer<typeof projectSchema> & { cover: ImageMetadata };
 
 export type ProjectAvailability = Project['availability'];
 export type ProjectWorkKind = Project['workKind'];
+export type ProjectProductType = Project['productType'];
 
 /** Etiquetas de disponibilidad: consulta ≠ transferencia ≠ hueco de agenda. */
 export const availabilityLabels: Record<ProjectAvailability, string> = {
@@ -65,6 +68,12 @@ export const workKindLabels: Record<ProjectWorkKind, string> = {
   encargo: 'Encargo',
   demostracion: 'Demostración',
   propio: 'Proyecto propio'
+};
+
+export const productTypeLabels: Record<ProjectProductType, string> = {
+  web: 'Web',
+  tienda: 'Tienda',
+  herramienta: 'Herramienta'
 };
 
 export const projects: Project[] = [
@@ -112,6 +121,7 @@ export const projects: Project[] = [
     featured: true,
     availability: 'si',
     workKind: 'encargo',
+    productType: 'web',
     cover: coverFront,
     coverAlt:
       'Home de la web del restaurante Front Valencia: cabecera con foto del local, menú destacado y botón de reserva.'
@@ -165,6 +175,7 @@ export const projects: Project[] = [
     featured: true,
     availability: 'si',
     workKind: 'encargo',
+    productType: 'tienda',
     cover: coverNasve,
     coverAlt:
       'Tienda online de Gráficas Nasve: catálogo de productos con precios calculados al momento y pago online.'
@@ -210,6 +221,7 @@ export const projects: Project[] = [
     featured: false,
     availability: 'reservado',
     workKind: 'propio',
+    productType: 'herramienta',
     cover: coverZedazo,
     coverAlt:
       'Interfaz de Zedazo, herramienta de código abierto para limpiar y unificar listados de contactos.'
@@ -255,6 +267,7 @@ export const projects: Project[] = [
     featured: true,
     availability: 'no',
     workKind: 'propio',
+    productType: 'web',
     cover: coverMe,
     coverAlt:
       'Home de Alexendros.me, web personal centrada en lectura cómoda, buen contraste y privacidad.'

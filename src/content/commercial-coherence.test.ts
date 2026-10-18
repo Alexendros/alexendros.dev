@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { contact } from './contact';
 import { formatEuro, portalBasePrice, provisionalPrices } from './pricing';
-import { serviceProducts, services } from './services';
+import { isFixedCommercial, servicePriceLabel, serviceProducts, services } from './services';
 
 /**
  * COM-01: índice (tarjetas), fichas y configurador no se contradicen con el
@@ -9,14 +9,20 @@ import { serviceProducts, services } from './services';
  * COM-03 queda BLOCKED hasta firma del mantenedor (ver production-closeout).
  */
 describe('COM-01 coherencia comercial vigente', () => {
-  it('las tres fichas publicadas comparten importe y estado provisional con sus tarjetas', () => {
+  it('las fichas publicadas alinean etiqueta de precio y estado con sus tarjetas', () => {
     for (const service of services) {
       const card = serviceProducts.find((item) => item.slug === service.slug);
       expect(card, service.slug).toBeDefined();
-      expect(card?.priceEuros).toBe(service.commercial.priceEuros);
+      expect(card?.priceLabel).toBe(servicePriceLabel(service.commercial));
       expect(card?.priceStatus).toBe('provisional');
       expect(service.commercial.priceStatus).toBe('provisional');
-      expect(formatEuro(card!.priceEuros)).toBe(formatEuro(service.commercial.priceEuros));
+      if (isFixedCommercial(service.commercial)) {
+        expect(card?.priceEuros).toBe(service.commercial.priceEuros);
+        expect(card?.priceLabel).toContain('+ IVA');
+      } else {
+        expect(card?.priceEuros).toBeUndefined();
+        expect(card?.priceLabel).toBe('Precio por fase en la propuesta');
+      }
     }
   });
 
@@ -31,7 +37,7 @@ describe('COM-01 coherencia comercial vigente', () => {
     }
   });
 
-  it('el configurador usa la base provisional del portal sin inventar condiciones', () => {
+  it('el configurador usa la base provisional del portal sin inventar cancelación', () => {
     expect(portalBasePrice).toBe(provisionalPrices.portalInicio);
     const joined = JSON.stringify({
       services,
@@ -39,8 +45,6 @@ describe('COM-01 coherencia comercial vigente', () => {
       prices: provisionalPrices
     });
     expect(joined).not.toMatch(/cancelaci[oó]n/i);
-    expect(joined).not.toMatch(/\bfiscal\b/i);
-    expect(joined).not.toMatch(/\bIVA\b/);
   });
 });
 

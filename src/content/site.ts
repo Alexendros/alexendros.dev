@@ -12,6 +12,7 @@ export const site = {
     { label: 'Cómo trabajo', href: '/proceso-y-entrega' }
   ],
   footerNav: [
+    { label: 'Sobre mí', href: '/sobre-mi' },
     { label: 'Identidad', href: '/identidad' },
     { label: 'Privacidad', href: '/privacidad' },
     { label: 'Cookies', href: '/cookies' }
