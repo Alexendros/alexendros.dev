@@ -32,7 +32,7 @@ export const articles: Article[] = [
       'Si el problema es un proceso interno (listados, pedidos, cálculos, agendas), una web de escaparate no lo resuelve. Ahí entra el software a medida.',
       'El software se plantea por fases: primero una versión pequeña y útil, luego mejoras. Cada fase lleva su precio y plazo en la propuesta.',
       'Una señal clara: si hoy el trabajo vive en hojas de cálculo, correos o herramientas que no encajan, conviene descubrir el proceso antes de construir.',
-      'Si dudas, empieza por una revisión (Informe 360º) o una conversación breve. Mejor acotar el problema que pagar una pieza grande sin saber si sirve.'
+      'Si dudas, empieza por una revisión de posicionamiento o una conversación breve. Mejor acotar el problema que pagar una pieza grande sin saber si sirve.'
     ]
   }
 ];

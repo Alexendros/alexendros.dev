@@ -26,15 +26,16 @@ describe('COM-01 coherencia comercial vigente', () => {
     }
   });
 
-  it('contacto y catálogo alinean importes de informe y sesión; Cal.com se conserva', () => {
-    const informe = contact.bookings.offers.find((o) => o.id === 'informe-comercial');
-    const sesion = contact.bookings.offers.find((o) => o.id === 'sesion-profesional');
-    expect(informe?.priceLabel).toBe(formatEuro(provisionalPrices.informeComercial));
-    expect(sesion?.priceLabel).toBe(formatEuro(provisionalPrices.sesionProfesional));
-    expect(sesion?.kind).toBe('cal');
-    if (sesion?.kind === 'cal') {
-      expect(sesion.url).toMatch(/^https:\/\/cal\.com\//);
-    }
+  it('contacto y catálogo alinean importes de las ofertas de formulario', () => {
+    const byId = Object.fromEntries(contact.bookings.offers.map((o) => [o.id, o]));
+    expect(byId['informe-comercial']?.priceLabel).toBe(
+      formatEuro(provisionalPrices.informeComercial)
+    );
+    expect(byId['cumplimiento-normativo']?.priceLabel).toBe(
+      formatEuro(provisionalPrices.cumplimiento)
+    );
+    expect(byId['ciberseguridad']?.priceLabel).toBe(formatEuro(provisionalPrices.ciberseguridad));
+    expect(contact.bookings.offers.every((o) => o.kind === 'form')).toBe(true);
   });
 
   it('el configurador usa la base provisional del portal sin inventar cancelación', () => {

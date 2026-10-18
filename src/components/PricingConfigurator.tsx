@@ -36,7 +36,7 @@ export default function PricingConfigurator() {
   return (
     <div data-pricing-configurator className="rounded-lg border border-border bg-card p-6 md:p-8">
       <h2 id="portal-heading" className="text-xl font-bold">
-        Configura los módulos que querrás en tu portal web
+        Si quieres que te diseñe un portal web desde cero, aquí puedes configurar los módulos.
       </h2>
       <p className="mt-2 text-sm text-muted">
         Base del portal: {portalBase.delivery}. Pago: {portalBase.payment}. Plazo:{' '}

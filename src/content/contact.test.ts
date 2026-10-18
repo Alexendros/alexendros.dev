@@ -2,22 +2,20 @@ import { describe, expect, it } from 'vitest';
 import { contact, publicBookingEvents } from './contact';
 
 describe('reservas públicas de contacto R05', () => {
-  it('el informe no tiene Cal.com y la sesión apunta a sesion-tecnica', () => {
-    const informe = contact.bookings.offers.find((o) => o.id === 'informe-comercial');
-    const sesion = contact.bookings.offers.find((o) => o.id === 'sesion-profesional');
-    expect(informe?.kind).toBe('form');
-    if (informe?.kind === 'form') {
-      expect(informe.href).toBe('#escribir');
-      expect(JSON.stringify(informe)).not.toMatch(/cal\.com/i);
+  it('las ofertas de catálogo son formulario; no hay Cal.com de sesión profesional', () => {
+    expect(contact.bookings.offers.every((o) => o.kind === 'form')).toBe(true);
+    expect(contact.bookings.offers.map((o) => o.id)).toEqual([
+      'informe-comercial',
+      'cumplimiento-normativo',
+      'ciberseguridad'
+    ]);
+    for (const offer of contact.bookings.offers) {
+      expect(offer.href).toBe('#escribir');
+      expect(JSON.stringify(offer)).not.toMatch(/cal\.com/i);
     }
-    expect(sesion?.kind).toBe('cal');
-    if (sesion?.kind === 'cal') {
-      expect(sesion.calLink).toBe('alexendros/sesion-tecnica');
-      expect(sesion.url).toBe('https://cal.com/alexendros/sesion-tecnica');
-    }
-    expect(publicBookingEvents.map((e) => e.calLink)).toEqual(['alexendros/sesion-tecnica']);
+    expect(publicBookingEvents).toEqual([]);
+    expect(JSON.stringify(contact)).not.toMatch(/sesion-profesional/i);
     expect(JSON.stringify(contact)).not.toMatch(/retainer/i);
-    expect(JSON.stringify(contact)).not.toMatch(/diagnostico/i);
   });
 
   it('expone formulario y perfiles sociales', () => {

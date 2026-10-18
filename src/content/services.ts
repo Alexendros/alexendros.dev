@@ -151,11 +151,11 @@ export const portalModuleSchema = z.object({
 
 export type PortalModule = z.infer<typeof portalModuleSchema>;
 
-/** Slugs publicados como ficha `/servicios/[slug]` (decisión 0019; portal sin ficha). */
+/** Slugs publicados como ficha `/servicios/[slug]` (decisión 0020; portal sin ficha). */
 export const PUBLISHED_SERVICE_SLUGS = [
   'informe-comercial',
-  'sesion-profesional',
-  'auditoria-normativa-ciberseguridad',
+  'cumplimiento-normativo',
+  'ciberseguridad',
   'software-a-medida'
 ] as const;
 
@@ -163,38 +163,42 @@ export const services: Service[] = [
   {
     slug: 'informe-comercial',
     kind: 'service',
-    title: 'Informe 360º',
+    title: 'Posicionamiento comercial en buscadores',
     short:
-      'Reviso tu web y te entrego los problemas detectados, sus límites y un plan priorizado de mejoras.',
+      'Informe técnico SEO y plan de ajustes con métricas verificables para ganar visibilidad en buscadores.',
     description:
-      'Reviso tu website actual: SEO técnico básico, velocidad de carga, accesibilidad al navegarlo y claridad del camino a contacto. Te entrego un dossier con problemas, límites del análisis y un plan priorizado de mejoras. No promete posiciones en buscadores ni resolver cada problema sin encargo aparte.',
-    audience: ['Negocios y profesionales que necesitan saber por dónde empezar antes de invertir.'],
+      'Reviso tu web con foco en SEO técnico y señales de posicionamiento. Te entrego un informe con problemas medibles, un plan de ajustes priorizado y métricas de referencia para comprobar la mejora. No promete posiciones concretas ni implementa los cambios sin encargo aparte.',
+    audience: [
+      'Negocios y profesionales que quieren mejorar su visibilidad en buscadores con un plan accionable.'
+    ],
     problems: [
-      'La web no trae contactos',
-      'No sabes qué corregir primero',
-      'Has recibido propuestas difíciles de priorizar'
+      'La web no aparece o pierde posiciones en buscadores',
+      'No sabes qué corregir primero en SEO técnico',
+      'Necesitas métricas claras antes de invertir en mejoras'
     ],
     scope: [
-      'SEO técnico básico y señales de posicionamiento',
-      'Velocidad de carga y uso en móvil',
-      'Accesibilidad al navegarlo',
-      'Claridad de mensaje y camino a contacto',
-      'Priorización de problemas con límites explícitos'
+      'SEO técnico: indexación, estructura, metadatos y señales on-page',
+      'Rendimiento y uso en móvil ligados al posicionamiento',
+      'Claridad del camino a contacto desde resultados de búsqueda',
+      'Plan priorizado de ajustes con métricas de referencia',
+      'Límites explícitos del análisis (sin garantía de ranking)'
     ],
     deliverables: [
-      'Dossier con problemas, necesidades y límites del análisis',
-      'Plan priorizado de mejoras (sin implementación incluida)'
+      'Informe técnico con problemas, métricas de partida y límites del análisis',
+      'Plan de ajustes y mejoras priorizado (sin implementación incluida)'
     ],
     process: [
       'Encargo y acceso al dominio',
-      'Inspección 360º',
-      'Redacción del dossier y del plan',
+      'Análisis SEO técnico y de señales comerciales',
+      'Redacción del informe y del plan',
       'Entrega y ronda de aclaraciones'
     ],
-    technicalDetails: ['Análisis CWV, SEO técnico básico, revisión de contenidos y accesibilidad.'],
+    technicalDetails: [
+      'Revisión de indexación, CWV orientados a SEO, metadatos, enlazado interno y contenido indexable.'
+    ],
     exclusions: [
       'No incluye implementación de las mejoras',
-      'No incluye prueba de intrusión ni certificación oficial',
+      'No incluye campañas de publicidad ni link building',
       'No garantiza posiciones en buscadores'
     ],
     commercial: {
@@ -204,7 +208,7 @@ export const services: Service[] = [
       payment: 'Pago único antes de empezar',
       timeline: '5 días laborables',
       delivery:
-        'Dossier con problemas, límites del análisis y plan priorizado de mejoras (sin implementación)',
+        'Informe técnico SEO, métricas de partida y plan priorizado de ajustes (sin implementación)',
       guarantee: 'Una ronda de aclaraciones en 10 días naturales'
     },
     action: {
@@ -215,133 +219,145 @@ export const services: Service[] = [
     }
   },
   {
-    slug: 'sesion-profesional',
+    slug: 'cumplimiento-normativo',
     kind: 'service',
-    title: 'Sesión profesional',
+    title: 'Cumplimiento normativo',
     short:
-      'Una sesión de 60 minutos para revisar un problema concreto de tu web y decidir los siguientes pasos.',
+      'Revisión de protección de datos, políticas de cookies y accesibilidad en tu presencia web.',
     description:
-      'Sesión de 60 minutos orientada a un problema concreto de tu página actual. Orienta y entrega un resumen escrito; no incluye implementación salvo acuerdo aparte. 50 % de descuento si la sesión aplica el plan de una de mis inspecciones (Informe 360º o inspección de vulnerabilidades).',
-    audience: ['Quien necesita desbloquear una decisión técnica o de producto con plazo corto.'],
+      'Inspección orientada a protección de datos, políticas de cookies y accesibilidad de tu sitio. Cada problema lleva severidad y corrección recomendada. No incluye prueba de intrusión ni certificación oficial.',
+    audience: [
+      'Negocios que necesitan un informe accionable de datos, cookies y accesibilidad antes de endurecer su sitio.'
+    ],
     problems: [
-      'Hay un bloqueo concreto',
-      'Necesitas decidir el siguiente paso',
-      'No quieres un proyecto completo todavía'
+      'Dudas de protección de datos (RGPD) en la web',
+      'Políticas de cookies poco claras o incompletas',
+      'Accesibilidad insuficiente al navegar o al cumplir requisitos básicos'
     ],
     scope: [
-      'Conversación de 60 minutos',
-      'Revisión orientada de un problema concreto',
-      'Resumen de siguientes pasos por escrito'
-    ],
-    deliverables: ['Resumen de siguientes pasos por escrito (sin implementación incluida)'],
-    process: ['Reserva en Cal.com', 'Sesión de 60 minutos', 'Entrega del resumen'],
-    technicalDetails: ['Cal.com para reserva y pago del importe orientativo publicado.'],
-    exclusions: [
-      'No incluye implementación',
-      'No incluye auditoría completa',
-      'La implementación solo entra con acuerdo aparte'
-    ],
-    commercial: {
-      mode: 'fixed',
-      priceEuros: provisionalPrices.sesionProfesional,
-      priceStatus: 'provisional',
-      payment:
-        'Pago al reservar en Cal.com (importe orientativo). 50 % de descuento si aplicas el plan de una inspección (360º o vulnerabilidades)',
-      timeline: '60 minutos',
-      delivery: 'Siguientes pasos por escrito en 1 día laborable',
-      guarantee: 'Resumen entregado en 1 día laborable tras la sesión'
-    },
-    action: {
-      kind: 'booking',
-      label: 'Reservar sesión',
-      href: 'https://cal.com/alexendros/sesion-tecnica',
-      newTab: true
-    }
-  },
-  {
-    slug: 'auditoria-normativa-ciberseguridad',
-    kind: 'service',
-    title: 'Inspección de cumplimiento normativo y vulnerabilidades',
-    short:
-      'Inspección de RGPD/LSSI y vulnerabilidades básicas, con severidad y corrección recomendada por hallazgo.',
-    description:
-      'Inspección de cumplimiento normativo y de vulnerabilidades de tu presencia web. Cada problema lleva severidad y corrección recomendada. No incluye prueba de intrusión ni certificación.',
-    audience: ['Negocios que necesitan un informe accionable antes de endurecer su sitio.'],
-    problems: [
-      'Dudas de cumplimiento RGPD/LSSI',
-      'Superficie de seguridad sin priorizar',
-      'Necesitas un informe, no una prueba de intrusión'
-    ],
-    scope: [
-      'RGPD y LSSI en la superficie pública',
-      'Seguridad básica (cabeceras, secretos expuestos, superficies evidentes)',
+      'Protección de datos en la superficie pública (RGPD y LSSI aplicables)',
+      'Políticas de cookies y consentimiento',
+      'Accesibilidad al navegarlo (revisión práctica, no certificación)',
       'Priorización por severidad'
     ],
     deliverables: [
-      'Informe con problemas de normativa y seguridad básica',
-      'Severidad y corrección por hallazgo'
+      'Informe de protección de datos, cookies y accesibilidad',
+      'Severidad y corrección recomendada por problema'
     ],
     process: ['Alcance del encargo', 'Análisis', 'Redacción del informe', 'Entrega'],
-    technicalDetails: ['Revisión proporcional OWASP ASVS L1, CSP, cookies y formularios.'],
+    technicalDetails: [
+      'Revisión de avisos legales, cookies, formularios y barreras evidentes de accesibilidad.'
+    ],
     exclusions: [
-      'No incluye prueba de intrusión',
-      'No incluye certificación oficial',
+      'No incluye certificación oficial ni auditoría legal completa',
+      'No incluye prueba de intrusión ni análisis de vulnerabilidades técnicas',
       'No incluye implementación de remedios'
     ],
     commercial: {
       mode: 'fixed',
-      priceEuros: provisionalPrices.auditoria,
+      priceEuros: provisionalPrices.cumplimiento,
       priceStatus: 'provisional',
       payment: '50 % al encargo y 50 % a la entrega, sin recargo',
       timeline: '10 días laborables',
       delivery:
-        'Informe RGPD/LSSI y seguridad básica; cada problema con severidad y corrección recomendada',
+        'Informe de protección de datos, cookies y accesibilidad; cada problema con severidad y corrección recomendada',
       guarantee: 'Corrección de desviaciones del alcance escrito en 15 días naturales'
     },
     action: {
       kind: 'contact',
-      label: 'Pedir la inspección',
-      href: '/contacto?motivo=informacionCliente&servicio=auditoria-normativa-ciberseguridad',
+      label: 'Pedir la revisión',
+      href: '/contacto?motivo=informacionCliente&servicio=cumplimiento-normativo',
+      newTab: false
+    }
+  },
+  {
+    slug: 'ciberseguridad',
+    kind: 'service',
+    title: 'Ciberseguridad',
+    short:
+      'Revisión de vulnerabilidades básicas en tu web, con severidad y corrección recomendada por problema.',
+    description:
+      'Inspección de seguridad básica de tu presencia web: cabeceras, secretos expuestos y superficies evidentes. Cada problema lleva severidad y corrección recomendada. No incluye prueba de intrusión ni certificación.',
+    audience: [
+      'Negocios que necesitan priorizar riesgos técnicos evidentes antes de endurecer el sitio.'
+    ],
+    problems: [
+      'Superficie de seguridad sin priorizar',
+      'Dudas sobre cabeceras, secretos o puntos de entrada evidentes',
+      'Necesitas un informe técnico, no una prueba de intrusión'
+    ],
+    scope: [
+      'Seguridad básica (cabeceras, secretos expuestos, superficies evidentes)',
+      'Priorización por severidad',
+      'Corrección recomendada por problema'
+    ],
+    deliverables: [
+      'Informe de seguridad básica',
+      'Severidad y corrección recomendada por problema'
+    ],
+    process: ['Alcance del encargo', 'Análisis', 'Redacción del informe', 'Entrega'],
+    technicalDetails: [
+      'Revisión proporcional OWASP ASVS L1, CSP y superficies públicas evidentes.'
+    ],
+    exclusions: [
+      'No incluye prueba de intrusión',
+      'No incluye certificación oficial',
+      'No incluye implementación de remedios',
+      'No incluye revisión legal de protección de datos ni cookies'
+    ],
+    commercial: {
+      mode: 'fixed',
+      priceEuros: provisionalPrices.ciberseguridad,
+      priceStatus: 'provisional',
+      payment: '50 % al encargo y 50 % a la entrega, sin recargo',
+      timeline: '10 días laborables',
+      delivery: 'Informe de seguridad básica; cada problema con severidad y corrección recomendada',
+      guarantee: 'Corrección de desviaciones del alcance escrito en 15 días naturales'
+    },
+    action: {
+      kind: 'contact',
+      label: 'Pedir la revisión',
+      href: '/contacto?motivo=informacionCliente&servicio=ciberseguridad',
       newTab: false
     }
   },
   {
     slug: 'software-a-medida',
     kind: 'service',
-    title: 'Producto de software a medida',
+    title: 'Colaboración en proyectos de software',
     short:
-      'Una herramienta o aplicación por fases: primero una versión pequeña y útil, luego mejoras.',
+      'Me integro en proyectos grandes con más compañeros: aporto diseño y desarrollo por fases, con precio y plazo por escrito.',
     description:
-      'Diseño y desarrollo de un producto de software para un proceso de tu negocio. Empezamos por descubrir el problema, entregamos una primera versión usable y seguimos con mejoras acordadas. Cada fase lleva su precio y plazo en la propuesta. No es una web de escaparate ni un pack cerrado.',
+      'Colaboración técnica en proyectos de software con equipo existente o ampliado. Encajo en el ritmo del proyecto, entrego por fases y dejo precio y plazo escritos antes de cada una. No es una web de escaparate ni un pack cerrado; es trabajo conjunto en un producto o herramienta mayor.',
     audience: [
-      'Equipos pequeños o emprendedores con un proceso manual que quieren digitalizar',
-      'Pymes que necesitan una herramienta propia sin construir una plataforma enorme de golpe'
+      'Equipos que ya tienen un proyecto en marcha y necesitan refuerzo técnico fiable',
+      'Negocios con un producto o herramienta grande donde hace falta construir por fases con más manos'
     ],
     problems: [
-      'Un proceso se hace a mano o con hojas de cálculo frágiles',
-      'Las herramientas genéricas no encajan y pierdes tiempo',
-      'Quieres validar una idea con una primera versión real'
+      'El proyecto es grande y hace falta alguien que entregue por fases con el equipo',
+      'Las herramientas genéricas no encajan y el desarrollo se atasca',
+      'Necesitas ampliar capacidad sin perder claridad de alcance y plazos'
     ],
     scope: [
-      'Descubrimiento del problema y del alcance de la primera versión',
-      'Diseño y construcción de la primera versión usable',
+      'Alineación con el equipo y el alcance de la fase',
+      'Diseño y construcción de entregables acordados',
       'Mejoras por fases con precio y plazo escritos antes de cada una',
-      'Entrega de código, documentación y accesos al terminar de pagar'
+      'Entrega de código, documentación y accesos al terminar de pagar la fase'
     ],
     deliverables: [
       'Propuesta por fase con precio y plazo',
-      'Primera versión publicada o instalable según el acuerdo',
+      'Entregable de la fase publicado o integrable según el acuerdo',
       'Código, documentación breve e instrucciones de uso',
       'Accesos al entorno acordado'
     ],
     process: [
-      'Descubrimiento y propuesta de la primera fase',
-      'Construcción de la primera versión',
+      'Alineación con el equipo y propuesta de la primera fase',
+      'Construcción del entregable de la fase',
       'Prueba conjunta y entrega',
-      'Mejoras siguientes solo si las acordamos por escrito'
+      'Fases siguientes solo si las acordamos por escrito'
     ],
     technicalDetails: [
-      'Stack según el problema (web, CLI u otra superficie acordada).',
+      'Stack según el problema y las convenciones del equipo (web, CLI u otra superficie acordada).',
       'Caso de referencia: Zedazo (herramienta de contactos de código abierto).'
     ],
     exclusions: [
@@ -360,7 +376,7 @@ export const services: Service[] = [
     },
     action: {
       kind: 'contact',
-      label: 'Pedir propuesta de software',
+      label: 'Pedir propuesta de colaboración',
       href: '/contacto?motivo=propuestaComercial&origen=servicios&servicio=software-a-medida',
       newTab: false
     }
