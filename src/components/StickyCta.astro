@@ -15,7 +15,7 @@ const HIDE_PATHS = [
 ];
 const currentPath = Astro.url.pathname || pathname;
 const shouldShow = !HIDE_PATHS.some((p) => currentPath === p || currentPath.startsWith(p + '/'));
-const priceLabel = formatEuro(provisionalPrices.informeComercial);
+const priceLabel = `${formatEuro(provisionalPrices.informeComercial)} + IVA`;
 ---
 
 {
@@ -29,7 +29,7 @@ const priceLabel = formatEuro(provisionalPrices.informeComercial);
       <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2.5">
         <p class="min-w-0 text-sm">
           <strong class="font-bold">Informe 360º {priceLabel}</strong>
-          <span class="text-muted"> · provisional</span>
+          <span class="text-muted"> · orientativo</span>
         </p>
         <div class="flex shrink-0 items-center gap-1">
           <a

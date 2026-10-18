@@ -93,6 +93,12 @@ await writeOg(
   'Webs claras y útiles',
   'Para profesionales y pequeños negocios'
 );
+await writeOg(
+  'proceso-y-entrega.png',
+  'CÓMO TRABAJO',
+  'Así trabajo: claro desde el primer día',
+  'Precio y plazo por escrito'
+);
 for (const s of services) {
   await writeOg(`servicios/${s.slug}.png`, 'SERVICIO', s.title, s.short);
 }

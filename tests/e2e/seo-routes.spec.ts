@@ -16,7 +16,11 @@ const SITEMAP_PUBLIC_PATHS = [
   '/servicios/',
   '/servicios/informe-comercial/',
   '/servicios/sesion-profesional/',
-  '/servicios/auditoria-normativa-ciberseguridad/'
+  '/servicios/auditoria-normativa-ciberseguridad/',
+  '/servicios/software-a-medida/',
+  '/sobre-mi/',
+  '/articulos/presupuesto-web/',
+  '/articulos/web-o-app-a-medida/'
 ];
 
 const SITEMAP_RETIRED_PATHS = ['/metodologia/', '/valores/'];

@@ -39,16 +39,6 @@
       "permanent": true
     },
     {
-      "source": "/sobre-mi",
-      "destination": "/proceso-y-entrega",
-      "permanent": true
-    },
-    {
-      "source": "/sobre-mi/",
-      "destination": "/proceso-y-entrega",
-      "permanent": true
-    },
-    {
       "source": "/aviso-legal",
       "destination": "/identidad",
       "permanent": true

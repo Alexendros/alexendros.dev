@@ -9,9 +9,11 @@ for (const width of [320, 390, 768, 1280]) {
     const response = await page.goto(route);
     expect(response?.status()).toBe(200);
     await expect(page.locator('h1')).toHaveCount(1);
-    await expect(page.locator('h1')).toContainText('Un proceso claro.');
-    await expect(page.locator('h1')).toContainText('Una entrega comprobable.');
-    await expect(page.locator('main a[href="/contacto"]').first()).toBeVisible();
+    await expect(page.locator('h1')).toContainText('Así trabajamos:');
+    await expect(page.locator('h1')).toContainText('claro desde el primer día');
+    await expect(
+      page.locator('main a[href*="/contacto"][href*="origen=proceso"]').first()
+    ).toBeVisible();
     await expect(page.locator('.delivery-page')).toHaveCount(0);
     await expect(page.locator('.pagehead-rule')).toHaveCount(1);
     const overflows = await page.evaluate(
@@ -38,7 +40,9 @@ test('proceso: contenido esencial sin JavaScript', async ({ browser, baseURL }) 
   await page.goto(`${baseURL}${route}`);
   await expect(page.locator('h1')).toBeVisible();
   await expect(page.locator('#proceso')).toBeVisible();
-  await expect(page.locator('main a[href="/contacto"]').first()).toBeVisible();
+  await expect(
+    page.locator('main a[href*="/contacto"][href*="origen=proceso"]').first()
+  ).toBeVisible();
   await expect(page.locator('.delivery-page')).toHaveCount(0);
   await context.close();
 });
@@ -48,7 +52,7 @@ test('proceso: ancla bajo la cabecera y sticky ausente', async ({ page }) => {
   await page.goto(route);
   await expect(page.locator('#sticky-cta')).toHaveCount(0);
 
-  await page.getByRole('link', { name: 'Ver el proceso' }).click();
+  await page.locator('#proceso').scrollIntoViewIfNeeded();
   await expect(page.locator('#proceso')).toBeInViewport();
 
   const clearance = await page.evaluate(() => {
@@ -63,11 +67,20 @@ test('proceso: ancla bajo la cabecera y sticky ausente', async ({ page }) => {
   expect(clearance!.sectionTop).toBeGreaterThanOrEqual(clearance!.headerBottom - 1);
 });
 
-test('proceso: FAQ abre con teclado', async ({ page }) => {
+test('proceso: FAQ abre con teclado y CTAs llevan origen', async ({ page }) => {
   await page.goto(route);
   const firstFaq = page.locator('main details').first();
   const firstSummary = firstFaq.locator('summary.focus-ring');
   await firstSummary.focus();
   await page.keyboard.press('Enter');
   await expect(firstFaq).toHaveAttribute('open', '');
+
+  await expect(page.getByRole('link', { name: 'Pedir presupuesto' }).first()).toHaveAttribute(
+    'href',
+    /origen=proceso/
+  );
+  await expect(page.getByRole('link', { name: 'Ver precios' })).toHaveAttribute(
+    'href',
+    /origen=proceso/
+  );
 });

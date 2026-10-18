@@ -103,7 +103,7 @@ test.describe('CP-10 edge producción', () => {
       locs.push(...[...body.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]!));
     }
     const paths = locs.map((loc) => new URL(loc).pathname);
-    for (const retired of ['/metodologia/', '/valores/', '/como-trabajo/', '/sobre-mi/']) {
+    for (const retired of ['/metodologia/', '/valores/', '/como-trabajo/']) {
       expect(paths, `sitemap no debe incluir ${retired}`).not.toContain(retired);
     }
 

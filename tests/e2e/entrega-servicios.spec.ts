@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { formatEuro, portalTotalWithModules, provisionalPrices } from '../../src/content/pricing';
 
 test.describe('F02 F03 F10 servicios y configurador', () => {
-  test('F02: /servicios muestra las tres fichas y cada importe del módulo', async ({ page }) => {
+  test('F02: /servicios muestra las cuatro fichas y cada importe del módulo', async ({ page }) => {
     await page.goto('/servicios');
     await expect(page.getByRole('heading', { name: 'Informe 360º' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Sesión profesional' })).toBeVisible();
@@ -10,6 +10,9 @@ test.describe('F02 F03 F10 servicios y configurador', () => {
       page.getByRole('heading', {
         name: 'Inspección de cumplimiento normativo y vulnerabilidades'
       })
+    ).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'Producto de software a medida' })
     ).toBeVisible();
     const body = await page.locator('main').innerText();
     expect(body).toContain(formatEuro(provisionalPrices.informeComercial));
@@ -20,6 +23,8 @@ test.describe('F02 F03 F10 servicios y configurador', () => {
     expect(body).toContain(formatEuro(provisionalPrices.mensajeria));
     expect(body).toContain(formatEuro(provisionalPrices.usuarios));
     expect(body).toContain(formatEuro(provisionalPrices.contenidos));
+    expect(body).toContain('+ IVA');
+    expect(body).toContain('Precio por fase en la propuesta');
   });
 
   test('F03/CFG-01: marcar los cuatro módulos deja el total igual a la suma', async ({ page }) => {
@@ -35,12 +40,10 @@ test.describe('F02 F03 F10 servicios y configurador', () => {
       await box.check();
       await expect(box).toBeChecked();
     }
-    await expect(configurator.locator('[data-pricing-total]')).toHaveText(
+    await expect(configurator.locator('[data-pricing-total]')).toContainText(
       formatEuro(portalTotalWithModules)
     );
-    await expect(configurator).toContainText(
-      /estimación orientativa|no un presupuesto contractual/i
-    );
+    await expect(configurator).toContainText(/orientativo/i);
     await expect(configurator).toContainText(/plazos.*no se suman/i);
   });
 

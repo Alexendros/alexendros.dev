@@ -8,6 +8,7 @@ import { Image } from 'astro:assets';
 import {
   availabilityCtaLabels,
   availabilityLabels,
+  productTypeLabels,
   projects,
   workKindLabels
 } from '../../content/projects';
@@ -30,7 +31,8 @@ const { project } = Astro.props;
     <h1 class="mt-3 text-3xl font-bold sm:text-4xl text-balance">{project.title}</h1>
     <p class="mt-3 text-muted text-pretty">{project.summary}</p>
     <p class="mt-3 text-sm font-mono text-muted text-pretty break-words">
-      {workKindLabels[project.workKind]} · {availabilityLabels[project.availability]}
+      {productTypeLabels[project.productType]} · {workKindLabels[project.workKind]} ·{' '}
+      {availabilityLabels[project.availability]}
     </p>
     <p class="mt-2 text-xs text-muted max-w-2xl text-pretty">
       Disponibilidad habla de consulta o transferencia de la obra, no de hueco de agenda laboral.
@@ -95,16 +97,31 @@ const { project } = Astro.props;
     <div class="mt-10 grid md:grid-cols-[1.2fr_0.8fr] gap-10" data-reveal>
       <div class="min-w-0 space-y-8 text-sm">
         <div>
-          <h2 class="font-bold">El punto de partida</h2>
+          <h2 class="font-bold">Punto de partida</h2>
           <p class="text-muted mt-1 text-pretty">{project.context}</p>
         </div>
         <div>
-          <h2 class="font-bold">El reto</h2>
-          <p class="text-muted mt-1 text-pretty">{project.challenge}</p>
+          <h2 class="font-bold">Qué hice</h2>
+          <p class="text-muted mt-1 text-pretty">{project.solution}</p>
+          <p class="text-muted mt-2 text-pretty">{project.challenge}</p>
         </div>
         <div>
-          <h2 class="font-bold">Qué se hizo</h2>
-          <p class="text-muted mt-1 text-pretty">{project.solution}</p>
+          <h2 class="font-bold">Qué cambió</h2>
+          {
+            project.results && project.results.length > 0 ? (
+              <ul class="list-disc pl-5 text-muted space-y-1 mt-1">
+                {project.results.map((r) => (
+                  <li>{r}</li>
+                ))}
+              </ul>
+            ) : (
+              <ul class="list-disc pl-5 text-muted space-y-1 mt-1">
+                {project.highlights.map((h) => (
+                  <li>{h}</li>
+                ))}
+              </ul>
+            )
+          }
         </div>
         <div>
           <h2 class="font-bold">Qué incluyó el trabajo</h2>
@@ -158,7 +175,7 @@ const { project } = Astro.props;
           </div>
         </div>
         <Button
-          href={`/contacto?motivo=informacionCliente&proyecto=${encodeURIComponent(project.slug)}`}
+          href={`/contacto?motivo=informacionCliente&origen=proyectos&proyecto=${encodeURIComponent(project.slug)}`}
           class="w-full"
         >
           {availabilityCtaLabels[project.availability]}

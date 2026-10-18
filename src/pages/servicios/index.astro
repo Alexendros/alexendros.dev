@@ -10,18 +10,18 @@ import { serviceProducts } from '../../content/services';
 
 <Layout
   title="Servicios — Alexendros"
-  description="Informe 360º, sesión profesional, inspección de cumplimiento normativo y vulnerabilidades, y portal web configurable por módulos."
+  description="Informe 360º, sesión profesional, inspección, software a medida y portal web configurable por módulos."
 >
   <Container class="py-16 md:py-24">
     <PageHead
       title="Servicios"
-      description="Elige crear una web (portal por módulos) o revisar la actual (informe, sesión o inspección). Precio, pago, plazo, entrega y garantía son provisionales; el desglose fiscal se confirma en la propuesta."
+      description="Elige crear una web, un software a medida o revisar la que ya tienes. Precio, pago y plazo orientativos; el importe final va en la propuesta."
     />
-    <p class="mt-4 max-w-2xl text-sm text-muted">
-      Tres vías de revisión y un portal configurable. Los importes son provisionales y no incluyen
-      un desglose de impuestos publicado: se confirma en la propuesta.
+    <p class="mt-4 max-w-2xl text-sm text-muted" data-services-price-note>
+      Precios orientativos; el importe final va en la propuesta. Los importes publicados se muestran
+      + IVA.
     </p>
-    <Grid gap="6" class="mt-8 md:grid-cols-3" data-services-grid>
+    <Grid gap="6" class="mt-8 md:grid-cols-2 lg:grid-cols-4" data-services-grid>
       {
         serviceProducts.map((product, i) => (
           <div data-reveal style={`--i:${i}`}>

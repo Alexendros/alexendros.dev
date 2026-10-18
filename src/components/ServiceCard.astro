@@ -1,5 +1,4 @@
 ---
-import { formatEuro } from '../content/pricing';
 import type { ProductCard } from '../content/services';
 
 interface Props {
@@ -9,7 +8,7 @@ interface Props {
 }
 const { product, headingLevel = 'h2' } = Astro.props;
 const Heading = headingLevel;
-const priceStatusLabel = product.priceStatus === 'provisional' ? 'provisional' : 'confirmado';
+const priceStatusLabel = product.priceStatus === 'provisional' ? 'orientativo' : 'confirmado';
 ---
 
 <article
@@ -26,7 +25,7 @@ const priceStatusLabel = product.priceStatus === 'provisional' ? 'provisional' :
   </Heading>
   <p class="mt-3 text-sm text-muted" data-product-card-summary>{product.short}</p>
   <p class="mt-4 text-sm text-muted" data-product-card-price>
-    {formatEuro(product.priceEuros)}
+    {product.priceLabel}
     <span> · {priceStatusLabel}</span>
   </p>
   <div class="mt-auto pt-4 text-sm font-medium" aria-hidden="true" data-product-card-cta>

@@ -1,109 +1,113 @@
 import { describe, expect, it } from 'vitest';
-import {
-  processPage,
-  type ProcessFaq,
-  type ProcessStep,
-  type QualityCriterion,
-  type WorkingTerm
-} from './process';
+import { formatEuro, provisionalPrices } from './pricing';
+import { PROCESS_JARGON, processPage, type ProcessFaq, type ProcessStep } from './process';
 
 function nonEmpty(value: string, label: string) {
   expect(value.trim().length, label).toBeGreaterThan(0);
 }
 
+function collectVisibleStrings(value: unknown, out: string[] = []): string[] {
+  if (typeof value === 'string') {
+    if (!value.startsWith('/') && !value.startsWith('http') && !value.includes('origen=')) {
+      out.push(value);
+    }
+    return out;
+  }
+  if (Array.isArray(value)) {
+    for (const item of value) collectVisibleStrings(item, out);
+    return out;
+  }
+  if (value && typeof value === 'object') {
+    for (const [key, child] of Object.entries(value)) {
+      if (key === 'seo' || key === 'id' || key === 'href') continue;
+      collectVisibleStrings(child, out);
+    }
+  }
+  return out;
+}
+
+function visibleCopy(): string {
+  return collectVisibleStrings(processPage).join(' ');
+}
+
+function wordCount(text: string): number {
+  return text
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+    .split(/\s+/)
+    .filter(Boolean).length;
+}
+
 describe('processPage — copy público de proceso y entrega', () => {
-  it('tiene ids únicos y campos no vacíos en hero, fases, criterios, condiciones y FAQ', () => {
+  it('tiene seo, hero, 4 pasos, 3 caminos, 4 FAQ y cierre con CTA medibles', () => {
     nonEmpty(processPage.seo.title, 'seo.title');
     nonEmpty(processPage.seo.description, 'seo.description');
     nonEmpty(processPage.hero.h1Lead, 'hero.h1Lead');
     nonEmpty(processPage.hero.h1Accent, 'hero.h1Accent');
     nonEmpty(processPage.hero.lead, 'hero.lead');
-    nonEmpty(processPage.hero.primaryCta.label, 'hero.primaryCta.label');
-    nonEmpty(processPage.hero.secondaryCta.label, 'hero.secondaryCta.label');
-    nonEmpty(processPage.hero.summaryTitle, 'hero.summaryTitle');
+    expect(processPage.hero.guarantees).toHaveLength(3);
 
-    expect(processPage.hero.agreementPoints).toHaveLength(4);
-    for (const point of processPage.hero.agreementPoints) nonEmpty(point, 'agreementPoint');
-
+    expect(processPage.steps).toHaveLength(4);
     const stepIds = processPage.steps.map((s: ProcessStep) => s.id);
     expect(new Set(stepIds).size).toBe(stepIds.length);
-    expect(processPage.steps).toHaveLength(4);
     for (const step of processPage.steps) {
-      nonEmpty(step.id, `step.${step.id}.id`);
       nonEmpty(step.title, `step.${step.id}.title`);
+      nonEmpty(step.duration, `step.${step.id}.duration`);
       nonEmpty(step.description, `step.${step.id}.description`);
-      nonEmpty(step.output, `step.${step.id}.output`);
+      nonEmpty(step.receive, `step.${step.id}.receive`);
     }
 
-    const criterionIds = processPage.criteria.map((c: QualityCriterion) => c.id);
-    expect(new Set(criterionIds).size).toBe(criterionIds.length);
-    expect(processPage.criteria).toHaveLength(4);
-    for (const criterion of processPage.criteria) {
-      nonEmpty(criterion.title, `criterion.${criterion.id}.title`);
-      nonEmpty(criterion.benefit, `criterion.${criterion.id}.benefit`);
-      nonEmpty(criterion.verification, `criterion.${criterion.id}.verification`);
-    }
-
-    const termIds = processPage.terms.map((t: WorkingTerm) => t.id);
-    expect(new Set(termIds).size).toBe(termIds.length);
-    expect(processPage.terms).toHaveLength(3);
-    for (const term of processPage.terms) {
-      nonEmpty(term.title, `term.${term.id}.title`);
-      nonEmpty(term.description, `term.${term.id}.description`);
-    }
-
-    expect(processPage.faqs).toHaveLength(5);
+    expect(processPage.paths).toHaveLength(3);
+    expect(processPage.faqs).toHaveLength(4);
     for (const faq of processPage.faqs as ProcessFaq[]) {
       nonEmpty(faq.question, 'faq.question');
       nonEmpty(faq.answer, 'faq.answer');
     }
 
-    nonEmpty(processPage.evidence.heading, 'evidence.heading');
-    nonEmpty(processPage.evidence.body, 'evidence.body');
-    nonEmpty(processPage.evidence.linkLabel, 'evidence.linkLabel');
     nonEmpty(processPage.close.heading, 'close.heading');
-    nonEmpty(processPage.close.body, 'close.body');
+    nonEmpty(processPage.limits.body, 'limits.body');
   });
 
-  it('usa CTA a /contacto y ancla de proceso, sin motivo nuevo', () => {
-    expect(processPage.hero.primaryCta.label).toBe('Cuéntame qué necesitas');
-    expect(processPage.hero.primaryCta.href).toBe('/contacto');
-    expect(processPage.hero.secondaryCta.label).toBe('Ver el proceso');
-    expect(processPage.hero.secondaryCta.href).toBe('#proceso');
-    expect(processPage.close.cta.label).toBe('Cuéntame qué necesitas');
-    expect(processPage.close.cta.href).toBe('/contacto');
-    expect(processPage.evidence.linkHref).toBe('/proyectos');
-    expect(processPage.evidence.linkLabel).toBe('Trabajo que puedes consultar');
+  it('usa CTA con origen=proceso hacia presupuesto, precios y Cal.com', () => {
+    expect(processPage.hero.primaryCta.label).toBe('Pedir presupuesto');
+    expect(processPage.hero.primaryCta.href).toContain('/contacto');
+    expect(processPage.hero.primaryCta.href).toContain('origen=proceso');
+    expect(processPage.hero.primaryCta.href).toContain('motivo=propuestaComercial');
+    expect(processPage.hero.secondaryCta.href).toContain('/servicios');
+    expect(processPage.hero.secondaryCta.href).toContain('origen=proceso');
+    expect(processPage.close.primaryCta.href).toContain('origen=proceso');
+    expect(processPage.close.secondaryCta.href).toMatch(/^https:\/\//);
   });
 
-  it('ordena las cuatro fases con salida definida', () => {
+  it('ordena las cuatro fases hablamos → escrito → construyo → publico', () => {
     expect(processPage.steps.map((s) => s.id)).toEqual([
-      'definir',
-      'desarrollar-o-analizar',
-      'revisar',
-      'entregar'
+      'hablamos',
+      'escrito',
+      'construyo',
+      'publico'
     ]);
-    for (const step of processPage.steps) {
-      expect(step.output.trim().length).toBeGreaterThan(0);
+  });
+
+  it('muestra precios ya publicados del catálogo y software sin cifra inventada', () => {
+    const joined = visibleCopy();
+    expect(joined).toContain(formatEuro(provisionalPrices.portalInicio));
+    expect(joined).toContain(formatEuro(provisionalPrices.informeComercial));
+    expect(joined).toContain('+ IVA');
+    expect(processPage.paths.find((p) => p.id === 'software')?.priceLabel).toBe(
+      'Precio por fase en la propuesta'
+    );
+  });
+
+  it('mantiene densidad baja y evita el glosario técnico', () => {
+    const copy = visibleCopy();
+    expect(wordCount(copy)).toBeLessThanOrEqual(400);
+    for (const term of PROCESS_JARGON) {
+      expect(copy.toLowerCase(), term).not.toContain(term.toLowerCase());
     }
   });
 
-  it('no anuncia euros, plazos de mantenimiento universal ni nomenclatura interna', () => {
-    const joined = JSON.stringify(processPage);
-    expect(joined).not.toMatch(/\d+\s*€/);
-    expect(joined).not.toMatch(/12\s*meses/i);
-    expect(joined).not.toMatch(/2\s*días/i);
-    expect(joined).not.toMatch(/Pentalokgo/i);
-    expect(joined).not.toMatch(/Sección en desarrollo/i);
-    expect(joined).not.toMatch(/implementaci[oó]n incluida/i);
-    expect(joined).not.toMatch(/implementaci[oó]n universal/i);
-  });
-
-  it('distingue que no todos los servicios implementan cambios', () => {
-    const faq = processPage.faqs.find((item) =>
-      item.question.includes('se aplica igual a todos los servicios')
-    );
-    expect(faq).toBeDefined();
-    expect(faq?.answer).toMatch(/Solo se implementan cambios cuando están incluidos/);
+  it('declara propiedad del resultado y límites sin tono defensivo largo', () => {
+    const ownership = processPage.faqs.find((f) => f.question.includes('dueño'));
+    expect(ownership?.answer).toMatch(/código/i);
+    expect(processPage.limits.body).toMatch(/No prometo ventas/);
   });
 });

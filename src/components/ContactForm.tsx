@@ -10,6 +10,7 @@ import { track } from '../lib/tracking/events';
 import {
   CONTACT_WIZARD_STEPS,
   contactChannels,
+  contactOrigins,
   contactReasons,
   entityLabels,
   entityTypes,
@@ -55,6 +56,13 @@ function reasonFromSearch(value: string | null): ContactInput['reason'] {
   return 'informacionCliente';
 }
 
+function originFromSearch(value: string | null): ContactInput['origin'] | '' {
+  if (value && (contactOrigins as readonly string[]).includes(value)) {
+    return value as ContactInput['origin'];
+  }
+  return '';
+}
+
 function errorFor(field: string, errors: FieldError[]): FieldError | undefined {
   return errors.find((e) => e.field === field);
 }
@@ -72,6 +80,7 @@ function logicalPayloadKey(data: ContactInput): string {
     modules: data.modules ?? null,
     serviceSlug: data.serviceSlug ?? null,
     projectSlug: data.projectSlug ?? null,
+    origin: data.origin ?? null,
     consent: data.consent
   });
 }
@@ -116,6 +125,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
     modules: '',
     serviceSlug: '',
     projectSlug: '',
+    origin: '' as ContactInput['origin'] | '',
     consent: false,
     honeypot: ''
   });
@@ -131,17 +141,19 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
     document.documentElement.setAttribute('data-contact-hydrated', 'true');
     document.getElementById('contact-nojs')?.setAttribute('hidden', '');
     const params = new URLSearchParams(window.location.search);
-    // Solo motivo, módulos, servicio y proyecto allowlisted. precio/plazo se ignoran.
+    // Solo motivo, módulos, servicio, proyecto y origen allowlisted. precio/plazo se ignoran.
     const reason = reasonFromSearch(params.get('motivo'));
     const modules = serializePortalModuleIds(normalizePortalModuleIds(params.get('modulos')));
     const serviceSlug = normalizeServiceSlug(params.get('servicio')) ?? '';
     const projectSlug = normalizeProjectSlug(params.get('proyecto')) ?? '';
+    const origin = originFromSearch(params.get('origen'));
     setForm((prev) => ({
       ...prev,
       reason,
       modules,
       serviceSlug,
-      projectSlug
+      projectSlug,
+      origin
     }));
     return () => {
       document.documentElement.removeAttribute('data-contact-hydrated');
@@ -260,6 +272,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
       modules: form.modules || undefined,
       serviceSlug: form.serviceSlug || undefined,
       projectSlug: form.projectSlug || undefined,
+      origin: form.origin || undefined,
       consent: form.consent as true,
       honeypot: form.honeypot,
       turnstileToken: turnstileToken || undefined
@@ -419,6 +432,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
           onChange={(e) => setForm((f) => ({ ...f, honeypot: e.target.value }))}
         />
       </div>
+      {form.origin ? <input type="hidden" name="origin" value={form.origin} /> : null}
 
       {moduleLabels ? (
         <p className="text-sm text-muted" data-contact-modules>
