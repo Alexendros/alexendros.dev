@@ -120,8 +120,9 @@ test.describe('DET estructura común de fichas', () => {
       const card = page.locator(`[data-product-card="${product.slug}"]`);
       await expect(card).toHaveCount(1);
       await expect(card.locator('a')).toHaveCount(1);
-      await expect(card.locator('[data-product-card-price]')).toContainText('orientativo');
+      await expect(card.locator('[data-product-card-price]')).toBeVisible();
     }
+    await expect(page.locator('[data-services-price-note]')).toContainText(/orientativo/i);
     await expect(page.locator('[data-product-card="portal-inicio"]')).toHaveCount(0);
     await expect(page.getByText('Preparando el configurador')).toHaveCount(0);
   });

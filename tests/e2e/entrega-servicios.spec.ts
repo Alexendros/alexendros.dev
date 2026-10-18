@@ -43,7 +43,7 @@ test.describe('F02 F03 F10 servicios y configurador', () => {
     await expect(configurator.locator('[data-pricing-total]')).toContainText(
       formatEuro(portalTotalWithModules)
     );
-    await expect(configurator).toContainText(/orientativo/i);
+    await expect(page.locator('[data-services-price-note]')).toContainText(/orientativo/i);
     await expect(configurator).toContainText(/plazos.*no se suman/i);
   });
 

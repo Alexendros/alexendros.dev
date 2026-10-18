@@ -40,9 +40,8 @@ export default function PricingConfigurator() {
       </h2>
       <p className="mt-2 text-sm text-muted">
         Base del portal: {portalBase.delivery}. Pago: {portalBase.payment}. Plazo:{' '}
-        {portalBase.timeline}. El total es orientativo (+ IVA); el importe final va en la propuesta.
-        Los plazos de cada módulo no se suman solos: el calendario se acuerda tras revisar el
-        alcance.
+        {portalBase.timeline}. Los plazos de cada módulo no se suman solos: el calendario se acuerda
+        tras revisar el alcance.
       </p>
 
       <ul className="mt-6 space-y-3" data-pricing-list>
@@ -86,16 +85,18 @@ export default function PricingConfigurator() {
           <span className="text-muted">Módulos seleccionados</span>
           <span>{formatEuro(modulesTotal)} + IVA</span>
         </p>
-        <p className="flex flex-wrap items-center justify-between gap-4">
+        <p
+          id={liveId}
+          className="flex flex-wrap items-center justify-between gap-4"
+          aria-live="polite"
+          aria-atomic="true"
+        >
           <span>
-            Total orientativo:{' '}
+            Total:{' '}
             <strong data-pricing-total className="text-lg">
               {formatEuro(total)} + IVA
             </strong>
           </span>
-        </p>
-        <p id={liveId} className="sr-only" aria-live="polite" aria-atomic="true">
-          Total orientativo {formatEuro(total)} más IVA
         </p>
       </div>
 
