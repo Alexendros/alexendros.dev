@@ -44,5 +44,9 @@ id = "GHSA-ch52-4w7c-c8xp"
 reason = "http-cache-semantics residual arrastrado; sin parche misma línea usable"
 
 [[IgnoredVulns]]
+id = "GHSA-mrhx-c7xc-m3w5"
+reason = "zod 3.x residual de chromium-bidi/Playwright; 4.x forzado a >=4.6.6"
+
+[[IgnoredVulns]]
 id = "GHSA-9wv6-86v2-598j"
 reason = "path-to-regexp override a 6.3.0; residual si queda copia antigua en toolchain"
