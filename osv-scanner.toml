@@ -40,18 +40,6 @@ id = "GHSA-w5hq-g745-h8pq"
 reason = "uuid solo CI/toolchain"
 
 [[IgnoredVulns]]
-id = "GHSA-8r5x-fm3f-whwj"
-reason = "handlebars solo toolchain (semantic-release/LHCI)"
-
-[[IgnoredVulns]]
-id = "GHSA-p8wg-vrv2-v86f"
-reason = "handlebars solo toolchain (semantic-release/LHCI)"
-
-[[IgnoredVulns]]
-id = "GHSA-xw65-4hp5-5hc7"
-reason = "handlebars solo toolchain (semantic-release/LHCI)"
-
-[[IgnoredVulns]]
 id = "GHSA-ch52-4w7c-c8xp"
 reason = "http-cache-semantics residual arrastrado; sin parche misma línea usable"
 

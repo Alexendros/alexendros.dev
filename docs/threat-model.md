@@ -82,7 +82,9 @@ publicado (PR-E). No hay superficie de amenaza activa; las redirecciones histór
 
 Residuales aceptados del expediente `20261007-085704`, tras los parches de la misma línea:
 
-- Solo build o CI, fuera del runtime de Vercel: `basic-ftp`, `braces`, `extract-zip`, `sprintf-js`, `postcss-selector-parser`, `tmp`, `uuid`, `handlebars` (semantic-release/LHCI). No hay versión corregida en la misma línea, o el padre no admite el salto. No se fuerza un major. Allowlist en `osv-scanner.toml`.
+- Solo build o CI, fuera del runtime de Vercel: `basic-ftp`, `braces`, `extract-zip`, `sprintf-js`, `postcss-selector-parser`, `tmp`, `uuid`. No hay versión corregida en la misma línea, o el padre no admite el salto. No se fuerza un major. Allowlist en `osv-scanner.toml`.
+- `handlebars` (cadena semantic-release / `conventional-changelog-writer`): override `pnpm` a `4.7.10` (cierra GHSA-p8wg-vrv2-v86f y hermanas). Sigue siendo solo toolchain.
+- Copia de `vite` que arrastra Vitest: override a `>= 8.2.4` en la línea 8.2 (Astro ya resuelve `8.3.3+`). Cierra las alertas de `launch-editor` embebido.
 - `http-cache-semantics` residual de toolchain: aceptado si no hay parche en la misma línea.
 - `nodemailer` **10.x** (issue #12 cerrado 2026-10-09). El email que va a `replyTo` sigue limitado a 254 caracteres.
 - F-003 a F-007 están cerrados en `.gitleaks.toml`: `STORAGE_KEY` de `localStorage` del banner, no una credencial.
