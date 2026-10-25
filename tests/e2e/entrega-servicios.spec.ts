@@ -4,7 +4,11 @@ import { formatEuro, portalTotalWithModules, provisionalPrices } from '../../src
 test.describe('F02 F03 F10 servicios y configurador', () => {
   test('F02: /servicios muestra las cuatro fichas y cada importe del módulo', async ({ page }) => {
     await page.goto('/servicios');
-    await expect(page.getByRole('heading', { name: 'Servicios profesionales' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', {
+        name: 'Catálogo de servicios profesionales en respuesta a necesidades reales'
+      })
+    ).toBeVisible();
     await expect(
       page.getByRole('heading', { name: 'Posicionamiento comercial en buscadores' })
     ).toBeVisible();

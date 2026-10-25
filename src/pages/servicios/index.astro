@@ -1,6 +1,5 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import PageHead from '../../components/PageHead.astro';
 import Container from '../../components/Container.astro';
 import Grid from '../../components/Grid.astro';
 import ServiceCard from '../../components/ServiceCard.astro';
@@ -15,10 +14,17 @@ import { serviceProducts } from '../../content/services';
   ogImageAlt="Servicios profesionales de Alexendros.dev"
 >
   <Container class="py-16 md:py-24">
-    <PageHead
-      title="Servicios profesionales"
-      description="Catálogo de servicios: presencia en internet, revisión de páginas existentes y colaboración técnica por fases."
-    />
+    <header>
+      <h1 class="text-4xl font-bold max-w-3xl">
+        Catálogo de servicios profesionales en{' '}
+        <span class="text-primary">respuesta a necesidades reales</span>
+      </h1>
+      <div class="pagehead-rule mt-4 h-px bg-border" aria-hidden="true"></div>
+      <p class="text-muted mt-3 max-w-2xl">
+        Catálogo de servicios: presencia en internet, revisión de páginas existentes y colaboración
+        técnica por fases.
+      </p>
+    </header>
     <p class="mt-4 max-w-2xl text-sm text-muted" data-services-price-note>
       Precio, pago y plazo orientativos; el importe final va en la propuesta. Los importes
       publicados se muestran + IVA.
