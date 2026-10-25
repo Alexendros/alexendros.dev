@@ -17,20 +17,20 @@ test('F01: home es hero estable + caminos + proceso + caso', async ({ page }) =>
 
   const h1 = page.getByRole('heading', {
     level: 1,
-    name: /Webs y software a medida\. Y revisión de la tuya\./
+    name: /Tecnología clara para negocios: auditoría, diseño y desarrollo/
   });
   await expect(h1).toBeVisible();
-  await expect(page.getByText(/Tres caminos claros/)).toBeVisible();
+  await expect(page.getByText(/Con sede en Valencia/)).toBeVisible();
   await expect(page.locator('.hero-slot-item')).toHaveCount(0);
   await expect(page.getByText(/Pare las rotativas/)).toHaveCount(0);
 
   const banner = page.getByRole('banner');
   await expect(banner.getByRole('link', { name: 'Contactar' })).toBeVisible();
   await expect(
-    page.locator('[data-hero]').getByRole('link', { name: 'Cuéntame qué necesitas' })
+    page.locator('[data-hero]').getByRole('link', { name: 'Solicitar propuesta' })
   ).toBeVisible();
   await expect(
-    page.locator('[data-hero]').getByRole('link', { name: 'Explorar servicios' })
+    page.locator('[data-hero]').getByRole('link', { name: 'Ver servicios' })
   ).toBeVisible();
 
   await expect(banner.getByRole('link', { name: 'Servicios', exact: true })).toBeVisible();
