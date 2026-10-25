@@ -7,24 +7,18 @@ export type ProcessStep = {
   payment?: string;
 };
 
-export type ProcessCta = { label: string; href: string };
-
 const ORIGIN = 'origen=proceso';
 
 export const processPage = {
   seo: {
-    title: 'Metodología clara desde el primer día — Alexendros',
+    title: 'Metodología clara e integral — Alexendros',
     description:
-      'El cliente explica qué busca y recibe un proyecto adecuado a sus necesidades con un presupuesto a medida. Método de trabajo para webs y productos digitales.',
-    ogTitle: 'Metodología clara desde el primer día'
+      'Metodología clara e integral: desde la idea hasta el producto entregado. Método de trabajo para webs y productos digitales.',
+    ogTitle: 'Metodología clara e integral'
   },
   hero: {
-    h1Lead: 'Metodología clara',
-    h1Accent: 'desde el primer día',
-    lead: 'El cliente explica qué busca y recibe un proyecto adecuado a sus necesidades con un presupuesto a medida.'
-  },
-  processSection: {
-    heading: 'De la idea al proyecto publicado'
+    h1Lead: 'Metodología clara e integral',
+    h1Accent: ': desde la idea hasta el producto entregado.'
   },
   steps: [
     {
@@ -39,12 +33,12 @@ export const processPage = {
       title: 'Acuerdo por escrito',
       duration: '1–2 días',
       description: 'Queda definido qué incluye, qué no, el importe y la fecha de entrega.',
-      receive: 'Un acuerdo claro.',
+      receive: 'un contrato vinculante.',
       payment: 'Web: 50 % al empezar; software por fase.'
     },
     {
       id: 'construyo',
-      title: 'Construcción',
+      title: 'Desarrollo y construcción',
       duration: 'Desde 10 días laborables en una web sencilla',
       description:
         'Se muestran avances en 2–3 momentos. Si el alcance crece, se comunica el cambio de precio y plazo antes de seguir.',
@@ -52,20 +46,17 @@ export const processPage = {
     },
     {
       id: 'publico',
-      title: 'Prueba y publicación',
+      title: 'Previsualización y entrega',
       duration: '2–3 días',
       description:
         'Se comprueba el funcionamiento con el cliente y se entrega la formación de uso.',
-      receive: 'Proyecto online, instrucciones y accesos.',
+      receive: 'Producto acordado con instrucciones de uso y soporte para incidencias.',
       payment: 'Web: 50 % al publicar; software por fase.'
     }
   ] satisfies ProcessStep[],
   close: {
-    heading: 'Solicitar una propuesta',
+    heading: 'Solicitar presupuesto',
     body: 'La respuesta llega lo antes posible.',
-    primaryCta: {
-      label: 'Pedir presupuesto',
-      href: `/contacto?motivo=propuestaComercial&${ORIGIN}`
-    } satisfies ProcessCta
+    href: `/contacto?motivo=propuestaComercial&${ORIGIN}`
   }
 } as const;
