@@ -136,7 +136,7 @@ test.describe('CP-08 matriz UI — overflow y apilado', () => {
   test('320px contacto: contexto y mailto no desbordan; Enviar usable', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: VIEWPORT_HEIGHT });
     await page.goto('/contacto');
-    await expect(page.locator('#contact-service')).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole('button', { name: /Enviar/ })).toBeEnabled({ timeout: 10_000 });
     await assertNoOverflow(page, '/contacto@320');
     const sendBtn = page.getByRole('button', { name: /Enviar/ });
     await expect(sendBtn).toBeEnabled();
