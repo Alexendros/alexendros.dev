@@ -1,4 +1,3 @@
-import { formatEuro, provisionalPrices } from './pricing';
 import { calEventUrl } from '../lib/calBooking';
 
 export type ProcessStep = {
@@ -10,27 +9,7 @@ export type ProcessStep = {
   payment?: string;
 };
 
-export type ProcessFaq = { question: string; answer: string };
-
 export type ProcessCta = { label: string; href: string };
-
-export type ProcessPathCard = {
-  id: string;
-  title: string;
-  body: string;
-  priceLabel: string;
-  href: string;
-  linkLabel: string;
-};
-
-export type ProcessCase = {
-  title: string;
-  before: string;
-  did: string;
-  after: string;
-  href: string;
-  linkLabel: string;
-};
 
 const ORIGIN = 'origen=proceso';
 
@@ -38,7 +17,7 @@ export const processPage = {
   seo: {
     title: 'Metodología clara: de la idea al proyecto publicado — Alexendros',
     description:
-      'Precio y plazo por escrito, avances visibles y entrega comprobada. Método de trabajo para webs y productos digitales.',
+      'Sabrás qué recibes, cuánto cuesta y cuándo, antes de pagar. Método de trabajo para webs y productos digitales.',
     ogTitle: 'Metodología clara desde el primer día'
   },
   hero: {
@@ -52,12 +31,7 @@ export const processPage = {
     secondaryCta: {
       label: 'Ver precios',
       href: `/servicios?${ORIGIN}`
-    } satisfies ProcessCta,
-    guarantees: [
-      'Precio y plazo por escrito, antes de empezar.',
-      'Ves avances y das tu opinión durante el trabajo.',
-      'Lo probamos juntos antes de dar por terminado.'
-    ]
+    } satisfies ProcessCta
   },
   processSection: {
     heading: 'De la idea a tu proyecto publicado',
@@ -105,69 +79,6 @@ export const processPage = {
       'Formulario de contacto',
       'Instrucciones de uso'
     ]
-  },
-  pathsSection: {
-    heading: '¿Qué necesitas?',
-    intro: 'Importes orientativos; el final va en la propuesta.'
-  },
-  paths: [
-    {
-      id: 'web',
-      title: 'Una web o landing',
-      body: 'Para que te encuentren y te escriban.',
-      priceLabel: `Desde ${formatEuro(provisionalPrices.portalInicio)} + IVA`,
-      href: `/servicios?${ORIGIN}#portal-heading`,
-      linkLabel: 'Ver portal por módulos'
-    },
-    {
-      id: 'software',
-      title: 'Colaboración en software',
-      body: 'Me integro en proyectos grandes con el equipo, por fases.',
-      priceLabel: 'Precio por fase en la propuesta',
-      href: `/servicios/software-a-medida?${ORIGIN}`,
-      linkLabel: 'Ver cómo se plantea'
-    },
-    {
-      id: 'revision',
-      title: 'Revisar tu web',
-      body: 'Informe SEO con métricas y plan de ajustes.',
-      priceLabel: `Desde ${formatEuro(provisionalPrices.informeComercial)} + IVA`,
-      href: `/servicios/informe-comercial?${ORIGIN}`,
-      linkLabel: 'Ver posicionamiento en buscadores'
-    }
-  ] satisfies ProcessPathCard[],
-  featuredCase: {
-    title: 'Zedazo — Herramienta de contactos',
-    before: 'Tenía agendas con duplicados y formatos rotos.',
-    did: 'Hice una herramienta que limpia y exporta contactos.',
-    after: 'Ahora puedes migrar agendas sin el trabajo manual de siempre.',
-    href: '/proyectos/zedazo',
-    linkLabel: 'Ver el caso'
-  } satisfies ProcessCase,
-  faqsSection: {
-    heading: 'Dudas rápidas'
-  },
-  faqs: [
-    {
-      question: '¿Cuánto tarda?',
-      answer: 'Web sencilla: desde 10 días laborables. Software: por fases con plazo cada una.'
-    },
-    {
-      question: '¿Y si quiero cambiar algo a mitad?',
-      answer: 'Dímelo. Te cuento coste y retraso, y tú decides.'
-    },
-    {
-      question: '¿Incluye mantenimiento?',
-      answer: 'Solo si lo acordamos. Publicar, dominio e incidencias son cosas distintas.'
-    },
-    {
-      question: '¿Quién es el dueño del resultado?',
-      answer: 'Tú. Recibes código, contenidos y accesos al terminar de pagar.'
-    }
-  ] satisfies ProcessFaq[],
-  limits: {
-    heading: 'Límites',
-    body: 'No prometo ventas ni posiciones en Google. Una revisión básica no es una auditoría completa. Una certificación se ve aparte.'
   },
   close: {
     heading: 'Cuéntame qué necesitas',

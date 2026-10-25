@@ -67,14 +67,12 @@ test('proceso: ancla bajo la cabecera y sticky ausente', async ({ page }) => {
   expect(clearance!.sectionTop).toBeGreaterThanOrEqual(clearance!.headerBottom - 1);
 });
 
-test('proceso: FAQ abre con teclado y CTAs llevan origen', async ({ page }) => {
+test('proceso: CTAs llevan origen', async ({ page }) => {
   await page.goto(route);
-  const firstFaq = page.locator('main details').first();
-  const firstSummary = firstFaq.locator('summary.focus-ring');
-  await firstSummary.focus();
-  await page.keyboard.press('Enter');
-  await expect(firstFaq).toHaveAttribute('open', '');
-
+  await expect(page.locator('main details')).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: '¿Qué necesitas?', exact: true })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Un caso', exact: true })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Dudas rápidas', exact: true })).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Pedir presupuesto' }).first()).toHaveAttribute(
     'href',
     /origen=proceso/
