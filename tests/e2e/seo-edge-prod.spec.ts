@@ -20,8 +20,20 @@ const PENDING_APEX_REDIRECT_SOURCES = new Set([
   '/servicios/sesion-profesional',
   '/servicios/sesion-profesional/',
   '/servicios/auditoria-normativa-ciberseguridad',
-  '/servicios/auditoria-normativa-ciberseguridad/'
+  '/servicios/auditoria-normativa-ciberseguridad/',
+  // Canónica /metodo: apex aún aterriza en /proceso-y-entrega hasta promote.
+  '/metodologia',
+  '/metodologia/',
+  '/valores',
+  '/valores/',
+  '/como-trabajo',
+  '/como-trabajo/',
+  '/proceso-y-entrega',
+  '/proceso-y-entrega/'
 ]);
+
+/** Destino legacy en apex mientras no se publique /metodo. */
+const LEGACY_METODO_FINAL = '/proceso-y-entrega';
 
 type VercelRedirect = {
   source: string;
@@ -108,6 +120,10 @@ test.describe('CP-10 edge producción', () => {
       const final = await finalUrl(request, from);
       const finalPath = new URL(final).pathname.replace(/\/$/, '') || '/';
       const expected = expectedFinalPath(rule.destination);
+      if (pending && finalPath === LEGACY_METODO_FINAL && expected === '/metodo') {
+        expect(new URL(final).origin).toBe(APEX);
+        continue;
+      }
       expect(
         finalPath,
         `${rule.source} → esperado ${expected}, final ${finalPath} (${final})`
