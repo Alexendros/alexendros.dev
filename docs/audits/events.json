@@ -188,6 +188,17 @@
       "recordType": "event",
       "kind": "aviso",
       "source": "docs/audits/cierres/CIERRE-01-referencia.md"
+    },
+    {
+      "id": "evt-2026-10-25-adr-0022-0023",
+      "sequence": 18,
+      "timestamp": "2026-10-25T23:50:00Z",
+      "active": true,
+      "title": "ADR 0022/0023: islas de ficha y contacto mínimo",
+      "summary": "Aceptadas soft-nav de fichas (dialog + pushState) y formulario de contacto reducido a canal + datos esenciales.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "docs/audits/decisions.json#0022,#0023"
     }
   ]
 }

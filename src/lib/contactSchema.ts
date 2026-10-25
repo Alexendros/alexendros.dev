@@ -55,7 +55,11 @@ function rejectUnsafe(value: string, ctx: z.RefinementCtx, path: string) {
 export const contactSchema = z
   .object({
     name: z.string().trim().min(2).max(100),
-    entityType: z.enum(entityTypes),
+    /** UI mínima: default particular si no llega (contexto oculto). */
+    entityType: z.preprocess((v) => {
+      if (typeof v === 'string' && (entityTypes as readonly string[]).includes(v)) return v;
+      return 'particular';
+    }, z.enum(entityTypes)),
     channel: z.enum(contactChannels),
     phone: z.preprocess(
       (v) => (typeof v === 'string' && v.trim() === '' ? undefined : v),
@@ -71,7 +75,11 @@ export const contactSchema = z
       (v) => (typeof v === 'string' && v.trim() === '' ? undefined : v),
       z.string().trim().email().max(254).optional()
     ),
-    reason: z.enum(contactReasons),
+    /** UI mínima: default informacionCliente; query `motivo` allowlisted si llega. */
+    reason: z.preprocess((v) => {
+      if (typeof v === 'string' && (contactReasons as readonly string[]).includes(v)) return v;
+      return 'informacionCliente';
+    }, z.enum(contactReasons)),
     message: z.string().trim().min(10).max(2000),
     modules: z.preprocess((v) => {
       if (v === undefined || v === null) return undefined;
@@ -178,74 +186,6 @@ export function formatContactFieldErrors(error: z.ZodError): FieldError[] {
     out.push({ field, label, cause });
   }
   return out;
-}
-
-export type ContactWizardStep = 'reason' | 'name' | 'entity' | 'channel' | 'message' | 'consent';
-
-export const CONTACT_WIZARD_STEPS: ContactWizardStep[] = [
-  'reason',
-  'name',
-  'entity',
-  'channel',
-  'message',
-  'consent'
-];
-
-const STEP_FIELDS: Record<ContactWizardStep, string[]> = {
-  reason: ['reason'],
-  name: ['name'],
-  entity: ['entityType'],
-  channel: ['channel', 'phone', 'email'],
-  message: ['message'],
-  consent: ['consent']
-};
-
-export type ContactFormSlice = {
-  name: string;
-  entityType: ContactInput['entityType'];
-  channel: ContactInput['channel'];
-  phone: string;
-  email: string;
-  reason: ContactInput['reason'];
-  message: string;
-  modules?: string;
-  serviceSlug?: string;
-  projectSlug?: string;
-  consent: boolean;
-};
-
-/** Valida el paso actual con el mismo Zod que el envío (stubs en campos ajenos). */
-export function validateContactStep(step: ContactWizardStep, form: ContactFormSlice): FieldError[] {
-  const data: Record<string, unknown> = {
-    name: 'Valid Name',
-    entityType: 'particular',
-    channel: 'correo',
-    email: 'valid@example.com',
-    reason: 'informacionCliente',
-    message: 'Mensaje de petición válido para stub.',
-    consent: true
-  };
-
-  if (step === 'reason') data.reason = form.reason;
-  if (step === 'name') data.name = form.name;
-  if (step === 'entity') data.entityType = form.entityType;
-  if (step === 'channel') {
-    data.channel = form.channel;
-    data.phone = form.phone.trim() ? form.phone : undefined;
-    data.email = form.email.trim() ? form.email : undefined;
-  }
-  if (step === 'message') data.message = form.message;
-  if (step === 'consent') data.consent = form.consent;
-
-  const parsed = parseContactBody(data);
-  if (parsed.success) return [];
-  const allowed = new Set(STEP_FIELDS[step]);
-  return formatContactFieldErrors(parsed.error).filter((e) => allowed.has(e.field));
-}
-
-export function stepIndexForField(field: string): number {
-  const idx = CONTACT_WIZARD_STEPS.findIndex((s) => STEP_FIELDS[s].includes(field));
-  return idx >= 0 ? idx : 0;
 }
 
 export function buildContactMessage(input: ContactInput): string {

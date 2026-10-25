@@ -3,25 +3,34 @@ import Layout from '../../layouts/Layout.astro';
 import Container from '../../components/Container.astro';
 import Grid from '../../components/Grid.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
-import { projects } from '../../content/projects';
+import DetailIsland from '../../components/DetailIsland.astro';
+import { availabilityCtaLabels, productTypeLabels, projects } from '../../content/projects';
+
+const detailItems = projects.map((p) => ({
+  slug: p.slug,
+  path: `/proyectos/${p.slug}`,
+  title: p.title,
+  short: p.short,
+  description: p.summary,
+  meta: productTypeLabels[p.productType],
+  ctaLabel: availabilityCtaLabels[p.availability],
+  ctaHref: `/contacto?motivo=informacionCliente&proyecto=${p.slug}&origen=proyectos`
+}));
 ---
 
 <Layout
   title="Proyectos realizados — Alexendros"
-  description="Trabajos realizados de principio a fin por el mismo responsable."
+  description="Proyectos profesionales cumplidos con el criterio de Alexendros.dev."
   ogImage="/og/proyectos.png"
-  ogImageAlt="Casos reales de Alexendros.dev"
+  ogImageAlt="Proyectos profesionales cumplidos con el criterio de Alexendros.dev"
 >
   <Container class="py-16 md:py-24">
     <header>
       <h1 class="text-4xl font-bold max-w-3xl">
-        Proyectos realizados desde{' '}
-        <span class="text-primary">Alexendros.dev</span>
+        Proyectos profesionales cumplidos{' '}
+        <span class="text-primary">con el criterio de Alexendros.dev</span>
       </h1>
       <div class="pagehead-rule mt-4 h-px bg-border" aria-hidden="true"></div>
-      <p class="text-muted mt-3 max-w-2xl">
-        Trabajos realizados de principio a fin por el mismo responsable.
-      </p>
     </header>
     <Grid gap="6" class="mt-8 md:grid-cols-2 lg:grid-cols-3">
       {
@@ -32,5 +41,6 @@ import { projects } from '../../content/projects';
         ))
       }
     </Grid>
+    <DetailIsland basePath="/proyectos" items={detailItems} />
   </Container>
 </Layout>

@@ -1,22 +1,14 @@
 import { useEffect, useId, useMemo, useRef, useState, type FormEvent } from 'react';
-import {
-  contactProjectOptions,
-  contactServiceOptions,
-  normalizeProjectSlug,
-  normalizeServiceSlug
-} from '../content/contactContext';
+import { normalizeProjectSlug, normalizeServiceSlug } from '../content/contactContext';
 import { normalizePortalModuleIds, serializePortalModuleIds } from '../content/pricing';
 import { track } from '../lib/tracking/events';
 import {
   contactChannels,
   contactOrigins,
   contactReasons,
-  entityLabels,
-  entityTypes,
   formatContactFieldErrors,
   parseContactBody,
   portalModuleDisplayNames,
-  reasonLabels,
   type ContactInput,
   type FieldError
 } from '../lib/contactSchema';
@@ -356,9 +348,7 @@ export default function ContactForm({
     );
   }
 
-  const reasonErr = errorFor('reason', fieldErrors);
   const nameErr = errorFor('name', fieldErrors);
-  const entityErr = errorFor('entityType', fieldErrors);
   const channelErr = errorFor('channel', fieldErrors);
   const phoneErr = errorFor('phone', fieldErrors);
   const emailErr = errorFor('email', fieldErrors);
@@ -387,46 +377,18 @@ export default function ContactForm({
           onChange={(e) => setForm((f) => ({ ...f, honeypot: e.target.value }))}
         />
       </div>
+      <input type="hidden" id="contact-reason" name="reason" value={form.reason} />
+      <input type="hidden" id="contact-entity" name="entityType" value={form.entityType} />
+      <input type="hidden" id="contact-service" name="serviceSlug" value={form.serviceSlug} />
+      <input type="hidden" id="contact-project" name="projectSlug" value={form.projectSlug} />
       {form.origin ? <input type="hidden" name="origin" value={form.origin} /> : null}
+      {form.modules ? <input type="hidden" name="modules" value={form.modules} /> : null}
 
       {moduleLabels ? (
         <p className="text-sm text-muted" data-contact-modules>
           Módulos indicados: <strong className="text-fg">{moduleLabels}</strong>
         </p>
       ) : null}
-
-      <div>
-        <label htmlFor="contact-reason" className="text-sm">
-          Motivo*
-        </label>
-        <select
-          id="contact-reason"
-          name="reason"
-          className={inputClass}
-          value={form.reason}
-          aria-required="true"
-          aria-invalid={reasonErr ? true : undefined}
-          aria-describedby={fieldDescribedBy('reason', reasonErr)}
-          disabled={sending}
-          onChange={(e) =>
-            setForm((f) => ({
-              ...f,
-              reason: e.target.value as ContactInput['reason']
-            }))
-          }
-        >
-          {contactReasons.map((r) => (
-            <option key={r} value={r}>
-              {reasonLabels[r]}
-            </option>
-          ))}
-        </select>
-        {reasonErr ? (
-          <p id={`${formId}-reason-error`} role="alert" className="mt-1 text-sm text-danger">
-            {reasonErr.cause}
-          </p>
-        ) : null}
-      </div>
 
       <div>
         <label htmlFor="contact-message" className="text-sm">
@@ -553,85 +515,6 @@ export default function ContactForm({
           ) : null}
         </div>
       )}
-
-      <div className="space-y-3 rounded-lg border border-border bg-card p-3 text-sm">
-        <p className="text-xs text-muted">
-          Opcional. Puede quedar vacío; no altera precio ni condiciones.
-        </p>
-        <div>
-          <label htmlFor="contact-entity" className="text-sm">
-            Categoría
-          </label>
-          <select
-            id="contact-entity"
-            name="entityType"
-            className={inputClass}
-            value={form.entityType}
-            aria-invalid={entityErr ? true : undefined}
-            aria-describedby={fieldDescribedBy('entityType', entityErr)}
-            disabled={sending}
-            onChange={(e) =>
-              setForm((f) => ({
-                ...f,
-                entityType: e.target.value as ContactInput['entityType']
-              }))
-            }
-          >
-            {entityTypes.map((t) => (
-              <option key={t} value={t}>
-                {entityLabels[t]}
-              </option>
-            ))}
-          </select>
-          {entityErr ? (
-            <p id={`${formId}-entityType-error`} role="alert" className="mt-1 text-sm text-danger">
-              {entityErr.cause}
-            </p>
-          ) : null}
-        </div>
-        <div>
-          <label htmlFor="contact-service" className="text-sm">
-            Servicio de referencia
-          </label>
-          <select
-            id="contact-service"
-            name="serviceSlug"
-            className={inputClass}
-            value={form.serviceSlug}
-            disabled={sending}
-            data-contact-service
-            onChange={(e) => setForm((f) => ({ ...f, serviceSlug: e.target.value }))}
-          >
-            <option value="">Ninguno</option>
-            {contactServiceOptions.map((o) => (
-              <option key={o.slug} value={o.slug}>
-                {o.title}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="contact-project" className="text-sm">
-            Trabajo de referencia
-          </label>
-          <select
-            id="contact-project"
-            name="projectSlug"
-            className={inputClass}
-            value={form.projectSlug}
-            disabled={sending}
-            data-contact-project
-            onChange={(e) => setForm((f) => ({ ...f, projectSlug: e.target.value }))}
-          >
-            <option value="">Ninguno</option>
-            {contactProjectOptions.map((o) => (
-              <option key={o.slug} value={o.slug}>
-                {o.title}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
 
       <label className="flex items-start gap-2 text-sm" htmlFor="contact-consent">
         <input

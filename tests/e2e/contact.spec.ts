@@ -7,7 +7,6 @@ async function fillContactForm(
   const name = opts.name ?? 'Test Cliente';
   const message = opts.message ?? 'Necesito información sobre el informe comercial.';
   const email = opts.email ?? 'test@example.com';
-  await page.locator('#contact-reason').selectOption('informacionCliente');
   await page.getByLabel('Mensaje*').fill(message);
   await page.getByLabel('Nombre*').fill(name);
   await page.getByRole('radio', { name: 'Correo electrónico' }).check();
@@ -115,11 +114,13 @@ test('UI-02: errores de envío con aria-invalid', async ({ page }) => {
   await expect(page.locator('[id$="-name-error"]')).toBeVisible();
 });
 
-test('UI-03: entityType enfoca contact-entity', async ({ page }) => {
+test('UI-03: canal correo enfoca el email', async ({ page }) => {
   await page.goto('/contacto');
-  await expect(page.locator('#contact-entity')).toBeVisible();
-  await page.locator('#contact-entity').focus();
-  await expect(page.locator('#contact-entity')).toBeFocused();
+  await page.getByRole('radio', { name: 'Correo electrónico' }).check();
+  const email = page.getByLabel('Correo electrónico*');
+  await expect(email).toBeVisible();
+  await email.focus();
+  await expect(email).toBeFocused();
 });
 
 test('UI-04: datos conservados tras 503', async ({ page }) => {
@@ -206,15 +207,14 @@ test('CFG-06: servicio y proyecto allowlisted; desconocidos se descartan', async
   await expect(page.locator('body')).not.toContainText('999');
 });
 
-test('CFG-07: ficha de servicio llega con contexto editable', async ({ page }) => {
+test('CFG-07: ficha de servicio llega con contexto oculto', async ({ page }) => {
   await page.goto('/servicios/informe-comercial');
   await page.locator('#contenido').getByRole('link', { name: 'Pedir el informe' }).click();
   await expect(page).toHaveURL(/servicio=informe-comercial/);
   await expect(page.locator('#contact-service')).toHaveValue('informe-comercial', {
     timeout: 10_000
   });
-  await page.locator('#contact-service').selectOption('');
-  await expect(page.locator('#contact-service')).toHaveValue('');
+  await expect(page.locator('#contact-service')).toHaveAttribute('type', 'hidden');
 });
 
 test('T-CON-07: 200 ok sin status accepted no es éxito', async ({ page }) => {

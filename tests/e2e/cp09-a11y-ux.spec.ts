@@ -109,7 +109,7 @@ test.describe('CP-09 contacto — foco, errores y axe', () => {
   test('Enviar sin datos marca aria-invalid y axe sin violaciones', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/contacto');
-    await expect(page.locator('#contact-service')).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole('button', { name: /Enviar/ })).toBeEnabled({ timeout: 10_000 });
 
     const name = page.getByLabel('Nombre*');
     await expect(name).toBeVisible();
@@ -120,12 +120,14 @@ test.describe('CP-09 contacto — foco, errores y axe', () => {
     await axeZero(page, '/contacto error nombre');
   });
 
-  test('contexto allowlisted visible y editable', async ({ page }) => {
+  test('contexto allowlisted llega oculto', async ({ page }) => {
     await page.goto('/contacto?servicio=informe-comercial&proyecto=front-valencia');
-    await expect(page.locator('#contact-service')).toHaveValue('informe-comercial');
+    await expect(page.locator('#contact-service')).toHaveValue('informe-comercial', {
+      timeout: 10_000
+    });
     await expect(page.locator('#contact-project')).toHaveValue('front-valencia');
-    await page.locator('#contact-service').selectOption('');
-    await expect(page.locator('#contact-service')).toHaveValue('');
+    await expect(page.locator('#contact-service')).toHaveAttribute('type', 'hidden');
+    await expect(page.locator('#contact-project')).toHaveAttribute('type', 'hidden');
   });
 });
 
@@ -157,7 +159,7 @@ test.describe('CP-09 recorridos A–E (muestreo)', () => {
     await page.goto('/metodo');
     await assertSingleH1AndMain(page);
     await page
-      .getByRole('link', { name: /Presupuestos y contratación|Contactar|contacto/i })
+      .getByRole('link', { name: /Formulario de contacto|Contactar|contacto/i })
       .first()
       .click();
     await expect(page).toHaveURL(/\/contacto/);

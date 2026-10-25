@@ -25,11 +25,12 @@ Quien eres: role Full Stack · Auditor · Consultor, summary conversion-focused,
 
 ## Componentes
 
-- Header.astro: sticky blur; nav Servicios profesionales / Proyectos realizados / Metodología clara; CTA Presupuestos y contratación
+- Header.astro: sticky blur; nav Servicios profesionales / Proyectos realizados / Metodología clara; CTA Formulario de contacto
 - Footer.astro: marca + Contratación (mailto) + nav + legal; tracking solo con consentimiento (CMP); sin Sobre mí en el pie
 - Hero.astro: H1 de taxonomía; lista de cuatro enlaces; CTAs «Solicitar propuesta» y «Catálogo de servicios»
 - ServiceCard.astro / ProjectCard.astro: fichas de catálogo y proyectos con availability
-- ContactForm.tsx: isla React `client:load`, asistente de 6 pasos (motivo → nombre → categoría → canal → petición → consentimiento), errores por campo, honeypot, Turnstile opcional
+- ContactForm.tsx: isla React `client:load`, formulario mínimo (mensaje → nombre → canal → email|tel → consentimiento); motivo/categoría/refs ocultos o por query; errores por campo, honeypot, Turnstile opcional
+- DetailIsland.astro: dialog nativo sobre índices de servicios/proyectos con soft-nav (decisión 0022)
 - CookieBanner.tsx: isla CMP `vanilla-cookieconsent` v3 (`client:idle`); Consent Mode v2 default-deny
 - Reserva de sesión profesional: enlace Cal.com en ficha (sin QR embebido ni lead magnet)
 

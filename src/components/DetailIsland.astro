@@ -1,0 +1,190 @@
+---
+/**
+ * Isla de ficha: dialog nativo sobre el índice con soft-nav (pushState).
+ * Sin JS el enlace de la tarjeta navega a la página [slug] (SEO / deep link).
+ */
+export type DetailIslandItem = {
+  slug: string;
+  path: string;
+  title: string;
+  short: string;
+  description?: string;
+  meta?: string;
+  priceLabel?: string;
+  ctaLabel: string;
+  ctaHref: string;
+};
+
+interface Props {
+  basePath: '/servicios' | '/proyectos';
+  items: DetailIslandItem[];
+}
+
+const { basePath, items } = Astro.props;
+---
+
+{
+  items.map((item) => (
+    <dialog
+      id={`detail-${basePath.slice(1)}-${item.slug}`}
+      class="detail-island m-auto w-[min(100%,36rem)] max-h-[min(90vh,40rem)] overflow-y-auto rounded-lg border border-border bg-card p-0 text-fg shadow-lg backdrop:bg-ink/50"
+      data-detail-island
+      data-detail-path={item.path}
+      data-detail-base={basePath}
+      aria-labelledby={`detail-title-${item.slug}`}
+    >
+      <div class="sticky top-0 z-10 flex items-start justify-between gap-3 border-b border-border bg-card px-5 py-4">
+        <h2 id={`detail-title-${item.slug}`} class="text-xl font-bold text-balance pr-2">
+          {item.title}
+        </h2>
+        <button
+          type="button"
+          class="focus-ring shrink-0 rounded-lg p-2 text-muted hover:text-fg"
+          data-detail-close
+          aria-label="Cerrar"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+      <div class="space-y-3 px-5 py-4">
+        {item.meta ? <p class="text-xs font-mono text-muted text-pretty">{item.meta}</p> : null}
+        <p class="text-sm text-muted">{item.short}</p>
+        {item.description ? <p class="text-sm text-muted">{item.description}</p> : null}
+        {item.priceLabel ? <p class="text-sm font-medium">{item.priceLabel}</p> : null}
+        <div class="pt-2">
+          <a
+            href={item.ctaHref}
+            class="btn focus-ring inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-ink transition-colors hover:bg-primaryHover"
+          >
+            {item.ctaLabel}
+          </a>
+          <p class="mt-3 text-xs text-muted">
+            <a
+              href={item.path}
+              class="underline decoration-dotted underline-offset-2 hover:text-fg"
+              data-detail-fullpage
+            >
+              Abrir ficha completa
+            </a>
+          </p>
+        </div>
+      </div>
+    </dialog>
+  ))
+}
+
+<script>
+  function initDetailIsland() {
+    const dialogs = Array.from(
+      document.querySelectorAll<HTMLDialogElement>('dialog[data-detail-island]')
+    );
+    if (dialogs.length === 0) return;
+
+    const byPath = new Map(dialogs.map((d) => [d.dataset.detailPath ?? '', d]));
+    const basePath = dialogs[0]?.dataset.detailBase ?? '';
+    let suppressPop = false;
+
+    function closeAll(opts?: { restoreUrl?: boolean }) {
+      for (const d of dialogs) {
+        if (d.open) d.close();
+      }
+      if (opts?.restoreUrl && basePath && location.pathname !== basePath) {
+        suppressPop = true;
+        history.pushState({ detailIsland: false }, '', basePath);
+        suppressPop = false;
+      }
+    }
+
+    function openForPath(path: string, push: boolean) {
+      const dialog = byPath.get(path);
+      if (!dialog) return false;
+      for (const d of dialogs) {
+        if (d !== dialog && d.open) d.close();
+      }
+      if (!dialog.open) dialog.showModal();
+      if (push && location.pathname !== path) {
+        suppressPop = true;
+        history.pushState({ detailIsland: true, path }, '', path);
+        suppressPop = false;
+      }
+      const closeBtn = dialog.querySelector<HTMLElement>('[data-detail-close]');
+      closeBtn?.focus();
+      return true;
+    }
+
+    document.addEventListener(
+      'click',
+      (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+
+        if (target.closest('[data-detail-close]')) {
+          const dialog = target.closest('dialog[data-detail-island]');
+          if (dialog instanceof HTMLDialogElement) {
+            event.preventDefault();
+            dialog.close();
+            if (basePath) {
+              suppressPop = true;
+              history.pushState({ detailIsland: false }, '', basePath);
+              suppressPop = false;
+            }
+          }
+          return;
+        }
+
+        if (target.closest('[data-detail-fullpage]')) {
+          return;
+        }
+
+        const link = target.closest('a[href]');
+        if (!(link instanceof HTMLAnchorElement)) return;
+        if (link.target === '_blank' || link.hasAttribute('download')) return;
+        const url = new URL(link.href, location.origin);
+        if (url.origin !== location.origin) return;
+        if (!byPath.has(url.pathname)) return;
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+        event.preventDefault();
+        openForPath(url.pathname, true);
+      },
+      true
+    );
+
+    for (const dialog of dialogs) {
+      dialog.addEventListener('close', () => {
+        if (suppressPop) return;
+        if (basePath && location.pathname !== basePath && byPath.has(location.pathname)) {
+          suppressPop = true;
+          history.pushState({ detailIsland: false }, '', basePath);
+          suppressPop = false;
+        }
+      });
+    }
+
+    window.addEventListener('popstate', () => {
+      if (suppressPop) return;
+      const path = location.pathname;
+      if (byPath.has(path)) {
+        openForPath(path, false);
+        return;
+      }
+      closeAll();
+    });
+  }
+
+  initDetailIsland();
+  document.addEventListener('astro:page-load', initDetailIsland);
+</script>

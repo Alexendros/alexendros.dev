@@ -20,5 +20,5 @@ Consultas recibidas, adecuación, servicios con dudas, abandonos observables, pr
 
 - Importes provisionales (`pricing.ts`).
 - Portada comercial compacta (alternativa B) no aprobada.
-- Asistente de contacto sigue en 6 pasos (0014).
+- Formulario de contacto mínimo con canal (0023; supersede de la UI de 6 pasos de 0014).
 - Envío real de contacto en staging/producción: autorizar prueba controlada en cada release.
