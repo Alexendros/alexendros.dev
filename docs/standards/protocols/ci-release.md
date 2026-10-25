@@ -20,7 +20,7 @@ Workflow: `.github/workflows/ci.yml`.
 | `e2e`          | Solo si se pide | Label `e2e` o input `e2e` en `workflow_dispatch`                |
 | `pr-mergeable` | Sí (aviso)      | Falla si el PR tiene conflictos con la base                     |
 
-`release.yml` queda aparte (semantic-release en `main`). `security.yml` corre gitleaks, osv-scanner y CodeQL. `main-watch.yml` abre issues `alerta:main` si CI/security/Release fallan en `main` o si falla un deploy Production.
+`release.yml` queda aparte (semantic-release en `main`). El patrón canónico de `security.yml` (gitleaks con checksum, OSV, dependency-review, CodeQL, Scorecard) está en [`security-ci.md`](security-ci.md). `main-watch.yml` abre issues `alerta:main` si CI/security/Release fallan en `main` o si falla un deploy Production.
 
 ## Bloqueo por conflicto (PR)
 

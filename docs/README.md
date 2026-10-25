@@ -28,6 +28,7 @@
 ### Protocols
 
 - [standards/protocols/ci-release.md](standards/protocols/ci-release.md)
+- [standards/protocols/security-ci.md](standards/protocols/security-ci.md) — patrón de `security.yml` (referencia de flota)
 - [standards/protocols/env-vars.md](standards/protocols/env-vars.md)
 - [standards/protocols/gtm-server-side.md](standards/protocols/gtm-server-side.md)
 
