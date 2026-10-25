@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 const route = '/metodo';
+const H1 = 'Metodología clara e integral: desde la idea hasta el producto entregado.';
 
 for (const width of [320, 390, 768, 1280]) {
   test(`proceso: contenido y reflow a ${width}px`, async ({ page }) => {
@@ -9,12 +10,13 @@ for (const width of [320, 390, 768, 1280]) {
     const response = await page.goto(route);
     expect(response?.status()).toBe(200);
     await expect(page.locator('h1')).toHaveCount(1);
-    await expect(page.locator('h1')).toContainText('Metodología clara');
-    await expect(page.locator('h1')).toContainText('desde el primer día');
-    await expect(page.locator('h1')).not.toContainText('Metodología clara:');
+    await expect(page.locator('h1')).toHaveText(H1);
     await expect(
-      page.locator('main a[href*="/contacto"][href*="origen=proceso"]').first()
-    ).toBeVisible();
+      page.getByRole('heading', { name: 'De la idea al proyecto publicado', exact: true })
+    ).toHaveCount(0);
+    await expect(
+      page.getByRole('link', { name: 'Solicitar presupuesto', exact: true })
+    ).toHaveAttribute('href', /origen=proceso/);
     await expect(page.locator('.delivery-page')).toHaveCount(0);
     await expect(page.locator('.pagehead-rule')).toHaveCount(1);
     const overflows = await page.evaluate(
@@ -42,7 +44,7 @@ test('proceso: contenido esencial sin JavaScript', async ({ browser, baseURL }) 
   await expect(page.locator('h1')).toBeVisible();
   await expect(page.locator('#proceso')).toBeVisible();
   await expect(
-    page.locator('main a[href*="/contacto"][href*="origen=proceso"]').first()
+    page.getByRole('link', { name: 'Solicitar presupuesto', exact: true })
   ).toBeVisible();
   await expect(page.locator('.delivery-page')).toHaveCount(0);
   await context.close();
@@ -71,15 +73,15 @@ test('proceso: ancla bajo la cabecera y sticky ausente', async ({ page }) => {
 test('proceso: CTAs llevan origen', async ({ page }) => {
   await page.goto(route);
   await expect(page.locator('main details')).toHaveCount(0);
-  await expect(page.getByRole('heading', { name: 'Encargos habituales', exact: true })).toHaveCount(
-    0
-  );
   await expect(page.getByRole('heading', { name: 'Un caso', exact: true })).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Dudas rápidas', exact: true })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'Pedir presupuesto' })).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Ver precios' })).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Reservar una llamada' })).toHaveCount(0);
-  await expect(page.getByRole('link', { name: 'Pedir presupuesto' })).toHaveAttribute(
-    'href',
-    /origen=proceso/
-  );
+  await expect(
+    page.getByRole('link', { name: 'Solicitar presupuesto', exact: true })
+  ).toHaveAttribute('href', /origen=proceso/);
+  await expect(page.getByText('un contrato vinculante.')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Desarrollo y construcción' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Previsualización y entrega' })).toBeVisible();
 });
