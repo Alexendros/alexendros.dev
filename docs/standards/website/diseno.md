@@ -68,8 +68,8 @@ Extraído de Layout: primer foco de la página, salta a `#contenido`, visible so
 
 ### H1 de la home (taxonomía de servicios)
 
-- **Uso:** solo el H1 de la home (`Hero.astro`). Titular fijo de posicionamiento en tercera persona; lista semántica de cinco servicios; sin rotación.
-- **CTAs:** primario «Solicitar propuesta» (`/contacto?motivo=propuestaComercial&origen=home`) y secundario «Ver servicios» (`/servicios?origen=home`) en el hero, además del Contactar de cabecera y del sticky móvil.
+- **Uso:** solo el H1 de la home (`Hero.astro`). Titular fijo de posicionamiento en tercera persona; lista semántica de cuatro servicios; sin rotación.
+- **CTAs:** primario «Solicitar propuesta» (`/contacto?motivo=propuestaComercial&origen=home`) y secundario «Catálogo de servicios» (`/servicios?origen=home`) en el hero, además del Contactar de cabecera y del sticky móvil.
 - **Motion:** la entrada escalonada del hero (`data-hero-item`) sigue las reglas generales de reveal; con `prefers-reduced-motion` no hay animación.
 - **Don't:** no reintroducir ventana rotatoria en el producto; no añadir librerías de motion; no animar con propiedades distintas de `transform`/`opacity`.
 
