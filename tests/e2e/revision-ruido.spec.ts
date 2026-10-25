@@ -4,7 +4,7 @@ const pages = [
   '/',
   '/servicios',
   '/servicios/software-a-medida',
-  '/proceso-y-entrega',
+  '/metodo',
   '/proyectos',
   '/proyectos/zedazo',
   '/contacto'
@@ -28,12 +28,13 @@ for (const p of pages) {
     const text = await page.locator('main').innerText();
     for (const re of forbidden) expect(text).not.toMatch(re);
     await expect(page.locator('footer a[href="/contacto"]')).toHaveCount(1);
-    await expect(page.locator('footer a[href="/sobre-mi"]')).toBeVisible();
+    await expect(page.locator('footer a[href="/sobre-mi"]')).toHaveCount(0);
+    await expect(page.locator('footer a[href="mailto:contratacion@alexendros.dev"]')).toBeVisible();
   });
 }
 
 test('pasos sin numeración duplicada', async ({ page }) => {
-  await page.goto('/proceso-y-entrega');
+  await page.goto('/metodo');
   const h3s = await page.locator('ol h3').allInnerTexts();
   for (const t of h3s) expect(t).not.toMatch(/^\s*0\d/);
 });

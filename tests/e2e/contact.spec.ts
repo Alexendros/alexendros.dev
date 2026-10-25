@@ -43,7 +43,7 @@ test('F04: contacto valida canal y envía', async ({ page }) => {
   });
 
   await page.goto('/contacto');
-  await expect(page.getByRole('heading', { name: 'Formulario de contacto' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Contacto', exact: true })).toBeVisible();
 
   await page.getByLabel('Mensaje*').fill('Necesito información sobre el informe comercial.');
   await page.getByLabel('Nombre*').fill('A');
@@ -82,7 +82,7 @@ test('F04: WhatsApp sin teléfono no envía', async ({ page }) => {
 test('contacto muestra canales horizontales y sin servicios de entrada', async ({ page }) => {
   await page.goto('/contacto');
 
-  await expect(page.getByRole('heading', { name: 'Formulario de contacto' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Contacto', exact: true })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Servicios de entrada' })).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Perfiles y correo' })).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Formulario', exact: true })).toHaveCount(0);
@@ -170,7 +170,7 @@ test('UI-05: reintento conserva Idempotency-Key', async ({ page }) => {
 
 test('CFG-04: motivo y módulos válidos muestran nombres', async ({ page }) => {
   await page.goto('/contacto?motivo=propuestaComercial&modulos=contenidos,tienda');
-  await expect(page.getByRole('heading', { name: 'Formulario de contacto' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Contacto', exact: true })).toBeVisible();
   await expect(page.locator('#contact-reason')).toHaveValue('propuestaComercial', {
     timeout: 10_000
   });
@@ -268,7 +268,7 @@ test.describe('UI-07: sin JavaScript', () => {
 
   test('correo y alternativa sin JS visibles; sin POST JSON funcional', async ({ page }) => {
     await page.goto('/contacto');
-    await expect(page.getByRole('heading', { name: 'Formulario de contacto' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Contacto', exact: true })).toBeVisible();
     const nojs = page.locator('[data-contact-nojs]');
     await expect(nojs).toBeVisible();
     await expect(nojs).toContainText(/necesita JavaScript/i);
