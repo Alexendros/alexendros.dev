@@ -2,42 +2,31 @@
 import Layout from '../layouts/Layout.astro';
 import Container from '../components/Container.astro';
 import Grid from '../components/Grid.astro';
-import Button from '../components/Button.astro';
 import { processPage } from '../content/process';
 
-const { seo, hero, processSection, steps, close } = processPage;
+const { seo, hero, steps, close } = processPage;
 ---
 
 <Layout
   title={seo.title}
   description={seo.description}
   ogImage="/og/proceso-y-entrega.png"
-  ogImageAlt="Metodología clara desde el primer día"
+  ogImageAlt="Metodología clara e integral: desde la idea hasta el producto entregado"
 >
   <Container class="py-16 md:py-24">
     <header>
       <h1 id="delivery-hero-title" class="text-4xl font-bold max-w-3xl">
-        {hero.h1Lead}{' '}
-        <span class="text-primary">{hero.h1Accent}</span>
+        {hero.h1Lead}<span class="text-primary">{hero.h1Accent}</span>
       </h1>
       <div class="pagehead-rule mt-4 h-px bg-border" aria-hidden="true"></div>
-      <p class="text-muted mt-3 max-w-2xl">{hero.lead}</p>
     </header>
 
     <section
       id="proceso"
       class="mt-16 scroll-mt-[calc(var(--header-h)+var(--space-6))]"
-      aria-labelledby="delivery-process-heading"
+      aria-labelledby="delivery-hero-title"
     >
-      <h2 id="delivery-process-heading" class="text-2xl font-bold max-w-2xl">
-        {processSection.heading}
-      </h2>
-      <Grid
-        as="ol"
-        gap="6"
-        role="list"
-        class="steps mt-8 md:grid-cols-2 lg:grid-cols-4 list-none p-0"
-      >
+      <Grid as="ol" gap="6" role="list" class="steps md:grid-cols-2 lg:grid-cols-4 list-none p-0">
         {
           steps.map((step) => (
             <li class="min-w-0 border-t-2 border-primary pt-5">
@@ -56,16 +45,13 @@ const { seo, hero, processSection, steps, close } = processPage;
     </section>
 
     <section class="mt-16" aria-labelledby="delivery-close-heading">
-      <div
-        class="border border-border rounded-lg p-5 bg-[var(--bg-subtle)] flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between"
-      >
-        <div>
-          <h2 id="delivery-close-heading" class="text-2xl font-bold">{close.heading}</h2>
-          <p class="text-sm text-muted mt-2 max-w-2xl">{close.body}</p>
-        </div>
-        <div class="flex flex-wrap items-center gap-4 shrink-0">
-          <Button href={close.primaryCta.href}>{close.primaryCta.label}</Button>
-        </div>
+      <div class="border border-border rounded-lg p-5 bg-[var(--bg-subtle)]">
+        <h2 id="delivery-close-heading" class="text-2xl font-bold">
+          <a href={close.href} class="focus-ring rounded transition-colors hover:text-primary">
+            {close.heading}
+          </a>
+        </h2>
+        <p class="text-sm text-muted mt-2 max-w-2xl">{close.body}</p>
       </div>
     </section>
   </Container>

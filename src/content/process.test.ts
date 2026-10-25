@@ -53,14 +53,13 @@ describe('processPage — copy público de metodología', () => {
   it('tiene seo, hero, 4 pasos y cierre con CTA medible', () => {
     nonEmpty(processPage.seo.title, 'seo.title');
     nonEmpty(processPage.seo.description, 'seo.description');
-    expect(processPage.seo.description).toMatch(/cliente explica qué busca/i);
+    expect(processPage.seo.description).toMatch(/desde la idea hasta el producto entregado/i);
     nonEmpty(processPage.hero.h1Lead, 'hero.h1Lead');
-    expect(processPage.hero.h1Lead).not.toContain(':');
-    nonEmpty(processPage.hero.h1Accent, 'hero.h1Accent');
-    nonEmpty(processPage.hero.lead, 'hero.lead');
+    expect(processPage.hero.h1Lead).toBe('Metodología clara e integral');
+    expect(processPage.hero.h1Accent).toMatch(/^:/);
+    expect(processPage.hero).not.toHaveProperty('lead');
     expect(processPage.hero).not.toHaveProperty('primaryCta');
-    expect(processPage.hero).not.toHaveProperty('secondaryCta');
-    expect(processPage.hero).not.toHaveProperty('guarantees');
+    expect(processPage).not.toHaveProperty('processSection');
 
     expect(processPage.steps).toHaveLength(4);
     const stepIds = processPage.steps.map((s: ProcessStep) => s.id);
@@ -72,22 +71,28 @@ describe('processPage — copy público de metodología', () => {
       nonEmpty(step.receive, `step.${step.id}.receive`);
     }
 
-    expect(processPage.processSection).not.toHaveProperty('intro');
-    expect(processPage).not.toHaveProperty('paths');
-    expect(processPage).not.toHaveProperty('alwaysIncludes');
-    expect(processPage).not.toHaveProperty('faqs');
-    expect(processPage).not.toHaveProperty('limits');
+    expect(processPage.steps.find((s) => s.id === 'escrito')?.receive).toBe(
+      'un contrato vinculante.'
+    );
+    expect(processPage.steps.find((s) => s.id === 'construyo')?.title).toBe(
+      'Desarrollo y construcción'
+    );
+    expect(processPage.steps.find((s) => s.id === 'publico')?.title).toBe(
+      'Previsualización y entrega'
+    );
+    expect(processPage.steps.find((s) => s.id === 'publico')?.receive).toMatch(
+      /Producto acordado con instrucciones de uso y soporte para incidencias/
+    );
 
-    nonEmpty(processPage.close.heading, 'close.heading');
+    expect(processPage.close.heading).toBe('Solicitar presupuesto');
     expect(processPage.close.body).toMatch(/lo antes posible/i);
-    expect(processPage.close).not.toHaveProperty('secondaryCta');
+    expect(processPage.close).not.toHaveProperty('primaryCta');
   });
 
   it('usa CTA de cierre con origen=proceso hacia presupuesto', () => {
-    expect(processPage.close.primaryCta.label).toBe('Pedir presupuesto');
-    expect(processPage.close.primaryCta.href).toContain('/contacto');
-    expect(processPage.close.primaryCta.href).toContain('origen=proceso');
-    expect(processPage.close.primaryCta.href).toContain('motivo=propuestaComercial');
+    expect(processPage.close.href).toContain('/contacto');
+    expect(processPage.close.href).toContain('origen=proceso');
+    expect(processPage.close.href).toContain('motivo=propuestaComercial');
   });
 
   it('ordena las cuatro fases hablamos → escrito → construyo → publico', () => {
