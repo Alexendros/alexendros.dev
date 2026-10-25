@@ -19,7 +19,7 @@ Lee también [AGENTS.md](AGENTS.md), [ARCHITECTURE.md](ARCHITECTURE.md) y [CODE_
 
 1. Rama desde `main` (`cursor/…`, `feat/…`, `fix/…`, `docs/…`, `content/…`).
 2. `pnpm i && pnpm typecheck && pnpm lint && pnpm lint:css && pnpm format:check && pnpm check:records && pnpm test && pnpm build && pnpm smoke`
-3. PR con CI verde (`quality`, `test`, `build`, `smoke`, `e2e-critical`). Playwright/axe completo y LHCI: label `e2e` si tocas UI o a11y.
+3. PR con CI verde (`quality`, `test`, `build`, `smoke`, `e2e-critical`). Playwright/axe completo y LHCI: label `e2e` si tocas UI o a11y. Los jobs de seguridad (`secrets`, `sca`, …) viven en `security.yml`; patrón documentado en [docs/standards/protocols/security-ci.md](docs/standards/protocols/security-ci.md).
 4. Vulnerabilidades: [SECURITY.md](SECURITY.md), no un issue público.
 
 ## Commits
