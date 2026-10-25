@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatEuro, provisionalPrices } from './pricing';
-import { processPage, type ProcessFaq, type ProcessStep } from './process';
+import { processPage, type ProcessStep } from './process';
 
 /** Términos del glosario comercial a evitar en la página pública. */
 const PROCESS_JARGON = [
@@ -51,13 +50,16 @@ function wordCount(text: string): number {
 }
 
 describe('processPage — copy público de proceso y entrega', () => {
-  it('tiene seo, hero, 4 pasos, 3 caminos, 4 FAQ y cierre con CTA medibles', () => {
+  it('tiene seo, hero, 4 pasos y cierre con CTA medibles', () => {
     nonEmpty(processPage.seo.title, 'seo.title');
     nonEmpty(processPage.seo.description, 'seo.description');
+    expect(processPage.seo.description).toMatch(
+      /qué recibes, cuánto cuesta y cuándo, antes de pagar/i
+    );
     nonEmpty(processPage.hero.h1Lead, 'hero.h1Lead');
     nonEmpty(processPage.hero.h1Accent, 'hero.h1Accent');
     nonEmpty(processPage.hero.lead, 'hero.lead');
-    expect(processPage.hero.guarantees).toHaveLength(3);
+    expect(processPage.hero).not.toHaveProperty('guarantees');
 
     expect(processPage.steps).toHaveLength(4);
     const stepIds = processPage.steps.map((s: ProcessStep) => s.id);
@@ -69,15 +71,15 @@ describe('processPage — copy público de proceso y entrega', () => {
       nonEmpty(step.receive, `step.${step.id}.receive`);
     }
 
-    expect(processPage.paths).toHaveLength(3);
-    expect(processPage.faqs).toHaveLength(4);
-    for (const faq of processPage.faqs as ProcessFaq[]) {
-      nonEmpty(faq.question, 'faq.question');
-      nonEmpty(faq.answer, 'faq.answer');
-    }
+    expect(processPage).not.toHaveProperty('paths');
+    expect(processPage).not.toHaveProperty('pathsSection');
+    expect(processPage).not.toHaveProperty('featuredCase');
+    expect(processPage).not.toHaveProperty('faqs');
+    expect(processPage).not.toHaveProperty('faqsSection');
+    expect(processPage).not.toHaveProperty('limits');
 
     nonEmpty(processPage.close.heading, 'close.heading');
-    nonEmpty(processPage.limits.body, 'limits.body');
+    nonEmpty(processPage.alwaysIncludes.heading, 'alwaysIncludes.heading');
   });
 
   it('usa CTA con origen=proceso hacia presupuesto, precios y Cal.com', () => {
@@ -100,27 +102,11 @@ describe('processPage — copy público de proceso y entrega', () => {
     ]);
   });
 
-  it('muestra precios ya publicados del catálogo y software sin cifra inventada', () => {
-    const joined = visibleCopy();
-    expect(joined).toContain(formatEuro(provisionalPrices.portalInicio));
-    expect(joined).toContain(formatEuro(provisionalPrices.informeComercial));
-    expect(joined).toContain('+ IVA');
-    expect(processPage.paths.find((p) => p.id === 'software')?.priceLabel).toBe(
-      'Precio por fase en la propuesta'
-    );
-  });
-
   it('mantiene densidad baja y evita el glosario técnico', () => {
     const copy = visibleCopy();
     expect(wordCount(copy)).toBeLessThanOrEqual(400);
     for (const term of PROCESS_JARGON) {
       expect(copy.toLowerCase(), term).not.toContain(term.toLowerCase());
     }
-  });
-
-  it('declara propiedad del resultado y límites sin tono defensivo largo', () => {
-    const ownership = processPage.faqs.find((f) => f.question.includes('dueño'));
-    expect(ownership?.answer).toMatch(/código/i);
-    expect(processPage.limits.body).toMatch(/No prometo ventas/);
   });
 });
