@@ -19,12 +19,8 @@ const taxonomyLinks = [
     label: 'Aplicaciones útiles para ordenadores con Linux'
   },
   {
-    href: '/contacto?motivo=propuestaComercial&origen=home-gestion',
-    label: 'Protocolos claros de gestión para empresas'
-  },
-  {
     href: '/contacto?motivo=propuestaComercial&origen=home-ia',
-    label: 'Integración de Inteligencia Artificial en procesos y trabajos'
+    label: 'Integración de Inteligencia Artificial en procesos empresariales y oficios'
   }
 ] as const;
 ---
@@ -39,13 +35,13 @@ const taxonomyLinks = [
 
   <div data-hero-item data-hero-lcp style="--i:0">
     <h1 class="bp-h1 text-4xl md:text-5xl font-bold leading-[1.05] tracking-tight max-w-3xl">
-      Tecnología clara para negocios: auditoría, diseño y desarrollo
+      Servicios informáticos y tecnologías para empresas y particulares.
     </h1>
   </div>
 
   <p class="mt-6 text-lg text-muted max-w-2xl" data-hero-item style="--i:1">
-    Con sede en Valencia. Atención remota o presencial, con alcance acordado por escrito y trato
-    directo.
+    Atención a distancia o presencialmente en Valencia. Calidades, presupuesto y plazos con respaldo
+    por contrato.
   </p>
 
   <ul class="mt-8 space-y-1 list-none p-0 m-0" data-hero-item style="--i:2">
@@ -74,11 +70,6 @@ const taxonomyLinks = [
 
   <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3" data-hero-item style="--i:4">
     <Button href="/contacto?motivo=propuestaComercial&origen=home">Solicitar propuesta</Button>
-    <a
-      href="/servicios?origen=home"
-      class="focus-ring text-sm font-medium text-muted underline decoration-dotted underline-offset-4 hover:text-primary rounded"
-    >
-      Ver servicios
-    </a>
+    <Button href="/servicios?origen=home" variant="secondary">Catálogo de servicios</Button>
   </div>
 </section>
