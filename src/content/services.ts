@@ -167,14 +167,14 @@ export const services: Service[] = [
     short:
       'Informe técnico SEO y plan de ajustes con métricas verificables para ganar visibilidad en buscadores.',
     description:
-      'Reviso tu web con foco en SEO técnico y señales de posicionamiento. Te entrego un informe con problemas medibles, un plan de ajustes priorizado y métricas de referencia para comprobar la mejora. No promete posiciones concretas ni implementa los cambios sin encargo aparte.',
+      'Revisión del sitio con foco en SEO técnico y señales de posicionamiento. El entregable es un informe con problemas medibles, un plan de ajustes priorizado y métricas de referencia para comprobar la mejora. No promete posiciones concretas ni implementa los cambios sin encargo aparte.',
     audience: [
       'Negocios y profesionales que quieren mejorar su visibilidad en buscadores con un plan accionable.'
     ],
     problems: [
       'La web no aparece o pierde posiciones en buscadores',
-      'No sabes qué corregir primero en SEO técnico',
-      'Necesitas métricas claras antes de invertir en mejoras'
+      'Falta criterio sobre qué corregir primero en SEO técnico',
+      'Hacen falta métricas claras antes de invertir en mejoras'
     ],
     scope: [
       'SEO técnico: indexación, estructura, metadatos y señales on-page',
@@ -223,9 +223,9 @@ export const services: Service[] = [
     kind: 'service',
     title: 'Cumplimiento normativo',
     short:
-      'Revisión de protección de datos, políticas de cookies y accesibilidad en tu presencia web.',
+      'Revisión de protección de datos, políticas de cookies y accesibilidad de la presencia web.',
     description:
-      'Inspección orientada a protección de datos, políticas de cookies y accesibilidad de tu sitio. Cada problema lleva severidad y corrección recomendada. No incluye prueba de intrusión ni certificación oficial.',
+      'Inspección orientada a protección de datos, políticas de cookies y accesibilidad del sitio. Cada problema lleva severidad y corrección recomendada. No incluye prueba de intrusión ni certificación oficial.',
     audience: [
       'Negocios que necesitan un informe accionable de datos, cookies y accesibilidad antes de endurecer su sitio.'
     ],
@@ -275,16 +275,16 @@ export const services: Service[] = [
     kind: 'service',
     title: 'Ciberseguridad',
     short:
-      'Revisión de vulnerabilidades básicas en tu web, con severidad y corrección recomendada por problema.',
+      'Revisión de vulnerabilidades básicas del sitio, con severidad y corrección recomendada por problema.',
     description:
-      'Inspección de seguridad básica de tu presencia web: cabeceras, secretos expuestos y superficies evidentes. Cada problema lleva severidad y corrección recomendada. No incluye prueba de intrusión ni certificación.',
+      'Inspección de seguridad básica de la presencia web: cabeceras, secretos expuestos y superficies evidentes. Cada problema lleva severidad y corrección recomendada. No incluye prueba de intrusión ni certificación.',
     audience: [
       'Negocios que necesitan priorizar riesgos técnicos evidentes antes de endurecer el sitio.'
     ],
     problems: [
       'Superficie de seguridad sin priorizar',
       'Dudas sobre cabeceras, secretos o puntos de entrada evidentes',
-      'Necesitas un informe técnico, no una prueba de intrusión'
+      'Hace falta un informe técnico, no una prueba de intrusión'
     ],
     scope: [
       'Seguridad básica (cabeceras, secretos expuestos, superficies evidentes)',
@@ -326,9 +326,9 @@ export const services: Service[] = [
     kind: 'service',
     title: 'Colaboración en proyectos de software',
     short:
-      'Me integro en proyectos grandes con más compañeros: aporto diseño y desarrollo por fases, con precio y plazo por escrito.',
+      'Integración en proyectos grandes con más compañeros: diseño y desarrollo por fases, con precio y plazo por escrito.',
     description:
-      'Colaboración técnica en proyectos de software con equipo existente o ampliado. Encajo en el ritmo del proyecto, entrego por fases y dejo precio y plazo escritos antes de cada una. No es una web de escaparate ni un pack cerrado; es trabajo conjunto en un producto o herramienta mayor.',
+      'Colaboración técnica en proyectos de software con equipo existente o ampliado. Se alinea al ritmo del proyecto, se entrega por fases y queda precio y plazo escritos antes de cada una. No es una web de escaparate ni un pack cerrado; es trabajo conjunto en un producto o herramienta mayor.',
     audience: [
       'Equipos que ya tienen un proyecto en marcha y necesitan refuerzo técnico fiable',
       'Negocios con un producto o herramienta grande donde hace falta construir por fases con más manos'
@@ -336,7 +336,7 @@ export const services: Service[] = [
     problems: [
       'El proyecto es grande y hace falta alguien que entregue por fases con el equipo',
       'Las herramientas genéricas no encajan y el desarrollo se atasca',
-      'Necesitas ampliar capacidad sin perder claridad de alcance y plazos'
+      'Hace falta ampliar capacidad sin perder claridad de alcance y plazos'
     ],
     scope: [
       'Alineación con el equipo y el alcance de la fase',
@@ -372,7 +372,7 @@ export const services: Service[] = [
         'Se acuerda por fase en la propuesta (suele ser 50 % al empezar y 50 % a la entrega)',
       timeline: 'Por fases; cada una con su plazo escrito',
       delivery: 'Código, documentación y accesos de la fase acordada',
-      guarantee: 'Si algo no cumple lo acordado en esa fase, lo corrijo sin coste.'
+      guarantee: 'Si algo no cumple lo acordado en esa fase, se corrige sin coste.'
     },
     action: {
       kind: 'contact',

@@ -26,7 +26,15 @@ const path = Astro.url.pathname;
       }
     </nav>
     <div class="flex items-center gap-2 shrink-0">
-      <Button href="/contacto" size="sm" class="hidden min-[360px]:inline-flex">Contactar</Button>
+      <Button
+        href="/contacto"
+        size="sm"
+        class="hidden min-[360px]:inline-flex"
+        aria-label="Presupuestos y contratación"
+      >
+        <span class="md:hidden">Presupuestos</span>
+        <span class="hidden md:inline">Presupuestos y contratación</span>
+      </Button>
       <button
         type="button"
         data-menu-button
@@ -95,7 +103,7 @@ const path = Astro.url.pathname;
           current={path.startsWith('/contacto')}
           class="block py-3"
         >
-          Contactar
+          Presupuestos y contratación
         </Link>
       </li>
     </ul>

@@ -149,7 +149,7 @@ export const fieldLabels: Record<string, string> = {
   phone: 'Teléfono WhatsApp',
   email: 'Correo electrónico',
   reason: 'Motivo',
-  message: 'Tu petición',
+  message: 'La petición',
   modules: 'Módulos',
   serviceSlug: 'Servicio',
   projectSlug: 'Trabajo',

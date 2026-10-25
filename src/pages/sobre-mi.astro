@@ -17,7 +17,7 @@ import { profile } from '../content/profile';
     <p class="mt-4 max-w-2xl text-muted">{profile.title}</p>
 
     <section class="mt-16" aria-labelledby="why-heading">
-      <h2 id="why-heading" class="text-2xl font-bold">Por qué trabajar conmigo</h2>
+      <h2 id="why-heading" class="text-2xl font-bold">Ventajas del encargo</h2>
       <Grid gap="6" class="mt-8 md:grid-cols-3">
         {
           profile.workWithMe.map((item) => (
@@ -39,14 +39,12 @@ import { profile } from '../content/profile';
     </section>
 
     <section class="mt-16" aria-labelledby="trust-heading">
-      <h2 id="trust-heading" class="text-2xl font-bold">Cómo trabajo contigo</h2>
+      <h2 id="trust-heading" class="text-2xl font-bold">Modalidad de colaboración</h2>
       <ul class="mt-6 list-disc pl-5 text-sm text-muted space-y-2 max-w-2xl">
         {profile.trustBar.map((item) => <li>{item}</li>)}
       </ul>
       <div class="mt-8">
-        <Button href="/contacto?motivo=propuestaComercial&origen=home"
-          >Cuéntame qué necesitas</Button
-        >
+        <Button href="/contacto?motivo=propuestaComercial&origen=home">Solicitar propuesta</Button>
       </div>
     </section>
   </Container>

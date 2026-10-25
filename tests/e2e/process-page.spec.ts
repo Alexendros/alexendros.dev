@@ -9,8 +9,9 @@ for (const width of [320, 390, 768, 1280]) {
     const response = await page.goto(route);
     expect(response?.status()).toBe(200);
     await expect(page.locator('h1')).toHaveCount(1);
-    await expect(page.locator('h1')).toContainText('Metodología clara:');
+    await expect(page.locator('h1')).toContainText('Metodología clara');
     await expect(page.locator('h1')).toContainText('desde el primer día');
+    await expect(page.locator('h1')).not.toContainText('Metodología clara:');
     await expect(
       page.locator('main a[href*="/contacto"][href*="origen=proceso"]').first()
     ).toBeVisible();
@@ -70,14 +71,14 @@ test('proceso: ancla bajo la cabecera y sticky ausente', async ({ page }) => {
 test('proceso: CTAs llevan origen', async ({ page }) => {
   await page.goto(route);
   await expect(page.locator('main details')).toHaveCount(0);
-  await expect(page.getByRole('heading', { name: '¿Qué necesitas?', exact: true })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Encargos habituales', exact: true })).toHaveCount(
+    0
+  );
   await expect(page.getByRole('heading', { name: 'Un caso', exact: true })).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Dudas rápidas', exact: true })).toHaveCount(0);
-  await expect(page.getByRole('link', { name: 'Pedir presupuesto' }).first()).toHaveAttribute(
-    'href',
-    /origen=proceso/
-  );
-  await expect(page.getByRole('link', { name: 'Ver precios' })).toHaveAttribute(
+  await expect(page.getByRole('link', { name: 'Ver precios' })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'Reservar una llamada' })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'Pedir presupuesto' })).toHaveAttribute(
     'href',
     /origen=proceso/
   );

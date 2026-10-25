@@ -32,8 +32,8 @@ export const projectSchema = z.object({
    * propio = iniciativa propia / open source.
    */
   workKind: z.enum(['encargo', 'demostracion', 'propio']),
-  /** Etiqueta comercial para filtrar y presentar: Web · Tienda · Herramienta. */
-  productType: z.enum(['web', 'tienda', 'herramienta']),
+  /** Etiqueta comercial: Portal de empresa · Tienda online · Herramienta automatizada · Website personal. */
+  productType: z.enum(['portal', 'tienda', 'herramienta', 'personal']),
   coverAlt: z.string().min(1),
   testimonial: z
     .object({
@@ -76,15 +76,16 @@ export const workKindLabels: Record<ProjectWorkKind, string> = {
 };
 
 export const productTypeLabels: Record<ProjectProductType, string> = {
-  web: 'Web',
-  tienda: 'Tienda',
-  herramienta: 'Herramienta'
+  portal: 'Portal de empresa',
+  tienda: 'Tienda online',
+  herramienta: 'Herramienta automatizada',
+  personal: 'Website personal'
 };
 
 export const projects: Project[] = [
   {
     slug: 'front-valencia',
-    title: 'Front Valencia — Restaurante',
+    title: 'Front Valencia',
     short:
       'Web para un restaurante en La Marina de Valencia: carta digital bilingüe con alérgenos y reservas directas, editable por el equipo sin tocar código.',
     summary:
@@ -126,14 +127,14 @@ export const projects: Project[] = [
     featured: true,
     availability: 'si',
     workKind: 'encargo',
-    productType: 'web',
+    productType: 'portal',
     cover: coverFront,
     coverAlt:
       'Home de la web del restaurante Front Valencia: cabecera con foto del local, menú destacado y botón de reserva.'
   },
   {
     slug: 'graficas-nasve',
-    title: 'Gráficas Nasve — Tienda online',
+    title: 'Gráficas Nasve',
     short:
       'Tienda online para un taller familiar que quería vender sus productos sin depender de terceros.',
     summary:
@@ -186,7 +187,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'zedazo',
-    title: 'Zedazo — Herramienta de contactos',
+    title: 'Zedazo',
     short:
       'Herramienta de código abierto para limpiar y unificar listados de contactos sin trabajo manual.',
     summary:
@@ -228,7 +229,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'alexendros-me',
-    title: 'Alexendros.me — Web personal',
+    title: 'Alexendros.me',
     short:
       'Web personal rápida y clara, centrada en explicar los servicios sin distraer a quien la visita.',
     summary:
@@ -267,7 +268,7 @@ export const projects: Project[] = [
     featured: true,
     availability: 'no',
     workKind: 'propio',
-    productType: 'web',
+    productType: 'personal',
     cover: coverMe,
     coverAlt:
       'Home de Alexendros.me, web personal centrada en lectura cómoda, buen contraste y privacidad.'

@@ -29,7 +29,7 @@ test('F01: home es hero estable + caminos (sin proceso ni caso)', async ({ page 
   await expect(page.getByText(/Pare las rotativas/)).toHaveCount(0);
 
   const banner = page.getByRole('banner');
-  await expect(banner.getByRole('link', { name: 'Contactar' })).toBeVisible();
+  await expect(banner.getByRole('link', { name: 'Presupuestos y contratación' })).toBeVisible();
   await expect(
     page.locator('[data-hero]').getByRole('link', { name: 'Solicitar propuesta' })
   ).toBeVisible();
@@ -49,7 +49,9 @@ test('F01: home es hero estable + caminos (sin proceso ni caso)', async ({ page 
   await expect(banner.getByRole('link', { name: 'Metodología', exact: true })).toHaveCount(0);
   await expect(banner.getByRole('link', { name: 'Valores', exact: true })).toHaveCount(0);
 
-  await expect(page.getByRole('heading', { name: '¿Qué necesitas?', exact: true })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Encargos habituales', exact: true })
+  ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Cómo trabajo', exact: true })).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Un caso', exact: true })).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Ver el proceso completo' })).toHaveCount(0);

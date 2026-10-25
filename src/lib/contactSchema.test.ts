@@ -191,7 +191,7 @@ describe('formatContactFieldErrors', () => {
     expect(parsed.success).toBe(false);
     if (parsed.success) return;
     const errors = formatContactFieldErrors(parsed.error);
-    expect(errors.some((e) => e.label === 'Tu petición' && e.cause === 'falta contenido')).toBe(
+    expect(errors.some((e) => e.label === 'La petición' && e.cause === 'falta contenido')).toBe(
       true
     );
   });

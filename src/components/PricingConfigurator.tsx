@@ -36,7 +36,7 @@ export default function PricingConfigurator() {
   return (
     <div data-pricing-configurator className="rounded-lg border border-border bg-card p-6 md:p-8">
       <h2 id="portal-heading" className="text-xl font-bold">
-        Si quieres que te diseñe un portal web desde cero, aquí puedes configurar los módulos.
+        Portal web desde cero: configuración de módulos y total orientativo.
       </h2>
       <p className="mt-2 text-sm text-muted">
         Base del portal: {portalBase.delivery}. Pago: {portalBase.payment}. Plazo:{' '}
@@ -111,7 +111,7 @@ export default function PricingConfigurator() {
           href="/contacto?motivo=informacionCliente"
           className="text-sm font-medium text-muted underline decoration-dotted underline-offset-4 hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded"
         >
-          Contactar sin configurar
+          Solicitar información sin configurar
         </a>
       </div>
     </div>

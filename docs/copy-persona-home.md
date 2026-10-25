@@ -1,13 +1,14 @@
-# Informe: persona gramatical fuera del Hero (home)
+# Informe: persona gramatical del sitio
 
-Alcance: cadenas en 1.ª o 2.ª persona que quedan en la home o en metadatos globales tras la decisión 0021. El Hero y «¿Qué necesitas?» quedan en tercera persona. No se reescriben aquí las páginas `/sobre-mi` ni `/metodo`.
+Alcance tras unificar tercera persona / impersonal en superficies comerciales.
 
-| Fichero                                     | Línea (aprox.)         | Cadena                             | Persona detectada    |
-| ------------------------------------------- | ---------------------- | ---------------------------------- | -------------------- |
-| `src/layouts/Layout.astro` (JSON-LD Person) | jobTitle/description   | `profile.role` / `profile.summary` | 1.ª (vía profile.ts) |
-| `src/content/profile.ts`                    | role, summary, method… | Textos de Sobre mí                 | 1.ª / 2.ª            |
-| `src/pages/sobre-mi.astro`                  | CTA                    | «Cuéntame qué necesitas»           | 2.ª / imperativo     |
-| `src/content/process.ts`                    | close.heading          | «Cuéntame qué necesitas»           | 2.ª / imperativo     |
-| `src/pages/contacto.astro`                  | no-JS / privacidad     | «te responda», «Usaré tus datos»   | 1.ª / 2.ª            |
+## Hecho
 
-Seguimiento: issue «Unificar persona gramatical en la home» (#131).
+- Home (Hero + Encargos habituales), `/metodo`, `/servicios`, fichas, configurador, `/contacto` (envoltorio y formulario), `/sobre-mi`, `/proyectos`, artículos y ejes: voz comercial en tercera persona o impersonal.
+- Cabecera y sticky: CTA «Presupuestos y contratación».
+
+## Residuo consciente (legal / CMP)
+
+Cookies, privacidad y el banner de consentimiento siguen dirigidos al visitante en 2.ª persona cuando nombran la decisión de consentimiento (requisito de claridad al interesado). No se tratan como copy comercial.
+
+Seguimiento histórico: issue #131.

@@ -1,32 +1,31 @@
 export const profile = {
   name: 'Alejandro Domingo Agustí',
   alternateName: 'Alexendros',
-  headline: 'Hola, soy Alejandro.',
-  role: 'La persona detrás de Alexendros. Diseño y desarrollo webs para profesionales y pequeños negocios.',
+  headline: 'Alejandro Domingo Agustí · Alexendros',
+  role: 'La persona detrás de Alexendros. Diseño y desarrollo web para profesionales y pequeños negocios.',
   pageTitle: 'Sobre mí — Alejandro · Alexendros',
   pageDescription:
     'Alejandro Domingo Agustí: diseño y desarrollo web en Valencia para profesionales y pequeños negocios. Trato directo y presupuesto cerrado.',
-  title:
-    'Creo webs claras y útiles para que tus clientes entiendan tu propuesta y puedan contactar contigo.',
+  title: 'Webs claras y útiles para que el público entienda la propuesta y pueda contactar.',
   summary:
-    'Hago webs que explican bien lo que vendes y no te dan problemas. Me encargo de todo el proceso: del primer mensaje a la publicación, y respondo de cada proyecto de principio a fin.',
+    'Webs que explican bien la oferta y generan pocas fricciones. El mismo responsable cubre el proceso completo: del primer mensaje a la publicación.',
   metaLine: 'Valencia · En remoto con clientes de toda España · Español e inglés',
   workWithMe: [
     {
-      title: 'Hablas con quien hace el trabajo',
-      body: 'Sin intermediarios ni cuentas genéricas: me escribes a mí y te respondo yo.'
+      title: 'Trato con quien hace el trabajo',
+      body: 'Sin intermediarios ni cuentas genéricas: el contacto y la respuesta son con la misma persona.'
     },
     {
       title: 'Sin tecnicismos',
-      body: 'Te explico cada decisión en palabras normales. Si algo no te conviene, te lo digo aunque me cueste el encargo.'
+      body: 'Cada decisión se explica en palabras normales. Si algo no conviene, se dice aunque implique perder el encargo.'
     },
     {
       title: 'Lo acordado, por escrito',
-      body: 'Antes de empezar sabes qué incluye el proyecto, qué no incluye y cuánto cuesta. Sin sorpresas en la factura.'
+      body: 'Antes de empezar quedan definidos el alcance, las exclusiones y el importe. Sin sorpresas en la factura.'
     }
   ],
   trajectory:
-    'He desarrollado webs para negocios locales, tiendas online y herramientas internas. Puedes ver tres casos con su problema, qué se hizo y qué cambió.',
+    'Webs para negocios locales, tiendas online y herramientas internas. Tres casos publicados con problema, intervención y resultado.',
   qualityTechnical:
     'Para equipos técnicos: objetivos Lighthouse ≥90, 0 violaciones de accesibilidad automatizadas en todas las rutas públicas del sitio y validación de contrato del formulario.',
   proofs: [
@@ -42,28 +41,28 @@ export const profile = {
   method: [
     {
       step: 1,
-      title: 'Entendemos el punto de partida',
-      desc: 'Hablamos de tu negocio, tus clientes y lo que necesitas conseguir.'
+      title: 'Definición del punto de partida',
+      desc: 'Recogida del contexto comercial, del público y de los objetivos del encargo.'
     },
     {
       step: 2,
-      title: 'Definimos una propuesta clara',
-      desc: 'Acordamos alcance, prioridades, entregables y presupuesto antes de empezar.'
+      title: 'Propuesta clara',
+      desc: 'Alcance, prioridades, entregables y presupuesto acordados antes de empezar.'
     },
     {
       step: 3,
-      title: 'Diseñamos y construimos',
-      desc: 'Te enseño avances para validar el enfoque antes de llegar al final.'
+      title: 'Diseño y construcción',
+      desc: 'Avances entregados para validar el enfoque antes del cierre.'
     },
     {
       step: 4,
-      title: 'Revisamos antes de publicar',
-      desc: 'Compruebo que el sitio sea claro, usable y funcione bien en los dispositivos habituales.'
+      title: 'Revisión antes de publicar',
+      desc: 'Comprobación de claridad, usabilidad y funcionamiento en dispositivos habituales.'
     },
     {
       step: 5,
-      title: 'Publicamos y te entrego lo necesario',
-      desc: 'La web queda lista para usar, con una guía para los puntos que necesites gestionar.'
+      title: 'Publicación y entrega',
+      desc: 'El sitio queda listo para usar, con guía de los puntos que el cliente deba gestionar.'
     }
   ],
   location: 'Valencia',
