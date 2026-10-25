@@ -5,8 +5,7 @@ import {
   formatContactFieldErrors,
   isHoneypotFilled,
   parseContactBody,
-  portalModuleDisplayNames,
-  validateContactStep
+  portalModuleDisplayNames
 } from './contactSchema';
 
 const validCorreo = {
@@ -38,9 +37,12 @@ describe('parseContactBody R04', () => {
     expect(parseContactBody(validWhatsapp).success).toBe(true);
   });
 
-  it('rechaza formulario incompleto (sin motivo)', () => {
+  it('acepta sin motivo y aplica default informacionCliente', () => {
     const { reason: _r, ...rest } = validCorreo;
-    expect(parseContactBody(rest).success).toBe(false);
+    const parsed = parseContactBody(rest);
+    expect(parsed.success).toBe(true);
+    if (!parsed.success) return;
+    expect(parsed.data.reason).toBe('informacionCliente');
   });
 
   it('rechaza sin mensaje de petición', () => {
@@ -155,33 +157,41 @@ describe('parseContactBody R04', () => {
   });
 });
 
-describe('validateContactStep', () => {
-  it('rechaza teléfono con caracteres no permitidos en el paso canal', () => {
-    const errors = validateContactStep('channel', {
-      name: 'Alex',
-      entityType: 'particular',
-      channel: 'whatsapp',
-      phone: 'abc-not-a-phone',
-      email: '',
-      reason: 'informacionCliente',
-      message: 'Petición suficientemente larga.',
-      consent: false
+describe('parseContactBody (formulario mínimo)', () => {
+  it('aplica defaults de categoría y motivo cuando faltan', () => {
+    const parsed = parseContactBody({
+      name: 'Alex Endros',
+      channel: 'correo',
+      email: 'alex@example.com',
+      message: 'Quiero un informe comercial para mi dominio.',
+      consent: true
     });
-    expect(errors.some((e) => e.field === 'phone')).toBe(true);
+    expect(parsed.success).toBe(true);
+    if (!parsed.success) return;
+    expect(parsed.data.entityType).toBe('particular');
+    expect(parsed.data.reason).toBe('informacionCliente');
   });
 
-  it('rechaza markup en el mensaje en su paso', () => {
-    const errors = validateContactStep('message', {
-      name: 'Alex',
-      entityType: 'particular',
-      channel: 'correo',
-      phone: '',
-      email: 'a@b.co',
-      reason: 'informacionCliente',
-      message: 'Hola <script>x</script> necesito ayuda ya.',
-      consent: false
+  it('rechaza teléfono con caracteres no permitidos', () => {
+    const parsed = parseContactBody({
+      ...validCorreo,
+      channel: 'whatsapp',
+      phone: 'abc-not-a-phone',
+      email: undefined
     });
-    expect(errors.some((e) => e.field === 'message')).toBe(true);
+    expect(parsed.success).toBe(false);
+    if (parsed.success) return;
+    expect(formatContactFieldErrors(parsed.error).some((e) => e.field === 'phone')).toBe(true);
+  });
+
+  it('rechaza markup en el mensaje', () => {
+    const parsed = parseContactBody({
+      ...validCorreo,
+      message: 'Hola <script>x</script> necesito ayuda ya.'
+    });
+    expect(parsed.success).toBe(false);
+    if (parsed.success) return;
+    expect(formatContactFieldErrors(parsed.error).some((e) => e.field === 'message')).toBe(true);
   });
 });
 

@@ -3,7 +3,19 @@ import Layout from '../../layouts/Layout.astro';
 import Container from '../../components/Container.astro';
 import Grid from '../../components/Grid.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
-import { projects } from '../../content/projects';
+import DetailIsland from '../../components/DetailIsland.astro';
+import { availabilityCtaLabels, productTypeLabels, projects } from '../../content/projects';
+
+const detailItems = projects.map((p) => ({
+  slug: p.slug,
+  path: `/proyectos/${p.slug}`,
+  title: p.title,
+  short: p.short,
+  description: p.summary,
+  meta: productTypeLabels[p.productType],
+  ctaLabel: availabilityCtaLabels[p.availability],
+  ctaHref: `/contacto?motivo=informacionCliente&proyecto=${p.slug}&origen=proyectos`
+}));
 ---
 
 <Layout
@@ -29,5 +41,6 @@ import { projects } from '../../content/projects';
         ))
       }
     </Grid>
+    <DetailIsland basePath="/proyectos" items={detailItems} />
   </Container>
 </Layout>

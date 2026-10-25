@@ -149,7 +149,7 @@ jobs:
       - run: npx playwright install --with-deps chromium
 
       - name: Playwright críticos (home, contacto, consent, fichas, SEO, proceso)
-        run: pnpm exec playwright test tests/e2e/critical.spec.ts tests/e2e/products-structure.spec.ts tests/e2e/consent.spec.ts tests/e2e/seo-routes.spec.ts tests/e2e/seo-edge-prod.spec.ts tests/e2e/process-page.spec.ts tests/e2e/cp09-a11y-ux.spec.ts tests/e2e/skip-link.spec.ts tests/e2e/revision-ruido.spec.ts tests/e2e/hero-home.spec.ts
+        run: pnpm exec playwright test tests/e2e/critical.spec.ts tests/e2e/products-structure.spec.ts tests/e2e/consent.spec.ts tests/e2e/seo-routes.spec.ts tests/e2e/seo-edge-prod.spec.ts tests/e2e/process-page.spec.ts tests/e2e/cp09-a11y-ux.spec.ts tests/e2e/skip-link.spec.ts tests/e2e/revision-ruido.spec.ts tests/e2e/hero-home.spec.ts tests/e2e/detail-island.spec.ts
         env:
           CI: true
 

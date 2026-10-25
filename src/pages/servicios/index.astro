@@ -3,8 +3,20 @@ import Layout from '../../layouts/Layout.astro';
 import Container from '../../components/Container.astro';
 import Grid from '../../components/Grid.astro';
 import ServiceCard from '../../components/ServiceCard.astro';
+import DetailIsland from '../../components/DetailIsland.astro';
 import PricingConfigurator from '../../components/PricingConfigurator';
-import { serviceProducts } from '../../content/services';
+import { serviceProducts, services, servicePriceLabel } from '../../content/services';
+
+const detailItems = services.map((s) => ({
+  slug: s.slug,
+  path: `/servicios/${s.slug}`,
+  title: s.title,
+  short: s.short,
+  description: s.description,
+  priceLabel: servicePriceLabel(s.commercial),
+  ctaLabel: s.action.label,
+  ctaHref: s.action.href
+}));
 ---
 
 <Layout
@@ -38,6 +50,7 @@ import { serviceProducts } from '../../content/services';
         ))
       }
     </Grid>
+    <DetailIsland basePath="/servicios" items={detailItems} />
 
     <section class="mt-16" aria-labelledby="portal-heading">
       <PricingConfigurator client:load />

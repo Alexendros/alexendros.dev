@@ -316,6 +316,36 @@
       "context": "La canónica /proceso-y-entrega y el label Cómo trabajo no encajan con taxonomía de direcciones de una palabra ni con rótulos comerciales claros. La home acumulaba secciones redundantes con la nav.",
       "decision": "Canónica /metodo con label Metodología clara; 308 desde /proceso-y-entrega, /metodologia, /valores y /como-trabajo. Nav: Servicios profesionales (/servicios), Proyectos realizados (/proyectos), Metodología clara (/metodo). Home: Hero + ¿Qué necesitas? alineado a taxonomía; sin secciones Cómo trabajo ni Un caso. Pie sin Sobre mí; mailto visible como Contratación. Índice de servicios titulado Servicios profesionales.",
       "consequences": "Actualizar redirects, sitemap, e2e, LHCI, StickyCta, README y AGENTS. /sobre-mi permanece como página viva sin enlace en el pie."
+    },
+    {
+      "id": "0022",
+      "sequence": 22,
+      "timestamp": "2026-10-25T23:50:00Z",
+      "active": true,
+      "title": "Fichas de servicio y proyecto como isla/dialog sobre el índice",
+      "summary": "Soft-nav: clic en tarjeta abre <dialog> con pushState a /servicios|proyectos/[slug]; páginas slug siguen existiendo para SEO y sin JS.",
+      "recordType": "decision",
+      "status": "aceptada",
+      "supersedes": [],
+      "supersededBy": null,
+      "context": "Explorar el catálogo recargaba página completa. Se quiere sensación de ventana flotante sin perder deep links, OG ni JSON-LD.",
+      "decision": "Conservar rutas /servicios/[slug] y /proyectos/[slug]. En los índices, DetailIsland intercepta clics same-origin a esas rutas, abre dialog modal nativo con contenido tipado embebido y hace history.pushState; Escape/cerrar restaura el índice. Sin View Transitions (0004). Entrada directa al slug sigue sirviendo la página completa.",
+      "consequences": "e2e y a11y deben cubrir dialog (foco, Escape). El enlace «Abrir ficha completa» y la navegación sin JS siguen yendo a la página slug."
+    },
+    {
+      "id": "0023",
+      "sequence": 23,
+      "timestamp": "2026-10-25T23:50:00Z",
+      "active": true,
+      "title": "Formulario de contacto mínimo con canal",
+      "summary": "UI visible: nombre, canal correo|WhatsApp, email|teléfono, mensaje y consentimiento; motivo/categoría/refs solo contexto oculto o defaults.",
+      "recordType": "decision",
+      "status": "aceptada",
+      "supersedes": [],
+      "supersededBy": null,
+      "context": "El formulario de una pantalla aún mostraba motivo, categoría y selects de servicio/proyecto; docs citaban un asistente de 6 pasos ya retirado de la UI.",
+      "decision": "Reducir UI a nombre, preferencia de canal, dato de contacto, mensaje y consentimiento. Motivo y categoría con defaults (informacionCliente / particular) o query allowlisted en hidden. servicio/proyecto/módulos/origen siguen como contexto oculto desde URL. Retirar helpers de wizard del schema. Conservar honeypot, Turnstile, rate-limit, idempotencia y semántica de eventos de medición.",
+      "consequences": "Actualizar ContactForm, contactSchema, e2e de contacto, identidad.md y AGENTS (ya no «asistente de 6 pasos»)."
     }
   ]
 }
