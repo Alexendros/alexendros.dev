@@ -128,6 +128,13 @@ describe('parseContactBody R04', () => {
     expect(msg).toMatch(/Front Valencia/);
     expect(msg).toMatch(/Origen de página: proceso/);
 
+    for (const origin of ['home-linux', 'home-gestion', 'home-ia'] as const) {
+      const homeOrigin = parseContactBody({ ...validCorreo, origin });
+      expect(homeOrigin.success).toBe(true);
+      if (!homeOrigin.success) return;
+      expect(homeOrigin.data.origin).toBe(origin);
+    }
+
     const junk = parseContactBody({
       ...validCorreo,
       serviceSlug: 'evil-slug',

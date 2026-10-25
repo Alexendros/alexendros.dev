@@ -27,7 +27,7 @@ Quien eres: role Full Stack · Auditor · Consultor, summary conversion-focused,
 
 - Header.astro: sticky blur; nav Servicios / Proyectos realizados / Cómo trabajo; CTA Contactar
 - Footer.astro: marca + nav + legal; tracking solo con consentimiento (CMP)
-- Hero.astro: H1 estable de contratación (decisión 0016); subtítulo de alcance; CTAs «Cuéntame qué necesitas» y «Explorar servicios»
+- Hero.astro: H1 de taxonomía de servicios (auditoría, diseño y desarrollo); lista de cinco enlaces; CTAs «Solicitar propuesta» y «Ver servicios»
 - ServiceCard.astro / ProjectCard.astro: fichas de catálogo y proyectos con availability
 - ContactForm.tsx: isla React `client:load`, asistente de 6 pasos (motivo → nombre → categoría → canal → petición → consentimiento), errores por campo, honeypot, Turnstile opcional
 - CookieBanner.tsx: isla CMP `vanilla-cookieconsent` v3 (`client:idle`); Consent Mode v2 default-deny

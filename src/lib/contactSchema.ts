@@ -20,7 +20,15 @@ export const contactReasons = [
   'informacionCliente'
 ] as const;
 
-export const contactOrigins = ['proceso', 'servicios', 'home', 'proyectos'] as const;
+export const contactOrigins = [
+  'proceso',
+  'servicios',
+  'home',
+  'proyectos',
+  'home-linux',
+  'home-gestion',
+  'home-ia'
+] as const;
 
 const PORTAL_MODULE_TITLES: Record<PortalModuleId, string> = Object.fromEntries(
   portalModules.map((m) => [m.id, m.title])

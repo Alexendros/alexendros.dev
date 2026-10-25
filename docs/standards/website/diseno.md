@@ -66,10 +66,10 @@ Un solo sistema: la clase `.focus-ring` (outline 2px `--brand` con offset 2px + 
 
 Extraído de Layout: primer foco de la página, salta a `#contenido`, visible solo con teclado (`focus-visible`), z-index máximo. No reordenar en Layout.
 
-### H1 estable de la home (decisión 0016)
+### H1 de la home (taxonomía de servicios)
 
-- **Uso:** solo el H1 de la home (`Hero.astro`). Mensaje fijo de contratación; sin rotación ni dependencia de un ciclo.
-- **CTAs:** primario «Cuéntame qué necesitas» (`/contacto`) y secundario «Explorar servicios» (`/servicios`) en el hero, además del Contactar de cabecera y del sticky móvil.
+- **Uso:** solo el H1 de la home (`Hero.astro`). Titular fijo de posicionamiento en tercera persona; lista semántica de cinco servicios; sin rotación.
+- **CTAs:** primario «Solicitar propuesta» (`/contacto?motivo=propuestaComercial&origen=home`) y secundario «Ver servicios» (`/servicios?origen=home`) en el hero, además del Contactar de cabecera y del sticky móvil.
 - **Motion:** la entrada escalonada del hero (`data-hero-item`) sigue las reglas generales de reveal; con `prefers-reduced-motion` no hay animación.
 - **Don't:** no reintroducir ventana rotatoria en el producto; no añadir librerías de motion; no animar con propiedades distintas de `transform`/`opacity`.
 
