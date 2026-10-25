@@ -1,6 +1,6 @@
-# Alexendros — webs claras y útiles
+# Alexendros — Auditoría, diseño y desarrollo web
 
-Sitio profesional de [alexendros.dev](https://alexendros.dev): webs que explican bien el negocio, cargan rápido y facilitan el contacto.
+Sitio profesional de [alexendros.dev](https://alexendros.dev): página web, tienda en internet, aplicaciones para Linux, protocolos de gestión e integración de Inteligencia Artificial. Desde Valencia.
 
 ## En qué puedo ayudarte
 
