@@ -646,7 +646,7 @@ export default function ContactForm({
           className="mt-1"
         />
         <span>
-          Se acepta el tratamiento de datos para responder a esta petición según la{' '}
+          Acepto el tratamiento de mis datos para responder a esta petición según la{' '}
           <a href="/privacidad" className="underline decoration-dotted underline-offset-2">
             política de privacidad
           </a>
