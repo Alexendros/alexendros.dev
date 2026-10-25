@@ -21,13 +21,7 @@ async function assertSingleH1AndMain(page: Page) {
 }
 
 test.describe('CP-09 landmarks y jerarquía', () => {
-  for (const path of [
-    '/',
-    '/servicios',
-    '/contacto',
-    '/proceso-y-entrega',
-    '/proyectos'
-  ] as const) {
+  for (const path of ['/', '/servicios', '/contacto', '/metodo', '/proyectos'] as const) {
     test(`${path}: banner, main y un solo H1`, async ({ page }) => {
       await page.emulateMedia({ reducedMotion: 'reduce' });
       await page.goto(path);
@@ -160,7 +154,7 @@ test.describe('CP-09 recorridos A–E (muestreo)', () => {
   });
 
   test('D: proceso → contacto', async ({ page }) => {
-    await page.goto('/proceso-y-entrega');
+    await page.goto('/metodo');
     await assertSingleH1AndMain(page);
     await page
       .getByRole('link', { name: /Contactar|contacto/i })

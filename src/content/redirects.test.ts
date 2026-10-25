@@ -13,12 +13,14 @@ describe('redirecciones permanentes', () => {
     const bySource = new Map(unconditional.map((r) => [r.source, r]));
 
     const expected: Array<[string, string]> = [
-      ['/metodologia', '/proceso-y-entrega'],
-      ['/metodologia/', '/proceso-y-entrega'],
-      ['/valores', '/proceso-y-entrega'],
-      ['/valores/', '/proceso-y-entrega'],
-      ['/como-trabajo', '/proceso-y-entrega'],
-      ['/como-trabajo/', '/proceso-y-entrega'],
+      ['/metodologia', '/metodo'],
+      ['/metodologia/', '/metodo'],
+      ['/valores', '/metodo'],
+      ['/valores/', '/metodo'],
+      ['/como-trabajo', '/metodo'],
+      ['/como-trabajo/', '/metodo'],
+      ['/proceso-y-entrega', '/metodo'],
+      ['/proceso-y-entrega/', '/metodo'],
       ['/aviso-legal', '/identidad'],
       ['/afiliados', '/'],
       ['/servicios/produccion-sitios-web', '/servicios'],
@@ -47,12 +49,14 @@ describe('redirecciones permanentes', () => {
       '/valores',
       '/valores/',
       '/como-trabajo',
-      '/como-trabajo/'
+      '/como-trabajo/',
+      '/proceso-y-entrega',
+      '/proceso-y-entrega/'
     ];
     for (const source of retired) {
       const matches = unconditional.filter((r) => r.source === source);
       expect(matches, `una sola regla para ${source}`).toHaveLength(1);
-      expect(matches[0]?.destination).toBe('/proceso-y-entrega');
+      expect(matches[0]?.destination).toBe('/metodo');
       expect(retired).not.toContain(matches[0]?.destination);
     }
 
@@ -62,10 +66,11 @@ describe('redirecciones permanentes', () => {
     }
   });
 
-  it('las páginas retiradas ya no existen; sobre-mi y proceso sí', () => {
+  it('las páginas retiradas ya no existen; sobre-mi y metodo sí', () => {
     expect(existsSync(resolve(process.cwd(), 'src/pages/metodologia.astro'))).toBe(false);
     expect(existsSync(resolve(process.cwd(), 'src/pages/valores.astro'))).toBe(false);
-    expect(existsSync(resolve(process.cwd(), 'src/pages/proceso-y-entrega.astro'))).toBe(true);
+    expect(existsSync(resolve(process.cwd(), 'src/pages/proceso-y-entrega.astro'))).toBe(false);
+    expect(existsSync(resolve(process.cwd(), 'src/pages/metodo.astro'))).toBe(true);
     expect(existsSync(resolve(process.cwd(), 'src/pages/sobre-mi.astro'))).toBe(true);
   });
 });

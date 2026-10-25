@@ -291,16 +291,31 @@
       "id": "0020",
       "sequence": 20,
       "timestamp": "2026-10-18T18:20:00Z",
-      "active": true,
+      "active": false,
       "title": "Hoja de Servicios: catálogo SEO, cumplimiento, ciberseguridad y colaboración",
       "summary": "Retira sesión profesional; parte la inspección en cumplimiento y ciberseguridad; renombra informe y software; índice como Hoja de Servicios.",
       "recordType": "decision",
-      "status": "aceptada",
+      "status": "superseded",
       "supersedes": ["0019"],
-      "supersededBy": null,
+      "supersededBy": "0021",
       "context": "El catálogo de 0019 mezclaba normativa y vulnerabilidades, ofrecía sesión de pago como ficha y titulaba el informe como 360º sin foco SEO comercial.",
       "decision": "Publicar cuatro fichas: informe-comercial (Posicionamiento comercial en buscadores), cumplimiento-normativo, ciberseguridad y software-a-medida (Colaboración en proyectos de software). Retirar sesion-profesional con 308 a /servicios; redirigir auditoria-normativa-ciberseguridad a cumplimiento-normativo. Índice H1 «Hoja de Servicios». Portal solo en configurador. Conservar de 0019: nav Cómo trabajo, home con tres caminos, /sobre-mi, euros/plazos en proceso donde ya existan, y software sin precio «desde» inventado.",
-      "consequences": "Allowlist de contacto, products-structure, OG por slug, README y redirects actualizados. Contacto ya no ofrece reserva Cal de sesión profesional."
+      "consequences": "Superseded por 0021 (canónica /metodo y semántica comercial). Catálogo de cuatro fichas y portal en configurador siguen vigentes vía 0021."
+    },
+    {
+      "id": "0021",
+      "sequence": 21,
+      "timestamp": "2026-10-25T11:30:00Z",
+      "active": true,
+      "title": "Canónica /metodo y semántica comercial de nav/home",
+      "summary": "URLs de una palabra (servicios, proyectos, metodo); labels Servicios profesionales / Metodología clara; home sin tira Cómo trabajo ni caso.",
+      "recordType": "decision",
+      "status": "aceptada",
+      "supersedes": ["0020"],
+      "supersededBy": null,
+      "context": "La canónica /proceso-y-entrega y el label Cómo trabajo no encajan con taxonomía de direcciones de una palabra ni con rótulos comerciales claros. La home acumulaba secciones redundantes con la nav.",
+      "decision": "Canónica /metodo con label Metodología clara; 308 desde /proceso-y-entrega, /metodologia, /valores y /como-trabajo. Nav: Servicios profesionales (/servicios), Proyectos realizados (/proyectos), Metodología clara (/metodo). Home: Hero + ¿Qué necesitas? alineado a taxonomía; sin secciones Cómo trabajo ni Un caso. Pie sin Sobre mí; mailto visible como Contratación. Índice de servicios titulado Servicios profesionales.",
+      "consequences": "Actualizar redirects, sitemap, e2e, LHCI, StickyCta, README y AGENTS. /sobre-mi permanece como página viva sin enlace en el pie."
     }
   ]
 }

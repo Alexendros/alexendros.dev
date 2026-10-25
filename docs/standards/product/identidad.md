@@ -25,9 +25,9 @@ Quien eres: role Full Stack · Auditor · Consultor, summary conversion-focused,
 
 ## Componentes
 
-- Header.astro: sticky blur; nav Servicios / Proyectos realizados / Cómo trabajo; CTA Contactar
-- Footer.astro: marca + nav + legal; tracking solo con consentimiento (CMP)
-- Hero.astro: H1 de taxonomía de servicios (auditoría, diseño y desarrollo); lista de cinco enlaces; CTAs «Solicitar propuesta» y «Ver servicios»
+- Header.astro: sticky blur; nav Servicios profesionales / Proyectos realizados / Metodología clara; CTA Contactar
+- Footer.astro: marca + Contratación (mailto) + nav + legal; tracking solo con consentimiento (CMP); sin Sobre mí en el pie
+- Hero.astro: H1 de taxonomía; lista de cuatro enlaces; CTAs «Solicitar propuesta» y «Catálogo de servicios»
 - ServiceCard.astro / ProjectCard.astro: fichas de catálogo y proyectos con availability
 - ContactForm.tsx: isla React `client:load`, asistente de 6 pasos (motivo → nombre → categoría → canal → petición → consentimiento), errores por campo, honeypot, Turnstile opcional
 - CookieBanner.tsx: isla CMP `vanilla-cookieconsent` v3 (`client:idle`); Consent Mode v2 default-deny
@@ -35,10 +35,10 @@ Quien eres: role Full Stack · Auditor · Consultor, summary conversion-focused,
 
 ## Paginas
 
-- index.astro: Hero + caminos + Cómo trabajo + caso (decisión 0019)
-- servicios/: catálogo + configurador de portal; fichas con precio/pago/plazo/entrega/garantía
+- index.astro: Hero + ¿Qué necesitas? (decisión 0021)
+- servicios/: Servicios profesionales + configurador de portal; fichas con precio/pago/plazo/entrega/garantía
 - proyectos/: Proyectos realizados con availability si|no|reservado
-- proceso-y-entrega.astro (Cómo trabajo), identidad.astro
+- metodo.astro (Metodología clara), identidad.astro
 - contacto.astro: formulario asistente + mailto; sin embed Cal en página
 - api/contact.ts: Zod, honeypot, rate-limit Upstash, idempotencia Redis (estados accepted/processing/conflict/unknown; no exactly-once Redis+SMTP), Proton SMTP; sin CAPI Lead (falta consentimiento publicidad)
 - privacidad.astro / cookies.astro: textos alineados al CMP; Identidad como aviso del prestador

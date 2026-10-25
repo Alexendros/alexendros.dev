@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-const route = '/proceso-y-entrega';
+const route = '/metodo';
 
 for (const width of [320, 390, 768, 1280]) {
   test(`proceso: contenido y reflow a ${width}px`, async ({ page }) => {
@@ -9,8 +9,8 @@ for (const width of [320, 390, 768, 1280]) {
     const response = await page.goto(route);
     expect(response?.status()).toBe(200);
     await expect(page.locator('h1')).toHaveCount(1);
-    await expect(page.locator('h1')).toContainText('Así trabajamos:');
-    await expect(page.locator('h1')).toContainText('claro desde el primer día');
+    await expect(page.locator('h1')).toContainText('Metodología clara:');
+    await expect(page.locator('h1')).toContainText('desde el primer día');
     await expect(
       page.locator('main a[href*="/contacto"][href*="origen=proceso"]').first()
     ).toBeVisible();

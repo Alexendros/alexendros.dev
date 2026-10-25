@@ -14,7 +14,7 @@ const URLS = [
   '/servicios/ciberseguridad',
   '/proyectos',
   '/proyectos/front-valencia',
-  '/proceso-y-entrega',
+  '/metodo',
   '/contacto',
   '/cookies',
   '/privacidad',

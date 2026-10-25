@@ -36,14 +36,14 @@ const ORIGIN = 'origen=proceso';
 
 export const processPage = {
   seo: {
-    title: 'Cómo trabajo: de la idea a tu proyecto publicado — Alexendros',
+    title: 'Metodología clara: de la idea al proyecto publicado — Alexendros',
     description:
-      'Precio y plazo por escrito, avances que puedes ver y entrega probada contigo. Así trabajo en webs y software a medida.',
-    ogTitle: 'Así trabajo: claro desde el primer día'
+      'Precio y plazo por escrito, avances visibles y entrega comprobada. Método de trabajo para webs y productos digitales.',
+    ogTitle: 'Metodología clara desde el primer día'
   },
   hero: {
-    h1Lead: 'Así trabajamos:',
-    h1Accent: 'claro desde el primer día',
+    h1Lead: 'Metodología clara:',
+    h1Accent: 'desde el primer día',
     lead: 'Sabrás qué recibes, cuánto cuesta y cuándo, antes de pagar. Hablas conmigo de principio a fin.',
     primaryCta: {
       label: 'Pedir presupuesto',

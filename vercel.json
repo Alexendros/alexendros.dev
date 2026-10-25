@@ -10,32 +10,42 @@
     },
     {
       "source": "/metodologia",
-      "destination": "/proceso-y-entrega",
+      "destination": "/metodo",
       "permanent": true
     },
     {
       "source": "/metodologia/",
-      "destination": "/proceso-y-entrega",
+      "destination": "/metodo",
       "permanent": true
     },
     {
       "source": "/valores",
-      "destination": "/proceso-y-entrega",
+      "destination": "/metodo",
       "permanent": true
     },
     {
       "source": "/valores/",
-      "destination": "/proceso-y-entrega",
+      "destination": "/metodo",
       "permanent": true
     },
     {
       "source": "/como-trabajo",
-      "destination": "/proceso-y-entrega",
+      "destination": "/metodo",
       "permanent": true
     },
     {
       "source": "/como-trabajo/",
-      "destination": "/proceso-y-entrega",
+      "destination": "/metodo",
+      "permanent": true
+    },
+    {
+      "source": "/proceso-y-entrega",
+      "destination": "/metodo",
+      "permanent": true
+    },
+    {
+      "source": "/proceso-y-entrega/",
+      "destination": "/metodo",
       "permanent": true
     },
     {

@@ -4,7 +4,7 @@ import { formatEuro, portalTotalWithModules, provisionalPrices } from '../../src
 test.describe('F02 F03 F10 servicios y configurador', () => {
   test('F02: /servicios muestra las cuatro fichas y cada importe del módulo', async ({ page }) => {
     await page.goto('/servicios');
-    await expect(page.getByRole('heading', { name: 'Hoja de Servicios' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Servicios profesionales' })).toBeVisible();
     await expect(
       page.getByRole('heading', { name: 'Posicionamiento comercial en buscadores' })
     ).toBeVisible();
@@ -54,7 +54,7 @@ test.describe('F02 F03 F10 servicios y configurador', () => {
     ).toHaveAttribute('href', '/contacto?motivo=informacionCliente');
     await configurator.getByRole('link', { name: /Contactar sin configurar/i }).click();
     await expect(page).toHaveURL(/\/contacto\?motivo=informacionCliente/);
-    await expect(page.getByRole('heading', { name: 'Formulario de contacto' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Contacto', exact: true })).toBeVisible();
     await expect(page.locator('[data-contact-modules]')).toHaveCount(0);
   });
 
