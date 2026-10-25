@@ -5,7 +5,7 @@ Alcance tras unificar tercera persona / impersonal en superficies comerciales.
 ## Hecho
 
 - Home (Hero + Encargos habituales), `/metodo`, `/servicios`, fichas, configurador, `/contacto` (envoltorio y formulario), `/sobre-mi`, `/proyectos`, artículos y ejes: voz comercial en tercera persona o impersonal.
-- Cabecera y sticky: CTA «Presupuestos y contratación».
+- Cabecera y sticky: CTA «Formulario de contacto».
 
 ## Residuo consciente (legal / CMP)
 

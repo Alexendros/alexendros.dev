@@ -157,7 +157,7 @@ test.describe('CP-09 recorridos A–E (muestreo)', () => {
     await page.goto('/metodo');
     await assertSingleH1AndMain(page);
     await page
-      .getByRole('link', { name: /Presupuestos y contratación|Contactar|contacto/i })
+      .getByRole('link', { name: /Formulario de contacto|Contactar|contacto/i })
       .first()
       .click();
     await expect(page).toHaveURL(/\/contacto/);

@@ -29,7 +29,7 @@ test('F01: home es hero estable + caminos (sin proceso ni caso)', async ({ page 
   await expect(page.getByText(/Pare las rotativas/)).toHaveCount(0);
 
   const banner = page.getByRole('banner');
-  await expect(banner.getByRole('link', { name: 'Presupuestos y contratación' })).toBeVisible();
+  await expect(banner.getByRole('link', { name: 'Formulario de contacto' })).toBeVisible();
   await expect(
     page.locator('[data-hero]').getByRole('link', { name: 'Solicitar propuesta' })
   ).toBeVisible();

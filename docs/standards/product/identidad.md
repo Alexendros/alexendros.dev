@@ -25,7 +25,7 @@ Quien eres: role Full Stack · Auditor · Consultor, summary conversion-focused,
 
 ## Componentes
 
-- Header.astro: sticky blur; nav Servicios profesionales / Proyectos realizados / Metodología clara; CTA Presupuestos y contratación
+- Header.astro: sticky blur; nav Servicios profesionales / Proyectos realizados / Metodología clara; CTA Formulario de contacto
 - Footer.astro: marca + Contratación (mailto) + nav + legal; tracking solo con consentimiento (CMP); sin Sobre mí en el pie
 - Hero.astro: H1 de taxonomía; lista de cuatro enlaces; CTAs «Solicitar propuesta» y «Catálogo de servicios»
 - ServiceCard.astro / ProjectCard.astro: fichas de catálogo y proyectos con availability
