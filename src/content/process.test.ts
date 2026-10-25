@@ -49,16 +49,17 @@ function wordCount(text: string): number {
     .filter(Boolean).length;
 }
 
-describe('processPage — copy público de proceso y entrega', () => {
-  it('tiene seo, hero, 4 pasos y cierre con CTA medibles', () => {
+describe('processPage — copy público de metodología', () => {
+  it('tiene seo, hero, 4 pasos y cierre con CTA medible', () => {
     nonEmpty(processPage.seo.title, 'seo.title');
     nonEmpty(processPage.seo.description, 'seo.description');
-    expect(processPage.seo.description).toMatch(
-      /qué recibes, cuánto cuesta y cuándo, antes de pagar/i
-    );
+    expect(processPage.seo.description).toMatch(/cliente explica qué busca/i);
     nonEmpty(processPage.hero.h1Lead, 'hero.h1Lead');
+    expect(processPage.hero.h1Lead).not.toContain(':');
     nonEmpty(processPage.hero.h1Accent, 'hero.h1Accent');
     nonEmpty(processPage.hero.lead, 'hero.lead');
+    expect(processPage.hero).not.toHaveProperty('primaryCta');
+    expect(processPage.hero).not.toHaveProperty('secondaryCta');
     expect(processPage.hero).not.toHaveProperty('guarantees');
 
     expect(processPage.steps).toHaveLength(4);
@@ -71,26 +72,22 @@ describe('processPage — copy público de proceso y entrega', () => {
       nonEmpty(step.receive, `step.${step.id}.receive`);
     }
 
+    expect(processPage.processSection).not.toHaveProperty('intro');
     expect(processPage).not.toHaveProperty('paths');
-    expect(processPage).not.toHaveProperty('pathsSection');
-    expect(processPage).not.toHaveProperty('featuredCase');
+    expect(processPage).not.toHaveProperty('alwaysIncludes');
     expect(processPage).not.toHaveProperty('faqs');
-    expect(processPage).not.toHaveProperty('faqsSection');
     expect(processPage).not.toHaveProperty('limits');
 
     nonEmpty(processPage.close.heading, 'close.heading');
-    nonEmpty(processPage.alwaysIncludes.heading, 'alwaysIncludes.heading');
+    expect(processPage.close.body).toMatch(/lo antes posible/i);
+    expect(processPage.close).not.toHaveProperty('secondaryCta');
   });
 
-  it('usa CTA con origen=proceso hacia presupuesto, precios y Cal.com', () => {
-    expect(processPage.hero.primaryCta.label).toBe('Pedir presupuesto');
-    expect(processPage.hero.primaryCta.href).toContain('/contacto');
-    expect(processPage.hero.primaryCta.href).toContain('origen=proceso');
-    expect(processPage.hero.primaryCta.href).toContain('motivo=propuestaComercial');
-    expect(processPage.hero.secondaryCta.href).toContain('/servicios');
-    expect(processPage.hero.secondaryCta.href).toContain('origen=proceso');
+  it('usa CTA de cierre con origen=proceso hacia presupuesto', () => {
+    expect(processPage.close.primaryCta.label).toBe('Pedir presupuesto');
+    expect(processPage.close.primaryCta.href).toContain('/contacto');
     expect(processPage.close.primaryCta.href).toContain('origen=proceso');
-    expect(processPage.close.secondaryCta.href).toMatch(/^https:\/\//);
+    expect(processPage.close.primaryCta.href).toContain('motivo=propuestaComercial');
   });
 
   it('ordena las cuatro fases hablamos → escrito → construyo → publico', () => {

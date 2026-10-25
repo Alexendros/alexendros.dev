@@ -30,10 +30,10 @@ export const contactServiceOptions: ReadonlyArray<{ slug: ContactServiceSlug; ti
 ];
 
 export const contactProjectOptions: ReadonlyArray<{ slug: ContactProjectSlug; title: string }> = [
-  { slug: 'front-valencia', title: 'Front Valencia — Restaurante' },
-  { slug: 'graficas-nasve', title: 'Gráficas Nasve — Tienda online' },
-  { slug: 'zedazo', title: 'Zedazo — Herramienta de contactos' },
-  { slug: 'alexendros-me', title: 'Alexendros.me — Web personal' }
+  { slug: 'front-valencia', title: 'Front Valencia' },
+  { slug: 'graficas-nasve', title: 'Gráficas Nasve' },
+  { slug: 'zedazo', title: 'Zedazo' },
+  { slug: 'alexendros-me', title: 'Alexendros.me' }
 ];
 
 /** Conserva un slug de servicio referenciable; descarta desconocidos y vacíos. */

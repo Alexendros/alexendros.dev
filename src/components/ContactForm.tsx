@@ -373,7 +373,7 @@ export default function ContactForm({
         tabIndex={-1}
         className="focus-ring text-base font-bold focus:outline-none"
       >
-        Tu petición
+        La petición
       </h2>
 
       <div className="honeypot" aria-hidden="true">
@@ -443,7 +443,7 @@ export default function ContactForm({
           aria-describedby={fieldDescribedBy('message', messageErr)}
           disabled={sending}
           onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-          placeholder="Describe qué necesitas o qué quieres preguntar."
+          placeholder="Descripción del encargo o de la consulta."
         />
         {messageErr ? (
           <p id={`${formId}-message-error`} role="alert" className="mt-1 text-sm text-danger">
@@ -556,7 +556,7 @@ export default function ContactForm({
 
       <div className="space-y-3 rounded-lg border border-border bg-card p-3 text-sm">
         <p className="text-xs text-muted">
-          Opcional. Puedes dejarlo vacío; no altera precio ni condiciones.
+          Opcional. Puede quedar vacío; no altera precio ni condiciones.
         </p>
         <div>
           <label htmlFor="contact-entity" className="text-sm">
@@ -646,7 +646,7 @@ export default function ContactForm({
           className="mt-1"
         />
         <span>
-          Acepto el tratamiento de mis datos para responder a esta petición según la{' '}
+          Se acepta el tratamiento de datos para responder a esta petición según la{' '}
           <a href="/privacidad" className="underline decoration-dotted underline-offset-2">
             política de privacidad
           </a>
@@ -687,7 +687,7 @@ export default function ContactForm({
 
       {status === 'error' && (
         <p role="alert" className="text-sm text-danger">
-          {errorMessage} También puedes escribir a{' '}
+          {errorMessage} Alternativa:{' '}
           <a
             href="mailto:contratacion@alexendros.dev"
             className="underline decoration-dotted underline-offset-2"
@@ -699,7 +699,7 @@ export default function ContactForm({
       )}
       {status === 'rate_limited' && (
         <p role="alert" className="text-sm text-danger">
-          Demasiados intentos. Espera un minuto e inténtalo de nuevo, o escribe a{' '}
+          Demasiados intentos. Esperar un minuto antes de reintentar, o escribir a{' '}
           <a
             href="mailto:contratacion@alexendros.dev"
             className="underline decoration-dotted underline-offset-2"
@@ -711,7 +711,7 @@ export default function ContactForm({
       )}
       {status === 'unavailable' && (
         <p role="alert" className="text-sm text-danger">
-          Servicio temporalmente no disponible. Escríbeme a{' '}
+          Servicio temporalmente no disponible. Contacto:{' '}
           <a
             href="mailto:contratacion@alexendros.dev"
             className="underline decoration-dotted underline-offset-2"
@@ -723,13 +723,13 @@ export default function ContactForm({
       )}
       {status === 'processing' && (
         <p role="status" className="text-sm text-muted">
-          Tu petición se está procesando. Espera unos segundos antes de reintentar; no confirmamos
+          La petición se está procesando. Esperar unos segundos antes de reintentar; no se confirma
           aún la recepción.
         </p>
       )}
       {status === 'conflict' && (
         <p role="alert" className="text-sm text-danger">
-          Esta petición no coincide con un envío anterior. Revisa los datos o escribe a{' '}
+          Esta petición no coincide con un envío anterior. Comprobar los datos o escribir a{' '}
           <a
             href="mailto:contratacion@alexendros.dev"
             className="underline decoration-dotted underline-offset-2"
@@ -741,7 +741,7 @@ export default function ContactForm({
       )}
       {status === 'unknown' && (
         <p role="alert" className="text-sm text-danger">
-          No podemos confirmar si el mensaje llegó. No reenvíes de inmediato; espera un momento o
+          No se puede confirmar si el mensaje llegó. Evitar reenvío inmediato; esperar un momento o
           escribe a{' '}
           <a
             href="mailto:contratacion@alexendros.dev"
@@ -767,7 +767,7 @@ export default function ContactForm({
       )}
       {sending ? (
         <p role="status" className="text-sm text-muted">
-          Enviando tu petición…
+          Enviando la petición…
         </p>
       ) : null}
 

@@ -15,7 +15,7 @@ export const ejes: Eje[] = [
   {
     index: '01',
     title: 'Claridad',
-    description: 'Webs que explican bien lo que vendes y no te dan problemas.'
+    description: 'Webs que explican bien la oferta y generan pocas fricciones operativas.'
   },
   {
     index: '02',

@@ -17,7 +17,7 @@ const priceStatusLabel =
 const priceLabel = servicePriceLabel(service.commercial);
 const isSoftware = service.slug === 'software-a-medida';
 const relatedCase = isSoftware
-  ? { href: '/proyectos/zedazo', label: 'Ver caso Zedazo (herramienta)' }
+  ? { href: '/proyectos/zedazo', label: 'Saber más sobre Zedazo' }
   : null;
 const jsonLd = [
   {
@@ -142,7 +142,7 @@ const jsonLd = [
                 </ol>
               </section>
               <section data-product-section="deliverables">
-                <h2 class="text-2xl font-bold">Qué recibes</h2>
+                <h2 class="text-2xl font-bold">Qué se entrega</h2>
                 <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
                   {service.deliverables.map((item) => (
                     <li>{item}</li>
@@ -153,7 +153,7 @@ const jsonLd = [
           ) : (
             <>
               <section data-product-section="deliverables">
-                <h2 class="text-2xl font-bold">Qué recibes</h2>
+                <h2 class="text-2xl font-bold">Qué se entrega</h2>
                 <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
                   {service.deliverables.map((item) => (
                     <li>{item}</li>
@@ -185,7 +185,7 @@ const jsonLd = [
             {
               service.action.kind === 'booking'
                 ? 'Reserva la sesión en Cal.com. El clic abre la reserva; no confirma una venta hasta completar el flujo allí.'
-                : 'Escríbeme desde el formulario con el contexto de este servicio. Revisaré tu mensaje y te responderé por el canal que indiques.'
+                : 'La solicitud se envía desde el formulario con el contexto de este servicio. La respuesta llega por el canal indicado.'
             }
           </p>
           <div class="mt-4">

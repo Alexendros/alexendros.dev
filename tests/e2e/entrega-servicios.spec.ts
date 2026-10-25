@@ -50,9 +50,9 @@ test.describe('F02 F03 F10 servicios y configurador', () => {
     await page.goto('/servicios');
     const configurator = page.locator('[data-pricing-configurator]');
     await expect(
-      configurator.getByRole('link', { name: /Contactar sin configurar/i })
+      configurator.getByRole('link', { name: /Solicitar información sin configurar/i })
     ).toHaveAttribute('href', '/contacto?motivo=informacionCliente');
-    await configurator.getByRole('link', { name: /Contactar sin configurar/i }).click();
+    await configurator.getByRole('link', { name: /Solicitar información sin configurar/i }).click();
     await expect(page).toHaveURL(/\/contacto\?motivo=informacionCliente/);
     await expect(page.getByRole('heading', { name: 'Contacto', exact: true })).toBeVisible();
     await expect(page.locator('[data-contact-modules]')).toHaveCount(0);

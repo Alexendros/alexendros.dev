@@ -58,8 +58,8 @@ export const contact = contactSchema.parse({
     }
   ],
   messages: {
-    success: 'Mensaje enviado. Te respondo en 1 día laborable por el canal que hayas elegido.',
-    error: 'No se pudo enviar. Escríbeme a contratacion@alexendros.dev'
+    success: 'Mensaje enviado. Respuesta en un día laborable por el canal elegido.',
+    error: 'No se pudo enviar. Contacto: contratacion@alexendros.dev'
   },
   bookings: {
     heading: 'Opciones de contacto',
@@ -81,7 +81,7 @@ export const contact = contactSchema.parse({
         id: 'cumplimiento-normativo',
         title: 'Cumplimiento normativo',
         priceLabel: formatEuro(provisionalPrices.cumplimiento),
-        summary: 'Revisión de protección de datos, políticas de cookies y accesibilidad en tu web.',
+        summary: 'Revisión de protección de datos, políticas de cookies y accesibilidad del sitio.',
         cta: 'Rellenar formulario',
         href: '#escribir'
       },

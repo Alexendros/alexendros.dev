@@ -1,6 +1,5 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import PageHead from '../../components/PageHead.astro';
 import Container from '../../components/Container.astro';
 import Grid from '../../components/Grid.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
@@ -9,15 +8,21 @@ import { projects } from '../../content/projects';
 
 <Layout
   title="Proyectos realizados — Alexendros"
-  description="Trabajos que he hecho yo, de principio a fin."
+  description="Trabajos realizados de principio a fin por el mismo responsable."
   ogImage="/og/proyectos.png"
   ogImageAlt="Casos reales de Alexendros.dev"
 >
   <Container class="py-16 md:py-24">
-    <PageHead
-      title="Proyectos realizados"
-      description="Trabajos que he hecho yo, de principio a fin."
-    />
+    <header>
+      <h1 class="text-4xl font-bold max-w-3xl">
+        Proyectos realizados desde{' '}
+        <span class="text-primary">Alexendros.dev</span>
+      </h1>
+      <div class="pagehead-rule mt-4 h-px bg-border" aria-hidden="true"></div>
+      <p class="text-muted mt-3 max-w-2xl">
+        Trabajos realizados de principio a fin por el mismo responsable.
+      </p>
+    </header>
     <Grid gap="6" class="mt-8 md:grid-cols-2 lg:grid-cols-3">
       {
         projects.map((p, i) => (
