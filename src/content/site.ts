@@ -1,9 +1,9 @@
 export const site = {
   name: 'Alexendros',
   url: 'https://alexendros.dev',
-  titleDefault: 'Alexendros — Diseño y desarrollo de productos web',
+  titleDefault: 'Alexendros — Auditoría, diseño y desarrollo web',
   descriptionDefault:
-    'Diseño y desarrollo de productos web. También reviso los que necesitan mejorar: claridad, funcionamiento y seguridad básica. Alcance acordado y trato directo. Valencia — remoto.',
+    'Página web, tienda en internet, aplicaciones para Linux, protocolos de gestión e integración de Inteligencia Artificial. Desde Valencia.',
   locale: 'es',
   ogLocale: 'es_ES',
   nav: [
