@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+  content: [
+    './src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}',
+    // Fixtures de vitest no deben generar utilidades en el CSS de producción.
+    '!**/*.{test,spec}.{ts,tsx,js,jsx}'
+  ],
   theme: {
     extend: {
       // Fuente única de verdad: :root en src/styles/global.css (decisión 0011).

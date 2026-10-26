@@ -76,7 +76,8 @@ test.describe('F02 F03 F10 servicios y configurador', () => {
     await expect(sticky).toBeAttached();
     await expect(sticky).not.toContainText(/gratis/i);
     await expect(sticky).not.toContainText(/\bSEO\b/);
-    await expect(sticky).toContainText('Solicitar propuesta');
+    // aria-hidden hasta el scroll: usar el enlace del DOM, no el árbol a11y.
+    await expect(sticky.locator('#sticky-cta-link')).toHaveText(/Solicitar\s*propuesta/);
     await page.evaluate(() => {
       window.scrollTo(0, 1200);
       document.getElementById('sticky-cta')?.classList.add('is-visible');

@@ -914,6 +914,18 @@
       transition-duration: 150ms;
     }
 
+    /* Sin translateY(8px) en el fotograma inicial (@starting-style). */
+    @starting-style {
+      dialog.detail-island[open] {
+        opacity: 1;
+        transform: none;
+      }
+
+      dialog.detail-island[open]::backdrop {
+        opacity: 1;
+      }
+    }
+
     .js [data-hero] [data-hero-item],
     .js [data-hero] [data-hero-lcp] {
       animation: none;
@@ -960,6 +972,17 @@
   .force-reduced-motion dialog.detail-island::backdrop {
     transform: none;
     transition-duration: 150ms;
+  }
+
+  @starting-style {
+    .force-reduced-motion dialog.detail-island[open] {
+      opacity: 1;
+      transform: none;
+    }
+
+    .force-reduced-motion dialog.detail-island[open]::backdrop {
+      opacity: 1;
+    }
   }
 
   .force-reduced-motion .js [data-hero] [data-hero-item],

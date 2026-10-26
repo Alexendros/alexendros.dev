@@ -29,22 +29,21 @@ const stacked = splitTwoLineLabel(cta.label);
       data-sticky-mode={cta.mode}
     >
       <div class="mx-auto flex w-full max-w-[var(--container)] min-w-0 items-center justify-between gap-2 px-[var(--gutter)] py-3">
-        <div class="min-w-0 flex-1 overflow-hidden">
-          <p class="truncate text-sm font-semibold text-fg">{cta.label}</p>
-          {cta.body ? <p class="mt-0.5 truncate text-xs text-muted">{cta.body}</p> : null}
-        </div>
+        {cta.body ? (
+          <p class="min-w-0 flex-1 truncate text-xs text-muted">{cta.body}</p>
+        ) : (
+          <span class="min-w-0 flex-1" aria-hidden="true" />
+        )}
         <div class="flex shrink-0 items-center gap-1">
           <Button
             href={cta.href}
             id="sticky-cta-link"
             size="sm"
             class="text-center leading-tight py-1"
-            aria-label={cta.label}
             tabindex={cta.alwaysVisible ? 0 : -1}
           >
-            <span class="inline-flex flex-col items-center">
-              <span>{stacked.primary}</span>
-              {stacked.secondary ? <span>{stacked.secondary}</span> : null}
+            <span class="inline-flex flex-col items-center whitespace-pre-line text-center">
+              {stacked.secondary ? `${stacked.primary}\n${stacked.secondary}` : stacked.primary}
             </span>
           </Button>
           <button
