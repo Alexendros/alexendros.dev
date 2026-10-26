@@ -13,13 +13,14 @@ export const processPage = {
   seo: {
     title: 'Metodología clara e integral — Alexendros',
     description:
-      'Metodología clara e integral: desde la idea hasta el producto entregado. Método de trabajo para webs y productos digitales.',
+      'Metodología clara e integral. Desde la idea hasta el producto entregado. Método de trabajo para webs y productos digitales.',
     ogTitle: 'Metodología clara e integral'
   },
   hero: {
-    h1Lead: 'Metodología clara e integral',
-    h1Accent: ': desde la idea hasta el producto entregado.'
+    h1Lead: 'Metodología clara e integral.',
+    h1Accent: ' Desde la idea hasta el producto entregado.'
   },
+  /** Pendiente (evt-metodo-steps-review): revisar copy de pasos con datos reales. */
   steps: [
     {
       id: 'hablamos',

@@ -199,6 +199,28 @@
       "recordType": "event",
       "kind": "aviso",
       "source": "docs/audits/decisions.json#0022,#0023"
+    },
+    {
+      "id": "evt-metodo-steps-review",
+      "sequence": 19,
+      "timestamp": "2026-10-26T01:30:00Z",
+      "active": true,
+      "title": "Revisión pendiente del copy de pasos en /metodo",
+      "summary": "La rejilla #proceso (duraciones, «Se recibe», pagos) debe actualizarse con contenido más veraz, eficiente y alineado a la práctica real. No reescribir a ciegas: contrastar con encargos y plazos actuales antes de cambiar process.ts.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "src/content/process.ts#steps"
+    },
+    {
+      "id": "evt-portal-configurator-review",
+      "sequence": 20,
+      "timestamp": "2026-10-26T01:37:00Z",
+      "active": true,
+      "title": "Revisión pendiente del configurador de portal en /servicios",
+      "summary": "PricingConfigurator (módulos, plazos, importes orientativos y copy de «Portal web desde cero») queda pendiente de revisión con datos reales y veraces; no inventar tarifas. Misma cola que evt-metodo-steps-review.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "src/components/PricingConfigurator.tsx"
     }
   ]
 }

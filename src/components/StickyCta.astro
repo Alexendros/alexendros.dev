@@ -1,51 +1,58 @@
 ---
 import Button from './Button.astro';
+import { processPage } from '../content/process';
+import { resolveStickyCta } from '../lib/stickyCta';
+import { splitTwoLineLabel } from '../lib/stackedLabel';
 
 interface Props {
   pathname: string;
 }
 
 const { pathname } = Astro.props;
-const HIDE_PATHS = [
-  '/contacto',
-  '/contacto/',
-  '/gracias',
-  '/metodo',
-  '/metodo/',
-  '/proceso-y-entrega',
-  '/proceso-y-entrega/'
-];
 const currentPath = Astro.url.pathname || pathname;
-const shouldShow = !HIDE_PATHS.some((p) => currentPath === p || currentPath.startsWith(p + '/'));
+const cta = resolveStickyCta(currentPath, processPage.close);
+const stacked = splitTwoLineLabel(cta.label);
 ---
 
 {
-  shouldShow && (
+  cta.show && (
     <div
       id="sticky-cta"
-      class="fixed bottom-0 left-0 right-0 z-30 border-t border-border glass-card backdrop-blur md:hidden pb-safe"
+      class:list={[
+        'fixed bottom-0 left-0 right-0 z-30 border-t border-border glass-card backdrop-blur pb-safe',
+        cta.mobileOnly && 'md:hidden',
+        cta.alwaysVisible && 'is-visible'
+      ]}
       role="region"
-      aria-label="Solicitar propuesta"
-      aria-hidden="true"
+      aria-label={cta.label}
+      aria-hidden={cta.alwaysVisible ? 'false' : 'true'}
+      data-sticky-mode={cta.mode}
     >
-      <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2.5">
-        <p class="min-w-0 text-sm font-medium">Solicitar propuesta</p>
+      <div class="mx-auto flex w-full max-w-[var(--container)] min-w-0 items-center justify-between gap-2 px-[var(--gutter)] py-3">
+        <div class="min-w-0 flex-1 overflow-hidden">
+          <p class="truncate text-sm font-semibold text-fg">{cta.label}</p>
+          {cta.body ? <p class="mt-0.5 truncate text-xs text-muted">{cta.body}</p> : null}
+        </div>
         <div class="flex shrink-0 items-center gap-1">
           <Button
-            href="/contacto?motivo=propuestaComercial"
+            href={cta.href}
             id="sticky-cta-link"
             size="sm"
-            aria-label="Solicitar propuesta"
-            tabindex={-1}
+            class="text-center leading-tight py-1"
+            aria-label={cta.label}
+            tabindex={cta.alwaysVisible ? 0 : -1}
           >
-            Solicitar propuesta
+            <span class="inline-flex flex-col items-center">
+              <span>{stacked.primary}</span>
+              {stacked.secondary ? <span>{stacked.secondary}</span> : null}
+            </span>
           </Button>
           <button
             id="sticky-cta-dismiss"
             type="button"
             class="shrink-0 rounded-lg p-1.5 text-muted transition-colors hover:text-fg focus-ring"
             aria-label="Cerrar"
-            tabindex={-1}
+            tabindex={cta.alwaysVisible ? 0 : -1}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -70,19 +77,22 @@ const shouldShow = !HIDE_PATHS.some((p) => currentPath === p || currentPath.star
 
 <script is:inline>
   (function () {
-    const STORAGE_KEY = 'alexendros.sticky-cta.v1';
     const THRESHOLD = 400;
     const banner = document.getElementById('sticky-cta');
     if (!banner) return;
     const dismissBtn = document.getElementById('sticky-cta-dismiss');
     const ctaBtn = document.getElementById('sticky-cta-link');
-    let shown = false;
+    const alwaysVisible = banner.getAttribute('data-sticky-mode') === 'metodo';
+    const STORAGE_KEY = alwaysVisible
+      ? 'alexendros.sticky-cta.metodo.v1'
+      : 'alexendros.sticky-cta.v1';
+    let shown = alwaysVisible;
     let dismissed = false;
     let ticking = false;
 
-    function getVa() {
+    function track(name) {
       const va = window.va;
-      return va && typeof va.track === 'function' ? va : null;
+      if (va && typeof va.track === 'function') va.track(name);
     }
 
     function isDismissed() {
@@ -117,8 +127,7 @@ const shouldShow = !HIDE_PATHS.some((p) => currentPath === p || currentPath.star
       detachScroll();
       banner.classList.add('is-visible');
       setInteractive(true);
-      const va = getVa();
-      if (va) va.track('sticky_cta_impression');
+      track('sticky_cta_impression');
     }
 
     function hideBanner() {
@@ -127,8 +136,7 @@ const shouldShow = !HIDE_PATHS.some((p) => currentPath === p || currentPath.star
       banner.classList.remove('is-visible');
       setInteractive(false);
       setDismissed();
-      const va = getVa();
-      if (va) va.track('sticky_cta_dismiss');
+      track('sticky_cta_dismiss');
     }
 
     function onScroll() {
@@ -142,14 +150,22 @@ const shouldShow = !HIDE_PATHS.some((p) => currentPath === p || currentPath.star
     }
 
     function init() {
-      if (isDismissed()) return;
+      if (isDismissed()) {
+        banner.classList.remove('is-visible');
+        setInteractive(false);
+        return;
+      }
       if (ctaBtn) {
         ctaBtn.addEventListener('click', function () {
-          const va = getVa();
-          if (va) va.track('sticky_cta_cta_click');
+          track('sticky_cta_cta_click');
         });
       }
       if (dismissBtn) dismissBtn.addEventListener('click', hideBanner);
+      if (alwaysVisible) {
+        setInteractive(true);
+        track('sticky_cta_impression');
+        return;
+      }
       if (window.scrollY >= THRESHOLD) {
         showBanner();
       } else {

@@ -4,16 +4,16 @@ import Container from '../components/Container.astro';
 import Grid from '../components/Grid.astro';
 import { processPage } from '../content/process';
 
-const { seo, hero, steps, close } = processPage;
+const { seo, hero, steps } = processPage;
 ---
 
 <Layout
   title={seo.title}
   description={seo.description}
   ogImage="/og/proceso-y-entrega.png"
-  ogImageAlt="Metodología clara e integral: desde la idea hasta el producto entregado"
+  ogImageAlt="Metodología clara e integral. Desde la idea hasta el producto entregado"
 >
-  <Container class="py-16 md:py-24">
+  <Container class="py-16 md:py-24 pb-28">
     <header>
       <h1 id="delivery-hero-title" class="text-step-4 break-words font-bold max-w-3xl text-balance">
         {hero.h1Lead}<span class="text-primary">{hero.h1Accent}</span>
@@ -42,17 +42,6 @@ const { seo, hero, steps, close } = processPage;
           ))
         }
       </Grid>
-    </section>
-
-    <section class="mt-16" aria-labelledby="delivery-close-heading">
-      <div class="border border-border rounded-lg p-5 bg-subtle">
-        <h2 id="delivery-close-heading" class="text-2xl font-bold">
-          <a href={close.href} class="focus-ring rounded transition-colors hover:text-primary">
-            {close.heading}
-          </a>
-        </h2>
-        <p class="text-sm text-muted mt-2 max-w-2xl">{close.body}</p>
-      </div>
     </section>
   </Container>
 </Layout>

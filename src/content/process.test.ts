@@ -55,8 +55,8 @@ describe('processPage — copy público de metodología', () => {
     nonEmpty(processPage.seo.description, 'seo.description');
     expect(processPage.seo.description).toMatch(/desde la idea hasta el producto entregado/i);
     nonEmpty(processPage.hero.h1Lead, 'hero.h1Lead');
-    expect(processPage.hero.h1Lead).toBe('Metodología clara e integral');
-    expect(processPage.hero.h1Accent).toMatch(/^:/);
+    expect(processPage.hero.h1Lead).toBe('Metodología clara e integral.');
+    expect(processPage.hero.h1Accent).toMatch(/^\sDesde/);
     expect(processPage.hero).not.toHaveProperty('lead');
     expect(processPage.hero).not.toHaveProperty('primaryCta');
     expect(processPage).not.toHaveProperty('processSection');
