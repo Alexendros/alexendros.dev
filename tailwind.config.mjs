@@ -9,6 +9,8 @@ export default {
       // /<alpha> sobre var().
       colors: {
         bg: 'var(--bg)',
+        subtle: 'var(--bg-subtle)',
+        scrim: 'var(--scrim)',
         fg: 'var(--fg)',
         primary: 'var(--brand)',
         primaryHover: 'var(--brand-hover)',

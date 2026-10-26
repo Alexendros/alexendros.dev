@@ -23,8 +23,7 @@ function init(): void {
   );
 
   observer.observe(sentinel);
-  // MPA: cada navegación descarta el documento, pero si se adopta el
-  // router de Astro el observer no debe acumularse entre swaps.
+  // bfcache / pagehide: desconecta el observer al abandonar el documento.
   window.addEventListener('pagehide', () => observer.disconnect(), { once: true });
 }
 

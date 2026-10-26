@@ -27,7 +27,7 @@ const { basePath, items } = Astro.props;
   items.map((item) => (
     <dialog
       id={`detail-${basePath.slice(1)}-${item.slug}`}
-      class="detail-island m-auto w-[min(100%,36rem)] max-h-[min(90vh,40rem)] overflow-y-auto rounded-lg border border-border bg-card p-0 text-fg shadow-lg backdrop:bg-ink/50"
+      class="detail-island m-auto w-[min(100%,36rem)] max-h-[min(90vh,40rem)] overflow-y-auto rounded-lg border border-border bg-card p-0 text-fg"
       data-detail-island
       data-detail-path={item.path}
       data-detail-base={basePath}
@@ -96,24 +96,35 @@ const { basePath, items } = Astro.props;
     const byPath = new Map(dialogs.map((d) => [d.dataset.detailPath ?? '', d]));
     const basePath = dialogs[0]?.dataset.detailBase ?? '';
     let suppressPop = false;
+    /** Enlace que abrió el dialog; se restaura el foco al cerrar. */
+    let opener: HTMLElement | null = null;
 
-    function closeAll(opts?: { restoreUrl?: boolean }) {
-      for (const d of dialogs) {
-        if (d.open) d.close();
-      }
-      if (opts?.restoreUrl && basePath && location.pathname !== basePath) {
+    function restoreUrlOnClose() {
+      if (!basePath || location.pathname === basePath) return;
+      if (!byPath.has(location.pathname)) return;
+      const state = history.state as { detailIsland?: boolean } | null;
+      if (state?.detailIsland) {
+        // history.back() dispara popstate; suppressPop evita reabrir.
         suppressPop = true;
-        history.pushState({ detailIsland: false }, '', basePath);
-        suppressPop = false;
+        history.back();
+      } else {
+        history.replaceState({ detailIsland: false }, '', basePath);
       }
     }
 
-    function openForPath(path: string, push: boolean) {
+    function closeAll() {
+      for (const d of dialogs) {
+        if (d.open) d.close();
+      }
+    }
+
+    function openForPath(path: string, push: boolean, fromEl?: HTMLElement | null) {
       const dialog = byPath.get(path);
       if (!dialog) return false;
       for (const d of dialogs) {
         if (d !== dialog && d.open) d.close();
       }
+      if (fromEl) opener = fromEl;
       if (!dialog.open) dialog.showModal();
       if (push && location.pathname !== path) {
         suppressPop = true;
@@ -136,11 +147,6 @@ const { basePath, items } = Astro.props;
           if (dialog instanceof HTMLDialogElement) {
             event.preventDefault();
             dialog.close();
-            if (basePath) {
-              suppressPop = true;
-              history.pushState({ detailIsland: false }, '', basePath);
-              suppressPop = false;
-            }
           }
           return;
         }
@@ -158,7 +164,7 @@ const { basePath, items } = Astro.props;
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
 
         event.preventDefault();
-        openForPath(url.pathname, true);
+        openForPath(url.pathname, true, link);
       },
       true
     );
@@ -166,16 +172,19 @@ const { basePath, items } = Astro.props;
     for (const dialog of dialogs) {
       dialog.addEventListener('close', () => {
         if (suppressPop) return;
-        if (basePath && location.pathname !== basePath && byPath.has(location.pathname)) {
-          suppressPop = true;
-          history.pushState({ detailIsland: false }, '', basePath);
-          suppressPop = false;
+        restoreUrlOnClose();
+        if (opener && typeof opener.focus === 'function') {
+          opener.focus({ preventScroll: true });
+          opener = null;
         }
       });
     }
 
     window.addEventListener('popstate', () => {
-      if (suppressPop) return;
+      if (suppressPop) {
+        suppressPop = false;
+        return;
+      }
       const path = location.pathname;
       if (byPath.has(path)) {
         openForPath(path, false);
@@ -186,5 +195,4 @@ const { basePath, items } = Astro.props;
   }
 
   initDetailIsland();
-  document.addEventListener('astro:page-load', initDetailIsland);
 </script>
