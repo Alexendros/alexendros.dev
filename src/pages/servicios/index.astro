@@ -44,7 +44,7 @@ const detailItems = services.map((s) => ({
     <Grid gap="6" class="mt-8 md:grid-cols-2 lg:grid-cols-4" data-services-grid>
       {
         serviceProducts.map((product, i) => (
-          <div {...(i >= 3 ? { 'data-reveal': true, style: `--i:${i - 3}` } : {})}>
+          <div data-reveal={i >= 3 || undefined} style={i >= 3 ? `--i:${i - 3}` : undefined}>
             <ServiceCard product={product} />
           </div>
         ))

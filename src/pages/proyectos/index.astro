@@ -35,7 +35,7 @@ const detailItems = projects.map((p) => ({
     <Grid gap="6" class="mt-8 md:grid-cols-2 lg:grid-cols-3">
       {
         projects.map((p, i) => (
-          <div data-reveal style={`--i:${i}`}>
+          <div data-reveal={i >= 3 || undefined} style={i >= 3 ? `--i:${i - 3}` : undefined}>
             <ProjectCard project={p} priority={i === 0} />
           </div>
         ))
