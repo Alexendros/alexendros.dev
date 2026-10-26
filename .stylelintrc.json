@@ -4,12 +4,9 @@
   "rules": {
     "at-rule-no-unknown": [
       true,
-      { "ignoreAtRules": ["tailwind", "apply", "layer", "screen", "variants", "view-transition"] }
+      { "ignoreAtRules": ["tailwind", "apply", "layer", "screen", "variants"] }
     ],
-    "selector-pseudo-element-no-unknown": [
-      true,
-      { "ignorePseudoElements": ["/^view-transition/"] }
-    ],
+    "selector-pseudo-element-no-unknown": true,
     "alpha-value-notation": null,
     "media-feature-range-notation": null,
     "value-keyword-case": null,

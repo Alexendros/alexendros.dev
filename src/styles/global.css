@@ -953,27 +953,4 @@
   .text-brand-line {
     color: var(--brand);
   }
-
-  /* Transiciones de vista (MPA): fundido de main y nombre propio en el
-     header para que no parpadee con el cross-fade raíz. CSS puro y
-     progresivo: sin soporte se ignora. Solo sin reduced-motion del SO
-     (el at-rule no admite selector de clase). */
-  @media (prefers-reduced-motion: no-preference) {
-    @view-transition {
-      navigation: auto;
-    }
-  }
-
-  main {
-    view-transition-name: main;
-  }
-
-  #site-header {
-    view-transition-name: site-header;
-  }
-
-  ::view-transition-old(main),
-  ::view-transition-new(main) {
-    animation-duration: var(--dur-base);
-  }
 }
