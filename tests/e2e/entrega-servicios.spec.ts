@@ -62,7 +62,7 @@ test.describe('F02 F03 F10 servicios y configurador', () => {
     await expect(page.locator('[data-contact-modules]')).toHaveCount(0);
   });
 
-  test('F10: la barra móvil no dice gratis', async ({ page }) => {
+  test('F10: la barra móvil pide propuesta sin precio ni SEO', async ({ page }) => {
     await page.setViewportSize({ width: 360, height: 740 });
     await page.addInitScript(() => {
       try {
@@ -75,7 +75,8 @@ test.describe('F02 F03 F10 servicios y configurador', () => {
     const sticky = page.locator('#sticky-cta');
     await expect(sticky).toBeAttached();
     await expect(sticky).not.toContainText(/gratis/i);
-    await expect(sticky).toContainText(formatEuro(provisionalPrices.informeComercial));
+    await expect(sticky).not.toContainText(/\bSEO\b/);
+    await expect(sticky).toContainText('Solicitar propuesta');
     await page.evaluate(() => {
       window.scrollTo(0, 1200);
       document.getElementById('sticky-cta')?.classList.remove('hidden');

@@ -346,6 +346,21 @@
       "context": "El formulario de una pantalla aún mostraba motivo, categoría y selects de servicio/proyecto; docs citaban un asistente de 6 pasos ya retirado de la UI.",
       "decision": "Reducir UI a nombre, preferencia de canal, dato de contacto, mensaje y consentimiento. Motivo y categoría con defaults (informacionCliente / particular) o query allowlisted en hidden. servicio/proyecto/módulos/origen siguen como contexto oculto desde URL. Retirar helpers de wizard del schema. Conservar honeypot, Turnstile, rate-limit, idempotencia y semántica de eventos de medición.",
       "consequences": "Actualizar ContactForm, contactSchema, e2e de contacto, identidad.md y AGENTS (ya no «asistente de 6 pasos»)."
+    },
+    {
+      "id": "0024",
+      "sequence": 24,
+      "timestamp": "2026-10-26T00:30:00Z",
+      "active": true,
+      "title": "CTA sticky móvil neutro sin precio ni jerga",
+      "summary": "La barra fija móvil muestra «Solicitar propuesta» vía Button size=sm; sin importe orientativo ni la palabra SEO.",
+      "recordType": "decision",
+      "status": "aceptada",
+      "supersedes": [],
+      "supersededBy": null,
+      "context": "El sticky repetía «Posicionamiento SEO {precio}» en casi todas las páginas; contradecía la norma de jerga y no alineaba con el hero. Ningún ADR previo fijaba el precio ahí; solo el e2e F10 y una nota de cierre.",
+      "decision": "StickyCta: región y CTA «Solicitar propuesta» hacia /contacto?motivo=propuestaComercial; usar el componente Button size=sm; no mostrar precio ni «SEO». Los precios siguen en fichas y pricing.ts.",
+      "consequences": "Actualizar F10 (entrega-servicios); D-02 del closeout deja de exigir precio en el sticky."
     }
   ]
 }
