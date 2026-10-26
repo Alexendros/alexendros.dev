@@ -2,16 +2,17 @@
 import { site } from '../content/site';
 import Link from './Link.astro';
 import Button from './Button.astro';
+import Container from './Container.astro';
 const path = Astro.url.pathname;
 ---
 
 <header id="site-header" class="sticky top-0 z-50 backdrop-blur border-b border-border glass-bg">
-  <div class="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between gap-4">
+  <Container class="h-16 flex items-center justify-between gap-4">
     <a href="/" class="font-mono font-bold tracking-tight shrink-0 focus-ring rounded"
       >Alexendros<span class="text-primary">.dev</span></a
     >
     <nav
-      class="site-nav hidden md:flex flex-wrap justify-end gap-x-6 gap-y-1 text-base font-medium"
+      class="site-nav hidden lg:flex flex-nowrap justify-end gap-x-6 text-base font-medium"
       aria-label="Principal"
     >
       {
@@ -32,13 +33,13 @@ const path = Astro.url.pathname;
         class="hidden min-[360px]:inline-flex"
         aria-label="Formulario de contacto"
       >
-        <span class="md:hidden">Contacto</span>
-        <span class="hidden md:inline">Formulario de contacto</span>
+        <span class="lg:hidden">Contacto</span>
+        <span class="hidden lg:inline">Formulario de contacto</span>
       </Button>
       <button
         type="button"
         data-menu-button
-        class="md:hidden inline-flex items-center justify-center w-11 h-11 border border-border hover:border-primary hover:text-primary focus-ring"
+        class="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-lg border border-border hover:border-primary hover:text-primary focus-ring"
         aria-expanded="false"
         aria-controls="mobile-nav"
         aria-label="Abrir menú"
@@ -78,11 +79,11 @@ const path = Astro.url.pathname;
         </svg>
       </button>
     </div>
-  </div>
+  </Container>
   <nav
     data-mobile-nav
     id="mobile-nav"
-    class="md:hidden border-t border-border"
+    class="lg:hidden border-t border-border"
     aria-label="Principal"
     hidden
   >
