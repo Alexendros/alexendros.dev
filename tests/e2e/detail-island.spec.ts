@@ -23,3 +23,44 @@ test('DI-02: /proyectos abre ficha en dialog', async ({ page }) => {
   await expect(dialog).toBeVisible();
   await expect(page).toHaveURL(/\/proyectos\/.+/);
 });
+
+test('DI-03: Esc cierra el dialog y restaura el índice', async ({ page }) => {
+  await page.goto('/servicios');
+  const cardLink = page.locator('[data-services-grid] a[href^="/servicios/"]').first();
+  await cardLink.click();
+  const dialog = page.locator('dialog[data-detail-island][open]');
+  await expect(dialog).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+  await expect(page).toHaveURL(/\/servicios\/?$/);
+});
+
+test('DI-04: tras cerrar, Atrás no reabre la ficha', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('link', { name: 'Catálogo de servicios' }).click();
+  await expect(page).toHaveURL(/\/servicios/);
+
+  const cardLink = page.locator('[data-services-grid] a[href^="/servicios/"]').first();
+  await cardLink.click();
+  const dialog = page.locator('dialog[data-detail-island][open]');
+  await expect(dialog).toBeVisible();
+
+  await dialog.getByRole('button', { name: 'Cerrar' }).click();
+  await expect(dialog).toBeHidden();
+  await expect(page).toHaveURL(/\/servicios\/?$/);
+
+  await page.goBack();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.locator('dialog[data-detail-island][open]')).toHaveCount(0);
+});
+
+test('DI-05: al cerrar el foco vuelve al enlace de la tarjeta', async ({ page }) => {
+  await page.goto('/servicios');
+  const cardLink = page.locator('[data-services-grid] a[href^="/servicios/"]').first();
+  await cardLink.click();
+  const dialog = page.locator('dialog[data-detail-island][open]');
+  await expect(dialog).toBeVisible();
+  await dialog.getByRole('button', { name: 'Cerrar' }).click();
+  await expect(dialog).toBeHidden();
+  await expect(cardLink).toBeFocused();
+});
