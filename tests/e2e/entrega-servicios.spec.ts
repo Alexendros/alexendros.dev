@@ -79,7 +79,7 @@ test.describe('F02 F03 F10 servicios y configurador', () => {
     await expect(sticky).toContainText('Solicitar propuesta');
     await page.evaluate(() => {
       window.scrollTo(0, 1200);
-      document.getElementById('sticky-cta')?.classList.remove('hidden');
+      document.getElementById('sticky-cta')?.classList.add('is-visible');
     });
     await expect(sticky).toBeVisible();
   });

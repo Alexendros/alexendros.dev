@@ -218,6 +218,12 @@
     font-family: 'Inter Variable', system-ui, sans-serif;
     font-size: var(--step-0);
     line-height: var(--leading-body);
+    scrollbar-gutter: stable;
+  }
+
+  /* Scroll lock mientras hay un dialog modal abierto (DetailIsland). */
+  html:has(dialog[open]) {
+    overflow: hidden;
   }
 
   body {
@@ -550,14 +556,49 @@
     }
   }
 
-  /* DetailIsland: scrim y sombra vía tokens (Tailwind v3 no aplica
-     /alpha sobre var(--brand-fg); shadow-lg es sombra por defecto). */
+  /* DetailIsland: scrim, sombra y entrada/salida (opacity + translateY).
+     @starting-style + allow-discrete: degradación a instantáneo sin soporte. */
   dialog.detail-island {
     box-shadow: var(--shadow-2);
+    overscroll-behavior: contain;
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out),
+      overlay var(--dur-base) var(--ease-out) allow-discrete,
+      display var(--dur-base) var(--ease-out) allow-discrete;
+  }
+
+  dialog.detail-island[open] {
+    opacity: 1;
+    transform: none;
+  }
+
+  @starting-style {
+    dialog.detail-island[open] {
+      opacity: 0;
+      transform: translateY(8px);
+    }
   }
 
   dialog.detail-island::backdrop {
     background: var(--scrim);
+    opacity: 0;
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      overlay var(--dur-base) var(--ease-out) allow-discrete,
+      display var(--dur-base) var(--ease-out) allow-discrete;
+  }
+
+  dialog.detail-island[open]::backdrop {
+    opacity: 1;
+  }
+
+  @starting-style {
+    dialog.detail-island[open]::backdrop {
+      opacity: 0;
+    }
   }
 
   .swatch-brand {
@@ -809,6 +850,35 @@
     padding-bottom: max(0px, env(safe-area-inset-bottom));
   }
 
+  /* Sticky CTA móvil: entrada con transform/opacity (sustituye el salto de hidden). */
+  #sticky-cta {
+    visibility: hidden;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(100%);
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out),
+      visibility var(--dur-base) var(--ease-out);
+  }
+
+  #sticky-cta.is-visible {
+    visibility: visible;
+    pointer-events: auto;
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #sticky-cta {
+      transition-duration: 0ms;
+    }
+  }
+
+  .force-reduced-motion #sticky-cta {
+    transition-duration: 0ms;
+  }
+
   /* Reveal v2 (scroll): stagger por índice (--i en línea) con tokens.
      Solo se oculta cuando el JS confirma observer activo (clase
      `reveal-enabled`): sin JS o sin IntersectionObserver el contenido
@@ -836,6 +906,12 @@
       transform: none;
       transition-duration: 150ms;
       transition-delay: 0ms;
+    }
+
+    dialog.detail-island,
+    dialog.detail-island::backdrop {
+      transform: none;
+      transition-duration: 150ms;
     }
 
     .js [data-hero] [data-hero-item],
@@ -878,6 +954,12 @@
     transform: none;
     transition-duration: 150ms;
     transition-delay: 0ms;
+  }
+
+  .force-reduced-motion dialog.detail-island,
+  .force-reduced-motion dialog.detail-island::backdrop {
+    transform: none;
+    transition-duration: 150ms;
   }
 
   .force-reduced-motion .js [data-hero] [data-hero-item],

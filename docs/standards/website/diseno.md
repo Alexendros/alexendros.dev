@@ -16,7 +16,7 @@
 
 ## 2. Tokens
 
-Definidos en `src/styles/global.css` (`@layer tokens`). Tipografía fluida `--step--1…--step-4` (clamp), espaciado 4px `--space-1…--space-24`, radios `--radius-sm/md/lg`, sombras `--shadow-1/2`, layout `--container` (72rem) / `--container-narrow` (56rem) / `--gutter` / `--header-h`, motion `--ease-out/--ease-in-out`, `--dur-fast/base/slow/reveal`, `--stagger`. La tabla de valores y ratios de contraste está en `/design-system`.
+Definidos en `src/styles/global.css` (`@layer tokens`). Tipografía fluida `--step--1…--step-4` (clamp), espaciado 4px `--space-1…--space-24`, radios `--radius-sm/md/lg`, sombras `--shadow-1/2`, layout `--container` (72rem) / `--container-narrow` (56rem) / `--gutter` / `--header-h`, motion `--ease-out/--ease-in-out`, `--dur-fast/base/slow/reveal`, `--stagger`. Tailwind mapea `text-step-0…4` → `var(--step-*)`; los H1 de página y el hero usan `text-step-4` + `text-balance` (no `text-4xl`/`text-5xl`). La prosa legal sigue en `.legal-prose` con `--step-2`/`--step-1`. La tabla de valores y ratios de contraste está en `/design-system`.
 
 ## 3. Componentes
 
