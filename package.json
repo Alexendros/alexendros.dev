@@ -21,6 +21,7 @@
     "check:contrast": "node scripts/check-contrast.mjs",
     "check:records": "node scripts/check-records.mjs",
     "check:copy": "node scripts/check-copy.mjs",
+    "check:classes": "node scripts/check-classes.mjs",
     "check:links": "bash scripts/check-links.sh",
     "audit:cookies": "node scripts/audit-cookies.mjs",
     "lint:a11y": "playwright test tests/e2e/a11y.spec.ts",

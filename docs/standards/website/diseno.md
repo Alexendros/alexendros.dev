@@ -82,9 +82,10 @@ Extraído de Layout: primer foco de la página, salta a `#contenido`, visible so
 
 ## 4. Excepciones de color fijo (deliberadas)
 
-| Elemento              | Valor                         | Motivo                               |
-| --------------------- | ----------------------------- | ------------------------------------ |
-| Marca Cal.com (embed) | `#FFC53D` (su propio dominio) | Marca de terceros: no es UI del tema |
+| Elemento              | Valor                         | Motivo                                                                                                               |
+| --------------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Marca Cal.com (embed) | `#FFC53D` (su propio dominio) | Marca de terceros: no es UI del tema                                                                                 |
+| `theme-color` (meta)  | `#f6f8fc` / `#0a1224`         | `<meta>` no admite `var()`; equivalentes de `--paper-50`/`--bg` claro y `--bg` oscuro; validados en `check:contrast` |
 
 Documentado en Fase 1 (commit `a86528d`) y validado como excepción en la auditoría; no introducir nuevas excepciones sin justificarlo aquí.
 

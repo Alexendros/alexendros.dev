@@ -1,6 +1,8 @@
 ---
 import BlueprintMotif from './BlueprintMotif.astro';
 import Button from './Button.astro';
+import Container from './Container.astro';
+import Link from './Link.astro';
 import { formatEuro, provisionalPrices } from '../content/pricing';
 
 const revisionPrice = formatEuro(provisionalPrices.informeComercial);
@@ -25,53 +27,56 @@ const taxonomyLinks = [
 ] as const;
 ---
 
-<section class="relative mx-auto max-w-3xl overflow-hidden px-6 py-16 md:py-24" data-hero>
-  <div
-    class="pointer-events-none absolute -right-16 top-4 h-56 w-auto overflow-hidden md:-right-20 md:top-8 md:h-96"
-    aria-hidden="true"
-  >
-    <BlueprintMotif class="h-full w-auto aspect-[4/3] text-brand-line" />
-  </div>
-
-  <div data-hero-item data-hero-lcp style="--i:0">
-    <h1
-      class="bp-h1 text-step-4 break-words font-bold leading-[1.05] tracking-tight max-w-3xl text-balance"
+<section class="relative overflow-hidden py-16 md:py-24" data-hero>
+  <Container class="relative">
+    <div
+      class="pointer-events-none absolute -right-16 top-4 h-56 w-auto overflow-hidden md:-right-20 md:top-8 md:h-96"
+      aria-hidden="true"
     >
-      Servicios informáticos y tecnologías para empresas y particulares.
-    </h1>
-  </div>
+      <BlueprintMotif class="h-full w-auto aspect-[4/3] text-brand-line" />
+    </div>
 
-  <p class="mt-6 text-lg text-muted max-w-2xl" data-hero-item style="--i:1">
-    Atención a distancia o presencialmente en Valencia. Calidades, presupuesto y plazos con respaldo
-    por contrato.
-  </p>
+    <div data-hero-item data-hero-lcp style="--i:0">
+      <h1
+        class="bp-h1 text-step-4 break-words font-bold leading-[1.05] tracking-tight max-w-3xl text-balance"
+      >
+        Servicios informáticos y tecnologías para empresas y particulares.
+      </h1>
+    </div>
 
-  <ul class="mt-8 space-y-1 list-none p-0 m-0" data-hero-item style="--i:2">
-    {
-      taxonomyLinks.map((item) => (
-        <li>
-          <a
-            href={item.href}
-            class="focus-ring inline-flex min-h-11 items-center text-muted rounded hover:text-primary"
-          >
-            {item.label}
-          </a>
-        </li>
-      ))
-    }
-  </ul>
+    <p class="mt-6 text-lg text-muted max-w-3xl" data-hero-item style="--i:1">
+      Atención a distancia o presencialmente en Valencia. Calidades, presupuesto y plazos con
+      respaldo por contrato.
+    </p>
 
-  <p class="mt-4" data-hero-item style="--i:3">
-    <a
-      href="/servicios/informe-comercial?origen=home"
-      class="focus-ring inline-flex min-h-11 items-center text-sm font-medium text-muted underline decoration-dotted underline-offset-4 hover:text-primary rounded"
-    >
-      Revisión de páginas web existentes, desde {revisionPrice} + IVA →
-    </a>
-  </p>
+    <ul class="mt-8 list-none p-0 m-0 max-w-3xl" data-hero-item style="--i:2">
+      {
+        taxonomyLinks.map((item) => (
+          <li class="border-t border-border">
+            <Link
+              href={item.href}
+              variant="arrow"
+              class="inline-flex min-h-11 w-full items-center py-2 text-muted"
+            >
+              {item.label}
+            </Link>
+          </li>
+        ))
+      }
+    </ul>
 
-  <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3" data-hero-item style="--i:4">
-    <Button href="/contacto?motivo=propuestaComercial&origen=home">Solicitar propuesta</Button>
-    <Button href="/servicios?origen=home" variant="secondary">Catálogo de servicios</Button>
-  </div>
+    <p class="mt-4" data-hero-item style="--i:3">
+      <a
+        href="/servicios/informe-comercial?origen=home"
+        class="focus-ring inline-flex min-h-11 items-center text-sm font-medium text-muted underline decoration-dotted underline-offset-4 hover:text-primary rounded"
+      >
+        Revisión de páginas web existentes, desde {revisionPrice} + IVA →
+      </a>
+    </p>
+
+    <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3" data-hero-item style="--i:4">
+      <Button href="/contacto?motivo=propuestaComercial&origen=home">Solicitar propuesta</Button>
+      <Button href="/servicios?origen=home" variant="secondary">Catálogo de servicios</Button>
+    </div>
+  </Container>
 </section>

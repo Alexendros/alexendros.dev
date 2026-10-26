@@ -46,8 +46,10 @@ test('Hero home: copy, enlaces, metadatos y sin cadenas antiguas', async ({ page
   await expect(items).toHaveCount(4);
   for (let i = 0; i < LIST_ITEMS.length; i++) {
     const link = items.nth(i).getByRole('link');
-    await expect(link).toHaveText(LIST_ITEMS[i].label);
+    // Link arrow: el → está aria-hidden; el nombre accesible es la etiqueta.
+    await expect(link).toHaveAccessibleName(LIST_ITEMS[i].label);
     await expect(link).toHaveAttribute('href', LIST_ITEMS[i].href);
+    await expect(items.nth(i)).toHaveClass(/border-t/);
   }
 
   const revisionLabel = `Revisión de páginas web existentes, desde ${formatEuro(provisionalPrices.informeComercial)} + IVA →`;

@@ -148,6 +148,36 @@ if (hexInTailwind + oklchInTailwind > 0) {
   console.log('PASS  tailwind.config.mjs sin literales de color (referencia var()/color-mix)');
 }
 
+/* theme-color en Layout: hex fijos (meta no admite var()); deben
+   coincidir con --paper-50/--bg claro y --bg oscuro (excepción diseno.md §4). */
+const layout = readFileSync(join(root, 'src/layouts/Layout.astro'), 'utf8');
+const themeLight = layout.match(
+  /theme-color[^>]*content="(#[0-9a-fA-F]{3,8})"[^>]*prefers-color-scheme:\s*light/
+);
+const themeDark = layout.match(
+  /theme-color[^>]*content="(#[0-9a-fA-F]{3,8})"[^>]*prefers-color-scheme:\s*dark/
+);
+const paper50 = css.match(/--paper-50:\s*(#[0-9a-fA-F]{3,8})/);
+const darkBg = css.match(
+  /@media\s*\(prefers-color-scheme:\s*dark\)[\s\S]*?--bg:\s*(#[0-9a-fA-F]{3,8})/
+);
+if (!themeLight || !themeDark || !paper50 || !darkBg) {
+  failed += 1;
+  console.log('FAIL  no se pudieron leer theme-color o tokens --paper-50/--bg oscuro');
+} else if (
+  themeLight[1].toLowerCase() !== paper50[1].toLowerCase() ||
+  themeDark[1].toLowerCase() !== darkBg[1].toLowerCase()
+) {
+  failed += 1;
+  console.log(
+    `FAIL  theme-color (${themeLight[1]}/${themeDark[1]}) ≠ tokens (${paper50[1]}/${darkBg[1]})`
+  );
+} else {
+  console.log(
+    `PASS  theme-color alineado a tokens (${themeLight[1]} claro / ${themeDark[1]} oscuro)`
+  );
+}
+
 if (failed > 0) {
   console.error(`\n${failed} comprobación(es) fallida(s).`);
   process.exit(1);
