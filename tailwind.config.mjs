@@ -26,6 +26,14 @@ export default {
       fontFamily: {
         sans: ['Inter Variable', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono Variable', 'monospace']
+      },
+      // Escala fluida --step-* (global.css). Uso: text-step-4 en H1 de página.
+      fontSize: {
+        'step-0': 'var(--step-0)',
+        'step-1': 'var(--step-1)',
+        'step-2': 'var(--step-2)',
+        'step-3': 'var(--step-3)',
+        'step-4': ['var(--step-4)', { lineHeight: 'var(--leading-tight)' }]
       }
     }
   },
