@@ -103,7 +103,7 @@ test.describe('CP-08 matriz UI — overflow y apilado', () => {
     await page.goto('/');
     await expect(page.locator('#cc-main .cm')).toBeVisible();
     await page.evaluate(() => {
-      document.getElementById('sticky-cta')?.classList.remove('hidden');
+      document.getElementById('sticky-cta')?.classList.add('is-visible');
     });
 
     const stack = await page.evaluate(() => {

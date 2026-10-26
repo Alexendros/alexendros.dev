@@ -61,7 +61,7 @@ test.describe('critical paths', () => {
     await expect(page.locator('#cc-main .cm')).toBeVisible();
     // Forzar sticky CTA visible para medir z-index relativo al CMP.
     await page.evaluate(() => {
-      document.getElementById('sticky-cta')?.classList.remove('hidden');
+      document.getElementById('sticky-cta')?.classList.add('is-visible');
     });
     const stack = await page.evaluate(() => {
       const cmp = document.querySelector('#cc-main');
