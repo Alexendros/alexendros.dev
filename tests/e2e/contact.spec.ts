@@ -87,7 +87,8 @@ test('contacto muestra canales horizontales y sin servicios de entrada', async (
   await expect(page.getByRole('heading', { name: 'Formulario', exact: true })).toHaveCount(0);
 
   const footer = page.locator('footer');
-  await expect(footer.getByRole('link', { name: /contratacion@alexendros\.dev/i })).toBeVisible();
+  await expect(footer.getByRole('link', { name: 'Contratación' })).toBeVisible();
+  await expect(footer.locator('a[href="mailto:contratacion@alexendros.dev"]')).toBeVisible();
   await expect(footer.getByRole('link', { name: 'GitHub' })).toBeVisible();
   await expect(footer.getByRole('link', { name: 'LinkedIn' })).toBeVisible();
   await expect(page.locator('main').getByRole('link', { name: 'GitHub' })).toHaveCount(0);
