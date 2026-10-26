@@ -170,6 +170,9 @@ const { basePath, items } = Astro.props;
     );
 
     for (const dialog of dialogs) {
+      dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) dialog.close();
+      });
       dialog.addEventListener('close', () => {
         if (suppressPop) return;
         restoreUrlOnClose();

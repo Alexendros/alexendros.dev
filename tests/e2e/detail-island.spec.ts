@@ -64,3 +64,17 @@ test('DI-05: al cerrar el foco vuelve al enlace de la tarjeta', async ({ page })
   await expect(dialog).toBeHidden();
   await expect(cardLink).toBeFocused();
 });
+
+test('DI-06: clic en el backdrop cierra el dialog', async ({ page }) => {
+  await page.goto('/servicios');
+  const cardLink = page.locator('[data-services-grid] a[href^="/servicios/"]').first();
+  await cardLink.click();
+  const dialog = page.locator('dialog[data-detail-island][open]');
+  await expect(dialog).toBeVisible();
+  // Simula clic en el backdrop: event.target === dialog (no un hijo).
+  await dialog.evaluate((el) => {
+    el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  });
+  await expect(dialog).toBeHidden();
+  await expect(page).toHaveURL(/\/servicios\/?(?:\?.*)?$/);
+});

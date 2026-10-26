@@ -218,6 +218,12 @@
     font-family: 'Inter Variable', system-ui, sans-serif;
     font-size: var(--step-0);
     line-height: var(--leading-body);
+    scrollbar-gutter: stable;
+  }
+
+  /* Scroll lock mientras hay un dialog modal abierto (DetailIsland). */
+  html:has(dialog[open]) {
+    overflow: hidden;
   }
 
   body {
@@ -550,14 +556,49 @@
     }
   }
 
-  /* DetailIsland: scrim y sombra vía tokens (Tailwind v3 no aplica
-     /alpha sobre var(--brand-fg); shadow-lg es sombra por defecto). */
+  /* DetailIsland: scrim, sombra y entrada/salida (opacity + translateY).
+     @starting-style + allow-discrete: degradación a instantáneo sin soporte. */
   dialog.detail-island {
     box-shadow: var(--shadow-2);
+    overscroll-behavior: contain;
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out),
+      overlay var(--dur-base) var(--ease-out) allow-discrete,
+      display var(--dur-base) var(--ease-out) allow-discrete;
+  }
+
+  dialog.detail-island[open] {
+    opacity: 1;
+    transform: none;
+  }
+
+  @starting-style {
+    dialog.detail-island[open] {
+      opacity: 0;
+      transform: translateY(8px);
+    }
   }
 
   dialog.detail-island::backdrop {
     background: var(--scrim);
+    opacity: 0;
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      overlay var(--dur-base) var(--ease-out) allow-discrete,
+      display var(--dur-base) var(--ease-out) allow-discrete;
+  }
+
+  dialog.detail-island[open]::backdrop {
+    opacity: 1;
+  }
+
+  @starting-style {
+    dialog.detail-island[open]::backdrop {
+      opacity: 0;
+    }
   }
 
   .swatch-brand {
@@ -838,6 +879,12 @@
       transition-delay: 0ms;
     }
 
+    dialog.detail-island,
+    dialog.detail-island::backdrop {
+      transform: none;
+      transition-duration: 150ms;
+    }
+
     .js [data-hero] [data-hero-item],
     .js [data-hero] [data-hero-lcp] {
       animation: none;
@@ -878,6 +925,12 @@
     transform: none;
     transition-duration: 150ms;
     transition-delay: 0ms;
+  }
+
+  .force-reduced-motion dialog.detail-island,
+  .force-reduced-motion dialog.detail-island::backdrop {
+    transform: none;
+    transition-duration: 150ms;
   }
 
   .force-reduced-motion .js [data-hero] [data-hero-item],
