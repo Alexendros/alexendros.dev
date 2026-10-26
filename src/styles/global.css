@@ -102,6 +102,9 @@
        de Tailwind las referencian; fuente única aquí). */
     --primary-ghost: color-mix(in srgb, var(--brand) 8%, transparent);
 
+    /* Scrim de dialog/overlay (mismo valor que --cc-overlay-bg del CMP). */
+    --scrim: color-mix(in oklab, var(--blue-950) 55%, transparent);
+
     /* Tipografía fluida. */
     /* stylelint-disable-next-line custom-property-pattern --
        la escala incluye el step negativo --step--1 por convención */
@@ -547,6 +550,16 @@
     }
   }
 
+  /* DetailIsland: scrim y sombra vía tokens (Tailwind v3 no aplica
+     /alpha sobre var(--brand-fg); shadow-lg es sombra por defecto). */
+  dialog.detail-island {
+    box-shadow: var(--shadow-2);
+  }
+
+  dialog.detail-island::backdrop {
+    background: var(--scrim);
+  }
+
   .swatch-brand {
     background: var(--brand);
     background: color-mix(in oklab, var(--brand) 60%, transparent);
@@ -772,7 +785,7 @@
     --cc-toggle-readonly-bg: var(--border);
     --cc-toggle-readonly-knob-bg: var(--fg-muted);
     --cc-toggle-readonly-knob-icon-color: var(--card);
-    --cc-overlay-bg: color-mix(in oklab, var(--blue-950) 55%, transparent);
+    --cc-overlay-bg: var(--scrim);
     --cc-webkit-scrollbar-bg: var(--border);
     --cc-webkit-scrollbar-hover-bg: var(--border-strong);
     --cc-btn-border-radius: var(--radius-md);

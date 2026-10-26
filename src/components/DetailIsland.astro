@@ -27,7 +27,7 @@ const { basePath, items } = Astro.props;
   items.map((item) => (
     <dialog
       id={`detail-${basePath.slice(1)}-${item.slug}`}
-      class="detail-island m-auto w-[min(100%,36rem)] max-h-[min(90vh,40rem)] overflow-y-auto rounded-lg border border-border bg-card p-0 text-fg shadow-lg backdrop:bg-ink/50"
+      class="detail-island m-auto w-[min(100%,36rem)] max-h-[min(90vh,40rem)] overflow-y-auto rounded-lg border border-border bg-card p-0 text-fg"
       data-detail-island
       data-detail-path={item.path}
       data-detail-base={basePath}
