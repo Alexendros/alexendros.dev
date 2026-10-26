@@ -3,6 +3,7 @@
 name: main-watch
 
 on:
+  # zizmor: ignore[dangerous-triggers] El aviso de main escucha el cierre de CI, security y Release. Hallazgo ya presente en main; T0 no cambia este disparador.
   workflow_run:
     workflows: [CI, security, Release]
     types: [completed]

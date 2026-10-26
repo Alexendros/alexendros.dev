@@ -15,6 +15,9 @@ on:
         description: Ejecutar Playwright + LHCI (opt-in)
         type: boolean
         default: false
+  schedule:
+    # El cron de gitleaks y OSV se queda aquí al mover secrets y sca (T0).
+    - cron: '17 5 * * 1'
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -26,6 +29,7 @@ permissions:
 jobs:
   quality:
     name: quality
+    if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -62,6 +66,7 @@ jobs:
 
   test:
     name: test
+    if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -82,6 +87,7 @@ jobs:
 
   build:
     name: build
+    if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -109,6 +115,7 @@ jobs:
 
   smoke:
     name: smoke
+    if: github.event_name != 'schedule'
     needs: [build]
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -128,6 +135,7 @@ jobs:
 
   e2e-critical:
     name: e2e-critical
+    if: github.event_name != 'schedule'
     needs: [build]
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -173,7 +181,7 @@ jobs:
 
   e2e:
     name: e2e
-    if: ${{ (github.event_name == 'workflow_dispatch' && inputs.e2e) || (github.event_name == 'pull_request' && contains(join(github.event.pull_request.labels.*.name, ','), 'e2e')) }}
+    if: ${{ github.event_name != 'schedule' && ((github.event_name == 'workflow_dispatch' && inputs.e2e) || (github.event_name == 'pull_request' && contains(join(github.event.pull_request.labels.*.name, ','), 'e2e'))) }}
     needs: [build]
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -221,3 +229,143 @@ jobs:
           pnpm exec lhci autorun --config=./lighthouserc.json
         env:
           LHCI_BUILD_CONTEXT__CURRENT_HASH: ${{ github.sha }}
+
+  secrets:
+    name: secrets
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: gitleaks
+        run: |
+          set -euo pipefail
+          curl -sSfL -o gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz
+          echo "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb  gitleaks.tar.gz" | sha256sum -c -
+          tar -xzf gitleaks.tar.gz gitleaks
+          ./gitleaks detect --source . --redact --verbose
+
+  sca:
+    name: sca
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - uses: google/osv-scanner-action/osv-scanner-action@b1d267aea5211fa648d9d442fa64b90dbdcbdd36 # v2.7.0
+        with:
+          scan-args: |-
+            -r
+            --config=osv-scanner.toml
+            .
+
+  zizmor:
+    name: zizmor
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: zizmor 1.31.1
+        run: |
+          set -euo pipefail
+          python3 -m venv "$RUNNER_TEMP/zizmor"
+          "$RUNNER_TEMP/zizmor/bin/pip" install 'zizmor==1.31.1'
+          "$RUNNER_TEMP/zizmor/bin/zizmor" --min-severity=medium .
+
+  actionlint:
+    name: actionlint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: actionlint 1.7.12
+        run: |
+          set -euo pipefail
+          curl -sSfL -o actionlint.tar.gz https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz
+          echo "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8  actionlint.tar.gz" | sha256sum -c -
+          tar -xzf actionlint.tar.gz actionlint
+          ./actionlint
+
+  csp:
+    name: csp
+    if: github.event_name != 'schedule'
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: site-static
+          path: .vercel/output/static
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: '.nvmrc'
+      - name: Informe CSP
+        run: node scripts/check-csp.mjs
+
+  axe:
+    name: axe
+    if: github.event_name != 'schedule'
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: npx playwright install --with-deps chromium
+      - name: axe
+        run: pnpm exec playwright test tests/e2e/a11y.spec.ts
+        env:
+          CI: true
+
+  lhci:
+    name: lhci
+    if: github.event_name != 'schedule'
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: site-static
+          path: .vercel/output/static
+      - name: Lighthouse CI
+        run: pnpm exec lhci autorun --config=./lighthouserc.json
+        env:
+          LHCI_BUILD_CONTEXT__CURRENT_HASH: ${{ github.sha }}
+
+  ci-gate:
+    name: ci-gate
+    if: github.event_name != 'schedule'
+    needs: [quality, test, build, secrets, sca, zizmor, actionlint, csp, axe, lhci]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Agregador
+        run: echo "ci-gate ok"
