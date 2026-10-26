@@ -56,6 +56,8 @@ jobs:
 
       - run: pnpm run check:copy
 
+      - run: pnpm run check:classes
+
       - run: pnpm run check:contrast
 
   test:
