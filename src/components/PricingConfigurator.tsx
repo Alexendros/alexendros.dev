@@ -10,6 +10,7 @@ import {
 } from '../content/pricing';
 import { portalBase, portalModules } from '../content/services';
 
+/** Pendiente (evt-portal-configurator-review): revisar copy, módulos e importes reales. */
 export default function PricingConfigurator() {
   const liveId = useId();
   const [selected, setSelected] = useState<PortalModuleId[]>([]);

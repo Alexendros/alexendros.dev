@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 const route = '/metodo';
-const H1 = 'Metodología clara e integral: desde la idea hasta el producto entregado.';
+const H1 = 'Metodología clara e integral. Desde la idea hasta el producto entregado.';
 
 for (const width of [320, 390, 768, 1280]) {
   test(`proceso: contenido y reflow a ${width}px`, async ({ page }) => {
@@ -15,7 +15,7 @@ for (const width of [320, 390, 768, 1280]) {
       page.getByRole('heading', { name: 'De la idea al proyecto publicado', exact: true })
     ).toHaveCount(0);
     await expect(
-      page.getByRole('link', { name: 'Solicitar presupuesto', exact: true })
+      page.locator('#sticky-cta').getByRole('link', { name: 'Solicitar presupuesto', exact: true })
     ).toHaveAttribute('href', /origen=proceso/);
     await expect(page.locator('.delivery-page')).toHaveCount(0);
     await expect(page.locator('.pagehead-rule')).toHaveCount(1);
@@ -43,17 +43,24 @@ test('proceso: contenido esencial sin JavaScript', async ({ browser, baseURL }) 
   await page.goto(`${baseURL}${route}`);
   await expect(page.locator('h1')).toBeVisible();
   await expect(page.locator('#proceso')).toBeVisible();
+  await expect(page.locator('#sticky-cta')).toBeVisible();
   await expect(
-    page.getByRole('link', { name: 'Solicitar presupuesto', exact: true })
+    page.locator('#sticky-cta').getByRole('link', { name: 'Solicitar presupuesto', exact: true })
   ).toBeVisible();
   await expect(page.locator('.delivery-page')).toHaveCount(0);
   await context.close();
 });
 
-test('proceso: ancla bajo la cabecera y sticky ausente', async ({ page }) => {
+test('proceso: ancla bajo la cabecera y sticky de presupuesto', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto(route);
-  await expect(page.locator('#sticky-cta')).toHaveCount(0);
+  const sticky = page.locator('#sticky-cta');
+  await expect(sticky).toBeVisible();
+  await expect(sticky).toHaveClass(/is-visible/);
+  await expect(sticky.getByRole('link', { name: 'Solicitar presupuesto' })).toHaveAttribute(
+    'href',
+    /origen=proceso/
+  );
 
   await page.locator('#proceso').scrollIntoViewIfNeeded();
   await expect(page.locator('#proceso')).toBeInViewport();
@@ -79,7 +86,7 @@ test('proceso: CTAs llevan origen', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'Ver precios' })).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Reservar una llamada' })).toHaveCount(0);
   await expect(
-    page.getByRole('link', { name: 'Solicitar presupuesto', exact: true })
+    page.locator('#sticky-cta').getByRole('link', { name: 'Solicitar presupuesto', exact: true })
   ).toHaveAttribute('href', /origen=proceso/);
   await expect(page.getByText('un contrato vinculante.')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Desarrollo y construcción' })).toBeVisible();

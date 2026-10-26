@@ -3,7 +3,10 @@ import { site } from '../content/site';
 import Link from './Link.astro';
 import Button from './Button.astro';
 import Container from './Container.astro';
+import { splitTwoLineLabel } from '../lib/stackedLabel';
+
 const path = Astro.url.pathname;
+const contactCta = splitTwoLineLabel('Formulario de contacto');
 ---
 
 <header id="site-header" class="sticky top-0 z-50 backdrop-blur border-b border-border glass-bg">
@@ -12,15 +15,22 @@ const path = Astro.url.pathname;
       >Alexendros<span class="text-primary">.dev</span></a
     >
     <nav
-      class="site-nav hidden lg:flex flex-nowrap justify-end gap-x-6 text-base font-medium"
+      class="site-nav hidden lg:flex flex-nowrap items-center justify-end gap-x-5 text-sm font-medium"
       aria-label="Principal"
     >
       {
         site.nav.map((i) => {
           const current = path.startsWith(i.href);
+          const stacked = splitTwoLineLabel(i.label);
           return (
-            <Link href={i.href} variant="nav" current={current}>
-              {i.label}
+            <Link
+              href={i.href}
+              variant="nav"
+              current={current}
+              class="inline-flex flex-col items-center text-center leading-tight"
+            >
+              <span>{stacked.primary}</span>
+              {stacked.secondary ? <span>{stacked.secondary}</span> : null}
             </Link>
           );
         })
@@ -30,11 +40,13 @@ const path = Astro.url.pathname;
       <Button
         href="/contacto"
         size="sm"
-        class="hidden min-[360px]:inline-flex"
+        class="hidden min-[360px]:inline-flex text-center leading-tight py-1"
         aria-label="Formulario de contacto"
       >
-        <span class="lg:hidden">Contacto</span>
-        <span class="hidden lg:inline">Formulario de contacto</span>
+        <span class="inline-flex flex-col items-center">
+          <span>{contactCta.primary}</span>
+          {contactCta.secondary ? <span>{contactCta.secondary}</span> : null}
+        </span>
       </Button>
       <button
         type="button"
