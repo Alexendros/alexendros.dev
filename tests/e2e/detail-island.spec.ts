@@ -47,10 +47,10 @@ test('DI-04: tras cerrar, Atrás no reabre la ficha', async ({ page }) => {
 
   await dialog.getByRole('button', { name: 'Cerrar' }).click();
   await expect(dialog).toBeHidden();
-  await expect(page).toHaveURL(/\/servicios\/?$/);
+  await expect(page).toHaveURL(/\/servicios\/?(?:\?.*)?$/);
 
   await page.goBack();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/(?:\?.*)?$/);
   await expect(page.locator('dialog[data-detail-island][open]')).toHaveCount(0);
 });
 

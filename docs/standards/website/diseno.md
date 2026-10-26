@@ -9,7 +9,7 @@
 ## 1. Principios
 
 1. **Fuente única de verdad.** Todo color vive en `src/styles/global.css` (capa `@layer tokens`). `tailwind.config.mjs` solo referencia `var()`/`color-mix()`; los guardrails los validan `scripts/check-contrast.mjs` (fuente única) y Stylelint (`pnpm lint:css`, sin literales fuera de la capa de tokens).
-2. **Tres capas.** Primitivos (`--blue-*`, `--ink-*`, `--paper-*`, `--line`, `--ok/--warn/--err`) → semánticos (`--bg`, `--fg`, `--fg-muted`, `--brand`, `--brand-hover`, `--brand-fg`, `--border`, `--card`, `--danger`, `--bg-subtle`, `--focus-ring`) → componentes (clases Tailwind `bg-bg`, `text-fg`, `bg-primary`, `text-ink`, `text-muted`, `border-border`, `bg-card`, `text-danger`…). **Los componentes nunca consumen primitivos directamente.**
+2. **Tres capas.** Primitivos (`--blue-*`, `--ink-*`, `--paper-*`, `--line`, `--ok/--warn/--err`) → semánticos (`--bg`, `--fg`, `--fg-muted`, `--brand`, `--brand-hover`, `--brand-fg`, `--border`, `--card`, `--danger`, `--bg-subtle`, `--scrim`, `--focus-ring`) → componentes (clases Tailwind `bg-bg`, `bg-subtle`, `bg-scrim`, `text-fg`, `bg-primary`, `text-ink`, `text-muted`, `border-border`, `bg-card`, `text-danger`…). **Los componentes nunca consumen primitivos directamente.** `--scrim` es el overlay de dialog/CMP (mismo valor que `--cc-overlay-bg`).
 3. **Reglas duras.** Sin `!important` (Stylelint lo prohíbe), sin `transition: all`, sin colores literales en CSS fuera de `@layer tokens`, sin valores mágicos donde exista un token (`--space-*`, `--step-*`, `--radius-*`, `--dur-*`, `--ease-*`).
 4. **Tema claro por defecto, oscuro opcional.** El tema oscuro se publica solo si `pnpm check:contrast` valida todos los pares en ambos temas (28/28 PASS). Sin toggle de UI: `prefers-color-scheme` + `data-theme`.
 5. **Accesibilidad medible.** Pares de contraste WCAG AA en ambos temas (≥4.5:1 texto, ≥3:1 indicadores de foco), objetivo táctil ≥44px, foco visible siempre (`.focus-ring`), reduced-motion respetado en toda animación (media query + `.force-reduced-motion` para demos).
@@ -69,7 +69,8 @@ Extraído de Layout: primer foco de la página, salta a `#contenido`, visible so
 ### H1 de la home (taxonomía de servicios)
 
 - **Uso:** solo el H1 de la home (`Hero.astro`). Titular fijo de posicionamiento en tercera persona; lista semántica de cuatro servicios; sin rotación.
-- **CTAs:** primario «Solicitar propuesta» (`/contacto?motivo=propuestaComercial&origen=home`) y secundario «Catálogo de servicios» (`/servicios?origen=home`) en el hero, además del Contactar de cabecera y del sticky móvil.
+- **CTAs:** primario «Solicitar propuesta» (`/contacto?motivo=propuestaComercial&origen=home`) y secundario «Catálogo de servicios» (`/servicios?origen=home`) en el hero, además del Contactar de cabecera. Sticky móvil (ADR 0024): mismo rótulo «Solicitar propuesta» vía `Button` `size="sm"`, sin precio ni jerga.
+- **DetailIsland:** soft-nav con `<dialog>` + `pushState` (ADR 0022). Sin View Transitions (ADR 0004). Scrim y sombra vía `--scrim` / `--shadow-2` en CSS del dialog.
 - **Motion:** la entrada escalonada del hero (`data-hero-item`) sigue las reglas generales de reveal; con `prefers-reduced-motion` no hay animación.
 - **Don't:** no reintroducir ventana rotatoria en el producto; no añadir librerías de motion; no animar con propiedades distintas de `transform`/`opacity`.
 
