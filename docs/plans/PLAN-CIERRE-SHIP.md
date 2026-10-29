@@ -1,703 +1,586 @@
-# Plan de shipment, saneamiento y estabilización
+# Plan operativo de estabilización y shipment
 
-Fecha de revisión: 2026-10-29.
+Fecha: 2026-10-29.
 
 Repositorio: [Alexendros/alexendrosdev](https://github.com/Alexendros/alexendrosdev).
 
 Documento canónico: `docs/plans/PLAN-CIERRE-SHIP.md`.
 
-Estado del programa: **en ejecución; publicación final no autorizada**.
+Estado: **en ejecución; integración del catálogo y shipment final pendientes**.
 
-## Objetivo
+## Alcance de esta actualización
 
-Publicar una versión estable y funcional del sitio profesional con:
+Este plan continúa el trabajo existente. No ordena repetir fases cerradas ni sustituye las decisiones registradas.
 
-- Catálogo y promesas coherentes.
-- Ausencia de precios públicos y restos del modelo económico retirado.
-- Información legal y privacidad ajustadas a la operativa real.
-- Consentimiento y medición correctamente implementados.
-- Contacto comprobado hasta recepción y respuesta.
+El estado inicial procede del último avance comunicado por el mantenedor, **sin una nueva inspección independiente de GitHub en esta actualización**:
+
+| Elemento              | Estado comunicado                                                                                                   |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| PR activa de catálogo | [#152 — fix: alinear catálogo con revisiones técnicas reales](https://github.com/Alexendros/alexendrosdev/pull/152) |
+| Estado                | Abierta, en borrador                                                                                                |
+| Cabeza                | `1607f0c6e0632b56d77837f2655b7489288b217c`                                                                          |
+| Base                  | `d847cbe30ce16db09338f686ceb166d6f0289c5b`                                                                          |
+| PR anterior           | [148](https://github.com/Alexendros/alexendrosdev/pull/148), cerrada sin fusionar y sustituida                      |
+| Revisión editorial    | Pendiente                                                                                                           |
+| Excepción LHCI        | Pendiente                                                                                                           |
+| Shipment final        | Bloqueado por las fases restantes                                                                                   |
+
+**La sustitución de una PR conserva trabajo y trazabilidad, pero no transfiere automáticamente aprobaciones, checks o excepciones.**
+
+## Objetivo operativo
+
+Conseguir una versión publicada que cumpla simultáneamente:
+
+- Código integrado y revisado.
+- Catálogo conceptualmente correcto.
+- Ausencia de precios públicos y contratos económicos obsoletos.
+- Información legal y privacidad verificadas.
+- Proveedores compatibles con la actividad.
+- Consentimiento real y revocable.
+- Contacto recibido y respondido.
 - Accesibilidad evaluada automática y manualmente.
-- Presupuestos de rendimiento cumplidos.
-- CSP efectiva y controles de seguridad verificables.
-- Código mantenible, sin residuos innecesarios.
-- Repositorio organizado y trazabilidad conservada.
-- Correspondencia comprobada entre código, build y deployment.
-- Recuperación operativa documentada.
+- Presupuestos técnicos cumplidos.
+- CSP efectiva validada.
+- Dependencias, secretos y permisos revisados.
+- Repositorio limpio y documentación coherente.
+- Correspondencia entre fuente, build, tag y deployment.
+- Recuperación y observación completadas.
 
-La integración de código, la creación de una release y el cierre del programa son hitos diferentes. Ninguno sustituye automáticamente a los otros.
+No declarar terminado el trabajo únicamente porque se haya fusionado #152, creado una release o superado `ci-gate`.
 
-## Alcance de la revisión
-
-### Verificado directamente
-
-- La PR #149 está fusionada y añade el plan canónico y la documentación de comparación LHCI. [PR #149](https://github.com/Alexendros/alexendrosdev/pull/149)
-- La PR #150 está fusionada y declara separar E2E y LHCI, exigir informes y endurecer los comprobadores. [PR #150](https://github.com/Alexendros/alexendrosdev/pull/150)
-- La PR #148 sigue abierta, en borrador y sin conflictos detectados por GitHub. [PR #148](https://github.com/Alexendros/alexendrosdev/pull/148)
-- Su cabeza observada es `186a404c2e8592bff9ed1a9cb601f3871ec71cf9` y su base observada es `356fd286ff10d40764008c28753a17c2df930b56`. [PR #148](https://github.com/Alexendros/alexendrosdev/pull/148)
-- En la ejecución revisada, `ci-gate`, calidad, pruebas, build, smoke, axe y E2E crítico tienen resultado satisfactorio. E2E completo y LHCI aparecen omitidos. [Ejecución CI](https://github.com/Alexendros/alexendrosdev/actions/runs/40923036922)
-- `pr-mergeable` aparece omitido mientras la PR continúa en borrador. [Comprobación de merge](https://github.com/Alexendros/alexendrosdev/actions/runs/40923285126)
-
-### Declarado, no reproducido
-
-- Release actual `v1.32.4`.
-- Vitest: 218 pruebas.
-- E2E completo: 135/135 con informe HTML.
-- Comparación limpia LHCI con seis rutas sin variación y contacto con incremento de 196 bytes.
-- Ausencia de importes en las rutas indicadas.
-- Comportamiento completo de `check-csp --enforce`.
-
-Estos resultados no se consideran falsos ni se descartan. Deben identificarse como resultados aportados y vincularse a sus informes, entorno y SHA.
-
-### Pendiente de inspección
-
-- Diff completo de #149 y #150.
-- Código efectivo de los workflows y comprobadores.
-- Contenido de los informes originales LHCI y Playwright.
-- Tests de regresión de los nuevos comprobadores.
-- Configuración efectiva del alojamiento.
-- Variables y proveedores activos.
-- Respuestas de producción.
-- Entrega real del formulario.
-- Accesibilidad manual.
-- Secretos y dependencias en su estado actual.
-
-**No marcar estas tareas como realizadas por haber revisado únicamente la descripción de las PR.**
-
-## Hallazgos del seguimiento
-
-| ID   | Hallazgo                                                                                                                               | Prioridad                    | Acción                                                                             |
-| ---- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ---------------------------------------------------------------------------------- |
-| H-01 | #148 mantiene pendiente la revisión editorial                                                                                          | Bloqueante de integración    | Obtener evidencia independiente sobre el SHA final                                 |
-| H-02 | La excepción LHCI para #148 sigue sin aceptación                                                                                       | Bloqueante de integración    | Aceptación expresa o resolución previa del exceso                                  |
-| H-03 | El exceso JavaScript continúa abierto                                                                                                  | Bloqueante de shipment       | Optimizar sin elevar el presupuesto                                                |
-| H-04 | El checklist inicial de #148 conserva 216 pruebas y “CI completa” pendiente, mientras su actualización describe resultados posteriores | Documentación                | Sustituir ambigüedad por una matriz por SHA                                        |
-| H-05 | #149 y #150 conservan casillas CI pendientes en sus descripciones iniciales                                                            | Documentación                | Vincular la ejecución final y aclarar el resultado real                            |
-| H-06 | E2E completo local y E2E de Actions son evidencias distintas                                                                           | Evidencia                    | No presentar una ejecución omitida como superada                                   |
-| H-07 | La comparación de #149 se describe contra SHA anteriores al HEAD actual de #148                                                        | Evidencia                    | Actualizar comparación o demostrar qué cambios posteriores no afectan al artefacto |
-| H-08 | `--enforce` se declara implementado, pero no activado                                                                                  | Bloqueante del cierre de CSP | Revisar el código, corregir política y activar el gate                             |
-| H-09 | Legal, proveedores, contacto y accesibilidad manual siguen abiertos                                                                    | Bloqueante de shipment       | Ejecutar fases específicas                                                         |
-| H-10 | La release comunicada no acredita por sí sola el deployment                                                                            | Publicación                  | Relacionar tag, commit, build y deployment                                         |
-
-Los estados y discrepancias documentales anteriores se observan en las descripciones de las PR y sus checks; no constituyen todavía defectos demostrados del código interno. [PR #148](https://github.com/Alexendros/alexendrosdev/pull/148) · [PR #149](https://github.com/Alexendros/alexendrosdev/pull/149) · [PR #150](https://github.com/Alexendros/alexendrosdev/pull/150)
-
-## Reglas del programa
+## Reglas de cierre
 
 - No reescribir `main`.
-- No borrar el tag de línea base.
-- No eliminar PR ni evidencias históricas.
+- No borrar la línea base ni el histórico útil.
+- No reabrir #148 como paso necesario: continuar mediante #152.
+- No eliminar la rama compartida mientras #152 dependa de ella.
+- No atribuir aprobaciones a personas que no las hayan emitido.
 - No usar bypass administrativo.
-- No rebajar presupuestos para obtener verde.
-- No eliminar pruebas válidas para ocultar fallos.
-- No cerrar revisiones humanas mediante automatización.
-- No introducir cambios comerciales durante una refactorización.
-- No publicar datos personales o secretos.
-- No asumir que una release equivale a un deployment validado.
-- No imponer una versión mayor únicamente para señalar el final de la limpieza.
-- No declarar el programa terminado mientras existan bloqueos.
-- No exigir cero issues globales: exigir cero bloqueos de este programa.
+- No ampliar presupuestos para ocultar deuda.
+- No eliminar pruebas válidas para obtener verde.
+- No contratar servicios ni publicar datos personales sin autorización.
+- No alterar decisiones comerciales mediante una refactorización.
+- No convertir excepciones temporales de integración en permisos de shipment.
+- No crear planes competidores.
+- No cerrar asuntos sin evidencia de su criterio de aceptación.
 
-## Orden de ejecución
+## Registro de pendientes
 
-| Fase | Trabajo                          | Condición de salida                                     |
-| ---- | -------------------------------- | ------------------------------------------------------- |
-| A    | Verificación de #149 y #150      | Implementación y pruebas contrastadas                   |
-| B    | Cierre editorial de #148         | Evidencia y excepción aprobadas, o rendimiento resuelto |
-| C    | Proveedores y obligaciones       | Datos reales y decisiones documentadas                  |
-| D    | Privacidad, cookies y contacto   | Implementación y operación coherentes                   |
-| E    | Clean-code y supresión de restos | Sin código muerto ni contratos obsoletos                |
-| F    | Rendimiento                      | Presupuestos cumplidos                                  |
-| G    | CSP y seguridad                  | Política efectiva y gate bloqueante                     |
-| H    | Accesibilidad manual             | Matriz completada y defectos resueltos                  |
-| I    | Candidato de publicación         | Evidencias completas sobre un SHA                       |
-| J    | Ship y observación               | Producción estable y recuperación comprobada            |
-| K    | Cierre de repositorio            | Ramas, incidencias y documentos saneados                |
+Utilizar estos identificadores dentro del plan. **No representan issues o eventos ya creados**; deben enlazarse con los existentes o crearse una sola vez.
 
-El análisis y la recopilación de datos pueden avanzar en paralelo. Los cambios sobre las mismas interfaces deben integrarse de forma secuencial.
+| ID     | Asunto                           | Bloquea                                | Evidencia de cierre                        |
+| ------ | -------------------------------- | -------------------------------------- | ------------------------------------------ |
+| EST-01 | Trazabilidad #148 → #152         | Integración del catálogo               | Referencias y SHA coherentes               |
+| EST-02 | Revisión editorial independiente | Integración del catálogo               | Revisión del diff y OG                     |
+| EST-03 | Decisión sobre excepción LHCI    | Integración con presupuesto incumplido | Aceptación expresa o presupuesto corregido |
+| EST-04 | Rendimiento                      | Shipment                               | LHCI satisfactorio sobre candidato         |
+| EST-05 | Legal y proveedores              | Shipment                               | Matriz y datos verificados                 |
+| EST-06 | Privacidad y canales             | Shipment                               | Interfaz, API y documentos coherentes      |
+| EST-07 | Cookies y medición               | Shipment                               | Pruebas reales de elección y retirada      |
+| EST-08 | Contacto real                    | Shipment                               | Recepción, respuesta y errores comprobados |
+| EST-09 | Clean-code y restos              | Shipment                               | Inventario resuelto y regresión superada   |
+| EST-10 | CSP efectiva                     | Shipment                               | Política aplicada y gate bloqueante        |
+| EST-11 | Seguridad                        | Shipment                               | Análisis actual y riesgos resueltos        |
+| EST-12 | Accesibilidad                    | Shipment                               | Evaluación manual y automática             |
+| EST-13 | Release y deployment             | Publicación                            | Identidades relacionadas y go/no-go        |
+| EST-14 | Observación y saneamiento        | Cierre                                 | Operación estable y expediente final       |
 
-## Fase A: verificar lo integrado
+Estados permitidos:
 
-### Revisar los diffs
+- Pendiente.
+- En curso.
+- Bloqueado.
+- Listo para revisión.
+- Cerrado con evidencia.
 
-Recuperar información y patches sin modificar GitHub:
+“Implementado” no equivale necesariamente a “cerrado”: puede faltar la comprobación operativa.
+
+## Primer paquete de trabajo
+
+### EST-01: fijar la sustitución
+
+Acciones:
+
+- Actualizar el plan para señalar #152 como PR activa.
+- Mantener #148 como antecedente histórico.
+- Revisar referencias de ADR, eventos, incidencias y descripciones.
+- Mantener `evt-editorial-review-0026` abierto.
+- Actualizar su alcance o referencias mediante el esquema existente, sin duplicarlo.
+- No borrar evidencias antiguas: identificarlas como correspondientes a otros SHA.
+- Identificar cuáles requieren repetición.
+- Mantener una tabla única de resultados por SHA.
+
+Comprobación inicial de solo lectura:
 
 ```bash
 set -euo pipefail
 
 REPO_SLUG="Alexendros/alexendrosdev"
-AUDIT_DIR="$(mktemp -d -t alexendros-ship-audit-XXXXXXXX)"
 
-for PR in 149 150; do
-  gh pr view "$PR" \
-    --repo "$REPO_SLUG" \
-    --json number,state,mergedAt,mergeCommit,headRefOid,url,body \
-    > "$AUDIT_DIR/pr-$PR.json"
+gh pr view 152 \
+  --repo "$REPO_SLUG" \
+  --json number,state,isDraft,headRefName,headRefOid,baseRefName,baseRefOid,url
 
-  gh pr diff "$PR" \
-    --repo "$REPO_SLUG" \
-    > "$AUDIT_DIR/pr-$PR.diff"
-done
+gh pr checks 152 --repo "$REPO_SLUG"
 
-printf 'Directorio de revisión: %s\n' "$AUDIT_DIR"
+gh pr diff 152 --repo "$REPO_SLUG" --stat
 ```
 
-Comprobar:
+Si cabeza o base ya no coinciden con el estado comunicado, registrar el nuevo estado antes de continuar.
 
-- Que el código hace lo descrito.
-- Que no hay cambios funcionales ajenos.
-- Que existen pruebas de los nuevos comportamientos.
-- Que las instrucciones documentadas son ejecutables.
-- Que no quedan rutas o nombres anteriores incorrectos.
-- Que los informes se generan realmente.
-- Que los fallos provocan el resultado esperado.
+**Cierre de EST-01:** todas las referencias vigentes apuntan a #152 y no existe ambigüedad sobre qué cambios o revisiones pertenecen a #148.
 
-### PR #149
+### EST-02: revisión editorial
 
-Checklist:
+La revisión independiente debe cubrir:
 
-- [ ] Existe un único plan canónico.
-- [ ] README, AGENTS e índice documental apuntan al mismo plan.
-- [ ] Responsables identificados o declarados pendientes.
-- [ ] Bloqueos siguen abiertos.
-- [ ] La comparación identifica SHA base y candidato.
-- [ ] La configuración y versiones están registradas.
-- [ ] Se conservan resultados por ruta.
-- [ ] Los enlaces a informes funcionan.
-- [ ] Se diferencia evidencia original y análisis posterior.
-- [ ] No se publica información sensible.
-- [ ] No se atribuye al HEAD actual una medición de otro SHA.
+- Diff completo contra la base vigente.
+- Taxonomía.
+- Promesas y exclusiones.
+- Requisitos del cliente.
+- CTA y recorrido hacia contacto.
+- Identidad profesional.
+- Datos estructurados.
+- Imágenes OG mediante inspección visual.
+- Documentación modificada.
 
-La descripción de #149 vincula la comparación a `main@69cbd57` y al candidato `702e66c`; el HEAD actual de #148 es posterior. Esa diferencia debe quedar visible. [PR #149](https://github.com/Alexendros/alexendrosdev/pull/149) · [PR #148](https://github.com/Alexendros/alexendrosdev/pull/148)
+Evidencia obligatoria:
 
-### PR #150
-
-Checklist:
-
-- [ ] E2E completo ejecuta únicamente Playwright.
-- [ ] LHCI ejecuta únicamente Lighthouse.
-- [ ] LHCI consume el artefacto previsto, no el build con identificadores ficticios.
-- [ ] Se comprueba procedencia y SHA del artefacto.
-- [ ] No hay otro LHCI duplicado en un script auxiliar.
-- [ ] El reporter HTML está configurado.
-- [ ] La ausencia de informes exigidos falla.
-- [ ] Las rutas de informes son correctas.
-- [ ] Los nombres de artefactos evitan colisiones.
-- [ ] `pr-mergeable` falla ante estado desconocido.
-- [ ] Se ejecuta al pasar a Ready.
-- [ ] El comprobador CSP separa política efectiva y `Report-Only`.
-- [ ] `--enforce` devuelve error ante incumplimientos definidos.
-- [ ] Existen tests positivos y negativos.
-- [ ] CI no se presenta como CSP endurecida mientras no se active el modo bloqueante.
-
-La PR declara estos cambios, pero mantiene expresamente fuera de alcance activar CSP enforce y corregir rendimiento. [PR #150](https://github.com/Alexendros/alexendrosdev/pull/150)
-
-### Casos del comprobador CSP
-
-Probar al menos:
-
-| Caso                               | Resultado esperado                            |
-| ---------------------------------- | --------------------------------------------- |
-| Hash solo en `Report-Only`         | No autoriza el script en la política efectiva |
-| Hash correcto en política efectiva | Recurso autorizado según su directiva         |
-| Script inline sin autorización     | Hallazgo y fallo con `--enforce`              |
-| Política ausente                   | Fallo según el contrato establecido           |
-| Política inválida                  | Error claro                                   |
-| Varias políticas efectivas         | Evaluación de todas, no unión permisiva       |
-| Artefacto de análisis inexistente  | Error, no falso “sin hallazgos”               |
-| Ruta o lectura fallida             | Error observable                              |
-
-El comprobador estático no sustituye las pruebas de navegador y cabeceras reales.
-
-## Fase B: cerrar #148
-
-### Actualizar sus evidencias
-
-La descripción debe contener una tabla única:
-
-| Validación     | SHA              | Entorno              | Resultado               | Evidencia   |
-| -------------- | ---------------- | -------------------- | ----------------------- | ----------- |
-| CI obligatoria | SHA final        | Actions              | Estado real             | Run         |
-| Vitest         | SHA ejecutado    | Local o Actions      | Resultado real          | Informe     |
-| E2E completo   | SHA ejecutado    | Local o Actions      | Resultado real          | HTML        |
-| Axe            | SHA ejecutado    | Entorno              | Resultado real          | Informe     |
-| LHCI           | Base y candidato | Perfil limpio        | Incumplimiento heredado | Comparación |
-| Editorial      | SHA revisado     | Humana independiente | Pendiente o aprobado    | Referencia  |
-| Excepción      | Alcance exacto   | Decisión mantenedor  | Pendiente o aceptada    | Referencia  |
-
-No marcar “CI completa” si solo han terminado los checks obligatorios y existen validaciones opt-in omitidas.
-
-### Evidencia editorial
-
-Exigir:
-
-- Nombre e identificador verificable.
+- Revisor e identificador.
 - Fecha y zona horaria.
-- SHA revisado.
-- Confirmación del diff completo.
-- Revisión visual de OG.
+- SHA cabeza y base, o identificación inequívoca del diff.
+- Confirmación del alcance completo.
 - Resultado.
-- Correcciones.
-- Confirmación de su resolución.
+- Correcciones solicitadas.
+- Resolución.
 - Referencia verificable.
 
-Solo entonces actualizar `evt-editorial-review-0026`.
+Resultados válidos:
 
-Si cambia contenido editorial después, repetir la revisión afectada.
+- Aprobada sin correcciones.
+- Aprobada después de verificar las correcciones.
+- Rechazada o pendiente de cambios.
 
-### Excepción LHCI limitada
+“Aprobada con correcciones pendientes” no autoriza la fusión.
 
-La aceptación debe expresar:
+**Cierre de EST-02:** revisión real completada y evento actualizado conforme al esquema del repositorio.
 
-- PR a la que se limita.
+### EST-03: decisión LHCI
+
+Elegir expresamente una de estas rutas:
+
+| Ruta                                 | Actuación                                                                         |
+| ------------------------------------ | --------------------------------------------------------------------------------- |
+| Integrar catálogo antes de optimizar | El mantenedor acepta una excepción limitada a #152                                |
+| No aceptar excepción                 | Corregir el rendimiento antes de integrar, mediante trabajo separado y coordinado |
+
+La excepción debe incluir:
+
+- PR #152.
 - SHA o rango autorizado.
-- Evidencia de que el exceso es heredado.
-- Delta observado.
+- Comparación base/candidato.
+- Naturaleza heredada del incumplimiento.
+- Delta y limitaciones de la evidencia.
 - Riesgo aceptado.
-- Responsable que acepta.
-- Incidencia que lo resolverá.
-- Prohibición de usarla para el ship final.
-
-No convertir una autorización limitada en una dispensa permanente del presupuesto.
-
-### Fusión
-
-Una vez satisfechos ambos bloqueos:
-
-```bash
-set -euo pipefail
-
-REPO_SLUG="Alexendros/alexendrosdev"
-
-gh pr ready 148 --repo "$REPO_SLUG"
-gh pr checks 148 --repo "$REPO_SLUG" --watch --required
-
-HEAD_SHA="$(
-  gh pr view 148 \
-    --repo "$REPO_SLUG" \
-    --json headRefOid \
-    --jq '.headRefOid'
-)"
-
-gh pr merge 148 \
-  --repo "$REPO_SLUG" \
-  --squash \
-  --delete-branch \
-  --match-head-commit "$HEAD_SHA"
-```
-
-Ejecutar la fusión únicamente después de verificar evidencia, conversaciones y autorización. No automatizar la aprobación humana.
-
-## Fase C: proveedores y legal
-
-### Proveedores
-
-Inventariar:
-
-- Alojamiento.
-- Correo.
-- Redis.
-- Antispam.
-- Reservas.
-- Automatizaciones.
-- Analítica.
-- Publicidad.
-- Almacenamiento de evidencias.
-
-Por proveedor:
-
-- Entidad.
-- Finalidad.
-- Datos.
-- Entorno.
-- Estado.
-- Región.
-- Transferencias.
-- Condiciones.
-- Acuerdo de tratamiento cuando proceda.
-- Conservación.
 - Responsable.
-- Coste y límites.
+- Trabajo corrector vinculado.
+- Vencimiento: antes del shipment final.
 
-### Alojamiento
+Las mediciones antiguas pueden justificar antecedentes, pero no demostrar por sí solas el estado de una cabeza posterior.
 
-- [ ] Comprobar el plan real en la cuenta.
-- [ ] Confirmar que permite la actividad.
-- [ ] Resolver cualquier incompatibilidad contractual.
-- [ ] Configurar alertas y límites.
-- [ ] Verificar titularidad y recuperación.
-- [ ] Actualizar documentación.
+**Cierre de EST-03:** aceptación expresa documentada o presupuesto ya corregido. La redacción de este plan no constituye aceptación.
 
-No dar por confirmada una migración o contratación por haberla propuesto en un plan. Si sigue existiendo duda sobre las condiciones del proveedor, verificar sus documentos vigentes antes de publicar la aceptación.
+### Integración de #152
 
-### Matriz legal
+Antes de pasar a Ready:
 
-Documentar:
+- EST-01 cerrado.
+- EST-02 cerrado.
+- EST-03 resuelto.
+- Descripción con evidencias correctas.
+- Conversaciones resueltas.
+- Checks sobre la cabeza vigente.
+- Ningún bloqueo nuevo.
 
-- Prestador real.
+Después de pasar a Ready:
+
+- Esperar `pr-mergeable`.
+- Confirmar checks obligatorios.
+- Confirmar que la cabeza no ha cambiado.
+- Fusionar mediante squash.
+- Verificar el resultado en `main`.
+- Comprobar el despliegue si el merge publica automáticamente.
+- Eliminar la rama solo cuando haya terminado su función.
+
+No copiar aprobaciones o estados de Actions de #148 como si pertenecieran a #152.
+
+## Trabajo paralelo permitido
+
+Mientras se obtiene la revisión editorial, avanzar desde `main` en:
+
+- Recopilación de datos legales.
+- Inventario de proveedores.
+- Comprobación del alojamiento.
+- Análisis de privacidad.
+- Preparación de pruebas reales de correo.
+- Diagnóstico de rendimiento.
+- Inventario de código y recursos obsoletos.
+- Revisión de dependencias y permisos.
+
+No utilizar ese paralelismo para producir varias refactorizaciones incompatibles sobre formulario, CMP o catálogo.
+
+Si cambia la base de #152, evaluar qué revisiones y mediciones deben repetirse.
+
+## Segundo paquete: operación y legal
+
+### EST-05: proveedores
+
+Crear o completar un inventario con:
+
+| Campo          | Contenido                     |
+| -------------- | ----------------------------- |
+| Proveedor      | Entidad y producto            |
+| Finalidad      | Uso real                      |
+| Datos          | Información transmitida       |
+| Entorno        | Producción, preview o pruebas |
+| Estado         | Activo, inactivo o retirado   |
+| Ubicación      | Región verificada             |
+| Transferencias | Situación evaluada            |
+| Condiciones    | Documentos aplicables         |
+| Conservación   | Plazo y borrado               |
+| Responsable    | Persona encargada             |
+| Credenciales   | Referencias, nunca valores    |
+
+Revisar alojamiento, correo, antispam, Redis, reservas, automatizaciones y medición según el uso efectivo.
+
+Para el alojamiento:
+
+- Comprobar el plan real.
+- Verificar compatibilidad con la actividad profesional.
+- Resolver incompatibilidades antes del cierre.
+- Configurar límites y alertas.
+- Confirmar titularidad, acceso y recuperación.
+- Actualizar la documentación.
+
+No tratar una recomendación previa de migración como si la migración ya se hubiera ejecutado.
+
+### Información legal
+
+Obtener los datos reales del titular y documentar aplicabilidad:
+
+- Identidad.
 - Actividad.
+- Domicilio publicable suficiente.
+- Información fiscal o registral pertinente.
 - Público objetivo.
-- Solicitud de presupuesto.
-- Contratación.
-- Atención a consumidores, si existe.
-- Tratamientos.
-- Obligaciones de accesibilidad.
-- Obligaciones informativas.
-- Evidencias de implementación.
+- Proceso de presupuesto y contratación.
+- Obligaciones de información.
+- Obligaciones de accesibilidad aplicables.
+- Tratamientos y proveedores.
 
-No declarar “cumplimiento integral” solo porque existen páginas legales.
+Implementar:
 
-### Aviso legal
+- Aviso legal identificable.
+- Acceso desde todas las páginas.
+- Redirecciones necesarias.
+- Enlaces y sitemap coherentes.
+- Condiciones que correspondan a la operativa real.
+- Ausencia de promesas de certificación o asesoramiento no prestado.
 
-- Verificar identidad y NIF.
-- Confirmar domicilio profesional suficiente.
-- Añadir datos registrales si proceden.
-- Identificar canales.
-- Revisar propiedad intelectual.
-- Revisar límites de responsabilidad.
-- Publicar datos reales.
-- Mantener acceso permanente desde el pie.
+**Cierre de EST-05:** datos confirmados, proveedores y alojamiento resueltos, y revisión de las obligaciones aplicables. Si faltan datos, registrar el bloqueo; no inventarlos.
 
-Si se cambia la ruta, añadir redirección y actualizar enlaces y sitemap.
+## Tercer paquete: privacidad y contacto
 
-### Condiciones del servicio
+### EST-06: contrato de privacidad
 
-- Servicios descritos con precisión.
-- Exclusiones claras.
-- Sin promesas de certificación no prestada.
-- Sin precios públicos residuales.
-- Sin condiciones de pago ficticias.
-- Propuestas y contratación acordadas por el proceso real.
-- Revisión jurídica cuando haya dudas relevantes no resueltas.
+Decidir por finalidad:
 
-## Fase D: privacidad y contacto
+- Qué datos son necesarios.
+- Para qué se usan.
+- Qué base jurídica corresponde.
+- Quién los recibe.
+- Cuánto se conservan.
+- Cómo se ejercen derechos.
+- Cómo se borran.
 
-### Información de privacidad
+Implementar una primera capa junto al formulario y una política adicional coherente.
 
-- Determinar finalidad y base jurídica por tratamiento.
-- Añadir primera capa junto al formulario.
-- Enlazar la información adicional.
-- Separar publicidad de atención a consultas.
-- Identificar proveedores reales.
-- Definir conservación.
-- Definir derechos y borrado.
-- Minimizar campos.
+Si la casilla confirma lectura:
 
-No utilizar una casilla genérica como legitimación universal.
+- Utilizar una denominación y texto compatibles con esa función.
+- Actualizar API, validación, pruebas y documentación.
+- Definir la transición desde contratos anteriores.
+- No presentarla como consentimiento universal.
 
-Si una casilla solo confirma lectura, su texto, nombre y contrato deben reflejarlo. Si cambia el payload, definir transición y pruebas.
+Decidir explícitamente sobre WhatsApp, teléfono y reservas:
 
-### Canales
+- Mantenerlos con tratamiento y operativa reales.
+- O retirarlos de interfaz, API, políticas y tests.
 
-Decidir sobre WhatsApp, teléfono y reservas:
+### EST-07: cookies
 
-- Mantenerlos con tratamiento y atención efectivos.
-- O retirarlos coherentemente de interfaz, API, documentación y tests.
+Validar en navegador:
 
-No conservar un canal puramente decorativo.
-
-### Cookies
-
-Probar:
-
-- Primera visita.
-- Rechazo.
-- Analítica.
-- Publicidad.
-- Retirada.
-- Visita posterior.
-- Fallo del gestor.
-- Funcionamiento sin JavaScript.
+| Escenario         | Comportamiento esperado              |
+| ----------------- | ------------------------------------ |
+| Primera visita    | Sin actividad opcional no autorizada |
+| Rechazo           | Solo actividad técnica justificada   |
+| Selección parcial | Solo categorías elegidas             |
+| Retirada          | Cese posterior y limpieza posible    |
+| Nueva visita      | Preferencia respetada                |
+| Fallo del gestor  | Comportamiento restrictivo           |
+| Sin JavaScript    | Contenido y alternativa de contacto  |
 
 Inspeccionar:
 
 - Cookies.
 - Almacenamiento.
 - Red.
-- Etiquetas.
 - Eventos.
+- Etiquetas.
 - Identificadores.
-- Envíos del servidor.
+- Procesamiento del lado servidor.
 
-Las políticas, inventario y comportamiento deben coincidir.
+Revisar por separado atribución y referidos. No clasificarlos automáticamente como técnicos.
 
-### Envío real
+**Cierre de EST-07:** código, inventario, política y comportamiento real coinciden.
 
-Realizar una prueba autorizada sobre funciones desplegadas:
+### EST-08: contacto real
 
-1. Registrar SHA y deployment.
-2. Enviar desde navegador.
-3. Registrar `requestId`.
-4. Confirmar respuesta de la aplicación.
-5. Confirmar recepción.
-6. Revisar spam y autenticación.
-7. Responder.
-8. Confirmar recepción de la respuesta.
-9. Repetir con la misma clave de idempotencia.
-10. Confirmar un único envío.
-11. Anonimizar evidencia.
-12. Borrar los datos de prueba cuando proceda.
+Probar sobre un entorno con funciones desplegadas:
 
-Un test con mocks, un servidor estático o un HTTP satisfactorio no demuestra entrega.
+1. Identificar SHA y deployment.
+2. Usar datos y buzones controlados.
+3. Enviar desde navegador.
+4. Registrar hora y `requestId`.
+5. Comprobar respuesta de la aplicación.
+6. Confirmar recepción en Proton o buzón efectivo.
+7. Revisar spam y autenticación.
+8. Confirmar `Reply-To`.
+9. Responder.
+10. Confirmar recepción de la respuesta.
+11. Repetir con la misma clave de idempotencia.
+12. Confirmar ausencia de duplicados.
+13. Anonimizar evidencia.
+14. Aplicar el borrado previsto.
 
-### Fallos
+Pruebas de fallo en entorno controlado:
 
-En entorno controlado:
-
-- Validación.
-- Honeypot.
+- Payload inválido.
 - Antispam.
 - Rate limit.
 - Conflicto.
-- Procesamiento concurrente.
+- Concurrencia.
 - SMTP indisponible.
 - Redis indisponible.
 - Timeout.
 - Resultado incierto.
 
-Verificar que no existen confirmaciones falsas, reintentos ilimitados o duplicación de mensajes.
+Comprobar:
 
-### Seguridad del correo
+- Sin confirmaciones falsas.
+- Sin reintentos ilimitados.
+- Sin duplicación.
+- Sin información personal en logs, URL, consola o analítica.
+- Errores accesibles y recuperables.
+- Alternativa de correo funcional.
 
-- Remitente autorizado.
-- `Reply-To` seguro.
-- Protección de cabeceras.
-- Destinatario controlado.
-- Sin datos personales en logs.
-- SPF, DKIM y DMARC comprobados.
-- Resultado de autenticación revisado en un mensaje recibido.
+**Cierre de EST-08:** recepción y respuesta demostradas. Un HTTP satisfactorio no basta.
 
-## Fase E: clean-code
+## Cuarto paquete: saneamiento y rendimiento
 
-### Inventario previo
+### EST-09: inventario de restos
 
-Antes de eliminar:
+Clasificar antes de borrar:
 
-- Identificar consumidores.
-- Revisar imports.
-- Revisar rutas.
-- Revisar pruebas.
-- Revisar referencias documentales.
-- Revisar dependencias dinámicas.
-- Revisar convenciones del framework.
+| Categoría                | Tratamiento                      |
+| ------------------------ | -------------------------------- |
+| Código activo necesario  | Conservar y mejorar              |
+| Código muerto demostrado | Eliminar con pruebas             |
+| Compatibilidad temporal  | Documentar condición de retirada |
+| Workaround vigente       | Conservar y justificar           |
+| Workaround obsoleto      | Retirar tras comprobar           |
+| Histórico útil           | Archivar e identificar           |
+| Temporal o sensible      | Retirar y evaluar exposición     |
 
-La ausencia de import estático no demuestra por sí sola que un archivo sea prescindible.
+La ausencia de imports estáticos no demuestra por sí sola que un archivo no se use.
 
-### Restos de precios
+### Supresión del modelo económico
 
-Buscar y clasificar:
+Buscar y revisar:
 
-- Modelo `pricing`.
-- Configurador económico.
-- Campos `price`, importes y totales.
-- Estados provisional/confirmed.
-- Funciones de descuento.
-- JSON-LD económico.
+- Modelos de precios retirados.
+- Totales.
+- Descuentos.
+- Estados provisionales.
+- Campos económicos.
+- Configuradores antiguos.
 - CTA de pago.
+- JSON-LD.
 - Fixtures.
 - Snapshots.
 - OG.
-- HTML.
+- HTML generado.
 - Documentación vigente.
 
-No borrar automáticamente coincidencias históricas, legales o nombres válidos de terceros.
+Conservar el histórico necesario. No eliminar coincidencias legítimas mediante una sustitución masiva.
 
-Criterio de salida:
+El gate debe tener:
 
-- Cero referencias económicas prohibidas en superficie pública.
-- Cero contratos de precio obsoletos en código activo.
-- Histórico conservado e identificado.
-- Gate con pruebas positivas y negativas.
+- Casos que deban fallar.
+- Casos que deban pasar.
+- Inspección de la salida pública.
+- Alcance documentado.
+- Falsos positivos controlados.
 
-### Refactor del formulario
+### Clean-code
 
-Separar cuando el código lo justifique:
+Priorizar:
 
-- Modelo.
-- Validación.
-- Estado.
-- Presentación.
-- Transporte.
-- Gestión de errores.
-- Integraciones.
+- Separación de presentación, estado, validación y transporte del formulario.
+- Separación de esquemas y contenido.
+- IDs y slugs estables.
+- Serialización de módulos hacia contacto.
+- Eliminación de exportaciones sin consumidores.
+- Reducción de duplicación.
+- Helpers de pruebas coherentes.
+- Estilos agrupados por responsabilidad.
+- Tokens consistentes.
+- Dependencias y scripts realmente utilizados.
 
-Mantener comportamiento y contratos. Evitar una reorganización cosmética que aumente indirection sin reducir complejidad.
+No usar límites arbitrarios de líneas como sustituto del diseño. No rediseñar el sitio durante una limpieza salvo necesidad demostrada.
 
-### Catálogo y módulos
+### EST-04: rendimiento
 
-- Separar contenido y esquemas.
-- Mantener IDs estables.
-- Preservar serialización hacia contacto.
-- Validar módulos desconocidos.
-- Eliminar exportaciones sin consumidores.
-- Evitar dependencias circulares.
-- Mantener slugs y redirecciones.
+Medir el build de publicación, separado del build de pruebas.
 
-### CSS y componentes
-
-- Consolidar tokens.
-- Eliminar duplicación demostrada.
-- Revisar especificidad.
-- Eliminar selectores muertos comprobados.
-- Mantener temas.
-- Mantener estados y foco.
-- Evitar valores mágicos nuevos.
-- No rediseñar innecesariamente durante saneamiento.
-
-### Scripts y configuración
-
-- Revisar workarounds contra versiones actuales.
-- Eliminar únicamente los innecesarios.
-- Documentar los retenidos.
-- Revisar scripts sin uso.
-- Revisar variables obsoletas.
-- Revisar overrides.
-- Alinear configuración local y CI.
-
-### Licencias y recursos
-
-- Verificar procedencia de imágenes.
-- Revisar fuentes.
-- Retirar recursos sin licencia clara.
-- Eliminar variantes huérfanas.
-- Mantener originales necesarios y optimizados publicados.
-- No introducir recursos remotos por comodidad sin revisar sus consecuencias.
-
-## Fase F: rendimiento
-
-### Medición
-
-Por cada ruta:
+Por ruta, registrar:
 
 - SHA.
-- Perfil.
 - Versiones.
+- Perfil.
 - Repeticiones.
-- JavaScript.
+- Recursos.
+- Métrica exacta.
+- JavaScript compartido y específico.
 - CSS.
 - Peso total.
 - LCP.
 - CLS.
-- Elemento LCP.
-- Recursos responsables.
+- Elemento responsable.
 
-Comparar magnitudes equivalentes. No mezclar bytes de archivo, comprimidos y transferidos.
+Optimizar según datos:
 
-### Optimización
-
-Priorizar según datos:
-
-- Hidratación innecesaria.
-- Código compartido excesivo.
-- Contacto cargado fuera de contacto.
-- Configurador fuera de sus rutas.
+- Hidratación.
 - Dependencias duplicadas.
-- Integraciones prematuras.
+- Código fuera de su ruta.
 - Recursos no utilizados.
-- Fuentes o imágenes que retrasen LCP.
+- Integraciones prematuras.
+- Imágenes y fuentes.
+- Fragmentación de componentes.
 
-No eliminar medición autorizada silenciosamente ni cambiar de framework sin justificación.
+No eliminar decisiones de medición autorizadas de manera silenciosa.
 
-### Aceptación
+**Cierre de EST-04:**
 
-- [ ] Todas las rutas del presupuesto medidas.
-- [ ] Ninguna assertion de error incumplida.
-- [ ] JavaScript dentro del presupuesto vigente.
-- [ ] CSS y peso dentro del presupuesto.
-- [ ] Avisos revisados.
-- [ ] Sin regresión funcional.
-- [ ] Sin regresión de consentimiento.
-- [ ] Sin regresión de accesibilidad.
-- [ ] Evidencia sobre el SHA candidato.
+- Ninguna assertion LHCI de error incumplida.
+- Presupuestos vigentes cumplidos.
+- Avisos revisados.
+- Sin regresiones funcionales.
+- Sin regresiones de consentimiento o accesibilidad.
+- Medición repetida sobre el SHA candidato final.
 
-La excepción de #148 no satisface esta fase.
+## Quinto paquete: seguridad y CSP
 
-## Fase G: CSP y seguridad
+### EST-10: política efectiva
 
-### CSP
+Secuencia:
 
-1. Inventariar recursos.
-2. Retirar orígenes sin uso.
-3. Revisar scripts y estilos propios.
+1. Inventariar scripts, estilos y dominios.
+2. Retirar orígenes innecesarios.
+3. Revisar inline propios.
 4. Externalizar cuando proceda.
-5. Generar hashes sobre salida final.
-6. Usar nonces solo donde sean coherentes con el renderizado.
-7. Probar `Report-Only`.
+5. Generar hashes sobre la salida final.
+6. Usar nonces solo donde el renderizado y las cabeceras sean coherentes.
+7. Observar `Report-Only`.
 8. Resolver violaciones.
 9. Aplicar política efectiva.
-10. Activar `--enforce` en CI.
-11. Comprobar cabeceras en producción.
+10. Activar el modo bloqueante en CI.
+11. Probar respuestas y navegador reales.
 
-No convertir un nonce fijo en aparente endurecimiento de HTML estático.
+No asumir que la presencia de `--enforce` demuestra que está activo o que todos sus casos son correctos.
 
-Las excepciones deben ser específicas, justificadas y revisables.
+Pruebas del comprobador:
 
-### Colector
+- Hash solo en `Report-Only`.
+- Inline sin autorización.
+- Política efectiva ausente.
+- Política inválida.
+- Varias políticas efectivas.
+- Artefacto inexistente.
+- Error de lectura.
+- Recursos permitidos correctamente.
 
-- Límite de tamaño.
-- Rate limit.
-- Entrada no confiable.
-- Escape.
-- Minimización.
-- Conservación.
-- Control de costes.
-- Ausencia de datos sensibles en evidencias públicas.
+No unir permisos de políticas diferentes de forma que se oculte un bloqueo real.
 
-### Dependencias
+**Cierre de EST-10:** política efectiva funcional, excepciones acotadas y gate capaz de fallar ante incumplimientos.
 
-- Ejecutar el análisis actual.
-- Separar producción y desarrollo.
-- Revisar exposición real.
-- Actualizar de forma controlada.
-- Justificar excepciones.
-- Evitar correcciones masivas sin pruebas.
-- No reutilizar un listado antiguo como resultado vigente.
+### EST-11: seguridad
 
-### Secretos
+Revisar estado actual:
 
-- Revisar archivos.
-- Revisar historial.
-- Revisar workflows.
-- Revisar variables de despliegue.
-- Revisar bundles.
-- Revisar permisos.
+- Dependencias de producción.
+- Herramientas de desarrollo.
+- Overrides.
+- Runtime.
+- Workarounds.
+- Acciones de GitHub.
+- Permisos.
+- Variables.
+- Secretos.
+- Bundles públicos.
+- Colector CSP.
+- Logs y retención.
 
-Ante exposición:
+Ante secreto expuesto:
 
 1. Revocar.
 2. Rotar.
-3. Evaluar.
-4. Corregir.
+3. Evaluar exposición.
+4. Corregir origen.
 5. Decidir limpieza histórica.
-6. Ejecutarla con autorización.
+6. Ejecutarla mediante procedimiento autorizado.
 
-No reescribir Git como procedimiento ordinario de saneamiento.
+No utilizar la limpieza de Git como sustituto de la revocación.
 
-## Fase H: accesibilidad
+**Cierre de EST-11:** sin riesgos bloqueantes y con excepciones no bloqueantes justificadas, responsables y revisión prevista.
 
-### Evaluación
+## Sexto paquete: accesibilidad
 
-Completar matriz de criterios aplicables del objetivo acordado:
+### EST-12: evaluación final
 
-- Estructura.
+Realizarla cuando formulario, CMP y componentes estén estabilizados.
+
+Cubrir:
+
 - Teclado.
-- Foco.
+- Foco visible y no oculto.
+- Orden.
+- Encabezados y regiones.
+- Nombres, roles y valores.
 - Contraste.
-- Ampliación.
+- Zoom.
 - Reflujo.
 - Espaciado.
 - Movimiento.
-- Nombres y roles.
-- Formularios.
-- Errores.
-- Estados.
+- Objetivos táctiles.
+- Formularios y errores.
+- Estados de envío.
 - Diálogos.
 - CMP.
-- Objetivos táctiles.
+- Lector de pantalla.
 - Procesos completos.
-
-Incluir variantes responsive y temas.
-
-### Evidencia
+- Temas y variantes responsive.
 
 Por criterio:
 
@@ -707,124 +590,18 @@ Por criterio:
 - Evaluador.
 - Resultado.
 - Evidencia.
-- Defecto.
+- Incidencia.
 - Retest.
 
-No utilizar “no aplicable” por falta de revisión.
+No utilizar “no aplicable” como sustituto de una revisión pendiente.
 
-### Declaración
+Actualizar la información pública de accesibilidad con alcance y estado reales.
 
-La página pública debe reflejar:
+**Cierre de EST-12:** matriz completada y objetivo establecido alcanzado. Axe sin hallazgos no sustituye esta fase.
 
-- Alcance.
-- Fecha.
-- Método.
-- Estado real.
-- Limitaciones.
-- Canal de comunicación.
+## Validación técnica final
 
-No equiparar axe sin hallazgos con conformidad completa.
-
-## Documentación y residuos
-
-### Fuentes de verdad
-
-Actualizar:
-
-- README.
-- AGENTS.
-- Arquitectura.
-- Protocolo de CI.
-- Protocolo de release.
-- Contacto.
-- Cookies.
-- Proveedores.
-- Riesgos.
-- Plan canónico.
-- ADR y eventos.
-
-No repetir el plan entero en varios documentos.
-
-### Clasificación
-
-Cada documento debe ser:
-
-- Vigente.
-- Histórico.
-- Sustituido.
-- Evidencia.
-- Referencia.
-
-Los históricos deben indicar qué los sustituye cuando corresponda.
-
-### Residuos del repositorio
-
-Revisar:
-
-- Builds.
-- Logs.
-- Informes temporales.
-- Capturas.
-- Archivos de editor.
-- Descargas.
-- Configuración personal.
-- Variables locales.
-- Recursos huérfanos.
-- Fixtures personales.
-- Artefactos grandes.
-
-No ejecutar borrados globales sin revisión.
-
-### Design system
-
-Decidir si permanece público o interno.
-
-En cualquier caso:
-
-- Sin datos sensibles.
-- Sin importes prohibidos.
-- Sin ejemplos personales.
-- Sin enlaces rotos.
-- Con indexación coherente.
-
-`noindex` no es un mecanismo de confidencialidad.
-
-## Validación reproducible
-
-### Preparación
-
-Desde el checkout correcto:
-
-```bash
-set -euo pipefail
-
-REPO="$(git rev-parse --show-toplevel)"
-cd "$REPO"
-
-git remote -v
-git status --short
-git fetch origin --prune --tags
-
-node --version
-pnpm --version
-gh auth status
-
-pnpm run
-```
-
-Antes de instalar:
-
-- Comprobar remoto.
-- Comprobar cambios locales.
-- Comprobar versiones fijadas.
-- Revisar instrucciones de agentes.
-- Revisar scripts actuales.
-
-No sobrescribir cambios para obtener un árbol limpio.
-
-### Ejecución
-
-Una vez confirmados los scripts en el SHA elegido:
+Antes de ejecutar, revisar los scripts disponibles en el SHA elegido. Los comandos siguientes recogen los establecidos en el plan anterior; si han cambiado, adaptar el documento mediante revisión.
 
 ```bash
 set -euo pipefail
@@ -856,239 +633,211 @@ pnpm exec playwright install --with-deps chromium
 CI=true pnpm test:e2e
 ```
 
-Si un script ha cambiado, actualizar el plan mediante revisión; no ignorar el error ni sustituirlo por una ejecución parcial sin registrarlo.
-
 Después:
 
-- Ejecutar LHCI desde build limpio.
+- Ejecutar LHCI mediante su flujo separado y sobre el artefacto correcto.
 - Ejecutar seguridad.
-- Ejecutar comprobación CSP bloqueante.
+- Ejecutar CSP en modo bloqueante.
+- Verificar presencia de informes.
+- Revisar pruebas omitidas.
 - Probar funciones desplegadas.
-- Completar revisiones humanas.
+- Completar evidencias manuales.
 
-No promover un build de pruebas como build de producción.
+No publicar un artefacto construido con IDs o configuración ficticia de E2E.
 
-## Estabilización de versión
+## Evidencias y validez
 
-### Identidades separadas
+Cada evidencia debe identificar:
 
-Registrar:
+- Asunto.
+- Resultado.
+- Responsable.
+- Fecha.
+- SHA o rango.
+- Entorno.
+- Método.
+- Referencia.
+- Limitaciones.
 
-- SHA de fuente.
-- Identificador de build.
-- Configuración de build.
-- Tag de release.
+Reglas de reutilización:
+
+| Cambio posterior     | Actuación                                       |
+| -------------------- | ----------------------------------------------- |
+| Contenido editorial  | Revisión de la parte afectada                   |
+| Dependencias o build | Repetir validación técnica afectada             |
+| Formulario o backend | Repetir contrato y operación afectada           |
+| CMP o tracking       | Repetir consentimiento                          |
+| CSS o componentes    | Repetir accesibilidad y visuales afectadas      |
+| CSP o proveedores    | Repetir política e integraciones                |
+| Solo documentación   | Justificar qué evidencias siguen siendo válidas |
+| Candidato final      | Ejecutar la matriz final acordada               |
+
+Una revisión incremental puede complementar la original; debe quedar claro qué conjunto de evidencias cubre el estado final.
+
+## Candidato y estabilización
+
+### EST-13: congelación
+
+Cuando estén resueltas las fases previas:
+
+1. Pausar cambios ajenos.
+2. Seleccionar SHA candidato.
+3. Construir con perfil de producción.
+4. Identificar build.
+5. Identificar deployment candidato.
+6. Ejecutar validación final.
+7. Resolver fallos.
+8. Obtener go/no-go.
+
+No seguir añadiendo refactorizaciones mientras se certifica el candidato.
+
+### Identidades
+
+Relacionar explícitamente:
+
+- SHA de código.
 - SHA del tag.
+- Nombre del tag.
+- Build.
+- Configuración relevante.
 - Deployment.
-- Variables de entorno por versión o referencia.
+- Dominio.
 - Fecha de promoción.
 
-No exigir que nombres coincidan: exigir que la relación sea explícita y verificable.
+No forzar una versión mayor por motivos cosméticos ni mover tags publicados.
 
-### Política de versionado
+Mantener la estrategia de versionado acordada o modificarla mediante una decisión específica.
 
-- Mantener la automatización existente salvo decisión específica.
-- Usar mensajes finales correctos.
-- No forzar un major.
-- No crear tags manuales competidores.
-- No mover tags publicados.
-- No editar una versión solo para aparentar sincronización.
-- No usar una release anterior como etiqueta imprecisa de un deployment posterior.
+### Manifiesto
 
-La versión `v1.32.4` comunicada debe verificarse contra su tag y deployment antes de incorporarla como estado confirmado.
+El registro de shipment debe incluir:
 
-### Congelación
-
-1. Integrar fases funcionales.
-2. Pausar cambios ajenos.
-3. Elegir SHA candidato.
-4. Ejecutar validación completa.
-5. Resolver fallos.
-6. Repetir validación afectada.
-7. Aprobar go/no-go.
-
-Todo cambio posterior debe indicar qué evidencias invalida.
-
-## Manifiesto de shipment
-
-El manifiesto final debe incluir:
-
-- SHA.
-- Tag y su commit.
-- Build.
-- Deployment.
-- Runtime.
-- Gestor de paquetes.
-- Perfil.
+- Identidades anteriores.
 - CI.
-- E2E.
+- E2E completo.
 - LHCI.
-- CSP.
 - Seguridad.
+- CSP.
 - Editorial.
 - Legal y proveedores.
 - Privacidad y cookies.
-- Contacto real.
+- Contacto.
 - Accesibilidad.
 - Excepciones no bloqueantes.
-- Responsable de publicación.
-- Decisión.
+- Autorización.
 - Rollback.
-- Observación posterior.
+- Observación.
 
-No introducir una contradicción circular: un commit posterior para añadir evidencias cambia el SHA. Identificarlo como posterior o utilizar metadatos de release y seguimiento sin alterar el candidato validado.
+No añadir evidencias mediante un nuevo commit y seguir afirmando que se publica exactamente el SHA anterior. Identificar el commit posterior o registrar el resultado sin alterar el candidato.
 
-## Go/no-go
+## Matriz de publicación
 
-| Área          | Condición exigida                      |
-| ------------- | -------------------------------------- |
-| #148          | Integrada con evidencia y autorización |
-| Editorial     | Revisión independiente acreditada      |
-| CI            | Checks requeridos satisfactorios       |
-| E2E           | Completo y sobre el candidato          |
-| LHCI          | Sin errores de presupuesto             |
-| CSP           | Efectiva y bloqueante                  |
-| Seguridad     | Sin riesgos bloqueantes                |
-| Precios       | Sin restos públicos prohibidos         |
-| Legal         | Datos y obligaciones revisados         |
-| Proveedores   | Condiciones compatibles                |
-| Privacidad    | Información y operación coherentes     |
-| Cookies       | Sin actividad opcional no autorizada   |
-| Contacto      | Recepción y respuesta reales           |
-| Accesibilidad | Evaluación y correcciones completadas  |
-| Código        | Sin residuos activos identificados     |
-| Documentación | Vigente y consistente                  |
-| Deployment    | Fuente y configuración verificadas     |
-| Rollback      | Disponible y comprobado                |
+| Área          | Condición                             |
+| ------------- | ------------------------------------- |
+| Catálogo      | #152 integrada correctamente          |
+| Editorial     | Evidencia independiente               |
+| Rendimiento   | Presupuesto cumplido                  |
+| Proveedores   | Operativa y condiciones verificadas   |
+| Legal         | Información y aplicabilidad resueltas |
+| Privacidad    | Interfaz, API y política coherentes   |
+| Cookies       | Elección y retirada comprobadas       |
+| Contacto      | Recepción y respuesta reales          |
+| Código        | Restos activos resueltos              |
+| Seguridad     | Sin bloqueos                          |
+| CSP           | Efectiva y bloqueante                 |
+| Accesibilidad | Evaluación completada                 |
+| CI            | Checks y artefactos correctos         |
+| Deployment    | Candidato identificado                |
+| Recuperación  | Procedimiento comprobado              |
 
-Una condición roja impide el cierre. Una excepción aceptada para integración no se convierte automáticamente en excepción de publicación.
+Un resultado satisfactorio no compensa otro pendiente.
 
-## Publicación
+## Publicación controlada
 
-### Antes
+Antes:
 
-- Confirmar responsable.
 - Registrar autorización.
 - Identificar deployment recuperable.
-- Confirmar dominios.
-- Confirmar certificados.
 - Confirmar variables.
-- Confirmar funciones.
+- Confirmar dominios y certificados.
 - Confirmar proveedores.
-- Confirmar ausencia de identificadores de prueba.
-- Confirmar candidato exacto.
+- Confirmar ausencia de configuración de prueba.
+- Confirmar candidato.
 
-### Mecanismo
+Después:
 
-Elegir entre:
+- Verificar dominio principal y `www`.
+- Verificar HTTPS.
+- Verificar rutas y fichas.
+- Verificar páginas legales.
+- Verificar redirecciones y 404.
+- Verificar sitemap, robots y canonical.
+- Verificar OG.
+- Verificar recursos y consola.
+- Verificar temas, móvil y teclado.
+- Verificar CMP.
+- Verificar cabeceras.
+- Ejecutar contacto real.
+- Confirmar deployment servido.
+- Resolver caché si hay diferencias.
 
-- Despliegue automático desde `main` con cada merge apto para operar.
-- Promoción controlada tras validación.
+No usar snippets de buscadores o capturas antiguas como prueba del estado publicado.
 
-No asumir que retrasar un tag retiene producción. Verificar la configuración efectiva del proyecto.
+## Recuperación
 
-### Después
-
-Comprobar:
-
-- Dominio principal y `www`.
-- HTTPS.
-- Rutas públicas.
-- Fichas.
-- Contacto.
-- Páginas legales.
-- 404.
-- Redirecciones.
-- Sitemap.
-- Robots.
-- Canonical.
-- OG.
-- Recursos.
-- Consola.
-- Temas.
-- Móvil.
-- Teclado.
-- Consentimiento.
-- Cabeceras.
-- Formulario real.
-
-Verificar que la respuesta corresponde al deployment autorizado, no a una captura o caché anterior.
-
-### Caché
-
-Si aparecen diferencias:
-
-1. Comparar respuestas.
-2. Identificar capa.
-3. Verificar deployment.
-4. Aplicar purga controlada.
-5. Repetir.
-6. Confirmar consistencia.
-
-Una URL con parámetro no acredita por sí sola que la URL pública normal esté actualizada.
-
-## Rollback
-
-### Activación
-
-Recuperar o contener ante:
+Activar contención o rollback ante:
 
 - Caída.
 - Errores críticos.
-- Formulario inutilizable.
-- CSP que bloquea funciones.
-- Tratamiento opcional no autorizado.
-- Datos expuestos.
-- SHA incorrecto.
+- Contacto inutilizable.
+- CSP que bloquee funciones.
+- Actividad opcional no autorizada.
+- Exposición de información.
+- Deployment incorrecto.
 - Regresión crítica.
 
-### Ejecución
+Procedimiento:
 
-1. Declarar incidente.
-2. Contener.
-3. Restaurar deployment seguro.
-4. Verificar dominio.
-5. Verificar rutas.
-6. Verificar contacto.
-7. Registrar causa.
-8. Corregir mediante PR.
-9. Revalidar.
-10. Publicar controladamente.
+1. Contener.
+2. Identificar causa y alcance.
+3. Restaurar un deployment seguro y compatible.
+4. Verificar rutas y contacto.
+5. Registrar incidente.
+6. Corregir mediante PR.
+7. Revalidar.
+8. Publicar controladamente.
 
-No restaurar una versión que comparta el riesgo grave.
+No restaurar ciegamente una versión que comparta el mismo riesgo.
 
 No utilizar force-push de `main` como rollback de infraestructura.
 
-## Observación
+## Observación posterior
 
-Mantener como política propuesta una ventana de 24–48 horas, ampliable según incidencias.
+### EST-14: estabilización
 
-Observar:
+Mantener como política propuesta 24–48 horas de observación, ampliables según incidencias.
+
+Revisar:
 
 - Disponibilidad.
 - Funciones.
 - Correo.
 - Consentimiento.
 - CSP.
-- Errores del navegador.
+- Recursos bloqueados.
+- Errores.
 - Cuotas.
 - Costes.
 - Alertas.
-- Estado de deployments.
+- Deployments.
 
-La ausencia de tráfico no acredita ausencia de problemas.
+La ausencia de tráfico no demuestra ausencia de fallos.
 
-Si aparece un bloqueo:
-
-- Reabrir cierre.
-- Contener.
-- Corregir.
-- Revalidar.
-- Ampliar observación.
+Si aparece un bloqueo, reabrir el cierre y ampliar la observación tras corregirlo.
 
 ## Saneamiento final
 
-### Git
+Verificar:
 
 ```bash
 set -euo pipefail
@@ -1113,112 +862,56 @@ gh issue list \
   --state open
 ```
 
-Revisar antes de eliminar.
+Después:
 
-Con squash, una rama integrada puede no aparecer como ancestro de `main`. Comprobar PR y contenido, no basarse solo en `git branch --merged`.
-
-### Prohibiciones
-
-No utilizar como receta general:
-
-```text
-git clean -fdx
-git push --force origin main
-borrado masivo de ramas
-borrado masivo de tags
-eliminación indiscriminada del histórico
-```
-
-### Cierre administrativo
-
-- Cerrar PR del programa.
-- Eliminar sus ramas terminadas.
+- Eliminar solo ramas terminadas.
+- Comprobar PR y contenido antes de borrar.
+- Conservar #148 como antecedente.
+- Conservar evidencias y decisiones.
 - Cerrar incidencias satisfechas.
-- Conservar relaciones.
-- Registrar sustituciones.
-- Mantener pendientes independientes identificados.
+- Mantener mejoras independientes.
+- Actualizar documentación vigente.
 - Retirar excepciones vencidas.
-- Confirmar que ninguna excepción temporal oculta un bloqueo final.
 
-## Checklist definitivo
+Con squash, no basar toda la decisión de borrado en `git branch --merged`.
 
-### Integración y evidencia
+No ejecutar borrados globales, `git clean -fdx` ni reescrituras de historial como receta de saneamiento.
 
-- [ ] Diffs de #149 y #150 inspeccionados.
-- [ ] Implementación contrastada con su descripción.
-- [ ] Tests de los comprobadores revisados.
-- [ ] Checklists de PR actualizados con resultados reales.
-- [ ] SHA de cada evidencia identificado.
-- [ ] Comparación LHCI actualizada o acotada.
-- [ ] Revisión editorial realizada.
-- [ ] Excepción de #148 aceptada o innecesaria.
-- [ ] #148 integrada correctamente.
+## Checklist de esta iteración
 
-### Operación
+La siguiente entrega de avance debe resolver o identificar con precisión:
 
-- [ ] Alojamiento compatible.
-- [ ] Proveedores inventariados.
-- [ ] Variables revisadas.
-- [ ] Información legal verificada.
-- [ ] Privacidad coherente.
-- [ ] Cookies verificadas en navegador.
-- [ ] Canales atendidos.
-- [ ] Formulario recibido.
-- [ ] Respuesta recibida.
-- [ ] Idempotencia comprobada.
-- [ ] Fallos controlados.
+- [ ] #152 registrada como sustituta en todas las referencias vigentes.
+- [ ] Cabeza y base comprobadas.
+- [ ] Evidencias antiguas clasificadas por SHA.
+- [ ] Revisor editorial solicitado o asignado.
+- [ ] Decisión explícita sobre excepción LHCI.
+- [ ] Inventario inicial de proveedores completado.
+- [ ] Datos legales faltantes identificados.
+- [ ] Diagnóstico de JavaScript con recursos responsables.
+- [ ] Inventario inicial de restos y workarounds.
+- [ ] Próximas PR delimitadas sin números inventados.
+- [ ] Bloqueos con responsable y siguiente acción.
+- [ ] Ningún evento cerrado sin evidencia.
 
-### Código y seguridad
+## Checklist de cierre total
 
-- [ ] Restos del modelo de precios eliminados del código activo.
-- [ ] Superficie pública sin importes prohibidas.
-- [ ] Código muerto identificado y retirado.
-- [ ] Componentes y estilos saneados.
-- [ ] Workarounds revisados.
-- [ ] Dependencias analizadas.
-- [ ] Secretos revisados.
-- [ ] CSP efectiva.
-- [ ] `--enforce` activado y probado.
-- [ ] Sin riesgos bloqueantes.
+- [ ] EST-01 cerrado.
+- [ ] EST-02 cerrado.
+- [ ] EST-03 resuelto.
+- [ ] EST-04 cerrado sin excepción de presupuesto.
+- [ ] EST-05 cerrado.
+- [ ] EST-06 cerrado.
+- [ ] EST-07 cerrado.
+- [ ] EST-08 cerrado.
+- [ ] EST-09 cerrado.
+- [ ] EST-10 cerrado.
+- [ ] EST-11 cerrado.
+- [ ] EST-12 cerrado.
+- [ ] EST-13 cerrado.
+- [ ] EST-14 cerrado.
+- [ ] Repositorio, documentación y deployment describen el mismo estado.
+- [ ] No quedan bloqueos del programa.
+- [ ] El responsable ha autorizado el cierre.
 
-### Calidad
-
-- [ ] CI requerida satisfactoria.
-- [ ] E2E completo satisfactorio.
-- [ ] Informes obligatorios presentes.
-- [ ] LHCI sin errores.
-- [ ] Avisos documentados.
-- [ ] Accesibilidad manual completada.
-- [ ] Defectos bloqueantes corregidos.
-- [ ] Documentación alineada.
-
-### Ship
-
-- [ ] Candidato congelado.
-- [ ] SHA, tag, build y deployment relacionados.
-- [ ] Go/no-go registrado.
-- [ ] Perfil de producción confirmado.
-- [ ] Publicación ejecutada.
-- [ ] Rutas y cabeceras verificadas.
-- [ ] Caché verificada.
-- [ ] Contacto final comprobado.
-- [ ] Rollback comprobado.
-- [ ] Observación completada.
-- [ ] Ramas del programa saneadas.
-- [ ] Evidencias finales enlazadas.
-
-## Condición de cierre
-
-El programa se cierra únicamente cuando:
-
-- No quedan bloqueos de integración o publicación.
-- La web publicada corresponde al candidato autorizado.
-- Las funciones esenciales están comprobadas realmente.
-- El presupuesto de rendimiento se cumple.
-- La seguridad y accesibilidad tienen evidencias suficientes.
-- La documentación describe el funcionamiento real.
-- El repositorio no contiene residuos activos o sensibles identificados.
-- La recuperación está disponible.
-- La observación ha terminado sin incidencias bloqueantes abiertas.
-
-**La declaración final debe identificar qué se ha publicado, dónde, desde qué código, con qué evidencias y bajo la autorización de quién. “Release creada” o “CI verde” no bastan.**
+**El siguiente paso no es otro plan general: es ejecutar el primer paquete, avanzar con los inventarios en paralelo y aportar evidencias que permitan cerrar EST-01, EST-02 y EST-03 sin inventar aprobaciones ni detener el resto del trabajo.**
