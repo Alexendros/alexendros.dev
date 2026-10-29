@@ -65,7 +65,7 @@ describe('check-csp (T0, informe)', () => {
     const root = tree();
     const body = 'console.log(1)';
     const hash = createHash('sha256').update(body).digest('base64');
-    writeFileSync(join(root, 'src/boot.html'), `<script>${body}</script>\n`);
+    writeFileSync(join(root, 'src/boot.html'), `<script>${body}</script >\n`);
     writeFileSync(
       join(root, 'vercel.json'),
       JSON.stringify({
