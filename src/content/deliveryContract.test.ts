@@ -1,15 +1,26 @@
 import { describe, expect, it } from 'vitest';
-import { catalogEntries } from './services';
+import { portalBase, portalModules } from './portalModules';
+import { services } from './services';
 
-describe('contrato comercial del catálogo', () => {
-  it('R03: cada ficha tiene precio, pago, plazo, entrega y garantía no vacíos', () => {
-    expect(catalogEntries.length).toBeGreaterThanOrEqual(8);
-    for (const entry of catalogEntries) {
-      expect(entry.priceEuros, entry.id).toBeGreaterThan(0);
-      expect(entry.payment.trim().length, `${entry.id}.payment`).toBeGreaterThan(0);
-      expect(entry.timeline.trim().length, `${entry.id}.timeline`).toBeGreaterThan(0);
-      expect(entry.delivery.trim().length, `${entry.id}.delivery`).toBeGreaterThan(0);
-      expect(entry.guarantee.trim().length, `${entry.id}.guarantee`).toBeGreaterThan(0);
+describe('contrato de entrega del catálogo', () => {
+  it('cada servicio tiene propuesta, plazo, entrega, garantía y exclusiones', () => {
+    for (const service of services) {
+      const commercial = service.commercial;
+      expect(commercial.engagement, service.slug).toBe('proposal');
+      expect(commercial.timeline.trim().length, `${service.slug}.timeline`).toBeGreaterThan(0);
+      expect(commercial.delivery.trim().length, `${service.slug}.delivery`).toBeGreaterThan(0);
+      expect(commercial.guarantee.trim().length, `${service.slug}.guarantee`).toBeGreaterThan(0);
+      expect(commercial.exclusions.length, `${service.slug}.exclusions`).toBeGreaterThan(0);
+    }
+  });
+
+  it('la base y los módulos conservan alcance, entrega y requisitos', () => {
+    expect(portalBase.delivery.trim().length).toBeGreaterThan(0);
+    expect(portalModules).toHaveLength(4);
+    for (const module of portalModules) {
+      expect(module.scope.trim().length, `${module.id}.scope`).toBeGreaterThan(0);
+      expect(module.delivery.trim().length, `${module.id}.delivery`).toBeGreaterThan(0);
+      expect(module.dependencies.length, `${module.id}.dependencies`).toBeGreaterThan(0);
     }
   });
 });

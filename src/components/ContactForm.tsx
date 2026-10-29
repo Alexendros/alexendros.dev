@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState, type FormEvent } from 'react';
 import { normalizeProjectSlug, normalizeServiceSlug } from '../content/contactContext';
-import { normalizePortalModuleIds, serializePortalModuleIds } from '../content/pricing';
+import { normalizePortalModuleIds, serializePortalModuleIds } from '../content/portalModules';
 import { track } from '../lib/tracking/events';
 import {
   contactChannels,

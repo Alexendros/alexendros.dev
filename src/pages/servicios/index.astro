@@ -4,8 +4,8 @@ import Container from '../../components/Container.astro';
 import Grid from '../../components/Grid.astro';
 import ServiceCard from '../../components/ServiceCard.astro';
 import DetailIsland from '../../components/DetailIsland.astro';
-import PricingConfigurator from '../../components/PricingConfigurator';
-import { serviceProducts, services, servicePriceLabel } from '../../content/services';
+import NeedsConfigurator from '../../components/NeedsConfigurator';
+import { serviceProducts, services } from '../../content/services';
 
 const detailItems = services.map((s) => ({
   slug: s.slug,
@@ -13,7 +13,6 @@ const detailItems = services.map((s) => ({
   title: s.title,
   short: s.short,
   description: s.description,
-  priceLabel: servicePriceLabel(s.commercial),
   ctaLabel: s.action.label,
   ctaHref: s.action.href
 }));
@@ -37,9 +36,8 @@ const detailItems = services.map((s) => ({
         web actual o mejorar su productividad con soluciones de Inteligencia Artificial eficientes.
       </p>
     </header>
-    <p class="mt-4 max-w-2xl text-sm text-muted" data-services-price-note>
-      Precio, pago y plazo orientativos; el importe final va en la propuesta. Los importes
-      publicados se muestran + IVA.
+    <p class="mt-4 max-w-2xl text-sm text-muted" data-services-proposal-note>
+      El alcance, el calendario y las condiciones económicas se detallan en cada propuesta.
     </p>
     <Grid gap="6" class="mt-8 md:grid-cols-2 lg:grid-cols-4" data-services-grid>
       {
@@ -53,10 +51,10 @@ const detailItems = services.map((s) => ({
     <DetailIsland basePath="/servicios" items={detailItems} />
 
     <section class="mt-16" aria-labelledby="portal-heading">
-      <PricingConfigurator client:load />
+      <NeedsConfigurator client:load />
       <noscript>
         <p class="mt-4 rounded-lg border border-border bg-card p-4 text-sm">
-          Sin JavaScript el configurador no actualiza el total. Puedes{' '}
+          Sin JavaScript el selector no guarda la selección. Puedes{' '}
           <a
             href="/contacto?motivo=propuestaComercial"
             class="underline decoration-dotted underline-offset-2 text-primary"

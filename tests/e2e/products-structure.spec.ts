@@ -67,7 +67,8 @@ test.describe('DET estructura común de fichas', () => {
       for (const key of listSections) {
         const section = detail.locator(`[data-product-section="${key}"]`);
         await expect(section.getByRole('heading', { level: 2 })).toHaveCount(1);
-        await expect(section.locator('ul > li')).toHaveText(product[key]);
+        const expectedItems = key === 'exclusions' ? product.commercial.exclusions : product[key];
+        await expect(section.locator('ul > li')).toHaveText(expectedItems);
       }
 
       // DET-02: proceso como ol
@@ -77,8 +78,6 @@ test.describe('DET estructura común de fichas', () => {
 
       // DET-03: condiciones en orden canónico
       await expect(detail.locator('[data-product-section="commercial"] dt')).toHaveText([
-        'Precio',
-        'Pago',
         'Plazo',
         'Entrega',
         'Garantía'
@@ -120,9 +119,8 @@ test.describe('DET estructura común de fichas', () => {
       const card = page.locator(`[data-product-card="${product.slug}"]`);
       await expect(card).toHaveCount(1);
       await expect(card.locator('a')).toHaveCount(1);
-      await expect(card.locator('[data-product-card-price]')).toBeVisible();
     }
-    await expect(page.locator('[data-services-price-note]')).toContainText(/orientativo/i);
+    await expect(page.locator('[data-services-proposal-note]')).toContainText(/propuesta/i);
     await expect(page.locator('[data-product-card="portal-inicio"]')).toHaveCount(0);
     await expect(page.getByText('Preparando el configurador')).toHaveCount(0);
   });

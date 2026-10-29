@@ -9,7 +9,7 @@
   "packageManager": "pnpm@9.15.9",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro check && astro build && node scripts/fix-vercel-runtime.mjs",
+    "build": "astro check && astro build && node scripts/fix-vercel-runtime.mjs && node scripts/check-public-pricing.mjs --require-build",
     "preview": "serve .vercel/output/static -l 4321 --no-clipboard",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
@@ -23,6 +23,7 @@
     "check:copy": "node scripts/check-copy.mjs",
     "check:classes": "node scripts/check-classes.mjs",
     "check:links": "bash scripts/check-links.sh",
+    "check:public-pricing": "node scripts/check-public-pricing.mjs",
     "audit:cookies": "node scripts/audit-cookies.mjs",
     "lint:a11y": "playwright test tests/e2e/a11y.spec.ts",
     "lint:css": "stylelint \"src/**/*.css\"",

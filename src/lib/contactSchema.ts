@@ -8,9 +8,9 @@ import {
 import {
   normalizePortalModuleIds,
   serializePortalModuleIds,
-  type PortalModuleId
-} from '../content/pricing';
-import { portalModules } from '../content/services';
+  type PortalModuleId,
+  portalModules
+} from '../content/portalModules';
 
 export const entityTypes = ['particular', 'empresa', 'institucion'] as const;
 export const contactChannels = ['whatsapp', 'correo'] as const;

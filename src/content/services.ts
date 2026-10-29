@@ -1,21 +1,7 @@
 import { z } from 'zod';
-import { formatEuro, modulePrices, portalBasePrice, provisionalPrices } from './pricing';
 
 const nonEmptyTrimmed = z.string().trim().min(1);
 const nonEmptyList = z.array(nonEmptyTrimmed).min(1);
-
-export const catalogEntrySchema = z.object({
-  id: z.string().min(1),
-  kind: z.enum(['service', 'portal', 'module']),
-  title: z.string().min(1),
-  priceEuros: z.number().positive(),
-  payment: z.string().min(1),
-  timeline: z.string().min(1),
-  delivery: z.string().min(1),
-  guarantee: z.string().min(1)
-});
-
-export type CatalogEntry = z.infer<typeof catalogEntrySchema>;
 
 export const serviceActionSchema = z
   .object({
@@ -69,34 +55,15 @@ export const serviceActionSchema = z
 
 export type ServiceAction = z.infer<typeof serviceActionSchema>;
 
-const commercialBase = {
-  priceStatus: z.enum(['provisional', 'confirmed']),
-  payment: nonEmptyTrimmed,
+export const serviceCommercialSchema = z.object({
+  engagement: z.literal('proposal'),
   timeline: nonEmptyTrimmed,
   delivery: nonEmptyTrimmed,
-  guarantee: nonEmptyTrimmed
-};
-
-export const serviceCommercialSchema = z.discriminatedUnion('mode', [
-  z.object({
-    mode: z.literal('fixed'),
-    priceEuros: z.number().positive(),
-    ...commercialBase
-  }),
-  z.object({
-    mode: z.literal('quote'),
-    priceLabel: nonEmptyTrimmed,
-    ...commercialBase
-  })
-]);
+  guarantee: nonEmptyTrimmed,
+  exclusions: nonEmptyList
+});
 
 export type ServiceCommercial = z.infer<typeof serviceCommercialSchema>;
-
-export function isFixedCommercial(
-  commercial: ServiceCommercial
-): commercial is Extract<ServiceCommercial, { mode: 'fixed' }> {
-  return commercial.mode === 'fixed';
-}
 
 export const serviceSchema = z.object({
   slug: nonEmptyTrimmed,
@@ -109,7 +76,6 @@ export const serviceSchema = z.object({
   scope: nonEmptyList,
   deliverables: nonEmptyList,
   process: nonEmptyList,
-  exclusions: nonEmptyList,
   technicalDetails: nonEmptyList,
   commercial: serviceCommercialSchema,
   action: serviceActionSchema
@@ -126,9 +92,6 @@ export const productCardSchema = z.object({
   slug: z.string().min(1),
   title: z.string().min(1),
   short: z.string().min(1),
-  priceEuros: z.number().positive().optional(),
-  priceLabel: z.string().min(1),
-  priceStatus: z.enum(['provisional', 'confirmed']),
   href: z.string().min(1),
   ctaLabel: z.string().min(1)
 });
@@ -136,20 +99,6 @@ export const productCardSchema = z.object({
 export type ProductCard = z.infer<typeof productCardSchema>;
 
 export const SERVICE_PRODUCT_CTA = 'Ver qué incluye →';
-
-export const portalModuleSchema = z.object({
-  id: z.string().min(1),
-  title: z.string().min(1),
-  short: z.string().min(1),
-  priceEuros: z.number().positive(),
-  payment: z.string().min(1),
-  timeline: z.string().min(1),
-  delivery: z.string().min(1),
-  guarantee: z.string().min(1),
-  additive: z.boolean()
-});
-
-export type PortalModule = z.infer<typeof portalModuleSchema>;
 
 /** Slugs publicados como ficha `/servicios/[slug]` (decisión 0020; portal sin ficha). */
 export const PUBLISHED_SERVICE_SLUGS = [
@@ -196,20 +145,17 @@ export const services: Service[] = [
     technicalDetails: [
       'Revisión de indexación, CWV orientados a SEO, metadatos, enlazado interno y contenido indexable.'
     ],
-    exclusions: [
-      'No incluye implementación de las mejoras',
-      'No incluye campañas de publicidad ni link building',
-      'No garantiza posiciones en buscadores'
-    ],
     commercial: {
-      mode: 'fixed',
-      priceEuros: provisionalPrices.informeComercial,
-      priceStatus: 'provisional',
-      payment: 'Pago único antes de empezar',
+      engagement: 'proposal',
       timeline: '5 días laborables',
       delivery:
         'Informe técnico SEO, métricas de partida y plan priorizado de ajustes (sin implementación)',
-      guarantee: 'Una ronda de aclaraciones en 10 días naturales'
+      guarantee: 'Una ronda de aclaraciones en 10 días naturales',
+      exclusions: [
+        'No incluye implementación de las mejoras',
+        'No incluye campañas de publicidad ni link building',
+        'No garantiza posiciones en buscadores'
+      ]
     },
     action: {
       kind: 'contact',
@@ -248,20 +194,17 @@ export const services: Service[] = [
     technicalDetails: [
       'Revisión de avisos legales, cookies, formularios y barreras evidentes de accesibilidad.'
     ],
-    exclusions: [
-      'No incluye certificación oficial ni auditoría legal completa',
-      'No incluye prueba de intrusión ni análisis de vulnerabilidades técnicas',
-      'No incluye implementación de remedios'
-    ],
     commercial: {
-      mode: 'fixed',
-      priceEuros: provisionalPrices.cumplimiento,
-      priceStatus: 'provisional',
-      payment: '50 % al encargo y 50 % a la entrega, sin recargo',
+      engagement: 'proposal',
       timeline: '10 días laborables',
       delivery:
         'Informe de protección de datos, cookies y accesibilidad; cada problema con severidad y corrección recomendada',
-      guarantee: 'Corrección de desviaciones del alcance escrito en 15 días naturales'
+      guarantee: 'Corrección de desviaciones del alcance escrito en 15 días naturales',
+      exclusions: [
+        'No incluye certificación oficial ni auditoría legal completa',
+        'No incluye prueba de intrusión ni análisis de vulnerabilidades técnicas',
+        'No incluye implementación de remedios'
+      ]
     },
     action: {
       kind: 'contact',
@@ -299,20 +242,17 @@ export const services: Service[] = [
     technicalDetails: [
       'Revisión proporcional OWASP ASVS L1, CSP y superficies públicas evidentes.'
     ],
-    exclusions: [
-      'No incluye prueba de intrusión',
-      'No incluye certificación oficial',
-      'No incluye implementación de remedios',
-      'No incluye revisión legal de protección de datos ni cookies'
-    ],
     commercial: {
-      mode: 'fixed',
-      priceEuros: provisionalPrices.ciberseguridad,
-      priceStatus: 'provisional',
-      payment: '50 % al encargo y 50 % a la entrega, sin recargo',
+      engagement: 'proposal',
       timeline: '10 días laborables',
       delivery: 'Informe de seguridad básica; cada problema con severidad y corrección recomendada',
-      guarantee: 'Corrección de desviaciones del alcance escrito en 15 días naturales'
+      guarantee: 'Corrección de desviaciones del alcance escrito en 15 días naturales',
+      exclusions: [
+        'No incluye prueba de intrusión',
+        'No incluye certificación oficial',
+        'No incluye implementación de remedios',
+        'No incluye revisión legal de protección de datos ni cookies'
+      ]
     },
     action: {
       kind: 'contact',
@@ -360,19 +300,15 @@ export const services: Service[] = [
       'Stack según el problema y las convenciones del equipo (web, CLI u otra superficie acordada).',
       'Caso de referencia: Zedazo (herramienta de contactos de código abierto).'
     ],
-    exclusions: [
-      'No incluye mantenimiento continuo salvo acuerdo aparte',
-      'No garantiza ventas ni adopción del producto'
-    ],
     commercial: {
-      mode: 'quote',
-      priceLabel: 'Precio por fase en la propuesta',
-      priceStatus: 'provisional',
-      payment:
-        'Se acuerda por fase en la propuesta (suele ser 50 % al empezar y 50 % a la entrega)',
+      engagement: 'proposal',
       timeline: 'Por fases; cada una con su plazo escrito',
       delivery: 'Código, documentación y accesos de la fase acordada',
-      guarantee: 'Si algo no cumple lo acordado en esa fase, se corrige sin coste.'
+      guarantee: 'Si algo no cumple lo acordado en esa fase, se corrige sin coste.',
+      exclusions: [
+        'No incluye mantenimiento continuo salvo acuerdo aparte',
+        'No garantiza ventas ni adopción del producto'
+      ]
     },
     action: {
       kind: 'contact',
@@ -386,122 +322,14 @@ export const services: Service[] = [
 /** Alias del catálogo de fichas publicadas (mismo origen que `services`). */
 export const products = services;
 
-export const portalBase: PortalModule = {
-  id: 'portal-inicio',
-  title: 'Portal de inicio',
-  short:
-    'Base: landing, página de gracias, formulario y publicación. Pago fraccionado, plazo desde encargo, sin CMS ni terceros fuera del alcance escrito.',
-  priceEuros: portalBasePrice,
-  payment: '50 % al encargo y 50 % al publicar, sin recargo',
-  timeline: '10 días laborables desde el encargo acordado',
-  delivery: 'Landing, página de gracias, formulario y publicación',
-  guarantee:
-    '30 días naturales para corregir desviaciones del alcance escrito. Objetivos técnicos en rutas y entorno acordados: LCP ≤ 2,5 s (Lighthouse), axe 0 en esas rutas (no es conformidad WCAG completa) y contraste AA del tema. Mantenimiento y revisiones extra fuera de garantía se acuerdan aparte.',
-  additive: false
-};
-
-export const portalModules: PortalModule[] = [
-  {
-    id: 'tienda',
-    title: 'Catálogo y tienda online',
-    short: 'Catálogo y pasarela de pagos.',
-    priceEuros: modulePrices.tienda,
-    payment: 'Incluido en el pago fraccionado del portal',
-    timeline: '+15 días laborables',
-    delivery: 'Catálogo y pasarela de pagos operativa',
-    guarantee: 'Misma garantía del portal sobre el alcance de este módulo',
-    additive: true
-  },
-  {
-    id: 'mensajeria',
-    title: 'Canal de mensajería',
-    short: 'Canalización de clientes a través de aplicaciones de mensajería.',
-    priceEuros: modulePrices.mensajeria,
-    payment: 'Incluido en el pago fraccionado del portal',
-    timeline: '+5 días laborables',
-    delivery: 'Canal de mensajería conectado al portal',
-    guarantee: 'Misma garantía del portal sobre el alcance de este módulo',
-    additive: true
-  },
-  {
-    id: 'usuarios',
-    title: 'Registro de usuarios y gestión de clientes',
-    short: 'Registro de usuarios y gestión interna de clientes.',
-    priceEuros: modulePrices.usuarios,
-    payment: 'Incluido en el pago fraccionado del portal',
-    timeline: '+10 días laborables',
-    delivery: 'Registro y panel interno de clientes',
-    guarantee: 'Misma garantía del portal sobre el alcance de este módulo',
-    additive: true
-  },
-  {
-    id: 'contenidos',
-    title: 'Panel de contenidos',
-    short: 'Un panel para publicar y actualizar contenidos sin modificar el código.',
-    priceEuros: modulePrices.contenidos,
-    payment: 'Incluido en el pago fraccionado del portal',
-    timeline: '+5 días laborables',
-    delivery: 'Panel de contenidos y publicaciones',
-    guarantee: 'Misma garantía del portal sobre el alcance de este módulo',
-    additive: true
-  }
-];
-
-export function servicePriceLabel(commercial: ServiceCommercial): string {
-  if (commercial.mode === 'quote') return commercial.priceLabel;
-  return `${formatEuro(commercial.priceEuros)} + IVA`;
-}
-
 /** Fichas del índice: mismas claves, mismos CTA; datos desde el catálogo vivo. */
-export const serviceProducts: ProductCard[] = services.map((s) => ({
-  slug: s.slug,
-  title: s.title,
-  short: s.short,
-  priceEuros: isFixedCommercial(s.commercial) ? s.commercial.priceEuros : undefined,
-  priceLabel: servicePriceLabel(s.commercial),
-  priceStatus: s.commercial.priceStatus,
-  href: `/servicios/${s.slug}`,
+export const serviceProducts: ProductCard[] = services.map((service) => ({
+  slug: service.slug,
+  title: service.title,
+  short: service.short,
+  href: `/servicios/${service.slug}`,
   ctaLabel: SERVICE_PRODUCT_CTA
 }));
-
-export const catalogEntries: CatalogEntry[] = [
-  ...services.filter(isFixedService).map((s) => ({
-    id: s.slug,
-    kind: 'service' as const,
-    title: s.title,
-    priceEuros: s.commercial.priceEuros,
-    payment: s.commercial.payment,
-    timeline: s.commercial.timeline,
-    delivery: s.commercial.delivery,
-    guarantee: s.commercial.guarantee
-  })),
-  {
-    id: portalBase.id,
-    kind: 'portal',
-    title: portalBase.title,
-    priceEuros: portalBase.priceEuros,
-    payment: portalBase.payment,
-    timeline: portalBase.timeline,
-    delivery: portalBase.delivery,
-    guarantee: portalBase.guarantee
-  },
-  ...portalModules.map((m) => ({
-    id: m.id,
-    kind: 'module' as const,
-    title: m.title,
-    priceEuros: m.priceEuros,
-    payment: m.payment,
-    timeline: m.timeline,
-    delivery: m.delivery,
-    guarantee: m.guarantee
-  }))
-];
-
-function isFixedService(
-  service: Service
-): service is Service & { commercial: Extract<ServiceCommercial, { mode: 'fixed' }> } {
-  return isFixedCommercial(service.commercial);
-}
 
 export function assertUniqueServiceSlugs(items: readonly { slug: string }[]): void {
   const seen = new Set<string>();
@@ -538,14 +366,4 @@ if (slugs.has('portal-inicio')) {
 serviceProducts.forEach((p, i) => {
   const r = productCardSchema.safeParse(p);
   if (!r.success) throw new Error(`ProductCard ${i} inválido: ${r.error.message}`);
-});
-
-catalogEntries.forEach((e, i) => {
-  const r = catalogEntrySchema.safeParse(e);
-  if (!r.success) throw new Error(`CatalogEntry ${i} inválido: ${r.error.message}`);
-});
-
-portalModules.forEach((m, i) => {
-  const r = portalModuleSchema.safeParse(m);
-  if (!r.success) throw new Error(`PortalModule ${i} inválido: ${r.error.message}`);
 });

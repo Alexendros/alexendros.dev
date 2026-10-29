@@ -10,7 +10,6 @@ export type DetailIslandItem = {
   short: string;
   description?: string;
   meta?: string;
-  priceLabel?: string;
   ctaLabel: string;
   ctaHref: string;
 };
@@ -63,7 +62,6 @@ const { basePath, items } = Astro.props;
         {item.meta ? <p class="text-xs font-mono text-muted text-pretty">{item.meta}</p> : null}
         <p class="text-sm text-muted">{item.short}</p>
         {item.description ? <p class="text-sm text-muted">{item.description}</p> : null}
-        {item.priceLabel ? <p class="text-sm font-medium">{item.priceLabel}</p> : null}
         <div class="pt-2">
           <a
             href={item.ctaHref}

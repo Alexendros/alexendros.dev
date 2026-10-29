@@ -14,7 +14,7 @@ Workflow: `.github/workflows/ci.yml`.
 | -------------- | --------------- | --------------------------------------------------------------- |
 | `quality`      | Sí              | Tipos, lint, formato, CSS, cookies, registros, copy y contraste |
 | `test`         | Sí              | Vitest                                                          |
-| `build`        | Sí              | Build, `check:links` y artefacto `site-static`                  |
+| `build`        | Sí              | Build, anti-importes, `check:links` y artefacto `site-static`   |
 | `smoke`        | Sí              | Depende de `build`                                              |
 | `e2e-critical` | Sí              | Home, contacto, consent deny-by-default                         |
 | `csp` / `axe`  | Sí              | Informe CSP y accesibilidad automatizada                        |

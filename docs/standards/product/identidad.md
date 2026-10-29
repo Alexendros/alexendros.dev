@@ -12,9 +12,9 @@ Quien eres: role Full Stack · Auditor · Consultor, summary conversion-focused,
 
 ## services.ts — 3 servicios con alcance cerrado
 
-- produccion-sitios-web: Para fundadores WP lento. Problemas LCP>4s, landings genericas, forms rotos 78% abandono. Scope 10 inc Stripe/PayPal forms Zod 3 campos. Deliverables app+CI verde+informe Lighthouse/axe+guia. Metricas -65% LCP 3.2% conversion. Desde 1500€ 1-4 sem. Exclusiones sin CMS gestionado.
-- auditorias: Para CTOs tech leads. Scope perf CWV LCP CLS INP, a11y axe-core+teclado/NVDA, SEO tecnico, calidad, seguridad proporcional, priorizacion ICE, plan remediacion. Deliverables informe navegable+ICE+scripts+sesion 1h. Desde 650€ 3-5 dias.
-- consultoria-tecnologica: Sin hype. Diagnostico arquitectura evaluacion alternativas plan faseado ADRs/runbooks. Stack TS Node Rust Go MCP Ollama Zod. Desde 900€ 1-2 sem.
+- produccion-sitios-web: Para fundadores WP lento. Problemas LCP>4s, landings genericas, forms rotos 78% abandono. Scope 10 inc Stripe/PayPal forms Zod 3 campos. Deliverables app+CI verde+informe Lighthouse/axe+guia. Metricas -65% LCP 3.2% conversion. Plazo 1-4 sem. Exclusiones sin CMS gestionado.
+- auditorias: Para CTOs tech leads. Scope perf CWV LCP CLS INP, a11y axe-core+teclado/NVDA, SEO tecnico, calidad, seguridad proporcional, priorizacion ICE, plan remediacion. Deliverables informe navegable+ICE+scripts+sesion 1h. Plazo 3-5 dias.
+- consultoria-tecnologica: Sin hype. Diagnostico arquitectura evaluacion alternativas plan faseado ADRs/runbooks. Stack TS Node Rust Go MCP Ollama Zod. Plazo 1-2 sem.
 
 ## projects.ts — 4 proyectos (profundidad > cantidad, 70% recruiters prefiere)
 
@@ -37,7 +37,7 @@ Quien eres: role Full Stack · Auditor · Consultor, summary conversion-focused,
 ## Paginas
 
 - index.astro: Hero + Encargos habituales (decisión 0021; copy en tercera persona)
-- servicios/: Servicios profesionales + configurador de portal; fichas con precio/pago/plazo/entrega/garantía
+- servicios/: Servicios profesionales + selector de necesidades; fichas con propuesta/plazo/entrega/garantía/exclusiones
 - proyectos/: Proyectos realizados con availability si|no|reservado
 - metodo.astro (Metodología clara), identidad.astro
 - contacto.astro: formulario asistente + mailto; sin embed Cal en página

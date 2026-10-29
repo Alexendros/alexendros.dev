@@ -351,16 +351,31 @@
       "id": "0024",
       "sequence": 24,
       "timestamp": "2026-10-26T00:30:00Z",
-      "active": true,
+      "active": false,
       "title": "CTA sticky móvil neutro sin precio ni jerga",
       "summary": "La barra fija móvil muestra «Solicitar propuesta» vía Button size=sm; sin importe orientativo ni la palabra SEO.",
       "recordType": "decision",
-      "status": "aceptada",
+      "status": "superseded",
       "supersedes": [],
-      "supersededBy": null,
+      "supersededBy": "0025",
       "context": "El sticky repetía «Posicionamiento SEO {precio}» en casi todas las páginas; contradecía la norma de jerga y no alineaba con el hero. Ningún ADR previo fijaba el precio ahí; solo el e2e F10 y una nota de cierre.",
       "decision": "StickyCta: región y CTA «Solicitar propuesta» hacia /contacto?motivo=propuestaComercial; usar el componente Button size=sm; no mostrar precio ni «SEO». Los precios siguen en fichas y pricing.ts.",
       "consequences": "Actualizar F10 (entrega-servicios); D-02 del closeout deja de exigir precio en el sticky."
+    },
+    {
+      "id": "0025",
+      "sequence": 25,
+      "timestamp": "2026-10-29T16:00:00Z",
+      "active": true,
+      "title": "Catálogo por propuesta sin importes públicos",
+      "summary": "Se eliminan importes, IVA y pagos públicos; el configurador se sustituye por un selector de necesidades y el CTA móvil conserva su rótulo neutro.",
+      "recordType": "decision",
+      "status": "aceptada",
+      "supersedes": ["0024"],
+      "supersededBy": null,
+      "context": "El catálogo mostraba importes provisionales y condiciones de pago que no debían formar parte de la información pública. La decisión 0024 mantenía además una referencia vigente a precios en fichas que debe quedar cerrada.",
+      "decision": "Eliminar pricing.ts y todos los campos económicos del catálogo, tarjetas, fichas, metadatos y documentación vigente. Los cuatro módulos conservan sus IDs, alcance y serialización en portalModules.ts. NeedsConfigurator resume necesidades sin cálculos y enlaza a Solicitar propuesta. Cada servicio usa engagement=proposal con plazo, entrega, garantía y exclusiones; las condiciones económicas solo se definen individualmente. StickyCta mantiene «Solicitar propuesta» sin importes ni jerga.",
+      "consequences": "scripts/check-public-pricing.mjs bloquea símbolos de divisa, IVA, importes iniciales y campos económicos en fuentes, documentación vigente y salida generada. El build ejecuta el gate. Los archivos históricos conservan los importes solo como trazabilidad no vigente."
     }
   ]
 }
