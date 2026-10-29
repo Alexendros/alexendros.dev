@@ -8,6 +8,28 @@ Documento canónico: `docs/plans/PLAN-CIERRE-SHIP.md`.
 
 Estado: **en ejecución; integración del catálogo y shipment final pendientes**.
 
+## Registro de avance (2026-10-29, cierre técnico de rendimiento)
+
+Integrado en `main` durante esta iteración:
+
+| PR                                                           | Cambio                                                                                | Resultado medido                         |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------- | ---------------------------------------- |
+| [#153](https://github.com/Alexendros/alexendrosdev/pull/153) | Plan operativo, inventario de proveedores, diagnóstico JS e inventario de workarounds | Documentación                            |
+| [#154](https://github.com/Alexendros/alexendrosdev/pull/154) | CMP nativo sin isla React                                                             | Rutas informativas 85.395 → 14.254 bytes |
+| [#155](https://github.com/Alexendros/alexendrosdev/pull/155) | Selector de necesidades en Astro nativo                                               | `/servicios/` 110.964 → 40.127 bytes     |
+| [#156](https://github.com/Alexendros/alexendrosdev/pull/156) | Formulario de contacto nativo                                                         | `/contacto/` 117.842 → 46.391 bytes      |
+
+Estado de los pendientes tras esa secuencia:
+
+- **EST-01 cerrado:** las referencias vigentes apuntan a #152.
+- **EST-03 resuelto sin excepción:** el presupuesto se cumple en las siete rutas; no se concede dispensa alguna.
+- **EST-04 cerrado en integración:** LHCI sin assertions de error sobre `befda8e`; queda repetir la medición sobre el candidato de ship.
+- **EST-07 parcial:** CMP y consentimiento verificados con 136 E2E; faltan escenarios de navegador de todas las integraciones y la decisión legal sobre referidos.
+- **EST-02 abierto:** revisión editorial humana independiente del diff definitivo.
+- **EST-05, EST-06, EST-08, EST-10, EST-12 abiertos:** requieren datos del titular, decisiones legales, cuentas reales, observación de tráfico y evaluación manual.
+
+Evidencias: [`2026-10-29-cmp-native.md`](evidence/2026-10-29-cmp-native.md), [`2026-10-29-needs-native.md`](evidence/2026-10-29-needs-native.md) y [`2026-10-29-contact-native.md`](evidence/2026-10-29-contact-native.md).
+
 ## Alcance de esta actualización
 
 Este plan continúa el trabajo existente. No ordena repetir fases cerradas ni sustituye las decisiones registradas.
@@ -22,7 +44,7 @@ El estado inicial procede del último avance comunicado por el mantenedor, **sin
 | Base                  | `d847cbe30ce16db09338f686ceb166d6f0289c5b`                                                                          |
 | PR anterior           | [148](https://github.com/Alexendros/alexendrosdev/pull/148), cerrada sin fusionar y sustituida                      |
 | Revisión editorial    | Pendiente                                                                                                           |
-| Excepción LHCI        | Pendiente                                                                                                           |
+| Excepción LHCI        | No necesaria: presupuesto cumplido en las siete rutas                                                               |
 | Shipment final        | Bloqueado por las fases restantes                                                                                   |
 
 **La sustitución de una PR conserva trabajo y trazabilidad, pero no transfiere automáticamente aprobaciones, checks o excepciones.**
@@ -899,7 +921,8 @@ La siguiente entrega de avance debe resolver o identificar con precisión:
 - [ ] EST-01 cerrado.
 - [ ] EST-02 cerrado.
 - [ ] EST-03 resuelto.
-- [ ] EST-04 cerrado sin excepción de presupuesto.
+- [x] EST-04 cerrado en integración: siete rutas bajo 61.440 bytes, sin excepción de presupuesto (repetir en el ship).
+- [ ] Candidato final re-medido antes de publicar.
 - [ ] EST-05 cerrado.
 - [ ] EST-06 cerrado.
 - [ ] EST-07 cerrado.
