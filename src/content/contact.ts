@@ -1,11 +1,9 @@
 import { z } from 'zod';
-import { formatEuro, provisionalPrices } from './pricing';
 
 export const bookingOfferSchema = z.object({
   kind: z.literal('form'),
   id: z.enum(['informe-comercial', 'cumplimiento-normativo', 'ciberseguridad']),
   title: z.string().min(1),
-  priceLabel: z.string().min(1),
   summary: z.string().min(1),
   cta: z.string().min(1),
   href: z.string().min(1)
@@ -70,7 +68,6 @@ export const contact = contactSchema.parse({
         kind: 'form',
         id: 'informe-comercial',
         title: 'Posicionamiento comercial en buscadores',
-        priceLabel: formatEuro(provisionalPrices.informeComercial),
         summary:
           'Informe técnico SEO y plan de ajustes con métricas verificables para mejorar el posicionamiento.',
         cta: 'Rellenar formulario',
@@ -80,7 +77,6 @@ export const contact = contactSchema.parse({
         kind: 'form',
         id: 'cumplimiento-normativo',
         title: 'Cumplimiento normativo',
-        priceLabel: formatEuro(provisionalPrices.cumplimiento),
         summary: 'Revisión de protección de datos, políticas de cookies y accesibilidad del sitio.',
         cta: 'Rellenar formulario',
         href: '#escribir'
@@ -89,7 +85,6 @@ export const contact = contactSchema.parse({
         kind: 'form',
         id: 'ciberseguridad',
         title: 'Ciberseguridad',
-        priceLabel: formatEuro(provisionalPrices.ciberseguridad),
         summary:
           'Revisión de vulnerabilidades básicas con severidad y corrección recomendada por problema.',
         cta: 'Rellenar formulario',
@@ -105,7 +100,6 @@ export const publicBookingEvents: Array<{
   calLink: string;
   url: string;
   title: string;
-  priceLabel: string;
   summary: string;
   cta: string;
   id: string;

@@ -27,7 +27,7 @@ pnpm dev               # http://localhost:4321
 | `pnpm audit:cookies`                       | `quality`      | Inventario de cookies                      |
 | `pnpm check:records`                       | `quality`      | Schema + asertos de decisions/events       |
 | `pnpm test`                                | `test`         | Vitest (contratos API + helpers)           |
-| `pnpm build`                               | `build`        | `astro check` + build + runtime Vercel     |
+| `pnpm build`                               | `build`        | Build + runtime + gate anti-importes       |
 | `pnpm smoke`                               | `smoke`        | HTML estático + HTTP 200 en rutas clave    |
 | `pnpm test:e2e` (crítico)                  | `e2e-critical` | Home, contacto, consent deny-by-default    |
 | `pnpm test:e2e` / `pnpm lhci`              | `e2e` (opt-in) | Playwright/axe completo y Lighthouse móvil |
@@ -36,4 +36,4 @@ pnpm dev               # http://localhost:4321
 
 ## Contenido
 
-Textos y ofertas viven en `src/content/*.ts`. No toques pricing, no añadas CMS ni Google Fonts, no amplíes el alcance de servicios sin confirmación.
+Textos y ofertas viven en `src/content/*.ts`. No reintroduzcas importes públicos, no añadas CMS ni Google Fonts, no amplíes el alcance de servicios sin confirmación.

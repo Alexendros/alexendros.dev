@@ -12,7 +12,7 @@ Sitio profesional de [alexendros.dev](https://alexendros.dev): página web, tien
 | [Ciberseguridad](https://alexendros.dev/servicios/ciberseguridad/)                           | Vulnerabilidades básicas priorizadas, sin prueba de intrusión                            |
 | [Colaboración en proyectos de software](https://alexendros.dev/servicios/software-a-medida/) | Refuerzo técnico por fases en proyectos grandes con más compañeros                       |
 
-Más detalle y precios orientativos (+ IVA) en [Servicios profesionales](https://alexendros.dev/servicios/). Metodología en [Método](https://alexendros.dev/metodo/). Proyectos reales en [Proyectos](https://alexendros.dev/proyectos/).
+Más detalle y solicitud de propuesta en [Servicios profesionales](https://alexendros.dev/servicios/). Metodología en [Método](https://alexendros.dev/metodo/). Proyectos reales en [Proyectos](https://alexendros.dev/proyectos/).
 
 ## Cómo empezar
 

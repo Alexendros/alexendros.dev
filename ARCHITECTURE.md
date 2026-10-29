@@ -4,7 +4,7 @@
 
 - **Objetivos:** Describir las capas del sitio, las fronteras de runtime y dónde vive cada contrato (contenido, API, CI, deploy).
 - **Estructura:** Contexto → stack → árbol de runtime → APIs → CI/release → límites.
-- **Contenido a integrar según contexto:** Adapta rutas y adapters de este Astro híbrido. No copies la arquitectura de un SaaS, de Next.js archivado ni de la CLI webconfig. No cambies el alcance de servicios ni el pricing desde aquí.
+- **Contenido a integrar según contexto:** Adapta rutas y adapters de este Astro híbrido. No copies la arquitectura de un SaaS, de Next.js archivado ni de la CLI webconfig. No cambies el alcance de servicios ni reintroduzcas importes públicos desde aquí.
 
 Sitio profesional de conversión + contratación. Producción: [https://alexendros.dev](https://alexendros.dev). Repo: `Alexendros/alexendrosdev`. Proyecto Vercel **`alexendros-dev`**.
 
@@ -37,7 +37,7 @@ El workflow principal ejecuta `quality`, `test`, `build` (incluido `check:links`
 
 ## Límites
 
-- No CMS, no Google Fonts, no ampliar servicios ni tocar pricing sin decisión explícita.
+- No CMS, no Google Fonts, no ampliar servicios ni publicar importes sin decisión explícita.
 - Predecesor Next.js `nuevowebsite-alexendrosdev` archivado: no es fuente de verdad.
 - Decisiones de plataforma: [`docs/audits/decisions.json`](docs/audits/decisions.json) (schema en `docs/audits/record.schema.json`).
 - Alertas y avisos operativos: [`docs/audits/events.json`](docs/audits/events.json).

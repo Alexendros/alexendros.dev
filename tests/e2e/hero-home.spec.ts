@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-import { formatEuro, provisionalPrices } from '../../src/content/pricing';
 
 const H1 = 'Servicios informáticos y tecnologías para empresas y particulares.';
 const TITLE = 'Alexendros — Tecnologías y servicios informáticos';
@@ -52,7 +51,7 @@ test('Hero home: copy, enlaces, metadatos y sin cadenas antiguas', async ({ page
     await expect(items.nth(i)).toHaveClass(/border-t/);
   }
 
-  const revisionLabel = `Revisión de páginas web existentes, desde ${formatEuro(provisionalPrices.informeComercial)} + IVA →`;
+  const revisionLabel = 'Revisión técnica de páginas web existentes →';
   const revision = hero.getByRole('link', { name: revisionLabel });
   await expect(revision).toBeVisible();
   await expect(revision).toHaveAttribute('href', '/servicios/informe-comercial?origen=home');

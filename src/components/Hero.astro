@@ -3,9 +3,6 @@ import BlueprintMotif from './BlueprintMotif.astro';
 import Button from './Button.astro';
 import Container from './Container.astro';
 import Link from './Link.astro';
-import { formatEuro, provisionalPrices } from '../content/pricing';
-
-const revisionPrice = formatEuro(provisionalPrices.informeComercial);
 
 const taxonomyLinks = [
   {
@@ -70,7 +67,7 @@ const taxonomyLinks = [
         href="/servicios/informe-comercial?origen=home"
         class="focus-ring inline-flex min-h-11 items-center text-sm font-medium text-muted underline decoration-dotted underline-offset-4 hover:text-primary rounded"
       >
-        Revisión de páginas web existentes, desde {revisionPrice} + IVA →
+        Revisión técnica de páginas web existentes →
       </a>
     </p>
 

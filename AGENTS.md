@@ -15,11 +15,11 @@
 - Tracking solo con consentimiento previo y granular (CMP `vanilla-cookieconsent` v3; Consent Mode v2 con todo `denied` por defecto). Vercel Analytics y Speed Insights solo en builds Vercel (`__IS_VERCEL__`) y solo tras consentimiento de analítica; en local/CI no existen `/_vercel/*` y romperían Best Practices. Medición comercial: `form_submit` = intento; Meta Lead y `contact_form_success` solo tras `200` con `status: 'accepted'` y sin replay.
 - Tracking comercial completo **autorizado** (giro mercenario): GA4, Meta Pixel + CAPI server-side, LinkedIn Insight, Microsoft Clarity y PostHog EU, además de GTM server-side en Vercel. Todos gated por consentimiento de su categoría; ninguna etiqueta no esencial se carga sin consentimiento.
 - Las cookies deben figurar en `docs/cookies-inventory.json`; `pnpm run audit:cookies` es la verificación canónica. La categoría de marketing del CMP se muestra como **Publicidad** (clave técnica `marketing`).
-- Catálogo autorizado (decisión 0020, vigente vía 0021): posicionamiento en buscadores (`informe-comercial`), cumplimiento normativo, ciberseguridad, colaboración en software (`software-a-medida`), y portal de inicio solo en el configurador. Importes **provisionales** en `src/content/pricing.ts` hasta fijación explícita; no añadir CMS ni Google Fonts ni ampliar servicios sin decisión.
+- Catálogo autorizado (decisión 0020, vigente vía 0021): posicionamiento en buscadores (`informe-comercial`), cumplimiento normativo, ciberseguridad, colaboración en software (`software-a-medida`), y sitio profesional solo en el selector de necesidades. No publicar importes ni condiciones de pago: se definen en cada propuesta; no añadir CMS ni Google Fonts ni ampliar servicios sin decisión.
 - Preferir repo público + Vercel Hobby para preview por PR (decisión 1B); relajar Deployment Protection/SSO de previews para URLs compartibles (decisión 2A).
 - Versionado (semantic-release / release.yml) distinto de promote a producción; content=patch, feat=minor, breaking=major.
 - Al trabajar desde `main`, abrir rama `cursor/…`, commit/push y PR en borrador (no push directo a default).
-- Nav principal en barra desde `lg` con etiquetas en dos líneas centradas; CTA de cabecera único «Formulario de contacto» (texto apilado; sin rótulo corto «Contacto»). Sticky móvil ADR 0024: «Solicitar propuesta»; en `/metodo` sticky en todos los anchos con «Solicitar presupuesto».
+- Nav principal en barra desde `lg` con etiquetas en dos líneas centradas; CTA de cabecera único «Formulario de contacto» (texto apilado; sin rótulo corto «Contacto»). Sticky móvil ADR 0025 (mantiene 0024): «Solicitar propuesta»; en `/metodo` sticky en todos los anchos con «Solicitar presupuesto».
 
 ## Learned Workspace Facts
 

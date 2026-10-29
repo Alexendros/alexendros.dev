@@ -1,38 +1,32 @@
 import { test, expect } from '@playwright/test';
-import { formatEuro, portalTotalWithModules, provisionalPrices } from '../../src/content/pricing';
 
-test.describe('F02 F03 F10 servicios y configurador', () => {
-  test('F02: /servicios muestra las cuatro fichas y cada importe del módulo', async ({ page }) => {
+test.describe('F02 F03 F10 servicios y selector de necesidades', () => {
+  test('F02: /servicios muestra las cuatro fichas y la base sin importes', async ({ page }) => {
     await page.goto('/servicios');
     await expect(
       page.getByRole('heading', {
         name: 'Catálogo de servicios profesionales en respuesta a necesidades reales'
       })
     ).toBeVisible();
-    await expect(
-      page.getByRole('heading', { name: 'Posicionamiento comercial en buscadores' })
-    ).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Cumplimiento normativo' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Ciberseguridad' })).toBeVisible();
-    await expect(
-      page.getByRole('heading', { name: 'Colaboración en proyectos de software' })
-    ).toBeVisible();
+    for (const title of [
+      'Posicionamiento comercial en buscadores',
+      'Cumplimiento normativo',
+      'Ciberseguridad',
+      'Colaboración en proyectos de software'
+    ]) {
+      await expect(page.getByRole('heading', { name: title })).toBeVisible();
+    }
     const body = await page.locator('main').innerText();
-    expect(body).toContain(formatEuro(provisionalPrices.informeComercial));
-    expect(body).toContain(formatEuro(provisionalPrices.cumplimiento));
-    expect(body).toContain(formatEuro(provisionalPrices.ciberseguridad));
-    expect(body).toContain(formatEuro(provisionalPrices.portalInicio));
-    expect(body).toContain(formatEuro(provisionalPrices.tienda));
-    expect(body).toContain(formatEuro(provisionalPrices.mensajeria));
-    expect(body).toContain(formatEuro(provisionalPrices.usuarios));
-    expect(body).toContain(formatEuro(provisionalPrices.contenidos));
-    expect(body).toContain('+ IVA');
-    expect(body).toContain('Precio por fase en la propuesta');
+    expect(body).toContain('Portal de inicio');
+    expect(body).not.toMatch(/€|\bEUR\b|\+\s*IVA\b/i);
+    await expect(page.locator('[data-services-proposal-note]')).toContainText(/propuesta/i);
   });
 
-  test('F03/CFG-01: marcar los cuatro módulos deja el total igual a la suma', async ({ page }) => {
+  test('F03/CFG-01: marcar los cuatro módulos actualiza el resumen y conserva el contexto', async ({
+    page
+  }) => {
     await page.goto('/servicios');
-    const configurator = page.locator('[data-pricing-configurator]');
+    const configurator = page.locator('[data-needs-configurator]');
     await expect(configurator).toBeVisible();
     await configurator.scrollIntoViewIfNeeded();
     await expect(configurator.locator('input[data-module="tienda"]')).toBeEnabled({
@@ -43,26 +37,29 @@ test.describe('F02 F03 F10 servicios y configurador', () => {
       await box.check();
       await expect(box).toBeChecked();
     }
-    await expect(configurator.locator('[data-pricing-total]')).toContainText(
-      formatEuro(portalTotalWithModules)
+    const summary = configurator.locator('[data-selected-modules]');
+    await expect(summary.locator('li')).toHaveCount(4);
+    await expect(configurator.getByRole('link', { name: 'Solicitar propuesta' })).toHaveAttribute(
+      'href',
+      '/contacto?motivo=propuestaComercial&origen=servicios&modulos=tienda%2Cmensajeria%2Cusuarios%2Ccontenidos'
     );
-    await expect(page.locator('[data-services-price-note]')).toContainText(/orientativo/i);
-    await expect(configurator).toContainText(/plazos.*no se suman/i);
+    await expect(configurator).not.toContainText(/€|\bEUR\b|\+\s*IVA\b/i);
   });
 
-  test('CFG-03: contacto sin configurar está disponible', async ({ page }) => {
+  test('CFG-03: contacto sin seleccionar módulos está disponible', async ({ page }) => {
     await page.goto('/servicios');
-    const configurator = page.locator('[data-pricing-configurator]');
-    await expect(
-      configurator.getByRole('link', { name: /Solicitar información sin configurar/i })
-    ).toHaveAttribute('href', '/contacto?motivo=informacionCliente');
-    await configurator.getByRole('link', { name: /Solicitar información sin configurar/i }).click();
+    const configurator = page.locator('[data-needs-configurator]');
+    const link = configurator.getByRole('link', {
+      name: /Solicitar información sin seleccionar módulos/i
+    });
+    await expect(link).toHaveAttribute('href', '/contacto?motivo=informacionCliente');
+    await link.click();
     await expect(page).toHaveURL(/\/contacto\?motivo=informacionCliente/);
     await expect(page.getByRole('heading', { name: 'Contacto', exact: true })).toBeVisible();
     await expect(page.locator('[data-contact-modules]')).toHaveCount(0);
   });
 
-  test('F10: la barra móvil pide propuesta sin precio ni SEO', async ({ page }) => {
+  test('F10: la barra móvil pide propuesta sin importe ni SEO', async ({ page }) => {
     await page.setViewportSize({ width: 360, height: 740 });
     await page.addInitScript(() => {
       try {
@@ -74,9 +71,8 @@ test.describe('F02 F03 F10 servicios y configurador', () => {
     await page.goto('/servicios');
     const sticky = page.locator('#sticky-cta');
     await expect(sticky).toBeAttached();
-    await expect(sticky).not.toContainText(/gratis/i);
+    await expect(sticky).not.toContainText(/gratis|€|\bEUR\b/i);
     await expect(sticky).not.toContainText(/\bSEO\b/);
-    // aria-hidden hasta el scroll: usar el enlace del DOM, no el árbol a11y.
     await expect(sticky.locator('#sticky-cta-link')).toHaveText(/Solicitar\s*propuesta/);
     await page.evaluate(() => {
       window.scrollTo(0, 1200);

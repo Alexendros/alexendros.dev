@@ -4,34 +4,29 @@ import Hero from '../components/Hero.astro';
 import Container from '../components/Container.astro';
 import Grid from '../components/Grid.astro';
 import Link from '../components/Link.astro';
-import { formatEuro, provisionalPrices } from '../content/pricing';
 
 const paths = [
   {
     title: 'Página web para profesionales y emprendedores',
-    body: 'Presencia clara para captar consultas, con alcance y precio acordados por escrito.',
-    price: `Desde ${formatEuro(provisionalPrices.portalInicio)} + IVA`,
+    body: 'Presencia clara para captar consultas, con alcance y condiciones acordados por escrito.',
     href: '/servicios?origen=home#portal-heading',
     linkLabel: 'Ver en catálogo'
   },
   {
     title: 'Tienda en internet con catálogo y cobro seguro',
     body: 'Catálogo, pedidos y cobro con módulos configurables según el alcance.',
-    price: `Desde ${formatEuro(provisionalPrices.tienda)} + IVA (módulo)`,
     href: '/servicios?origen=home#portal-heading',
     linkLabel: 'Ver en catálogo'
   },
   {
     title: 'Aplicaciones útiles para ordenadores con Linux',
     body: 'Herramientas locales para trabajo diario, con entrega y documentación claras.',
-    price: 'Precio en la propuesta',
     href: '/contacto?motivo=propuestaComercial&origen=home-linux',
     linkLabel: 'Solicitar propuesta'
   },
   {
     title: 'Integración de Inteligencia Artificial en procesos empresariales y oficios',
     body: 'Automatización y asistencia en tareas concretas, con límites y criterios definidos.',
-    price: 'Precio en la propuesta',
     href: '/contacto?motivo=propuestaComercial&origen=home-ia',
     linkLabel: 'Solicitar propuesta'
   }
@@ -49,7 +44,6 @@ const paths = [
             <article class="border border-border rounded-lg p-5 bg-card h-full flex flex-col">
               <h3 class="font-bold text-lg">{path.title}</h3>
               <p class="mt-3 text-sm text-muted grow">{path.body}</p>
-              <p class="mt-4 text-sm font-medium">{path.price}</p>
               <p class="mt-3">
                 <Link href={path.href} variant="arrow" class="text-sm">
                   {path.linkLabel}
