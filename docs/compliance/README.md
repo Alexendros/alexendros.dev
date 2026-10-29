@@ -4,6 +4,7 @@
 
 Referencias vigentes:
 
+- [Inventario inicial de proveedores e integraciones](processors.md)
 - [Inventario de cookies](../cookies-inventory.json)
 - [Modelo de amenazas](../threat-model.md)
 - [Matriz histórica de consentimiento](../audits/archive/matriz-consentimiento.md), solo como antecedente
