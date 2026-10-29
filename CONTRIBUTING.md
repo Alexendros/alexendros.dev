@@ -17,10 +17,11 @@ Lee también [AGENTS.md](AGENTS.md), [ARCHITECTURE.md](ARCHITECTURE.md) y [CODE_
 
 ## Flujo
 
-1. Rama desde `main` (`cursor/…`, `feat/…`, `fix/…`, `docs/…`, `content/…`).
-2. `pnpm i && pnpm typecheck && pnpm lint && pnpm lint:css && pnpm format:check && pnpm check:records && pnpm test && pnpm build && pnpm smoke`
-3. PR con CI verde (`quality`, `test`, `build`, `smoke`, `e2e-critical`). Playwright/axe completo y LHCI: label `e2e` si tocas UI o a11y. Los jobs de seguridad (`secrets`, `sca`, …) viven en `security.yml`; patrón documentado en [docs/standards/protocols/security-ci.md](docs/standards/protocols/security-ci.md).
-4. Vulnerabilidades: [SECURITY.md](SECURITY.md), no un issue público.
+1. Crea una rama desde `main` con el formato `tipo/descripcion-breve`. Tipos: `feat`, `fix`, `refactor`, `chore`, `docs`, `test`, `ci`, `security` y `legal`. No hagas push directo a `main`.
+2. Ejecuta `corepack enable && pnpm install --frozen-lockfile` y después `pnpm typecheck && pnpm lint && pnpm lint:css && pnpm format:check && pnpm check:records && pnpm audit:cookies && pnpm check:copy && pnpm check:classes && pnpm check:contrast && pnpm test && pnpm build && pnpm check:links && pnpm smoke`.
+3. Abre una PR pequeña y de una sola responsabilidad, con título Conventional Commit, riesgo, evidencias y rollback. Debe tener `ci-gate` y `pr-mergeable` en verde, la rama actualizada y las conversaciones resueltas. La integración se realiza únicamente mediante squash y la rama se borra después.
+4. Playwright completo y LHCI son opt-in con la etiqueta `e2e`; axe y los E2E críticos se ejecutan en cada PR. Los jobs `secrets` y `sca` viven en `ci.yml` para alimentar `ci-gate`.
+5. Vulnerabilidades: [SECURITY.md](SECURITY.md), no un issue público.
 
 ## Commits
 

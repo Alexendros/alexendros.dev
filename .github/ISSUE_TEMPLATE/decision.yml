@@ -1,0 +1,35 @@
+name: Decisión técnica u operativa
+description: Documenta opciones, decisión y fecha de revisión
+labels: [decisión]
+body:
+  - type: textarea
+    id: contexto
+    attributes:
+      label: Contexto
+    validations:
+      required: true
+  - type: textarea
+    id: opciones
+    attributes:
+      label: Opciones
+    validations:
+      required: true
+  - type: textarea
+    id: decision
+    attributes:
+      label: Decisión
+    validations:
+      required: true
+  - type: textarea
+    id: consecuencias
+    attributes:
+      label: Consecuencias
+    validations:
+      required: true
+  - type: input
+    id: revision
+    attributes:
+      label: Fecha de revisión
+      placeholder: AAAA-MM-DD
+    validations:
+      required: true

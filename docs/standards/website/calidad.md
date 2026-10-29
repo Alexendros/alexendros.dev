@@ -8,12 +8,15 @@
 
 ## Jobs (canon)
 
-1. **quality** — `typecheck`, `lint`, `lint:css`, `format:check`, `audit:cookies`, `check:records`
+1. **quality** — tipos, lint, formato, CSS, cookies, registros, copy, clases y contraste
 2. **test** — Vitest (`src/**/*.test.ts`, `scripts/**/*.test.ts`)
-3. **build** — artefacto estático `.vercel/output/static`
+3. **build** — build, `check:links` y artefacto estático `.vercel/output/static`
 4. **smoke** — `scripts/smoke.sh` (archivos + HTTP 200)
 5. **e2e-critical** — always-on: home, contacto, consent deny-by-default
-6. **e2e** — opt-in: Playwright (axe en rutas CI + contacto) y LHCI móvil
+6. **csp / axe** — informe CSP y axe always-on
+7. **secrets / sca / actionlint / zizmor** — seguridad y validación de workflows
+8. **ci-gate** — agrega los checks obligatorios y falla si alguno no tiene éxito
+9. **e2e / lhci** — opt-in: Playwright completo y Lighthouse móvil
 
 ## Cobertura
 

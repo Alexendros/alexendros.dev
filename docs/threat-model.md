@@ -89,7 +89,7 @@ Residuales aceptados del expediente `20261007-085704`, tras los parches de la mi
 - `http-cache-semantics` residual de toolchain: aceptado si no hay parche en la misma línea.
 - `nodemailer` **10.x** (issue #12 cerrado 2026-10-09). El email que va a `replyTo` sigue limitado a 254 caracteres.
 - F-003 a F-007 están cerrados en `.gitleaks.toml`: `STORAGE_KEY` de `localStorage` del banner, no una credencial.
-- Meta CAPI `Lead` desde `/api/contact` desactivado (2026-10-16): el formulario solo recoge consentimiento de respuesta. Webhook Cal puede emitir conversiones si hay token; revisar alineación legal. Ver `docs/audits/cierres/matriz-consentimiento.md`.
+- Meta CAPI `Lead` desde `/api/contact` desactivado (2026-10-16): el formulario solo recoge consentimiento de respuesta. Webhook Cal puede emitir conversiones si hay token; revisar alineación legal. Ver `docs/audits/archive/matriz-consentimiento.md`.
 
 ---
 

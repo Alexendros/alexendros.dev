@@ -13,7 +13,7 @@ if [[ ! -d "$ROOT" ]]; then
   exit 1
 fi
 
-npx serve "$ROOT" -l "$PORT" --no-clipboard >/dev/null 2>&1 &
+pnpm exec serve "$ROOT" -l "$PORT" --no-clipboard >/dev/null 2>&1 &
 SERVER_PID=$!
 trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
 
@@ -24,4 +24,4 @@ done
 
 # --skip: solo se verifican URLs del servidor local (las externas ya se
 # validaron en la auditoría 2026-09-28; en CI serían flaky).
-linkinator "$BASE" --recurse --skip "^(?!http://127\\.0\\.0\\.1:${PORT})"
+pnpm exec linkinator "$BASE" --recurse --skip "^(?!http://127\\.0\\.0\\.1:${PORT})"

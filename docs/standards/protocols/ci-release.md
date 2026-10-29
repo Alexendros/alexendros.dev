@@ -12,15 +12,17 @@ Workflow: `.github/workflows/ci.yml`.
 
 | Job            | Bloquea PR      | Notas                                                           |
 | -------------- | --------------- | --------------------------------------------------------------- |
-| `quality`      | Sí              | typecheck, lint, lint:css, format, audit:cookies, check:records |
+| `quality`      | Sí              | Tipos, lint, formato, CSS, cookies, registros, copy y contraste |
 | `test`         | Sí              | Vitest                                                          |
-| `build`        | Sí              | Artefacto `site-static`                                         |
+| `build`        | Sí              | Build, `check:links` y artefacto `site-static`                  |
 | `smoke`        | Sí              | Depende de `build`                                              |
 | `e2e-critical` | Sí              | Home, contacto, consent deny-by-default                         |
-| `e2e`          | Solo si se pide | Label `e2e` o input `e2e` en `workflow_dispatch`                |
-| `pr-mergeable` | Sí (aviso)      | Falla si el PR tiene conflictos con la base                     |
+| `csp` / `axe`  | Sí              | Informe CSP y accesibilidad automatizada                        |
+| `ci-gate`      | Sí              | Agrega calidad, build, E2E y seguridad                          |
+| `e2e` / `lhci` | Solo si se pide | Label `e2e` o input `e2e` en `workflow_dispatch`                |
+| `pr-mergeable` | Sí              | Falla si el PR tiene conflictos con la base                     |
 
-`release.yml` queda aparte (semantic-release en `main`). El patrón canónico de `security.yml` (gitleaks con checksum, OSV, dependency-review, CodeQL, Scorecard) está en [`security-ci.md`](security-ci.md). `main-watch.yml` abre issues `alerta:main` si CI/security/Release fallan en `main` o si falla un deploy Production.
+`release.yml` queda aparte (semantic-release en `main`). La división canónica entre `ci.yml` y `security.yml` (gitleaks con checksum, OSV, dependency-review, CodeQL, Scorecard) está en [`security-ci.md`](security-ci.md). `main-watch.yml` abre issues `alerta:main` si CI/security/Release fallan en `main` o si falla un deploy Production.
 
 ## Bloqueo por conflicto (PR)
 
