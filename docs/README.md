@@ -6,6 +6,10 @@
 - **Estructura:** Contratos raíz → standards y runbooks → registros tipados → auditorías activas o archivo.
 - **Contenido a integrar según contexto:** Enlaza solo lo que existe en este repo. No copies el árbol de webconfig ni de un SaaS.
 
+## Programa vigente
+
+- [plans/PLAN-CIERRE-SHIP.md](plans/PLAN-CIERRE-SHIP.md) — fases, responsables, bloqueos, evidencias y publicación.
+
 ## Contratos (raíz)
 
 - [README.md](../README.md) — uso, CI, deploy

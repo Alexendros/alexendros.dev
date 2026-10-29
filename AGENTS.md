@@ -6,6 +6,8 @@
 
 **Destinatarios:** agentes de código y el rol Mantenedor. Homogeneizamos **nombres y contratos** (jobs `quality` / `test` / `build` / `smoke` / `e2e-critical`), no el copy del sitio.
 
+Plan de cierre vigente: [`docs/plans/PLAN-CIERRE-SHIP.md`](docs/plans/PLAN-CIERRE-SHIP.md). Sus bloqueos y evidencias no se sustituyen por afirmaciones de CI.
+
 ## Learned User Preferences
 
 - Responder siempre en español.
