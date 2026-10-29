@@ -4,7 +4,7 @@ import Container from '../../components/Container.astro';
 import Grid from '../../components/Grid.astro';
 import ServiceCard from '../../components/ServiceCard.astro';
 import DetailIsland from '../../components/DetailIsland.astro';
-import NeedsConfigurator from '../../components/NeedsConfigurator';
+import NeedsConfigurator from '../../components/NeedsConfigurator.astro';
 import { serviceProducts, services } from '../../content/services';
 
 const detailItems = services.map((s) => ({
@@ -51,7 +51,7 @@ const detailItems = services.map((s) => ({
     <DetailIsland basePath="/servicios" items={detailItems} />
 
     <section class="mt-16" aria-labelledby="portal-heading">
-      <NeedsConfigurator client:load />
+      <NeedsConfigurator />
       <noscript>
         <p class="mt-4 rounded-lg border border-border bg-card p-4 text-sm">
           Sin JavaScript el selector no guarda la selección. Puedes{' '}
