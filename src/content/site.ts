@@ -3,7 +3,7 @@ export const site = {
   url: 'https://alexendros.dev',
   titleDefault: 'Alexendros — Tecnologías y servicios informáticos',
   descriptionDefault:
-    'Página web, tienda en internet, aplicaciones para Linux e integración de Inteligencia Artificial. Desde Valencia.',
+    'Sitios web profesionales, integración de catálogo y pagos, aplicaciones para Linux e integración de Inteligencia Artificial. Desde Valencia.',
   locale: 'es',
   ogLocale: 'es_ES',
   nav: [

@@ -1,6 +1,7 @@
 export const profile = {
   name: 'Alejandro Domingo Agustí',
   alternateName: 'Alexendros',
+  jobTitle: 'Diseño y desarrollo web',
   headline: 'Alejandro Domingo Agustí · Alexendros',
   role: 'La persona detrás de Alexendros. Diseño y desarrollo web para profesionales y pequeños negocios.',
   pageTitle: 'Sobre mí — Alejandro · Alexendros',
@@ -27,7 +28,7 @@ export const profile = {
   trajectory:
     'Webs para negocios locales, tiendas online y herramientas internas. Tres casos publicados con problema, intervención y resultado.',
   qualityTechnical:
-    'Para equipos técnicos: objetivos Lighthouse ≥90, 0 violaciones de accesibilidad automatizadas en todas las rutas públicas del sitio y validación de contrato del formulario.',
+    'Para equipos técnicos: objetivos Lighthouse ≥90 y pruebas automatizadas de accesibilidad y de contrato del formulario en la muestra evaluada.',
   proofs: [
     { label: 'Proceso', value: 'Claro' },
     { label: 'Entregas', value: 'Revisadas' },

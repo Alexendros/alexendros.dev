@@ -9,15 +9,15 @@ test.describe('F02 F03 F10 servicios y selector de necesidades', () => {
       })
     ).toBeVisible();
     for (const title of [
-      'Posicionamiento comercial en buscadores',
-      'Cumplimiento normativo',
-      'Ciberseguridad',
+      'Auditoría técnica SEO',
+      'Revisión técnica de privacidad, cookies y accesibilidad',
+      'Revisión básica de seguridad web',
       'Colaboración en proyectos de software'
     ]) {
       await expect(page.getByRole('heading', { name: title })).toBeVisible();
     }
     const body = await page.locator('main').innerText();
-    expect(body).toContain('Portal de inicio');
+    expect(body).toContain('Sitio web profesional');
     expect(body).not.toMatch(/€|\bEUR\b|\+\s*IVA\b/i);
     await expect(page.locator('[data-services-proposal-note]')).toContainText(/propuesta/i);
   });

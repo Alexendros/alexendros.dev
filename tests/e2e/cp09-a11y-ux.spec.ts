@@ -132,13 +132,15 @@ test.describe('CP-09 contacto — foco, errores y axe', () => {
 });
 
 test.describe('CP-09 recorridos A–E (muestreo)', () => {
-  test('A/B: servicios → ficha informe → Pedir el informe', async ({ page }) => {
+  test('A/B: servicios → ficha informe → Solicitar propuesta', async ({ page }) => {
     await page.goto('/servicios');
     await assertSingleH1AndMain(page);
-    await page.getByRole('link', { name: 'Posicionamiento comercial en buscadores' }).click();
+    await page.getByRole('link', { name: 'Auditoría técnica SEO' }).click();
     await expect(page).toHaveURL(/\/servicios\/informe-comercial/);
     await assertSingleH1AndMain(page);
-    const cta = page.getByRole('link', { name: /Pedir el informe/i });
+    const cta = page.locator('#detail-servicios-informe-comercial').getByRole('link', {
+      name: 'Solicitar propuesta'
+    });
     await expect(cta).toBeVisible();
     await cta.click();
     await expect(page).toHaveURL(/\/contacto/);

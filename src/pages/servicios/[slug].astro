@@ -24,7 +24,8 @@ const jsonLd = [
     url: pageUrl,
     serviceType: service.title,
     provider: {
-      '@type': 'Organization',
+      '@type': 'ProfessionalService',
+      '@id': `${site.url}/#alexendros`,
       name: site.name,
       url: site.url
     },
@@ -161,6 +162,13 @@ const jsonLd = [
           <h2 class="text-2xl font-bold">Qué no incluye</h2>
           <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
             {service.commercial.exclusions.map((item) => <li>{item}</li>)}
+          </ul>
+        </section>
+
+        <section data-product-section="requirements">
+          <h2 class="text-2xl font-bold">Requisitos del cliente</h2>
+          <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
+            {service.requirements.map((item) => <li>{item}</li>)}
           </ul>
         </section>
 

@@ -13,6 +13,7 @@ import {
 const listFields = [
   'audience',
   'problems',
+  'requirements',
   'scope',
   'deliverables',
   'process',

@@ -1,16 +1,16 @@
 # Alexendros — Tecnologías y servicios informáticos
 
-Sitio profesional de [alexendros.dev](https://alexendros.dev): página web, tienda en internet, aplicaciones para Linux e integración de Inteligencia Artificial. Desde Valencia.
+Sitio profesional de [alexendros.dev](https://alexendros.dev): sitios web, integración de catálogo y pagos, aplicaciones para Linux e integración de Inteligencia Artificial. Desde Valencia.
 
-## En qué puedo ayudarte
+## Servicios y colaboración técnica
 
-| Servicio                                                                                     | Para quién                                                                               |
-| -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| [Portal de inicio (web/landing)](https://alexendros.dev/servicios/#portal-heading)           | Profesionales y negocios locales que necesitan una web clara lista para captar consultas |
-| [Posicionamiento en buscadores](https://alexendros.dev/servicios/informe-comercial/)         | Quienes necesitan un informe SEO técnico y un plan de ajustes con métricas verificables  |
-| [Cumplimiento normativo](https://alexendros.dev/servicios/cumplimiento-normativo/)           | Protección de datos, políticas de cookies y accesibilidad                                |
-| [Ciberseguridad](https://alexendros.dev/servicios/ciberseguridad/)                           | Vulnerabilidades básicas priorizadas, sin prueba de intrusión                            |
-| [Colaboración en proyectos de software](https://alexendros.dev/servicios/software-a-medida/) | Refuerzo técnico por fases en proyectos grandes con más compañeros                       |
+| Servicio                                                                                                            | Para quién                                                                               |
+| ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| [Sitio web profesional](https://alexendros.dev/servicios/#portal-heading)                                           | Profesionales y negocios locales que necesitan una web clara lista para captar consultas |
+| [Auditoría técnica SEO](https://alexendros.dev/servicios/informe-comercial/)                                        | Quienes necesitan un informe SEO técnico y un plan de ajustes con métricas verificables  |
+| [Revisión técnica de privacidad, cookies y accesibilidad](https://alexendros.dev/servicios/cumplimiento-normativo/) | Protección de datos, políticas de cookies y accesibilidad                                |
+| [Revisión básica de seguridad web](https://alexendros.dev/servicios/ciberseguridad/)                                | Vulnerabilidades básicas priorizadas, sin prueba de intrusión                            |
+| [Colaboración en proyectos de software](https://alexendros.dev/servicios/software-a-medida/)                        | Refuerzo técnico por fases en proyectos grandes con más compañeros                       |
 
 Más detalle y solicitud de propuesta en [Servicios profesionales](https://alexendros.dev/servicios/). Metodología en [Método](https://alexendros.dev/metodo/). Proyectos reales en [Proyectos](https://alexendros.dev/proyectos/).
 

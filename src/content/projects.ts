@@ -138,7 +138,7 @@ export const projects: Project[] = [
     short:
       'Tienda online para un taller familiar que quería vender sus productos sin depender de terceros.',
     summary:
-      'Catálogo online con precios claros y pago seguro, pensado para sustituir presupuestos solo por email y teléfono.',
+      'Catálogo online con precios claros e integración con proveedor de pagos, pensado para sustituir presupuestos solo por email y teléfono.',
     role: 'Diseño del proceso de venta y desarrollo',
     context:
       'Las ventas dependían de llamadas y correos. Los presupuestos tardaban y se perdían pedidos.',

@@ -27,7 +27,7 @@ export default function NeedsConfigurator() {
   return (
     <div data-needs-configurator className="rounded-lg border border-border bg-card p-6 md:p-8">
       <h2 id="portal-heading" className="text-xl font-bold">
-        Portal de inicio: selecciona las necesidades del proyecto.
+        Sitio web profesional: selecciona las necesidades del proyecto.
       </h2>
       <p className="mt-2 text-sm text-muted">
         Base: {portalBase.delivery}. Plazo orientativo: {portalBase.timeline}. Los módulos y sus

@@ -98,9 +98,10 @@ const ogImageUrl = new URL(ogImage, site.url).href;
         '@graph': [
           {
             '@type': 'Person',
+            '@id': `${site.url}/#persona`,
             name: profile.name,
             alternateName: profile.alternateName,
-            jobTitle: profile.role,
+            jobTitle: profile.jobTitle,
             description: profile.summary,
             url: site.url,
             sameAs: [site.social.github, site.social.linkedin],
@@ -113,7 +114,9 @@ const ogImageUrl = new URL(ogImage, site.url).href;
           },
           {
             '@type': 'ProfessionalService',
+            '@id': `${site.url}/#alexendros`,
             name: 'Alexendros',
+            founder: { '@id': `${site.url}/#persona` },
             description: site.descriptionDefault,
             url: site.url,
             email: 'contratacion@alexendros.dev',
