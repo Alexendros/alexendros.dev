@@ -8,7 +8,7 @@
 
 ## CI principal
 
-Workflow: `.github/workflows/ci.yml`.
+Workflow: `.github/workflows/ci.yml`. El estado del programa y sus bloqueos se consultan en [PLAN-CIERRE-SHIP](../../plans/PLAN-CIERRE-SHIP.md); este protocolo solo documenta la operación.
 
 | Job            | Bloquea PR      | Notas                                                           |
 | -------------- | --------------- | --------------------------------------------------------------- |
