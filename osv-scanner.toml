@@ -20,10 +20,6 @@ id = "GHSA-jmr9-qjv8-65gv"
 reason = "extract-zip solo CI/toolchain (Playwright)"
 
 [[IgnoredVulns]]
-id = "GHSA-rj75-hqrm-r3gf"
-reason = "postcss-selector-parser solo build; sin parche misma línea"
-
-[[IgnoredVulns]]
 id = "GHSA-hp3w-g68c-fv3c"
 reason = "sprintf-js solo toolchain; sin parche misma línea"
 
