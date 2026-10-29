@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import * as CookieConsent from 'vanilla-cookieconsent';
 import 'vanilla-cookieconsent/dist/cookieconsent.css';
 import {
@@ -8,9 +7,11 @@ import {
   consentVersion,
   writeConsent,
   type ConsentCategory
-} from '../../lib/tracking/consent';
+} from '../lib/tracking/consent';
 
 type CookieValue = { categories?: string[] };
+
+let initialized = false;
 
 function toCategories(cookie: CookieValue | undefined): ConsentCategory[] {
   const raw = Array.isArray(cookie?.categories) ? cookie.categories : [];
@@ -19,43 +20,54 @@ function toCategories(cookie: CookieValue | undefined): ConsentCategory[] {
   );
 }
 
-export default function CookieBanner() {
-  useEffect(() => {
-    let cancelled = false;
-    const observer = new MutationObserver(() => {
-      retargetPreferencesBtn();
-    });
+function retargetPreferencesBtn() {
+  const buttons = document.querySelectorAll('#cc-main button');
+  const button = [...buttons].find((element) =>
+    /^configurar$/i.test((element.textContent ?? '').trim())
+  ) as HTMLButtonElement | undefined;
+  if (!button || button.dataset.ccPolicy === '1') return;
 
-    const retargetPreferencesBtn = () => {
-      const buttons = document.querySelectorAll('#cc-main button');
-      const btn = [...buttons].find((el) => /^configurar$/i.test((el.textContent ?? '').trim())) as
-        HTMLButtonElement | undefined;
-      if (!btn || btn.dataset.ccPolicy === '1') return;
-      btn.dataset.ccPolicy = '1';
-      btn.setAttribute(
-        'aria-label',
-        'Ir a Cookies: explicación completa y panel para elegir categoría a categoría'
-      );
-      btn.addEventListener(
-        'click',
-        (event) => {
-          event.preventDefault();
-          event.stopImmediatePropagation();
-          window.location.assign('/cookies');
-        },
-        true
-      );
-    };
-
-    const openPreferences = (event: Event) => {
-      const target = event.target;
-      if (!(target instanceof Element)) return;
-      const trigger = target.closest('[data-cc="show-preferencesModal"]');
-      if (!trigger) return;
+  button.dataset.ccPolicy = '1';
+  button.setAttribute(
+    'aria-label',
+    'Configurar cookies: explicación completa y panel para elegir categoría a categoría'
+  );
+  button.addEventListener(
+    'click',
+    (event) => {
       event.preventDefault();
-      CookieConsent.showPreferences();
-    };
+      event.stopImmediatePropagation();
+      window.location.assign('/cookies');
+    },
+    true
+  );
+}
 
+function openPreferences(event: Event) {
+  const target = event.target;
+  if (!(target instanceof Element)) return;
+  const trigger = target.closest('[data-cc="show-preferencesModal"]');
+  if (!trigger) return;
+  event.preventDefault();
+  CookieConsent.showPreferences();
+}
+
+/** Inicializa el CMP una sola vez por documento, sin runtime React. */
+export function initCookieBanner(): void {
+  if (initialized) return;
+  initialized = true;
+
+  let observer: MutationObserver | undefined;
+  const handleError = (error: unknown) => {
+    initialized = false;
+    observer?.disconnect();
+    document.removeEventListener('click', openPreferences);
+    delete document.documentElement.dataset.cmpReady;
+    console.error('[cmp] No se pudo inicializar el gestor de consentimiento.', error);
+  };
+
+  try {
+    observer = new MutationObserver(retargetPreferencesBtn);
     void CookieConsent.run({
       revision: consentVersion(),
       cookie: {
@@ -144,21 +156,15 @@ export default function CookieBanner() {
           }
         }
       }
-    }).then(() => {
-      if (cancelled) return;
-      document.documentElement.dataset.cmpReady = 'true';
-      retargetPreferencesBtn();
-      observer.observe(document.body, { childList: true, subtree: true });
-      document.addEventListener('click', openPreferences);
-    });
-
-    return () => {
-      cancelled = true;
-      delete document.documentElement.dataset.cmpReady;
-      observer.disconnect();
-      document.removeEventListener('click', openPreferences);
-    };
-  }, []);
-
-  return null;
+    })
+      .then(() => {
+        document.documentElement.dataset.cmpReady = 'true';
+        retargetPreferencesBtn();
+        observer?.observe(document.body, { childList: true, subtree: true });
+        document.addEventListener('click', openPreferences);
+      })
+      .catch(handleError);
+  } catch (error) {
+    handleError(error);
+  }
 }
