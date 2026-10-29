@@ -103,7 +103,7 @@ function styleFindings(text, file) {
 function scriptFindings(text, file, policies) {
   const hashes = scriptSrcHashes(policies);
   const findings = [];
-  const pattern = /<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi;
+  const pattern = /<script\b([^>]*)>([\s\S]*?)<\/script(?:\s+[^>]*)?>/gi;
   for (const match of text.matchAll(pattern)) {
     const attrs = match[1] ?? '';
     if (/\ssrc\s*=/i.test(attrs) || attrs.trim().startsWith('src=')) continue;
