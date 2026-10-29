@@ -18,10 +18,10 @@ function tree(): string {
   return root;
 }
 
-function run(root: string) {
+function run(root: string, ...args: string[]) {
   return spawnSync(
     process.execPath,
-    [join(process.cwd(), 'scripts/check-csp.mjs'), '--root', root],
+    [join(process.cwd(), 'scripts/check-csp.mjs'), '--root', root, ...args],
     {
       encoding: 'utf8'
     }
@@ -55,7 +55,7 @@ describe('check-csp (T0, informe)', () => {
     const result = run(root);
 
     expect(result.status).toBe(0);
-    expect(result.stdout).toContain('unsafe-inline script-src');
+    expect(result.stdout).toContain('unsafe-inline effective script-src');
     expect(result.stdout).toContain('style src/a.astro:1');
     expect(result.stdout).toContain('script src/a.astro:2');
     expect(result.stdout).toContain('hallazgos: 3');
@@ -88,5 +88,40 @@ describe('check-csp (T0, informe)', () => {
     expect(result.status).toBe(0);
     expect(result.stdout).toContain('hallazgos: 0');
     expect(result.stdout).not.toContain('script src/boot.html');
+  });
+
+  it('no usa un hash de Report-Only para autorizar la política efectiva', () => {
+    const root = tree();
+    const body = 'console.log(1)';
+    const hash = createHash('sha256').update(body).digest('base64');
+    writeFileSync(join(root, 'src/boot.html'), `<script>${body}</script>\n`);
+    writeFileSync(
+      join(root, 'vercel.json'),
+      JSON.stringify({
+        headers: [
+          {
+            source: '/(.*)',
+            headers: [
+              { key: 'Content-Security-Policy', value: "script-src 'self'" },
+              {
+                key: 'Content-Security-Policy-Report-Only',
+                value: `script-src 'sha256-${hash}'`
+              }
+            ]
+          }
+        ]
+      })
+    );
+
+    const result = run(root);
+    expect(result.stdout).toContain('script src/boot.html:1');
+  });
+
+  it('--enforce devuelve error cuando existen hallazgos', () => {
+    const root = tree();
+    writeFileSync(join(root, 'src/a.astro'), '<script>alert(1)</script>\n');
+
+    expect(run(root).status).toBe(0);
+    expect(run(root, '--enforce').status).toBe(1);
   });
 });

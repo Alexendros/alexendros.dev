@@ -1,7 +1,7 @@
 /**
- * Informe CSP de T0 (plan alexendrosdev-v2).
- * Lista 'unsafe-inline', style= y scripts inline sin hash, y sale 0.
- * El bloqueo llega cuando el árbol ya cumple; este bloque solo informa.
+ * Informe CSP: lista 'unsafe-inline', style= y scripts inline sin hash.
+ * El modo predeterminado informa; --enforce devuelve error si hay hallazgos.
+ * Las políticas efectivas y Report-Only se analizan por separado.
  */
 import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
@@ -26,7 +26,8 @@ const STYLE_PATTERN = /\sstyle=/;
 export function inspectTree(root) {
   const findings = [];
   const policies = readPolicies(root);
-  findings.push(...unsafeInlineFindings(policies));
+  findings.push(...unsafeInlineFindings(policies.effective, 'effective'));
+  findings.push(...unsafeInlineFindings(policies.reportOnly, 'report-only'));
 
   for (const sourceRoot of SOURCE_ROOTS) {
     const dir = join(root, sourceRoot);
@@ -34,7 +35,7 @@ export function inspectTree(root) {
     for (const file of walk(dir, (name) => SOURCE_EXTENSIONS.has(extname(name)))) {
       const text = readFileSync(file, 'utf8');
       findings.push(...styleFindings(text, relative(root, file)));
-      findings.push(...scriptFindings(text, relative(root, file), policies));
+      findings.push(...scriptFindings(text, relative(root, file), policies.effective));
     }
   }
 
@@ -44,48 +45,50 @@ export function inspectTree(root) {
     for (const file of walk(dir, (name) => extname(name) === '.html')) {
       const text = readFileSync(file, 'utf8');
       findings.push(...styleFindings(text, relative(root, file)));
-      findings.push(...scriptFindings(text, relative(root, file), policies));
+      findings.push(...scriptFindings(text, relative(root, file), policies.effective));
     }
   }
 
   return findings;
 }
 
-export function report(root) {
+export function report(root, { enforce = false } = {}) {
   const findings = inspectTree(root);
   const lines = ['check-csp: informe', ...findings, `hallazgos: ${findings.length}`];
-  return { text: `${lines.join('\n')}\n`, exitCode: 0 };
+  return { text: `${lines.join('\n')}\n`, exitCode: enforce && findings.length > 0 ? 1 : 0 };
 }
 
 function readPolicies(root) {
   const file = join(root, 'vercel.json');
-  if (!existsSync(file)) return [];
+  if (!existsSync(file)) return { effective: [], reportOnly: [] };
   let data;
   try {
     data = JSON.parse(readFileSync(file, 'utf8'));
   } catch {
-    return [];
+    return { effective: [], reportOnly: [] };
   }
   const groups = Array.isArray(data.headers) ? data.headers : [];
-  const policies = [];
+  const policies = { effective: [], reportOnly: [] };
   for (const group of groups) {
     for (const header of group.headers ?? []) {
       const key = String(header.key ?? '').toLowerCase();
-      if (key === 'content-security-policy' || key === 'content-security-policy-report-only') {
-        policies.push(String(header.value ?? ''));
+      if (key === 'content-security-policy') {
+        policies.effective.push(String(header.value ?? ''));
+      } else if (key === 'content-security-policy-report-only') {
+        policies.reportOnly.push(String(header.value ?? ''));
       }
     }
   }
   return policies;
 }
 
-function unsafeInlineFindings(policies) {
+function unsafeInlineFindings(policies, scope) {
   const findings = [];
   for (const policy of policies) {
     for (const part of policy.split(';')) {
       if (!part.includes("'unsafe-inline'")) continue;
       const directive = part.trim().split(/\s+/)[0] ?? 'csp';
-      findings.push(`unsafe-inline ${directive}`);
+      findings.push(`unsafe-inline ${scope} ${directive}`);
     }
   }
   return findings;
@@ -149,14 +152,17 @@ function isDirectRun() {
   return import.meta.url === pathToFileURL(process.argv[1]).href;
 }
 
-function rootFromArgs(argv) {
+function optionsFromArgs(argv) {
   const index = argv.indexOf('--root');
-  if (index === -1) return process.cwd();
-  return argv[index + 1] ?? process.cwd();
+  return {
+    root: index === -1 ? process.cwd() : (argv[index + 1] ?? process.cwd()),
+    enforce: argv.includes('--enforce')
+  };
 }
 
 if (isDirectRun()) {
-  const result = report(rootFromArgs(process.argv.slice(2)));
+  const options = optionsFromArgs(process.argv.slice(2));
+  const result = report(options.root, { enforce: options.enforce });
   process.stdout.write(result.text);
   process.exit(result.exitCode);
 }

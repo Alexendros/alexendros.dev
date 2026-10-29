@@ -27,6 +27,9 @@ const E2E_TRACKER_ENV = {
 export default defineConfig({
   testDir: './tests/e2e',
   timeout: 60_000,
+  reporter: process.env.CI
+    ? [['list'], ['html', { outputFolder: 'playwright-report', open: 'never' }]]
+    : 'list',
   webServer: {
     command: process.env.SKIP_E2E_BUILD === '1' ? 'pnpm preview' : 'pnpm build && pnpm preview',
     url: 'http://127.0.0.1:4321',

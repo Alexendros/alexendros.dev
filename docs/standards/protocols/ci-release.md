@@ -22,6 +22,8 @@ Workflow: `.github/workflows/ci.yml`. El estado del programa y sus bloqueos se c
 | `e2e` / `lhci` | Solo si se pide | Label `e2e` o input `e2e` en `workflow_dispatch`                |
 | `pr-mergeable` | Sí              | Falla si el PR tiene conflictos con la base                     |
 
+`e2e` ejecuta solo Playwright con IDs ficticios confinados al build de pruebas. `lhci` ejecuta solo Lighthouse sobre el artefacto production-like de `build`; ninguno reutiliza la salida del otro. Los informes HTML de Playwright y Lighthouse son artefactos obligatorios. `pr-mergeable` falla también si GitHub mantiene un estado desconocido tras los reintentos.
+
 `release.yml` queda aparte (semantic-release en `main`). La división canónica entre `ci.yml` y `security.yml` (gitleaks con checksum, OSV, dependency-review, CodeQL, Scorecard) está en [`security-ci.md`](security-ci.md). `main-watch.yml` abre issues `alerta:main` si CI/security/Release fallan en `main` o si falla un deploy Production.
 
 ## Bloqueo por conflicto (PR)
