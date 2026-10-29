@@ -132,7 +132,7 @@ export const services: Service[] = [
       'Acceso al dominio y a la versión pública del sitio; datos de medición solo si están disponibles y son necesarios.'
     ],
     scope: [
-      'SEO técnico: indexación, estructura, metadatos y señales on-page',
+      'SEO técnico: indexación, estructura, metadatos y contenido de cada página',
       'Rendimiento y uso en móvil ligados al posicionamiento',
       'Claridad del camino a contacto desde resultados de búsqueda',
       'Plan priorizado de ajustes con métricas de referencia',
@@ -297,11 +297,11 @@ export const services: Service[] = [
     scope: [
       'Alineación con el equipo y el alcance de la fase',
       'Diseño y construcción de entregables acordados',
-      'Mejoras por fases con precio y plazo escritos antes de cada una',
+      'Mejoras por fases con alcance y plazo escritos antes de cada una',
       'Entrega de código, documentación y accesos al cerrar la fase acordada'
     ],
     deliverables: [
-      'Propuesta por fase con precio y plazo',
+      'Propuesta por fase con alcance y plazo',
       'Entregable de la fase publicado o integrable según el acuerdo',
       'Código, documentación breve e instrucciones de uso',
       'Accesos al entorno acordado'

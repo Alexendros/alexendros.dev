@@ -39,10 +39,10 @@ const detailItems = services.map((s) => ({
     <p class="mt-4 max-w-2xl text-sm text-muted" data-services-proposal-note>
       El alcance, el calendario y las condiciones económicas se detallan en cada propuesta.
     </p>
-    <Grid gap="6" class="mt-8 md:grid-cols-2 lg:grid-cols-4" data-services-grid>
+    <Grid gap="6" class="mt-8 md:grid-cols-2" data-services-grid>
       {
-        serviceProducts.map((product, i) => (
-          <div data-reveal={i >= 3 || undefined} style={i >= 3 ? `--i:${i - 3}` : undefined}>
+        serviceProducts.map((product) => (
+          <div class="h-full">
             <ServiceCard product={product} />
           </div>
         ))

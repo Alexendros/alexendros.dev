@@ -10,13 +10,13 @@ const ORIGIN = 'origen=proceso';
 
 export const processPage = {
   seo: {
-    title: 'Metodología clara e integral — Alexendros',
+    title: 'Metodología clara — Alexendros',
     description:
-      'Metodología clara e integral. Desde la idea hasta el producto entregado. Método de trabajo para webs y productos digitales.',
-    ogTitle: 'Metodología clara e integral'
+      'Metodología clara. Desde la idea hasta el producto entregado. Método de trabajo para sitios web y productos digitales.',
+    ogTitle: 'Metodología clara'
   },
   hero: {
-    h1Lead: 'Metodología clara e integral.',
+    h1Lead: 'Metodología clara.',
     h1Accent: ' Desde la idea hasta el producto entregado.'
   },
   /** Pendiente (evt-metodo-steps-review): revisar copy de pasos con datos reales. */
@@ -32,7 +32,8 @@ export const processPage = {
       id: 'escrito',
       title: 'Acuerdo por escrito',
       duration: '1–2 días',
-      description: 'Queda definido qué incluye, qué no, el importe y la fecha de entrega.',
+      description:
+        'Queda definido qué incluye, qué no, el alcance económico y la fecha de entrega.',
       receive: 'un acuerdo por escrito.'
     },
     {
@@ -53,7 +54,7 @@ export const processPage = {
     }
   ] satisfies ProcessStep[],
   close: {
-    heading: 'Solicitar presupuesto',
+    heading: 'Solicitar propuesta',
     body: 'La respuesta llega en un día laborable.',
     href: `/contacto?motivo=propuestaComercial&${ORIGIN}`
   }

@@ -55,7 +55,7 @@ describe('processPage — copy público de metodología', () => {
     nonEmpty(processPage.seo.description, 'seo.description');
     expect(processPage.seo.description).toMatch(/desde la idea hasta el producto entregado/i);
     nonEmpty(processPage.hero.h1Lead, 'hero.h1Lead');
-    expect(processPage.hero.h1Lead).toBe('Metodología clara e integral.');
+    expect(processPage.hero.h1Lead).toBe('Metodología clara.');
     expect(processPage.hero.h1Accent).toMatch(/^\sDesde/);
     expect(processPage.hero).not.toHaveProperty('lead');
     expect(processPage.hero).not.toHaveProperty('primaryCta');
@@ -84,7 +84,7 @@ describe('processPage — copy público de metodología', () => {
       /Producto acordado con instrucciones de uso y soporte para incidencias/
     );
 
-    expect(processPage.close.heading).toBe('Solicitar presupuesto');
+    expect(processPage.close.heading).toBe('Solicitar propuesta');
     expect(processPage.close.body).toMatch(/en un día laborable/i);
     expect(processPage.close).not.toHaveProperty('primaryCta');
   });

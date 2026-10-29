@@ -1,7 +1,7 @@
 export const profile = {
   name: 'Alejandro Domingo Agustí',
   alternateName: 'Alexendros',
-  jobTitle: 'Diseño y desarrollo web',
+  jobTitle: 'Revisión técnica, sitios web y software',
   headline: 'Alejandro Domingo Agustí · Alexendros',
   role: 'La persona detrás de Alexendros. Diseño y desarrollo web para profesionales y pequeños negocios.',
   pageTitle: 'Sobre mí — Alejandro · Alexendros',
@@ -48,7 +48,7 @@ export const profile = {
     {
       step: 2,
       title: 'Propuesta clara',
-      desc: 'Alcance, prioridades, entregables y presupuesto acordados antes de empezar.'
+      desc: 'Alcance, prioridades, entregables y condiciones acordados antes de empezar.'
     },
     {
       step: 3,
