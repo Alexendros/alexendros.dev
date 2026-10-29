@@ -30,14 +30,14 @@ jobs:
           set -euo pipefail
           mergeable=""
           state=""
-          for _ in 1 2 3 4 5 6; do
+          for _ in 1 2 3 4 5 6 7 8 9 10 11 12; do
             raw="$(gh api "repos/${REPO}/pulls/${PR}" --jq '{m:.mergeable,s:.mergeable_state}')"
             mergeable="$(printf '%s' "$raw" | jq -r .m)"
             state="$(printf '%s' "$raw" | jq -r .s)"
             if [ "$mergeable" != "null" ]; then
               break
             fi
-            sleep 2
+            sleep 5
           done
           echo "mergeable=${mergeable}" >> "$GITHUB_OUTPUT"
           echo "mergeable_state=${state}" >> "$GITHUB_OUTPUT"
@@ -78,7 +78,8 @@ jobs:
         if: ${{ steps.state.outputs.mergeable == 'true' }}
         run: echo "PR mergeable."
 
-      - name: Estado desconocido (no bloquea)
-        if: ${{ steps.state.outputs.mergeable != 'true' && steps.state.outputs.mergeable != 'false' && steps.state.outputs.mergeable_state != 'dirty' }}
+      - name: Estado no mergeable o inconcluso
+        if: ${{ steps.state.outputs.mergeable != 'true' }}
         run: |
-          echo "::warning::GitHub aún no resolvió mergeable (state=${{ steps.state.outputs.mergeable_state }}). No se bloquea este intento."
+          echo "::error::GitHub no confirmó un estado mergeable válido (mergeable=${{ steps.state.outputs.mergeable }}, state=${{ steps.state.outputs.mergeable_state }}). Reejecuta el check o actualiza la rama; un estado desconocido no es un éxito."
+          exit 1
