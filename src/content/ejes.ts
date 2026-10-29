@@ -26,7 +26,7 @@ export const ejes: Eje[] = [
     index: '03',
     title: 'Accesibilidad y privacidad',
     description:
-      'Usable con teclado, sin violaciones de accesibilidad y sin trackers de publicidad.'
+      'Revisión con teclado y pruebas automatizadas en una muestra de rutas; publicidad solo con consentimiento.'
   }
 ];
 

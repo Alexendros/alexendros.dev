@@ -69,10 +69,12 @@ export const serviceSchema = z.object({
   slug: nonEmptyTrimmed,
   kind: z.literal('service'),
   title: nonEmptyTrimmed,
+  ogTitle: nonEmptyTrimmed,
   short: nonEmptyTrimmed,
   description: nonEmptyTrimmed,
   audience: nonEmptyList,
   problems: nonEmptyList,
+  requirements: nonEmptyList,
   scope: nonEmptyList,
   deliverables: nonEmptyList,
   process: nonEmptyList,
@@ -98,7 +100,7 @@ export const productCardSchema = z.object({
 
 export type ProductCard = z.infer<typeof productCardSchema>;
 
-export const SERVICE_PRODUCT_CTA = 'Ver qué incluye →';
+export const SERVICE_PRODUCT_CTA = 'Conocer más';
 
 /** Slugs publicados como ficha `/servicios/[slug]` (decisión 0020; portal sin ficha). */
 export const PUBLISHED_SERVICE_SLUGS = [
@@ -112,11 +114,12 @@ export const services: Service[] = [
   {
     slug: 'informe-comercial',
     kind: 'service',
-    title: 'Posicionamiento comercial en buscadores',
+    title: 'Auditoría técnica SEO',
+    ogTitle: 'Auditoría técnica SEO',
     short:
-      'Informe técnico SEO y plan de ajustes con métricas verificables para ganar visibilidad en buscadores.',
+      'Revisión de indexación, estructura y rendimiento con incidencias priorizadas y métricas de referencia.',
     description:
-      'Revisión del sitio con foco en SEO técnico y señales de posicionamiento. El entregable es un informe con problemas medibles, un plan de ajustes priorizado y métricas de referencia para comprobar la mejora. No promete posiciones concretas ni implementa los cambios sin encargo aparte.',
+      'Auditoría técnica de una muestra acordada del sitio. El entregable recoge incidencias detectadas, un plan de ajustes priorizado y métricas de referencia. No promete posiciones concretas ni incluye la implementación de cambios.',
     audience: [
       'Negocios y profesionales que quieren mejorar su visibilidad en buscadores con un plan accionable.'
     ],
@@ -124,6 +127,9 @@ export const services: Service[] = [
       'La web no aparece o pierde posiciones en buscadores',
       'Falta criterio sobre qué corregir primero en SEO técnico',
       'Hacen falta métricas claras antes de invertir en mejoras'
+    ],
+    requirements: [
+      'Acceso al dominio y a la versión pública del sitio; datos de medición solo si están disponibles y son necesarios.'
     ],
     scope: [
       'SEO técnico: indexación, estructura, metadatos y señales on-page',
@@ -159,7 +165,7 @@ export const services: Service[] = [
     },
     action: {
       kind: 'contact',
-      label: 'Pedir el informe',
+      label: 'Solicitar propuesta',
       href: '/contacto?motivo=informacionCliente&servicio=informe-comercial',
       newTab: false
     }
@@ -167,11 +173,12 @@ export const services: Service[] = [
   {
     slug: 'cumplimiento-normativo',
     kind: 'service',
-    title: 'Cumplimiento normativo',
+    title: 'Revisión técnica de privacidad, cookies y accesibilidad',
+    ogTitle: 'Privacidad, cookies y accesibilidad',
     short:
-      'Revisión de protección de datos, políticas de cookies y accesibilidad de la presencia web.',
+      'Evaluación de formularios, consentimiento y accesibilidad en una muestra de rutas, con recomendaciones priorizadas.',
     description:
-      'Inspección orientada a protección de datos, políticas de cookies y accesibilidad del sitio. Cada problema lleva severidad y corrección recomendada. No incluye prueba de intrusión ni certificación oficial.',
+      'Revisión técnica de la superficie pública relacionada con datos personales, cookies y accesibilidad. Cada incidencia incluye severidad y corrección recomendada. No constituye asesoramiento jurídico ni certificación de conformidad.',
     audience: [
       'Negocios que necesitan un informe accionable de datos, cookies y accesibilidad antes de endurecer su sitio.'
     ],
@@ -180,8 +187,11 @@ export const services: Service[] = [
       'Políticas de cookies poco claras o incompletas',
       'Accesibilidad insuficiente al navegar o al cumplir requisitos básicos'
     ],
+    requirements: [
+      'Información sobre formularios, proveedores y canales de recogida de datos utilizados en el sitio.'
+    ],
     scope: [
-      'Protección de datos en la superficie pública (RGPD y LSSI aplicables)',
+      'Revisión técnica de la superficie pública relacionada con protección de datos',
       'Políticas de cookies y consentimiento',
       'Accesibilidad al navegarlo (revisión práctica, no certificación)',
       'Priorización por severidad'
@@ -201,14 +211,14 @@ export const services: Service[] = [
         'Informe de protección de datos, cookies y accesibilidad; cada problema con severidad y corrección recomendada',
       guarantee: 'Corrección de desviaciones del alcance escrito en 15 días naturales',
       exclusions: [
-        'No incluye certificación oficial ni auditoría legal completa',
+        'No constituye asesoramiento jurídico ni certificación de conformidad',
         'No incluye prueba de intrusión ni análisis de vulnerabilidades técnicas',
         'No incluye implementación de remedios'
       ]
     },
     action: {
       kind: 'contact',
-      label: 'Pedir la revisión',
+      label: 'Solicitar propuesta',
       href: '/contacto?motivo=informacionCliente&servicio=cumplimiento-normativo',
       newTab: false
     }
@@ -216,11 +226,12 @@ export const services: Service[] = [
   {
     slug: 'ciberseguridad',
     kind: 'service',
-    title: 'Ciberseguridad',
+    title: 'Revisión básica de seguridad web',
+    ogTitle: 'Revisión básica de seguridad web',
     short:
-      'Revisión de vulnerabilidades básicas del sitio, con severidad y corrección recomendada por problema.',
+      'Revisión de cabeceras, exposición de secretos y superficies públicas evidentes, con incidencias priorizadas.',
     description:
-      'Inspección de seguridad básica de la presencia web: cabeceras, secretos expuestos y superficies evidentes. Cada problema lleva severidad y corrección recomendada. No incluye prueba de intrusión ni certificación.',
+      'Revisión básica de seguridad en la muestra evaluada. Cada incidencia incluye severidad y corrección recomendada. No incluye prueba de intrusión ni permite afirmar que el sitio esté libre de riesgos.',
     audience: [
       'Negocios que necesitan priorizar riesgos técnicos evidentes antes de endurecer el sitio.'
     ],
@@ -229,6 +240,7 @@ export const services: Service[] = [
       'Dudas sobre cabeceras, secretos o puntos de entrada evidentes',
       'Hace falta un informe técnico, no una prueba de intrusión'
     ],
+    requirements: ['Alcance de dominios y rutas autorizado por escrito antes de la revisión.'],
     scope: [
       'Seguridad básica (cabeceras, secretos expuestos, superficies evidentes)',
       'Priorización por severidad',
@@ -256,7 +268,7 @@ export const services: Service[] = [
     },
     action: {
       kind: 'contact',
-      label: 'Pedir la revisión',
+      label: 'Solicitar propuesta',
       href: '/contacto?motivo=informacionCliente&servicio=ciberseguridad',
       newTab: false
     }
@@ -265,10 +277,11 @@ export const services: Service[] = [
     slug: 'software-a-medida',
     kind: 'service',
     title: 'Colaboración en proyectos de software',
+    ogTitle: 'Colaboración en proyectos de software',
     short:
-      'Integración en proyectos grandes con más compañeros: diseño y desarrollo por fases, con precio y plazo por escrito.',
+      'Integración en proyectos grandes con más compañeros: diseño y desarrollo por fases, con alcance y plazo escritos.',
     description:
-      'Colaboración técnica en proyectos de software con equipo existente o ampliado. Se alinea al ritmo del proyecto, se entrega por fases y queda precio y plazo escritos antes de cada una. No es una web de escaparate ni un pack cerrado; es trabajo conjunto en un producto o herramienta mayor.',
+      'Colaboración técnica en proyectos de software con equipo existente o ampliado. La intervención se alinea al ritmo del proyecto, se entrega por fases y deja alcance y plazo escritos antes de cada una. No es una web de escaparate ni un paquete cerrado; es trabajo conjunto en un producto o herramienta mayor.',
     audience: [
       'Equipos que ya tienen un proyecto en marcha y necesitan refuerzo técnico fiable',
       'Negocios con un producto o herramienta grande donde hace falta construir por fases con más manos'
@@ -278,11 +291,14 @@ export const services: Service[] = [
       'Las herramientas genéricas no encajan y el desarrollo se atasca',
       'Hace falta ampliar capacidad sin perder claridad de alcance y plazos'
     ],
+    requirements: [
+      'Responsable de producto, accesos y criterios de aceptación definidos para cada fase.'
+    ],
     scope: [
       'Alineación con el equipo y el alcance de la fase',
       'Diseño y construcción de entregables acordados',
       'Mejoras por fases con precio y plazo escritos antes de cada una',
-      'Entrega de código, documentación y accesos al terminar de pagar la fase'
+      'Entrega de código, documentación y accesos al cerrar la fase acordada'
     ],
     deliverables: [
       'Propuesta por fase con precio y plazo',
@@ -312,7 +328,7 @@ export const services: Service[] = [
     },
     action: {
       kind: 'contact',
-      label: 'Pedir propuesta de colaboración',
+      label: 'Solicitar propuesta',
       href: '/contacto?motivo=propuestaComercial&origen=servicios&servicio=software-a-medida',
       newTab: false
     }

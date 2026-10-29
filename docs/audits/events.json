@@ -221,6 +221,17 @@
       "recordType": "event",
       "kind": "aviso",
       "source": "src/components/NeedsConfigurator.tsx"
+    },
+    {
+      "id": "evt-editorial-review-0026",
+      "sequence": 21,
+      "timestamp": "2026-10-29T17:10:00Z",
+      "active": true,
+      "title": "Revisión editorial independiente del catálogo",
+      "summary": "Una persona distinta del autor del cambio debe revisar nombres, promesas, voz y alcance de la decisión 0026 antes de marcar como satisfecho el criterio editorial humano.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "docs/audits/decisions.json#0026"
     }
   ]
 }

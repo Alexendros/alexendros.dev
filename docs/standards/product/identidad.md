@@ -4,17 +4,19 @@ Repo canónico **público**: [`Alexendros/alexendrosdev`](https://github.com/Ale
 
 ## site.ts
 
-Config global: name, url https://alexendros.dev apex, titleDefault "webs que convierten", nav Servicios/Proyectos/Sobre mi/Contacto, footer legal, social GitHub/LinkedIn/mailto. Fuente verdad SEO canonical OG JSON-LD Person.
+Config global: name, url https://alexendros.dev apex, titleDefault "Alexendros — Tecnologías y servicios informáticos", nav Servicios profesionales/Proyectos realizados/Metodología clara, footer legal, social GitHub/LinkedIn/mailto. Fuente verdad SEO canonical OG JSON-LD Person + ProfessionalService (marca profesional individual).
 
 ## profile.ts
 
-Quien eres: role Full Stack · Auditor · Consultor, summary conversion-focused, method 6 pasos (definicion alcance, arquitectura ADRs, TS estricto + a11y, validacion CI, deploy Vercel <1.65s LCP, transferencia 30 dias), Valencia remoto.
+Alejandro Domingo Agustí como persona responsable y Alexendros como marca profesional. Diseño y desarrollo web, contacto directo, proceso escrito y pruebas descritas por muestra y evidencia; Valencia y trabajo en remoto.
 
-## services.ts — 3 servicios con alcance cerrado
+## services.ts — cuatro fichas y sitio profesional por módulos
 
-- produccion-sitios-web: Para fundadores WP lento. Problemas LCP>4s, landings genericas, forms rotos 78% abandono. Scope 10 inc Stripe/PayPal forms Zod 3 campos. Deliverables app+CI verde+informe Lighthouse/axe+guia. Metricas -65% LCP 3.2% conversion. Plazo 1-4 sem. Exclusiones sin CMS gestionado.
-- auditorias: Para CTOs tech leads. Scope perf CWV LCP CLS INP, a11y axe-core+teclado/NVDA, SEO tecnico, calidad, seguridad proporcional, priorizacion ICE, plan remediacion. Deliverables informe navegable+ICE+scripts+sesion 1h. Plazo 3-5 dias.
-- consultoria-tecnologica: Sin hype. Diagnostico arquitectura evaluacion alternativas plan faseado ADRs/runbooks. Stack TS Node Rust Go MCP Ollama Zod. Plazo 1-2 sem.
+- informe-comercial: Auditoría técnica SEO, con incidencias y métricas de referencia; sin promesa de posiciones.
+- cumplimiento-normativo: Revisión técnica de privacidad, cookies y accesibilidad; sin asesoramiento jurídico ni certificación.
+- ciberseguridad: Revisión básica de seguridad web; sin prueba de intrusión.
+- software-a-medida: Colaboración por fases con alcance, requisitos y entregables escritos.
+- portalModules.ts: Sitio web profesional e Integración de catálogo y pagos, canal de mensajería, usuarios y contenidos; sin importes públicos.
 
 ## projects.ts — 4 proyectos (profundidad > cantidad, 70% recruiters prefiere)
 
@@ -35,11 +37,11 @@ Quien eres: role Full Stack · Auditor · Consultor, summary conversion-focused,
 
 ## Paginas
 
-- index.astro: Hero + Encargos habituales (decisión 0021; copy en tercera persona)
-- servicios/: Servicios profesionales + selector de necesidades; fichas con propuesta/plazo/entrega/garantía/exclusiones
+- index.astro: Hero + Encargos habituales (decisión 0026; copy en tercera persona)
+- servicios/: Servicios profesionales + selector de necesidades; fichas con propuesta/plazo/entrega/garantía/exclusiones/requisitos
 - proyectos/: Proyectos realizados con availability si|no|reservado
 - metodo.astro (Metodología clara), identidad.astro
-- contacto.astro: formulario asistente + mailto; sin embed Cal en página
+- contacto.astro: formulario mínimo + mailto; sin embed Cal en página
 - api/contact.ts: Zod, honeypot, rate-limit Upstash, idempotencia Redis (estados accepted/processing/conflict/unknown; no exactly-once Redis+SMTP), Proton SMTP; sin CAPI Lead (falta consentimiento publicidad)
 - privacidad.astro / cookies.astro: textos alineados al CMP; Identidad como aviso del prestador
 

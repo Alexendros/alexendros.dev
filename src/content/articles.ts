@@ -28,11 +28,11 @@ export const articles: Article[] = [
       'Cuándo basta una web clara y cuándo hace falta un producto de software por fases.',
     published: '2026-10-18',
     body: [
-      'Si el objetivo es captar consultas, una web o landing suele bastar. El portal de inicio cubre ese caso con plazo y precio orientativos.',
+      'Si el objetivo es captar consultas, una web o landing suele bastar. El sitio web profesional cubre ese caso con alcance y plazo definidos en la propuesta.',
       'Si el problema es un proceso interno (listados, pedidos, cálculos, agendas), una web de escaparate no lo resuelve. Ahí entra el software a medida.',
       'El software se plantea por fases: primero una versión pequeña y útil, luego mejoras. Cada fase lleva su precio y plazo en la propuesta.',
       'Una señal clara: si hoy el trabajo vive en hojas de cálculo, correos o herramientas que no encajan, conviene descubrir el proceso antes de construir.',
-      'Ante la duda, conviene una revisión de posicionamiento o una conversación breve. Mejor acotar el problema que pagar una pieza grande sin saber si sirve.'
+      'Ante la duda, conviene una revisión técnica o una conversación breve. Mejor acotar el problema que pagar una pieza grande sin saber si sirve.'
     ]
   }
 ];
