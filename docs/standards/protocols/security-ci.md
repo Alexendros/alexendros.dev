@@ -2,11 +2,11 @@
 
 ### Propósito de este documento
 
-- **Objetivos:** Documentar el patrón canónico de `.github/workflows/security.yml` de este repo para que otros repositorios lo copien sin inventar jobs ni actions de pago.
+- **Objetivos:** Documentar la división canónica entre `.github/workflows/ci.yml` y `.github/workflows/security.yml`, sin inventar jobs ni actions de pago.
 - **Estructura:** Principios → jobs (`secrets`, `sca`, `dependency-review`, `sast`, `scorecard`) → Renovate → qué no hacer.
 - **Contenido a integrar según contexto:** Copia fragmentos y ajusta el lockfile / lenguaje. No copies husky de otro paquete. No uses `gitleaks-action@v2` en repos de organización (exige licencia).
 
-Fuente de verdad del workflow: [`.github/workflows/security.yml`](../../../.github/workflows/security.yml). Residuales de OSV: [`osv-scanner.toml`](../../../osv-scanner.toml) y [`docs/threat-model.md`](../../threat-model.md). Operación de CI/release: [`ci-release.md`](ci-release.md).
+Fuentes de verdad: [`.github/workflows/ci.yml`](../../../.github/workflows/ci.yml) (`secrets` y `sca`, necesarios para `ci-gate`) y [`.github/workflows/security.yml`](../../../.github/workflows/security.yml) (resto de controles). Residuales de OSV: [`osv-scanner.toml`](../../../osv-scanner.toml) y [`docs/threat-model.md`](../../threat-model.md). Operación de CI/release: [`ci-release.md`](ci-release.md).
 
 ## Principios
 
@@ -16,7 +16,7 @@ Fuente de verdad del workflow: [`.github/workflows/security.yml`](../../../.gith
 4. Los nombres de job `secrets` y `sca` deben coincidir con los required checks del ruleset.
 5. Renovate (decisión **0001** en este repo) es el único bot de version-updates; no añadir `dependabot.yml`.
 
-En este repositorio `secrets` y `sca` **ya son required** en el ruleset `main-required-checks` (junto con `build`, `e2e-critical`, `pr-mergeable`, `quality`, `smoke`, `test`).
+En este repositorio son required `build`, `quality`, `test`, `e2e-critical`, `smoke`, `sca`, `secrets`, `pr-mergeable`, `csp`, `axe` y `ci-gate`. `ci-gate` comprueba además `actionlint` y `zizmor`; LHCI permanece opt-in.
 
 ## Job `secrets` (gitleaks)
 
@@ -62,7 +62,7 @@ sca:
     - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       with:
         persist-credentials: false
-    - uses: google/osv-scanner-action/osv-scanner-action@19ec1116569a47416e11a45848722b1af31a857b # v1.9.0
+    - uses: google/osv-scanner-action/osv-scanner-action@b1d267aea5211fa648d9d442fa64b90dbdcbdd36 # v2.7.0
       with:
         scan-args: |-
           -r
@@ -147,7 +147,7 @@ scorecard:
 
 ## Disparadores y concurrencia
 
-El workflow se dispara en `pull_request`, `push` a `main` y cron semanal (`17 5 * * 1`). Concurrencia por ref con `cancel-in-progress: true`.
+`security.yml` se dispara en `pull_request`, `push` a `main` y cron semanal (`17 5 * * 1`). `ci.yml` concentra `secrets` y `sca` en los mismos eventos para que `ci-gate` pueda evaluarlos. Ambos usan concurrencia por ref con `cancel-in-progress: true`.
 
 ## Renovate
 

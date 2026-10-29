@@ -33,7 +33,7 @@ Variables: [`.env.example`](.env.example) y [docs/standards/protocols/env-vars.m
 
 ## CI y release
 
-Jobs del workflow principal: `quality` → `test` → `build` → `smoke` → `e2e-critical`. Playwright completo + LHCI son **opt-in** (label `e2e` o `workflow_dispatch`). Release: `release.yml` + semantic-release (versionado ≠ promote a Vercel). Actualizaciones de dependencias: Renovate (`.github/renovate.json`).
+El workflow principal ejecuta `quality`, `test`, `build` (incluido `check:links`), `smoke`, `e2e-critical`, `csp`, `axe` y controles de seguridad; `ci-gate` agrega los obligatorios. Playwright completo + LHCI son **opt-in** (label `e2e` o `workflow_dispatch`). Release: `release.yml` + semantic-release (versionado ≠ promote a Vercel). Actualizaciones de dependencias: Renovate (`.github/renovate.json`).
 
 ## Límites
 

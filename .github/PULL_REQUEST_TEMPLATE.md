@@ -1,36 +1,49 @@
 <!-- canon-managed: true -->
 
-### Propósito de este documento
+## Objetivo
 
-- **Objetivos:** Plantilla de PR para describir el cambio y exigir las comprobaciones `quality` / `test` / `build` / `smoke`.
-- **Estructura:** Qué → por qué → cómo probar → checklist CI y contratos → notas.
-- **Contenido a integrar según contexto:** Adapta el checklist a scripts pnpm de este sitio Astro. No copies plantillas de un SaaS ni de la CLI webconfig. e2e/LHCI es opt-in (label `e2e` o `workflow_dispatch`). No pegues secretos.
+<!-- Problema concreto y resultado esperado. -->
 
-## Qué
+## Alcance
 
-Resume en una o dos frases qué cambia este pull request.
+-
 
-## Por qué
+## Fuera de alcance
 
-Explica el motivo. Si cierra un issue, indica `Cierra #N`.
+-
 
-## Cómo probar
+## Cambios
 
-Pasos verificables para revisar manualmente:
+-
 
-1.
-2.
-3.
+## Riesgo
 
-## Lista de comprobación
+- Nivel: bajo | medio | alto
+- Áreas: código | contenido | legal | privacidad | seguridad | accesibilidad | despliegue
+
+## Validación
 
 - [ ] `pnpm typecheck && pnpm lint && pnpm format:check`
-- [ ] `pnpm test && pnpm build && pnpm smoke`
-- [ ] Docs actualizadas (README / CONTRIBUTING / SECURITY si cambia operación)
-- [ ] Sin secretos ni credenciales
-- [ ] CI `quality` / `test` / `build` / `smoke` en verde
-- [ ] e2e/LHCI solo si el PR toca UI/a11y y lleva label `e2e` (opt-in)
+- [ ] `pnpm lint:css && pnpm check:records && pnpm audit:cookies`
+- [ ] `pnpm check:copy && pnpm check:classes && pnpm check:contrast`
+- [ ] `pnpm test && pnpm build && pnpm check:links && pnpm smoke`
+- [ ] Pruebas E2E aplicables
+- [ ] Revisión móvil y escritorio
+- [ ] Revisión de privacidad y accesibilidad aplicable
+- [ ] Sin secretos ni datos personales en el diff, logs o artefactos
 
-## Notas para revisión
+## Evidencias
 
-<!-- consideraciones especiales para quien revise -->
+<!-- Capturas, logs no sensibles, URLs de preview y resultados. -->
+
+## Migración
+
+<!-- Variables, redirects, datos o pasos manuales. -->
+
+## Rollback
+
+<!-- Revert, feature flag o despliegue anterior. Obligatorio en riesgo medio/alto. -->
+
+## Documentación
+
+<!-- Archivos actualizados y decisiones registradas. -->

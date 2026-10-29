@@ -1,0 +1,55 @@
+name: Hallazgo de saneamiento
+description: Registra un hallazgo reproducible y su criterio de cierre
+labels: [hallazgo]
+body:
+  - type: textarea
+    id: hallazgo
+    attributes:
+      label: Hallazgo
+    validations:
+      required: true
+  - type: textarea
+    id: evidencia
+    attributes:
+      label: Evidencia reproducible
+      description: Pasos, rutas, comandos o logs sin secretos ni datos personales.
+    validations:
+      required: true
+  - type: textarea
+    id: impacto
+    attributes:
+      label: Impacto
+    validations:
+      required: true
+  - type: dropdown
+    id: severidad
+    attributes:
+      label: Severidad
+      options: [Bloqueante, Alta, Media, Baja]
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área
+      options:
+        - Funcional
+        - Privacidad
+        - Legal
+        - Accesibilidad
+        - Seguridad
+        - Rendimiento
+        - SEO
+        - Mantenibilidad
+    validations:
+      required: true
+  - type: textarea
+    id: aceptacion
+    attributes:
+      label: Criterio de aceptación
+    validations:
+      required: true
+  - type: textarea
+    id: dependencias
+    attributes:
+      label: Dependencias
