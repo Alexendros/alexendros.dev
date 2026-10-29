@@ -49,6 +49,9 @@ test.describe('CP-09 teclado — menú móvil', () => {
 
     const menuBtn = page.locator('[data-menu-button]');
     await expect(menuBtn).toBeVisible();
+    // Esperar la señal de que el script del menú ya está enlazado; sin ella,
+    // Enter puede llegar antes que el listener y el botón no responde.
+    await expect(page.locator('html[data-header-ready="true"]')).toBeAttached();
     // Abrir con teclado (Enter en <button type="button">).
     await menuBtn.focus();
     await page.keyboard.press('Enter');

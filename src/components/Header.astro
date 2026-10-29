@@ -182,6 +182,7 @@ const contactCta = splitTwoLineLabel('Formulario de contacto');
       true
     );
     menuLinks.forEach((link) => link.addEventListener('click', () => setMenuOpen(false)));
+    document.documentElement.dataset.headerReady = 'true';
   }
 
   if (document.readyState === 'loading') {
