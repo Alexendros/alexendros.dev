@@ -96,7 +96,6 @@ vercel --prod      # producción (alexendros.dev)
 | `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN`             | Sí (rate limit fail-closed) | runtime         | Sí                     | [4.2](#42-upstash-redis)        |
 | `PUBLIC_TURNSTILE_SITE_KEY` / `TURNSTILE_SECRET_KEY`              | Recomendada                 | build + runtime | SITE_KEY no, SECRET sí | [4.3](#43-cloudflare-turnstile) |
 | `NOTION_TOKEN` / `NOTION_LEADS_DATA_SOURCE_ID`                    | Sí (CRM)                    | runtime         | Sí                     | [4.4](#44-notion)               |
-| `CAL_WEBHOOK_SECRET`                                              | Sí (webhook Cal.com)        | runtime         | Sí                     | [4.5](#45-calcom-webhook)       |
 | `PUBLIC_COOKIE_CONSENT_VERSION`                                   | Sí (CMP)                    | build           | No                     | [4.6](#46-consentimiento-cmp)   |
 | `PUBLIC_GA4_ID`                                                   | Opcional                    | build           | No                     | [5.1](#51-google-analytics-4)   |
 | `PUBLIC_GTM_ID` / `PUBLIC_GTM_SS_DOMAIN`                          | Opcional                    | build           | No                     | [5.2](#52-google-tag-manager)   |
@@ -132,7 +131,7 @@ Cargar en Vercel en `Production`, `Preview` y `Development`.
 ### 4.2 Upstash Redis
 
 Protege `/api/contact` (10/min), `/api/afiliados` (5/min) y la idempotencia del webhook de
-Cal.com. Sin estas variables los endpoints de contacto responden **503 fail-closed**.
+Sin estas variables los endpoints de contacto responden **503 fail-closed**.
 
 1. Entra en <https://console.upstash.com> → **Create Database**.
 2. Nombre `alexendros`, tipo **Regional**, región próxima (p. ej. `eu-west-1`). Plan Free es
@@ -159,7 +158,7 @@ aparece si hay `PUBLIC_TURNSTILE_SITE_KEY`. Con ambas vacías, el captcha se omi
 
 ### 4.4 Notion
 
-El formulario de contacto (`POST /api/contact`) y el webhook de Cal.com escriben en la base de
+El formulario de contacto (`POST /api/contact`) escribe en la base de
 datos **Leads** de Notion.
 
 1. Entra en <https://www.notion.so/my-integrations> → **New integration** (Internal).
@@ -181,15 +180,6 @@ datos **Leads** de Notion.
 6. Alta en Vercel. Al crear el lead, `contractHandler`/`contact.ts` añaden `Canal=Formulario`,
    `Vertical`, `Presupuesto` y `referral_code`. **Esas propiedades deben existir** en la base con
    esos nombres exactos (`Vertical`, `Presupuesto`, `referral_code`, `consent_marketing`).
-
-### 4.5 Cal.com webhook
-
-1. Cal.com → **Settings → Developer → Webhooks → Create**.
-2. Subscriber URL: `https://alexendros.dev/api/cal/webhook`.
-3. Activa los eventos que maneja el handler: `BOOKING_CREATED`, `BOOKING_PAID`,
-   `BOOKING_PAYMENT_INITIATED`, `BOOKING_RESCHEDULED`, `BOOKING_CANCELLED`, `BOOKING_REJECTED`.
-4. Al guardar, Cal.com muestra el **signing secret** (cabecera `x-cal-signature-256`) →
-   `CAL_WEBHOOK_SECRET`. Si lo pierdes, regenera el webhook.
 
 ### 4.6 Consentimiento (CMP)
 
@@ -234,7 +224,7 @@ no carga nada.
 
 El loader client-side usa `PUBLIC_META_PIXEL_ID`; el envío server-side (`src/lib/tracking/capi.ts`)
 usa `META_PIXEL_ID` (cae a `PUBLIC_META_PIXEL_ID` si está vacío) + `META_CAPI_TOKEN`. Emite `Lead`
-en contacto y `Schedule`/`Purchase` en el webhook de Cal.com.
+en el envío de contacto.
 
 1. <https://business.facebook.com/events_manager> → **Connect data sources → Web → Create Pixel**.
 2. Copia el **Pixel ID** (numérico):
@@ -305,7 +295,6 @@ Comprobaciones manuales:
 - [ ] `UPSTASH_REDIS_REST_URL/TOKEN` (rate limit fail-closed operativo).
 - [ ] `PUBLIC_TURNSTILE_SITE_KEY` + `TURNSTILE_SECRET_KEY`.
 - [ ] `NOTION_TOKEN` + `NOTION_LEADS_DATA_SOURCE_ID` y base compartida con la integración.
-- [ ] `CAL_WEBHOOK_SECRET` con el webhook apuntando a `/api/cal/webhook`.
 - [ ] `PUBLIC_COOKIE_CONSENT_VERSION` al día con el inventario de cookies.
 - [ ] IDs de analítica (`PUBLIC_GA4_ID`, `PUBLIC_GTM_ID`, `PUBLIC_CLARITY_ID`, `PUBLIC_POSTHOG_KEY`,
       `PUBLIC_LINKEDIN_PARTNER_ID`) cargados y redeploy hecho.

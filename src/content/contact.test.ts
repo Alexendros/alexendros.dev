@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { contact, publicBookingEvents } from './contact';
 
 describe('reservas públicas de contacto R05', () => {
-  it('las ofertas de catálogo son formulario; no hay Cal.com de sesión profesional', () => {
+  it('las ofertas de catálogo son formulario y no hay servicios de reserva', () => {
     expect(contact.bookings.offers.every((o) => o.kind === 'form')).toBe(true);
     expect(contact.bookings.offers.map((o) => o.id)).toEqual([
       'informe-comercial',

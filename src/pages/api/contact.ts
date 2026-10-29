@@ -10,7 +10,7 @@ import {
 } from '../../lib/contactHandler';
 import { verifyTurnstileToken } from '../../lib/turnstile';
 import { createRedisContactIdempotencyStore } from '../../lib/contactIdempotency';
-import { createNotionLeadsStore } from '../../lib/calNotionClient';
+import { createNotionLeadsStore } from '../../lib/notionLeads';
 
 export const prerender = false;
 

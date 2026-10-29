@@ -17,18 +17,14 @@ export const CSP_DIRECTIVES: CspDirectiveMap = {
     'https://eu.i.posthog.com',
     'https://eu-assets.i.posthog.com',
     'https://snap.licdn.com',
-    'https://challenges.cloudflare.com',
-    'https://app.cal.com',
-    'https://cal.com'
+    'https://challenges.cloudflare.com'
   ],
   'style-src': [
     "'self'",
     // 'unsafe-inline' no entra en la política endurecida: Astro externaliza
     // estilos (build.inlineStylesheets: 'never'). El inline de terceros se
     // decide en fase ③, tras observar /api/csp-report.
-    'https://www.googletagmanager.com',
-    'https://app.cal.com',
-    'https://cal.com'
+    'https://www.googletagmanager.com'
   ],
   'img-src': [
     "'self'",
@@ -40,11 +36,9 @@ export const CSP_DIRECTIVES: CspDirectiveMap = {
     'https://c.clarity.ms',
     'https://eu.i.posthog.com',
     'https://px.ads.linkedin.com',
-    'https://challenges.cloudflare.com',
-    'https://app.cal.com',
-    'https://cal.com'
+    'https://challenges.cloudflare.com'
   ],
-  'font-src': ["'self'", 'data:', 'https://app.cal.com', 'https://cal.com'],
+  'font-src': ["'self'", 'data:'],
   'connect-src': [
     "'self'",
     'https://vitals.vercel-insights.com',
@@ -63,16 +57,12 @@ export const CSP_DIRECTIVES: CspDirectiveMap = {
     'https://eu-assets.i.posthog.com',
     'https://snap.licdn.com',
     'https://px.ads.linkedin.com',
-    'https://challenges.cloudflare.com',
-    'https://app.cal.com',
-    'https://cal.com'
+    'https://challenges.cloudflare.com'
   ],
   'frame-src': [
     'https://www.googletagmanager.com',
     'https://td.doubleclick.net',
-    'https://challenges.cloudflare.com',
-    'https://app.cal.com',
-    'https://cal.com'
+    'https://challenges.cloudflare.com'
   ],
   'frame-ancestors': ["'none'"],
   'base-uri': ["'self'"],

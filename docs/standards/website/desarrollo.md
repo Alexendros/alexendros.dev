@@ -13,7 +13,7 @@
 
 ```bash
 pnpm i
-cp .env.example .env   # SMTP_* + UPSTASH_* + CAL_WEBHOOK_SECRET + NOTION_*
+cp .env.example .env   # SMTP_* + UPSTASH_* + NOTION_*
 pnpm gen:og            # public/og/default.png si falta
 pnpm dev               # http://localhost:4321
 ```

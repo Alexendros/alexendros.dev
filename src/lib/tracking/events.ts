@@ -9,7 +9,6 @@ export type FunnelEvent =
   | 'page_view'
   | 'view_servicios'
   | 'cta_click'
-  | 'cal_click'
   | 'form_start'
   | 'form_step'
   | 'form_submit'
@@ -58,7 +57,7 @@ export function track(event: FunnelEvent, props: Props = {}): void {
 
 /**
  * Instala la captura base del embudo: page_view (también en navegaciones con
- * view transitions), view_servicios y clicks de CTA/Cal.com. Idempotente.
+ * view transitions), view_servicios y clicks de CTA. Idempotente.
  */
 export function setupFunnelTracking(): void {
   if (typeof window === 'undefined') return;
@@ -79,11 +78,6 @@ export function setupFunnelTracking(): void {
     const anchor = element?.closest?.('a[href]');
     if (!anchor) return;
     const href = anchor.getAttribute('href') ?? '';
-    if (anchor.hasAttribute('data-cal')) {
-      const offer = anchor.getAttribute('data-cal-offer') ?? undefined;
-      track('cal_click', { href, ...(offer ? { offer } : {}) });
-      return;
-    }
     if (href.startsWith('/contacto')) {
       track('cta_click', { href, label: anchor.textContent?.trim().slice(0, 80) ?? '' });
     }

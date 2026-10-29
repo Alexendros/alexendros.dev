@@ -94,7 +94,7 @@ export const contact = contactSchema.parse({
   }
 });
 
-/** Ya no hay ofertas Cal.com en la página de contacto; se conserva el tipo vacío. */
+/** Reservado para ofertas de reserva; hoy la página solo usa formulario. */
 export const publicBookingEvents: Array<{
   kind: 'cal';
   calLink: string;
