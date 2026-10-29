@@ -89,32 +89,42 @@ async function writeOg(relPath: string, kicker: string, title: string, subtitle:
 
 await writeOg(
   'default.png',
-  'DISEÑO WEB · VALENCIA',
-  'Webs claras y útiles',
-  'Para profesionales y pequeños negocios'
+  'ALEXENDROS.DEV',
+  'Servicios informáticos y tecnologías',
+  'Revisión técnica, sitios web y software'
 );
-await writeOg('home.png', 'ALEXENDROS.DEV', 'Webs y software a medida', 'Y revisión de la tuya');
-await writeOg('servicios.png', 'SERVICIOS', 'Hoja de Servicios', 'Web, software y revisión');
+await writeOg(
+  'home.png',
+  'ALEXENDROS.DEV',
+  'Servicios informáticos y tecnologías',
+  'Valencia · Sitios web, Linux e Inteligencia Artificial'
+);
+await writeOg(
+  'servicios.png',
+  'SERVICIOS',
+  'Servicios profesionales',
+  'Revisiones técnicas y colaboración por fases'
+);
 await writeOg(
   'proyectos.png',
-  'CASOS',
-  'Trabajos de principio a fin',
-  'Webs, tiendas y herramientas'
+  'PROYECTOS',
+  'Proyectos realizados',
+  'Webs, catálogos y herramientas'
 );
 await writeOg(
   'contacto.png',
   'CONTACTO',
-  'Cuéntame qué necesitas',
+  'Contacto y solicitud de propuesta',
   'Respuesta en un día laborable'
 );
 await writeOg(
   'proceso-y-entrega.png',
-  'CÓMO TRABAJO',
-  'Así trabajo: claro desde el primer día',
-  'Precio y plazo por escrito'
+  'METODOLOGÍA',
+  'Metodología clara e integral',
+  'Alcance y plazo por escrito'
 );
 for (const s of services) {
-  await writeOg(`servicios/${s.slug}.png`, 'SERVICIO', s.title, s.short);
+  await writeOg(`servicios/${s.slug}.png`, 'SERVICIO', s.ogTitle, s.short);
 }
 for (const p of projects) {
   await writeOg(`proyectos/${p.slug}.png`, 'PROYECTO', p.title, p.short);

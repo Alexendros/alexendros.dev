@@ -20,7 +20,7 @@ const detailItems = services.map((s) => ({
 
 <Layout
   title="Servicios profesionales — Alexendros"
-  description="Posicionamiento en buscadores, cumplimiento normativo, ciberseguridad, colaboración técnica y portal web configurable por módulos."
+  description="Auditoría técnica SEO, privacidad y accesibilidad, seguridad web, colaboración técnica y sitio profesional por módulos."
   ogImage="/og/servicios.png"
   ogImageAlt="Servicios profesionales de Alexendros.dev"
 >
@@ -32,17 +32,17 @@ const detailItems = services.map((s) => ({
       </h1>
       <div class="pagehead-rule mt-4 h-px bg-border" aria-hidden="true"></div>
       <p class="text-muted mt-3 max-w-2xl">
-        Todo lo que un profesional necesita para tener presencia en Internet, actualizar su portal
-        web actual o mejorar su productividad con soluciones de Inteligencia Artificial eficientes.
+        Revisiones técnicas y colaboración por fases: se define el alcance de cada encargo y se
+        entrega un informe o un trabajo acotado, con sus límites por escrito.
       </p>
     </header>
     <p class="mt-4 max-w-2xl text-sm text-muted" data-services-proposal-note>
       El alcance, el calendario y las condiciones económicas se detallan en cada propuesta.
     </p>
-    <Grid gap="6" class="mt-8 md:grid-cols-2 lg:grid-cols-4" data-services-grid>
+    <Grid gap="6" class="mt-8 md:grid-cols-2" data-services-grid>
       {
-        serviceProducts.map((product, i) => (
-          <div data-reveal={i >= 3 || undefined} style={i >= 3 ? `--i:${i - 3}` : undefined}>
+        serviceProducts.map((product) => (
+          <div class="h-full">
             <ServiceCard product={product} />
           </div>
         ))

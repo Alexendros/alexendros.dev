@@ -65,7 +65,7 @@ export const availabilityLabels: Record<ProjectAvailability, string> = {
 
 export const availabilityCtaLabels: Record<ProjectAvailability, string> = {
   si: 'Consultar sobre esta obra',
-  no: 'Ver ficha',
+  no: 'Consultar sobre esta obra',
   reservado: 'Preguntar por esta obra'
 };
 
@@ -89,7 +89,7 @@ export const projects: Project[] = [
     short:
       'Web para un restaurante en La Marina de Valencia: carta digital bilingüe con alérgenos y reservas directas, editable por el equipo sin tocar código.',
     summary:
-      'Diseñamos y publicamos la web del restaurante: carta bilingüe con alérgenos y etiquetas dietéticas, espacios y eventos, y reservas con CoverManager, todo editable desde un panel propio.',
+      'Web del restaurante con carta bilingüe, alérgenos y etiquetas dietéticas, espacios y eventos, y reservas con CoverManager. Todo editable desde un panel propio.',
     role: 'Diseño, desarrollo y publicación',
     context:
       'El restaurante necesitaba una presencia clara en La Marina de Valencia y una carta que pudiera actualizar su propio equipo cuando cambiaran precios o platos.',
@@ -138,7 +138,7 @@ export const projects: Project[] = [
     short:
       'Tienda online para un taller familiar que quería vender sus productos sin depender de terceros.',
     summary:
-      'Catálogo online con precios claros y pago seguro, pensado para sustituir presupuestos solo por email y teléfono.',
+      'Catálogo online con precios claros e integración con proveedor de pagos, pensado para sustituir presupuestos solo por email y teléfono.',
     role: 'Diseño del proceso de venta y desarrollo',
     context:
       'Las ventas dependían de llamadas y correos. Los presupuestos tardaban y se perdían pedidos.',
@@ -158,7 +158,7 @@ export const projects: Project[] = [
       'Next.js',
       'TypeScript',
       'PostgreSQL + Prisma',
-      'Stripe (webhooks idempotentes)',
+      'Pasarela de pago con aviso de pedido',
       'Zod'
     ],
     highlights: [
@@ -170,7 +170,7 @@ export const projects: Project[] = [
     results: [
       'Presupuestos calculados al momento',
       'Pedidos con panel interno',
-      'Cobro online con webhooks idempotentes'
+      'Cobro con aviso automático del pedido una sola vez por operación'
     ],
     links: {
       prod: 'https://ecommerce-graficasnasve.vercel.app/',

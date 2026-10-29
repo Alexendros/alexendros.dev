@@ -22,7 +22,7 @@ export type PortalModule = z.infer<typeof portalModuleSchema>;
 
 export const portalBase = {
   id: 'portal-inicio',
-  title: 'Portal de inicio',
+  title: 'Sitio web profesional',
   short: 'Página principal, página de gracias, formulario y publicación.',
   scope: 'Presencia web para presentar la actividad y recibir consultas.',
   dependencies: [] as string[],
@@ -35,7 +35,7 @@ export const portalBase = {
 export const portalModules: PortalModule[] = [
   {
     id: 'tienda',
-    title: 'Catálogo y tienda online',
+    title: 'Integración de catálogo y pagos',
     short: 'Catálogo e integración con un proveedor de pagos.',
     scope: 'Presentación de productos y conexión del flujo de cobro acordado.',
     dependencies: ['Proveedor de pagos y datos de catálogo aportados por el cliente'],

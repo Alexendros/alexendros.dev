@@ -1,11 +1,12 @@
 export const profile = {
   name: 'Alejandro Domingo Agustí',
   alternateName: 'Alexendros',
+  jobTitle: 'Revisión técnica, sitios web y software',
   headline: 'Alejandro Domingo Agustí · Alexendros',
   role: 'La persona detrás de Alexendros. Diseño y desarrollo web para profesionales y pequeños negocios.',
   pageTitle: 'Sobre mí — Alejandro · Alexendros',
   pageDescription:
-    'Alejandro Domingo Agustí: diseño y desarrollo web en Valencia para profesionales y pequeños negocios. Trato directo y presupuesto cerrado.',
+    'Alejandro Domingo Agustí: diseño y desarrollo web en Valencia para profesionales y pequeños negocios. Trato directo y alcance acordado por escrito.',
   title: 'Webs claras y útiles para que el público entienda la propuesta y pueda contactar.',
   summary:
     'Webs que explican bien la oferta y generan pocas fricciones. El mismo responsable cubre el proceso completo: del primer mensaje a la publicación.',
@@ -25,16 +26,16 @@ export const profile = {
     }
   ],
   trajectory:
-    'Webs para negocios locales, tiendas online y herramientas internas. Tres casos publicados con problema, intervención y resultado.',
+    'Webs para negocios locales, tiendas online y herramientas internas. Cuatro casos publicados con problema, intervención y resultado.',
   qualityTechnical:
-    'Para equipos técnicos: objetivos Lighthouse ≥90, 0 violaciones de accesibilidad automatizadas en todas las rutas públicas del sitio y validación de contrato del formulario.',
+    'Para equipos técnicos: objetivos Lighthouse ≥90 y pruebas automatizadas de accesibilidad y de contrato del formulario en la muestra evaluada.',
   proofs: [
     { label: 'Proceso', value: 'Claro' },
     { label: 'Entregas', value: 'Revisadas' },
     { label: 'Mantenimiento', value: 'Sencillo' }
   ],
   trustBar: [
-    'Alcance y precio acordados antes de empezar',
+    'Alcance y plazo acordados antes de empezar',
     'Entregas revisadas antes de publicar',
     'Comunicación directa, sin intermediarios'
   ],
@@ -47,7 +48,7 @@ export const profile = {
     {
       step: 2,
       title: 'Propuesta clara',
-      desc: 'Alcance, prioridades, entregables y presupuesto acordados antes de empezar.'
+      desc: 'Alcance, prioridades, entregables y condiciones acordados antes de empezar.'
     },
     {
       step: 3,

@@ -306,13 +306,13 @@
       "id": "0021",
       "sequence": 21,
       "timestamp": "2026-10-25T11:30:00Z",
-      "active": true,
+      "active": false,
       "title": "Canónica /metodo y semántica comercial de nav/home",
       "summary": "URLs de una palabra (servicios, proyectos, metodo); labels Servicios profesionales / Metodología clara; home sin tira Cómo trabajo ni caso.",
       "recordType": "decision",
-      "status": "aceptada",
+      "status": "superseded",
       "supersedes": ["0020"],
-      "supersededBy": null,
+      "supersededBy": "0026",
       "context": "La canónica /proceso-y-entrega y el label Cómo trabajo no encajan con taxonomía de direcciones de una palabra ni con rótulos comerciales claros. La home acumulaba secciones redundantes con la nav.",
       "decision": "Canónica /metodo con label Metodología clara; 308 desde /proceso-y-entrega, /metodologia, /valores y /como-trabajo. Nav: Servicios profesionales (/servicios), Proyectos realizados (/proyectos), Metodología clara (/metodo). Home: Hero + ¿Qué necesitas? alineado a taxonomía; sin secciones Cómo trabajo ni Un caso. Pie sin Sobre mí; mailto visible como Contratación. Índice de servicios titulado Servicios profesionales.",
       "consequences": "Actualizar redirects, sitemap, e2e, LHCI, StickyCta, README y AGENTS. /sobre-mi permanece como página viva sin enlace en el pie."
@@ -376,6 +376,21 @@
       "context": "El catálogo mostraba importes provisionales y condiciones de pago que no debían formar parte de la información pública. La decisión 0024 mantenía además una referencia vigente a precios en fichas que debe quedar cerrada.",
       "decision": "Eliminar pricing.ts y todos los campos económicos del catálogo, tarjetas, fichas, metadatos y documentación vigente. Los cuatro módulos conservan sus IDs, alcance y serialización en portalModules.ts. NeedsConfigurator resume necesidades sin cálculos y enlaza a Solicitar propuesta. Cada servicio usa engagement=proposal con plazo, entrega, garantía y exclusiones; las condiciones económicas solo se definen individualmente. StickyCta mantiene «Solicitar propuesta» sin importes ni jerga.",
       "consequences": "scripts/check-public-pricing.mjs bloquea símbolos de divisa, IVA, importes iniciales y campos económicos en fuentes, documentación vigente y salida generada. El build ejecuta el gate. Los archivos históricos conservan los importes solo como trazabilidad no vigente."
+    },
+    {
+      "id": "0026",
+      "sequence": 26,
+      "timestamp": "2026-10-29T17:10:00Z",
+      "active": true,
+      "title": "Taxonomía de revisiones técnicas y marca profesional individual",
+      "summary": "Los servicios se nombran por su alcance técnico real; Alexendros se estructura como marca de Alejandro Domingo Agustí, sin entidad ni equipo corporativo inventados.",
+      "recordType": "decision",
+      "status": "aceptada",
+      "supersedes": ["0021"],
+      "supersededBy": null,
+      "context": "Los nombres anteriores podían interpretarse como promesas de resultado comercial, dictamen jurídico o cobertura de seguridad completa. La entidad debía expresar con precisión la operativa individual.",
+      "decision": "Usar Auditoría técnica SEO, Revisión técnica de privacidad/cookies/accesibilidad, Revisión básica de seguridad web, Colaboración en proyectos de software, Sitio web profesional e Integración de catálogo y pagos. Se conservan de 0021, y quedan por tanto vigentes en esta decisión: URLs de una palabra (/servicios, /proyectos, /metodo), rótulos de navegación «Servicios profesionales», «Proyectos realizados» y «Metodología clara», redirecciones 308 desde las rutas antiguas, home limitada a hero más encargos habituales y pie sin «Sobre mí». Cada ficha incluye requisitos del cliente. El CTA se unifica como «Solicitar propuesta» en todo el sitio, incluido /metodo, donde sustituye al rótulo «Solicitar presupuesto». Las condiciones económicas solo se mencionan como parte de la propuesta, nunca como importe o presupuesto público. Evitar promesas absolutas y describir muestras, límites y exclusiones. JSON-LD vincula ProfessionalService Alexendros con su fundador Person Alejandro Domingo Agustí.",
+      "consequences": "Actualizar catálogo, contacto, README, OG y pruebas de estructura/copy. La revisión editorial independiente queda registrada como pendiente antes de dar por cerrado el criterio humano de esta fase."
     }
   ]
 }

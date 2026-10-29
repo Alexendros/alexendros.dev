@@ -88,7 +88,9 @@ describe('parseContactBody R04', () => {
     expect(parsed.success).toBe(true);
     if (!parsed.success) return;
     expect(parsed.data.modules).toBe('tienda,contenidos');
-    expect(portalModuleDisplayNames(parsed.data.modules)).toMatch(/Catálogo y tienda online/);
+    expect(portalModuleDisplayNames(parsed.data.modules)).toMatch(
+      /Integración de catálogo y pagos/
+    );
     expect(portalModuleDisplayNames(parsed.data.modules)).toMatch(/Panel de contenidos/);
     expect(portalModuleDisplayNames(parsed.data.modules)).not.toMatch(/script|precio/i);
   });
@@ -100,7 +102,7 @@ describe('parseContactBody R04', () => {
     if (!parsed.success) return;
     expect(parsed.data.modules).toBe('tienda,mensajeria');
     const msg = buildContactMessage(parsed.data);
-    expect(msg).toContain('Catálogo y tienda online');
+    expect(msg).toContain('Integración de catálogo y pagos');
     expect(msg).not.toContain('<img');
     expect(msg).not.toContain('onerror');
   });
@@ -126,7 +128,7 @@ describe('parseContactBody R04', () => {
     expect(parsed.data.projectSlug).toBe('front-valencia');
     expect(parsed.data.origin).toBe('proceso');
     const msg = buildContactMessage(parsed.data);
-    expect(msg).toMatch(/Posicionamiento comercial en buscadores/);
+    expect(msg).toMatch(/Auditoría técnica SEO/);
     expect(msg).toMatch(/Front Valencia/);
     expect(msg).toMatch(/Origen de página: proceso/);
 

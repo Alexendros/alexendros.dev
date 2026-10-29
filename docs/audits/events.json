@@ -221,6 +221,17 @@
       "recordType": "event",
       "kind": "aviso",
       "source": "src/components/NeedsConfigurator.tsx"
+    },
+    {
+      "id": "evt-editorial-review-0026",
+      "sequence": 21,
+      "timestamp": "2026-10-29T17:10:00Z",
+      "active": false,
+      "title": "Revisión editorial independiente del catálogo",
+      "summary": "Revisión editorial completada en dos rondas sobre la PR #152. Ronda 1 (afc8600): 24 hallazgos, 12 cerrados y 5 mejorados. Ronda 2 (4626304): sin hallazgos altos y un defecto real de CSS (text-brand inexistente) corregido. Cabeza final 1713dead, con H-01 a H-24 atendidos o decididos por el titular (mantener jerarquía del hero, retirar Linux e IA de la home, unificar CTA con flecha). La revisión fue asistida por IA y aceptada expresamente por el mantenedor: no consta firma de una persona independiente.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "https://github.com/Alexendros/alexendrosdev/pull/152"
     }
   ]
 }

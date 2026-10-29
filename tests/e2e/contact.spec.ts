@@ -179,7 +179,7 @@ test('CFG-04: motivo y módulos válidos muestran nombres', async ({ page }) => 
   const modules = page.locator('[data-contact-modules]');
   await expect(modules).toBeVisible();
   await expect(modules.locator('strong')).toHaveText(
-    'Catálogo y tienda online, Panel de contenidos'
+    'Integración de catálogo y pagos, Panel de contenidos'
   );
 });
 
@@ -192,7 +192,7 @@ test('CFG-05: params hostiles no inventan condiciones ni XSS', async ({ page }) 
   });
   const modules = page.locator('[data-contact-modules]');
   await expect(modules).toBeVisible();
-  await expect(modules.locator('strong')).toHaveText('Catálogo y tienda online');
+  await expect(modules.locator('strong')).toHaveText('Integración de catálogo y pagos');
   await expect(modules).not.toContainText(/script|evil|precio|1\s*€/i);
   await expect(page.locator('body')).not.toContainText('alert(1)');
 });
@@ -210,7 +210,7 @@ test('CFG-06: servicio y proyecto allowlisted; desconocidos se descartan', async
 
 test('CFG-07: ficha de servicio llega con contexto oculto', async ({ page }) => {
   await page.goto('/servicios/informe-comercial');
-  await page.locator('#contenido').getByRole('link', { name: 'Pedir el informe' }).click();
+  await page.locator('#contenido').getByRole('link', { name: 'Solicitar propuesta' }).click();
   await expect(page).toHaveURL(/servicio=informe-comercial/);
   await expect(page.locator('#contact-service')).toHaveValue('informe-comercial', {
     timeout: 10_000

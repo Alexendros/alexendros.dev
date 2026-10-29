@@ -49,6 +49,9 @@ test.describe('CP-09 teclado — menú móvil', () => {
 
     const menuBtn = page.locator('[data-menu-button]');
     await expect(menuBtn).toBeVisible();
+    // Esperar la señal de que el script del menú ya está enlazado; sin ella,
+    // Enter puede llegar antes que el listener y el botón no responde.
+    await expect(page.locator('html[data-header-ready="true"]')).toBeAttached();
     // Abrir con teclado (Enter en <button type="button">).
     await menuBtn.focus();
     await page.keyboard.press('Enter');
@@ -132,13 +135,15 @@ test.describe('CP-09 contacto — foco, errores y axe', () => {
 });
 
 test.describe('CP-09 recorridos A–E (muestreo)', () => {
-  test('A/B: servicios → ficha informe → Pedir el informe', async ({ page }) => {
+  test('A/B: servicios → ficha informe → Solicitar propuesta', async ({ page }) => {
     await page.goto('/servicios');
     await assertSingleH1AndMain(page);
-    await page.getByRole('link', { name: 'Posicionamiento comercial en buscadores' }).click();
+    await page.getByRole('link', { name: 'Auditoría técnica SEO' }).click();
     await expect(page).toHaveURL(/\/servicios\/informe-comercial/);
     await assertSingleH1AndMain(page);
-    const cta = page.getByRole('link', { name: /Pedir el informe/i });
+    const cta = page.locator('#detail-servicios-informe-comercial').getByRole('link', {
+      name: 'Solicitar propuesta'
+    });
     await expect(cta).toBeVisible();
     await cta.click();
     await expect(page).toHaveURL(/\/contacto/);

@@ -3,15 +3,15 @@ import { test, expect } from '@playwright/test';
 const H1 = 'Servicios informáticos y tecnologías para empresas y particulares.';
 const TITLE = 'Alexendros — Tecnologías y servicios informáticos';
 const DESCRIPTION =
-  'Página web, tienda en internet, aplicaciones para Linux e integración de Inteligencia Artificial. Desde Valencia.';
+  'Sitios web profesionales, integración de catálogo y pagos, aplicaciones para Linux e integración de Inteligencia Artificial. Desde Valencia.';
 
 const LIST_ITEMS = [
   {
-    label: 'Página web para profesionales y emprendedores',
+    label: 'Sitio web profesional',
     href: '/servicios?origen=home#portal-heading'
   },
   {
-    label: 'Tienda en internet con catálogo y cobro seguro',
+    label: 'Integración de catálogo y pagos',
     href: '/servicios?origen=home#portal-heading'
   },
   {
@@ -51,7 +51,7 @@ test('Hero home: copy, enlaces, metadatos y sin cadenas antiguas', async ({ page
     await expect(items.nth(i)).toHaveClass(/border-t/);
   }
 
-  const revisionLabel = 'Revisión técnica de páginas web existentes →';
+  const revisionLabel = 'Auditoría técnica SEO de un sitio existente →';
   const revision = hero.getByRole('link', { name: revisionLabel });
   await expect(revision).toBeVisible();
   await expect(revision).toHaveAttribute('href', '/servicios/informe-comercial?origen=home');

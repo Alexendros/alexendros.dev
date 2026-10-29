@@ -10,6 +10,7 @@ const sectionsDefault = [
   'deliverables',
   'process',
   'exclusions',
+  'requirements',
   'next-step',
   'technical'
 ] as const;
@@ -20,6 +21,7 @@ const sectionsSoftware = [
   'process',
   'deliverables',
   'exclusions',
+  'requirements',
   'next-step',
   'technical'
 ] as const;
@@ -29,9 +31,10 @@ const listSectionsDefault = [
   'problems',
   'scope',
   'deliverables',
-  'exclusions'
+  'exclusions',
+  'requirements'
 ] as const;
-const listSectionsSoftware = ['audience', 'deliverables', 'exclusions'] as const;
+const listSectionsSoftware = ['audience', 'deliverables', 'exclusions', 'requirements'] as const;
 
 test.describe('DET estructura común de fichas', () => {
   test('catálogo publicado: cuatro slugs sin portal-inicio', () => {
@@ -110,6 +113,13 @@ test.describe('DET estructura común de fichas', () => {
       );
       const ogRes = await page.request.get(`/og/servicios/${product.slug}.png`);
       expect(ogRes.ok()).toBe(true);
+
+      const structuredData = await page
+        .locator('script[type="application/ld+json"]')
+        .allTextContents();
+      expect(structuredData.join('\n')).toContain('"@type":"ProfessionalService"');
+      expect(structuredData.join('\n')).toContain(`"@id":"${site.url}/#alexendros"`);
+      expect(structuredData.join('\n')).toContain(`"founder":{"@id":"${site.url}/#persona"}`);
     });
   }
 

@@ -10,13 +10,13 @@ const ORIGIN = 'origen=proceso';
 
 export const processPage = {
   seo: {
-    title: 'Metodología clara e integral — Alexendros',
+    title: 'Metodología clara — Alexendros',
     description:
-      'Metodología clara e integral. Desde la idea hasta el producto entregado. Método de trabajo para webs y productos digitales.',
-    ogTitle: 'Metodología clara e integral'
+      'Metodología clara. Desde la idea hasta el producto entregado. Método de trabajo para sitios web y productos digitales.',
+    ogTitle: 'Metodología clara'
   },
   hero: {
-    h1Lead: 'Metodología clara e integral.',
+    h1Lead: 'Metodología clara.',
     h1Accent: ' Desde la idea hasta el producto entregado.'
   },
   /** Pendiente (evt-metodo-steps-review): revisar copy de pasos con datos reales. */
@@ -24,23 +24,24 @@ export const processPage = {
     {
       id: 'hablamos',
       title: 'Conversación inicial',
-      duration: '30 min, sin coste',
+      duration: '30 min',
       description: 'El cliente explica el objetivo, el alcance y el resultado que busca.',
-      receive: 'Propuesta con precio y plazo en un día laborable.'
+      receive: 'Propuesta con alcance y plazo en un día laborable.'
     },
     {
       id: 'escrito',
       title: 'Acuerdo por escrito',
       duration: '1–2 días',
-      description: 'Queda definido qué incluye, qué no, el importe y la fecha de entrega.',
-      receive: 'un contrato vinculante.'
+      description:
+        'Queda definido qué incluye, qué no, el alcance económico y la fecha de entrega.',
+      receive: 'un acuerdo por escrito.'
     },
     {
       id: 'construyo',
       title: 'Desarrollo y construcción',
-      duration: 'A partir de 10 días laborables en una web sencilla',
+      duration: 'Orientativo: 10 días laborables en una web sencilla',
       description:
-        'Se muestran avances en 2–3 momentos. Si el alcance crece, se comunica el cambio de precio y plazo antes de seguir.',
+        'Se muestran avances en 2–3 momentos. Si el alcance crece, se comunica el cambio antes de seguir.',
       receive: 'Versiones para revisar y comentar.'
     },
     {
@@ -53,8 +54,8 @@ export const processPage = {
     }
   ] satisfies ProcessStep[],
   close: {
-    heading: 'Solicitar presupuesto',
-    body: 'La respuesta llega lo antes posible.',
+    heading: 'Solicitar propuesta',
+    body: 'La respuesta llega en un día laborable.',
     href: `/contacto?motivo=propuestaComercial&${ORIGIN}`
   }
 } as const;

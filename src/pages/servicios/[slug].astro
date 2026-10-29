@@ -11,7 +11,8 @@ export async function getStaticPaths() {
 }
 
 const { service } = Astro.props;
-const pageUrl = new URL(`/servicios/${service.slug}`, site.url).href;
+// URLs con barra final para coincidir con el canonical de Layout.
+const pageUrl = new URL(`/servicios/${service.slug}/`, site.url).href;
 const isSoftware = service.slug === 'software-a-medida';
 const relatedCase = isSoftware
   ? { href: '/proyectos/zedazo', label: 'Saber más sobre Zedazo' }
@@ -24,7 +25,8 @@ const jsonLd = [
     url: pageUrl,
     serviceType: service.title,
     provider: {
-      '@type': 'Organization',
+      '@type': 'ProfessionalService',
+      '@id': `${site.url}/#alexendros`,
       name: site.name,
       url: site.url
     },
@@ -38,7 +40,7 @@ const jsonLd = [
         '@type': 'ListItem',
         position: 2,
         name: 'Servicios profesionales',
-        item: new URL('/servicios', site.url).href
+        item: new URL('/servicios/', site.url).href
       },
       { '@type': 'ListItem', position: 3, name: service.title, item: pageUrl }
     ]
@@ -161,6 +163,13 @@ const jsonLd = [
           <h2 class="text-2xl font-bold">Qué no incluye</h2>
           <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
             {service.commercial.exclusions.map((item) => <li>{item}</li>)}
+          </ul>
+        </section>
+
+        <section data-product-section="requirements">
+          <h2 class="text-2xl font-bold">Requisitos del cliente</h2>
+          <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
+            {service.requirements.map((item) => <li>{item}</li>)}
           </ul>
         </section>
 

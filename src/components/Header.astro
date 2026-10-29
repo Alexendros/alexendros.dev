@@ -96,7 +96,7 @@ const contactCta = splitTwoLineLabel('Formulario de contacto');
     data-mobile-nav
     id="mobile-nav"
     class="lg:hidden border-t border-border"
-    aria-label="Principal"
+    aria-label="Principal, móvil"
     hidden
   >
     <ul class="px-6 py-3 flex flex-col gap-1 text-base font-medium">
@@ -182,6 +182,7 @@ const contactCta = splitTwoLineLabel('Formulario de contacto');
       true
     );
     menuLinks.forEach((link) => link.addEventListener('click', () => setMenuOpen(false)));
+    document.documentElement.dataset.headerReady = 'true';
   }
 
   if (document.readyState === 'loading') {

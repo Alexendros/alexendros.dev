@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import { productTypeLabels, type Project } from '../content/projects';
+import { productTypeLabels, workKindLabels, type Project } from '../content/projects';
 
 interface Props {
   project: Project;
@@ -34,12 +34,12 @@ const Heading = headingLevel;
       </a>
     </Heading>
     <p class="mt-2 text-xs font-mono text-muted text-pretty break-words">
-      {productTypeLabels[project.productType]}
+      {productTypeLabels[project.productType]} · {workKindLabels[project.workKind]}
     </p>
     <p class="mt-2 text-sm text-muted">{project.short}</p>
     {
       project.metrics && project.metrics.length > 0 && (
-        <p class="mt-2 text-xs font-medium text-brand">
+        <p class="mt-2 text-xs font-medium text-primary">
           {project.metrics[0].value} · {project.metrics[0].label}
         </p>
       )

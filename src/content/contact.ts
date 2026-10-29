@@ -62,31 +62,32 @@ export const contact = contactSchema.parse({
   bookings: {
     heading: 'Opciones de contacto',
     intro:
-      'Posicionamiento en buscadores, cumplimiento normativo y ciberseguridad se piden por formulario.',
+      'Las revisiones técnicas de buscadores, privacidad y seguridad se solicitan por formulario.',
     offers: [
       {
         kind: 'form',
         id: 'informe-comercial',
-        title: 'Posicionamiento comercial en buscadores',
+        title: 'Auditoría técnica SEO',
         summary:
-          'Informe técnico SEO y plan de ajustes con métricas verificables para mejorar el posicionamiento.',
+          'Revisión de indexación, estructura y rendimiento con incidencias priorizadas y métricas de referencia.',
         cta: 'Rellenar formulario',
         href: '#escribir'
       },
       {
         kind: 'form',
         id: 'cumplimiento-normativo',
-        title: 'Cumplimiento normativo',
-        summary: 'Revisión de protección de datos, políticas de cookies y accesibilidad del sitio.',
+        title: 'Revisión técnica de privacidad, cookies y accesibilidad',
+        summary:
+          'Evaluación de formularios, consentimiento y accesibilidad en una muestra de rutas.',
         cta: 'Rellenar formulario',
         href: '#escribir'
       },
       {
         kind: 'form',
         id: 'ciberseguridad',
-        title: 'Ciberseguridad',
+        title: 'Revisión básica de seguridad web',
         summary:
-          'Revisión de vulnerabilidades básicas con severidad y corrección recomendada por problema.',
+          'Revisión de cabeceras y superficies públicas evidentes, con incidencias priorizadas.',
         cta: 'Rellenar formulario',
         href: '#escribir'
       }

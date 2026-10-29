@@ -8,8 +8,10 @@ export const PUBLISHED_PROJECT_SLUGS = [
   'alexendros-me'
 ] as const;
 
-/** Portal web: opción de contexto en el formulario; no es ficha `/servicios/[slug]`. */
-export const CONTACT_EXTRA_SERVICE_OPTIONS = [{ slug: 'portal-web', title: 'Portal web' }] as const;
+/** Sitio profesional: opción de contexto en el formulario; no es ficha `/servicios/[slug]`. */
+export const CONTACT_EXTRA_SERVICE_OPTIONS = [
+  { slug: 'portal-web', title: 'Sitio web profesional' }
+] as const;
 
 export type ContactServiceSlug =
   (typeof PUBLISHED_SERVICE_SLUGS)[number] | (typeof CONTACT_EXTRA_SERVICE_OPTIONS)[number]['slug'];
