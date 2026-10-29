@@ -8,7 +8,6 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import SkipLink from '../components/SkipLink.astro';
 import StickyCta from '../components/StickyCta.astro';
-import CookieBanner from '../components/consent/CookieBanner.tsx';
 import { site } from '../content/site';
 import { profile } from '../content/profile';
 
@@ -78,17 +77,18 @@ const ogImageUrl = new URL(ogImage, site.url).href;
     </main>
     <Footer />
     <StickyCta pathname={Astro.url.pathname} />
-    <CookieBanner client:idle />
     <script>
       import '../scripts/reveal.ts';
       import '../scripts/header.ts';
       import { initTracking } from '../lib/tracking/loaders';
       import { setupFunnelTracking } from '../lib/tracking/events';
       import { captureReferralFromLocation } from '../lib/referral';
+      import { initCookieBanner } from '../scripts/cookieBanner';
       /* Vercel Analytics/Speed Insights: loadVercelPlatform() tras consentimiento. */
       initTracking();
       setupFunnelTracking();
       captureReferralFromLocation();
+      initCookieBanner();
     </script>
     <script
       is:inline

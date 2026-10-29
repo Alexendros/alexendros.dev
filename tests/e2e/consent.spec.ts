@@ -628,3 +628,25 @@ test('PRIV-05: en vista no-bot el aviso y el panel de preferencias son visibles 
   await expect(panel).toBeHidden();
   expect(await readConsentStorage(page)).toBeNull();
 });
+
+test('PRIV-00: un fallo de inicialización no activa integraciones ni errores no controlados', async ({
+  page
+}) => {
+  const pageErrors: string[] = [];
+  page.on('pageerror', (error) => pageErrors.push(error.message));
+  await page.addInitScript(() => {
+    Object.defineProperty(window, 'MutationObserver', {
+      configurable: true,
+      value: class {
+        constructor() {
+          throw new Error('fallo CMP de prueba');
+        }
+      }
+    });
+  });
+
+  await page.goto('/');
+  await expect(page.locator('html')).not.toHaveAttribute('data-cmp-ready', 'true');
+  await expect(page.locator('script[data-tracker]')).toHaveCount(0);
+  expect(pageErrors).toEqual([]);
+});
