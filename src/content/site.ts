@@ -21,7 +21,6 @@ export const site = {
   social: {
     github: 'https://github.com/alexendros',
     linkedin: 'https://linkedin.com/in/alexendros',
-    email: 'mailto:contratacion@alexendros.dev',
-    cal: 'https://cal.com/alexendros'
+    email: 'mailto:contratacion@alexendros.dev'
   }
 } as const;

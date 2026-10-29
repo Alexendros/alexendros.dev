@@ -13,7 +13,7 @@ por consentimiento; el server-side solo enriquece lo que el cliente ya ha consen
   - `PUBLIC_GTM_SS_DOMAIN=metrics.alexendros.dev` (referencia, sin uso en runtime actual).
   - `PUBLIC_GA4_ID` → GA4 directo (fallback/doble).
   - `META_PIXEL_ID` + `META_CAPI_TOKEN` → CAPI server-side desde `POST /api/contact` y
-    `POST /api/cal/webhook`.
+    `POST /api/contact`.
 
 ## 2. Despliegue del contenedor SS en Vercel Hobby
 
@@ -61,7 +61,7 @@ por consentimiento; el server-side solo enriquece lo que el cliente ya ha consen
 2. GTM Preview (web + server) muestra los eventos del funnel con sus parámetros.
 3. Meta Events Manager → Test Events: `POST /api/contact` con `META_CAPI_TEST_EVENT_CODE`
    configurado registra un `Lead` sin contaminar producción.
-4. `POST /api/cal/webhook` (BOOKING_PAID) registra `Purchase` con el mismo `event_id` que el cliente.
+4. Las conversiones de contacto se registran desde `POST /api/contact`.
 
 ## 7. Rollback
 

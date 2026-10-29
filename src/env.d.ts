@@ -9,7 +9,6 @@ interface ImportMetaEnv {
   readonly UPSTASH_REDIS_REST_URL?: string;
   readonly UPSTASH_REDIS_REST_TOKEN?: string;
   readonly PUBLIC_SITE_URL?: string;
-  readonly CAL_WEBHOOK_SECRET?: string;
   readonly NOTION_TOKEN?: string;
   /** Data source id (API 2025-09-03). Alias: NOTION_LEADS_DATA_SOURCE_ID. */
   readonly NOTION_LEADS_DATABASE_ID?: string;

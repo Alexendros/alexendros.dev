@@ -5,7 +5,7 @@ const nonEmptyList = z.array(nonEmptyTrimmed).min(1);
 
 export const serviceActionSchema = z
   .object({
-    kind: z.enum(['contact', 'booking', 'configure']),
+    kind: z.enum(['contact', 'configure']),
     label: nonEmptyTrimmed,
     href: nonEmptyTrimmed,
     newTab: z.boolean()
@@ -33,21 +33,21 @@ export const serviceActionSchema = z
       if (url.protocol !== 'https:') {
         ctx.addIssue({
           code: 'custom',
-          message: `action.href de booking debe ser https: ${action.href}`,
+          message: `action.href externo debe ser https: ${action.href}`,
           path: ['href']
         });
       }
     } catch {
       ctx.addIssue({
         code: 'custom',
-        message: `action.href de booking no es URL válida: ${action.href}`,
+        message: `action.href externo no es URL válida: ${action.href}`,
         path: ['href']
       });
     }
     if (!action.newTab) {
       ctx.addIssue({
         code: 'custom',
-        message: 'action.newTab debe ser true para kind=booking',
+        message: 'action.newTab debe ser true para enlaces externos',
         path: ['newTab']
       });
     }

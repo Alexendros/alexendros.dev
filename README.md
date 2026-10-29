@@ -17,8 +17,8 @@ Más detalle y solicitud de propuesta en [Servicios profesionales](https://alexe
 ## Cómo empezar
 
 1. Solicitud de propuesta en [Contacto](https://alexendros.dev/contacto/) o correo a [contratacion@alexendros.dev](mailto:contratacion@alexendros.dev).
-2. Llamada breve sin coste: [diagnóstico en Cal.com](https://cal.com/alexendros/diagnostico).
-3. Alcance, plazos y entregables acordados por escrito antes de empezar.
+2. Alcance, plazos y condiciones se acuerdan por escrito antes de empezar.
+3. Entrega y revisión según lo acordado.
 
 Atención a distancia o presencialmente en Valencia. El sitio prioriza claridad, accesibilidad y velocidad; el tracking comercial solo se carga con consentimiento previo y granular.
 

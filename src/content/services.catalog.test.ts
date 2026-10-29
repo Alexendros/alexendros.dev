@@ -70,12 +70,6 @@ describe('CAT catálogo de servicios', () => {
   it('CAT-05: acciones admiten destinos permitidos y rechazan inválidos', () => {
     for (const action of [
       { kind: 'contact', label: 'Contactar', href: '/contacto', newTab: false },
-      {
-        kind: 'booking',
-        label: 'Reservar',
-        href: 'https://cal.com/alexendros/diagnostico',
-        newTab: true
-      },
       { kind: 'configure', label: 'Configurar', href: '/servicios', newTab: false }
     ]) {
       expect(serviceActionSchema.safeParse(action).success).toBe(true);
@@ -83,7 +77,7 @@ describe('CAT catálogo de servicios', () => {
 
     for (const action of [
       { kind: 'contact', label: 'X', href: 'javascript:alert(1)', newTab: false },
-      { kind: 'booking', label: 'X', href: 'http://cal.com/x', newTab: true },
+      { kind: 'contact', label: 'X', href: 'https://example.org/x', newTab: true },
       { kind: 'contact', label: 'X', href: '//evil.example', newTab: false }
     ]) {
       expect(serviceActionSchema.safeParse(action).success).toBe(false);

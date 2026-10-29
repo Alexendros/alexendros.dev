@@ -4,7 +4,7 @@ Repo canónico **público**: [`Alexendros/alexendrosdev`](https://github.com/Ale
 
 ## site.ts
 
-Config global: name, url https://alexendros.dev apex, titleDefault "webs que convierten", nav Servicios/Proyectos/Sobre mi/Contacto, footer legal, social GitHub/LinkedIn/mailto/cal.com. Fuente verdad SEO canonical OG JSON-LD Person.
+Config global: name, url https://alexendros.dev apex, titleDefault "webs que convierten", nav Servicios/Proyectos/Sobre mi/Contacto, footer legal, social GitHub/LinkedIn/mailto. Fuente verdad SEO canonical OG JSON-LD Person.
 
 ## profile.ts
 
@@ -32,7 +32,6 @@ Quien eres: role Full Stack · Auditor · Consultor, summary conversion-focused,
 - ContactForm.tsx: isla React `client:load`, formulario mínimo (mensaje → nombre → canal → email|tel → consentimiento); motivo/categoría/refs ocultos o por query; errores por campo, honeypot, Turnstile opcional
 - DetailIsland.astro: dialog nativo sobre índices de servicios/proyectos con soft-nav (decisión 0022)
 - CookieBanner.tsx: isla CMP `vanilla-cookieconsent` v3 (`client:idle`); Consent Mode v2 default-deny
-- Reserva de sesión profesional: enlace Cal.com en ficha (sin QR embebido ni lead magnet)
 
 ## Paginas
 
