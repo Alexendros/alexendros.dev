@@ -7,7 +7,7 @@ const DESCRIPTION =
 
 const LIST_ITEMS = [
   {
-    label: 'Página web para profesionales y emprendedores',
+    label: 'Sitio web profesional',
     href: '/servicios?origen=home#portal-heading'
   },
   {
@@ -51,7 +51,7 @@ test('Hero home: copy, enlaces, metadatos y sin cadenas antiguas', async ({ page
     await expect(items.nth(i)).toHaveClass(/border-t/);
   }
 
-  const revisionLabel = 'Revisión técnica de páginas web existentes →';
+  const revisionLabel = 'Auditoría técnica SEO de un sitio existente →';
   const revision = hero.getByRole('link', { name: revisionLabel });
   await expect(revision).toBeVisible();
   await expect(revision).toHaveAttribute('href', '/servicios/informe-comercial?origen=home');

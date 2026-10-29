@@ -72,7 +72,7 @@ describe('processPage — copy público de metodología', () => {
     }
 
     expect(processPage.steps.find((s) => s.id === 'escrito')?.receive).toBe(
-      'un contrato vinculante.'
+      'un acuerdo por escrito.'
     );
     expect(processPage.steps.find((s) => s.id === 'construyo')?.title).toBe(
       'Desarrollo y construcción'
@@ -85,7 +85,7 @@ describe('processPage — copy público de metodología', () => {
     );
 
     expect(processPage.close.heading).toBe('Solicitar presupuesto');
-    expect(processPage.close.body).toMatch(/lo antes posible/i);
+    expect(processPage.close.body).toMatch(/en un día laborable/i);
     expect(processPage.close).not.toHaveProperty('primaryCta');
   });
 

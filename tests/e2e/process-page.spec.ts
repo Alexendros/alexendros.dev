@@ -88,7 +88,7 @@ test('proceso: CTAs llevan origen', async ({ page }) => {
   await expect(
     page.locator('#sticky-cta').getByRole('link', { name: 'Solicitar presupuesto', exact: true })
   ).toHaveAttribute('href', /origen=proceso/);
-  await expect(page.getByText('un contrato vinculante.')).toBeVisible();
+  await expect(page.getByText('un acuerdo por escrito.')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Desarrollo y construcción' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Previsualización y entrega' })).toBeVisible();
 });

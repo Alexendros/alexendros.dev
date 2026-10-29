@@ -22,7 +22,7 @@ test('F01: home es hero estable + caminos (sin proceso ni caso)', async ({ page 
   await expect(h1).toBeVisible();
   await expect(
     page.getByText(
-      /Atención a distancia o presencialmente en Valencia\. Calidades, presupuesto y plazos con respaldo por contrato\./
+      /Atención a distancia o presencialmente en Valencia\. Alcance, plazo y condiciones acordados por escrito\./
     )
   ).toBeVisible();
   await expect(page.locator('.hero-slot-item')).toHaveCount(0);
@@ -58,7 +58,7 @@ test('F01: home es hero estable + caminos (sin proceso ni caso)', async ({ page 
 
   await expect(
     page.getByRole('heading', {
-      name: 'Página web para profesionales y emprendedores',
+      name: 'Sitio web profesional',
       exact: true
     })
   ).toBeVisible();

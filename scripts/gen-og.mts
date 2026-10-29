@@ -89,9 +89,9 @@ async function writeOg(relPath: string, kicker: string, title: string, subtitle:
 
 await writeOg(
   'default.png',
-  'DISEÑO WEB · VALENCIA',
-  'Webs claras y útiles',
-  'Para profesionales y pequeños negocios'
+  'ALEXENDROS.DEV',
+  'Servicios informáticos y tecnologías',
+  'Revisión técnica, sitios web y software'
 );
 await writeOg(
   'home.png',
@@ -107,9 +107,9 @@ await writeOg(
 );
 await writeOg(
   'proyectos.png',
-  'CASOS',
-  'Trabajos de principio a fin',
-  'Webs, tiendas y herramientas'
+  'PROYECTOS',
+  'Proyectos realizados',
+  'Webs, catálogos y herramientas'
 );
 await writeOg(
   'contacto.png',

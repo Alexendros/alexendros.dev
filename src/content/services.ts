@@ -180,12 +180,12 @@ export const services: Service[] = [
     description:
       'Revisión técnica de la superficie pública relacionada con datos personales, cookies y accesibilidad. Cada incidencia incluye severidad y corrección recomendada. No constituye asesoramiento jurídico ni certificación de conformidad.',
     audience: [
-      'Negocios que necesitan un informe accionable de datos, cookies y accesibilidad antes de endurecer su sitio.'
+      'Negocios que necesitan un informe accionable de datos, cookies y accesibilidad antes de mejorar su sitio.'
     ],
     problems: [
       'Dudas de protección de datos (RGPD) en la web',
       'Políticas de cookies poco claras o incompletas',
-      'Accesibilidad insuficiente al navegar o al cumplir requisitos básicos'
+      'Barreras de accesibilidad al navegar por el sitio'
     ],
     requirements: [
       'Información sobre formularios, proveedores y canales de recogida de datos utilizados en el sitio.'
@@ -202,7 +202,7 @@ export const services: Service[] = [
     ],
     process: ['Alcance del encargo', 'Análisis', 'Redacción del informe', 'Entrega'],
     technicalDetails: [
-      'Revisión de avisos legales, cookies, formularios y barreras evidentes de accesibilidad.'
+      'Revisión de los textos informativos del sitio, cookies, formularios y barreras evidentes de accesibilidad.'
     ],
     commercial: {
       engagement: 'proposal',
@@ -233,7 +233,7 @@ export const services: Service[] = [
     description:
       'Revisión básica de seguridad en la muestra evaluada. Cada incidencia incluye severidad y corrección recomendada. No incluye prueba de intrusión ni permite afirmar que el sitio esté libre de riesgos.',
     audience: [
-      'Negocios que necesitan priorizar riesgos técnicos evidentes antes de endurecer el sitio.'
+      'Negocios que necesitan priorizar riesgos técnicos evidentes antes de reforzar el sitio.'
     ],
     problems: [
       'Superficie de seguridad sin priorizar',
@@ -252,7 +252,7 @@ export const services: Service[] = [
     ],
     process: ['Alcance del encargo', 'Análisis', 'Redacción del informe', 'Entrega'],
     technicalDetails: [
-      'Revisión proporcional OWASP ASVS L1, CSP y superficies públicas evidentes.'
+      'Revisión de cabeceras, CSP y superficies públicas evidentes, con las guías OWASP como referencia y sin declarar conformidad.'
     ],
     commercial: {
       engagement: 'proposal',
@@ -310,7 +310,7 @@ export const services: Service[] = [
       'Alineación con el equipo y propuesta de la primera fase',
       'Construcción del entregable de la fase',
       'Prueba conjunta y entrega',
-      'Fases siguientes solo si las acordamos por escrito'
+      'Fases siguientes solo con acuerdo por escrito'
     ],
     technicalDetails: [
       'Stack según el problema y las convenciones del equipo (web, CLI u otra superficie acordada).',
@@ -320,7 +320,8 @@ export const services: Service[] = [
       engagement: 'proposal',
       timeline: 'Por fases; cada una con su plazo escrito',
       delivery: 'Código, documentación y accesos de la fase acordada',
-      guarantee: 'Si algo no cumple lo acordado en esa fase, se corrige sin coste.',
+      guarantee:
+        'Si algo no cumple el alcance escrito de esa fase, se corrige sin coste antes de cerrarla.',
       exclusions: [
         'No incluye mantenimiento continuo salvo acuerdo aparte',
         'No garantiza ventas ni adopción del producto'

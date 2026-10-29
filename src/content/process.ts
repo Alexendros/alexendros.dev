@@ -24,23 +24,23 @@ export const processPage = {
     {
       id: 'hablamos',
       title: 'Conversación inicial',
-      duration: '30 min, sin coste',
+      duration: '30 min',
       description: 'El cliente explica el objetivo, el alcance y el resultado que busca.',
-      receive: 'Propuesta con precio y plazo en un día laborable.'
+      receive: 'Propuesta con alcance y plazo en un día laborable.'
     },
     {
       id: 'escrito',
       title: 'Acuerdo por escrito',
       duration: '1–2 días',
       description: 'Queda definido qué incluye, qué no, el importe y la fecha de entrega.',
-      receive: 'un contrato vinculante.'
+      receive: 'un acuerdo por escrito.'
     },
     {
       id: 'construyo',
       title: 'Desarrollo y construcción',
-      duration: 'A partir de 10 días laborables en una web sencilla',
+      duration: 'Orientativo: 10 días laborables en una web sencilla',
       description:
-        'Se muestran avances en 2–3 momentos. Si el alcance crece, se comunica el cambio de precio y plazo antes de seguir.',
+        'Se muestran avances en 2–3 momentos. Si el alcance crece, se comunica el cambio antes de seguir.',
       receive: 'Versiones para revisar y comentar.'
     },
     {
@@ -54,7 +54,7 @@ export const processPage = {
   ] satisfies ProcessStep[],
   close: {
     heading: 'Solicitar presupuesto',
-    body: 'La respuesta llega lo antes posible.',
+    body: 'La respuesta llega en un día laborable.',
     href: `/contacto?motivo=propuestaComercial&${ORIGIN}`
   }
 } as const;
