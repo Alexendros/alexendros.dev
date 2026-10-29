@@ -15,12 +15,8 @@ const LIST_ITEMS = [
     href: '/servicios?origen=home#portal-heading'
   },
   {
-    label: 'Aplicaciones útiles para ordenadores con Linux',
-    href: '/contacto?motivo=propuestaComercial&origen=home-linux'
-  },
-  {
-    label: 'Integración de Inteligencia Artificial en procesos empresariales y oficios',
-    href: '/contacto?motivo=propuestaComercial&origen=home-ia'
+    label: 'Colaboración en proyectos de software',
+    href: '/servicios/software-a-medida'
   }
 ] as const;
 
@@ -42,7 +38,7 @@ test('Hero home: copy, enlaces, metadatos y sin cadenas antiguas', async ({ page
   await expect(page.locator('h1')).toHaveCount(1);
 
   const items = hero.locator('ul > li');
-  await expect(items).toHaveCount(4);
+  await expect(items).toHaveCount(3);
   for (let i = 0; i < LIST_ITEMS.length; i++) {
     const link = items.nth(i).getByRole('link');
     // Link arrow: el → está aria-hidden; el nombre accesible es la etiqueta.

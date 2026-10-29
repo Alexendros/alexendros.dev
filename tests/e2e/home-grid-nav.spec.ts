@@ -64,7 +64,7 @@ test('F01: home es hero estable + caminos (sin proceso ni caso)', async ({ page 
   ).toBeVisible();
   await expect(
     page.getByRole('heading', {
-      name: 'Integración de Inteligencia Artificial en procesos empresariales y oficios',
+      name: 'Colaboración en proyectos de software',
       exact: true
     })
   ).toBeVisible();
