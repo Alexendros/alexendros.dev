@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import PageHead from '../components/PageHead.astro';
 import Container from '../components/Container.astro';
 import Link from '../components/Link.astro';
-import ContactForm from '../components/ContactForm';
+import ContactForm from '../components/ContactForm.astro';
 import { contact } from '../content/contact';
 import { normalizeProjectSlug, normalizeServiceSlug } from '../content/contactContext';
 import { normalizePortalModuleIds, serializePortalModuleIds } from '../content/portalModules';
@@ -40,7 +40,6 @@ const initialModules = serializePortalModuleIds(normalizePortalModuleIds(params.
 
     <div class="mt-10">
       <ContactForm
-        client:load
         successMessage={contact.messages.success}
         errorMessage={contact.messages.error}
         turnstileSiteKey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
