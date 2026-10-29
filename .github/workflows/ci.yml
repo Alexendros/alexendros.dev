@@ -337,7 +337,7 @@ jobs:
 
   lhci:
     name: lhci
-    if: github.event_name != 'schedule'
+    if: ${{ github.event_name != 'schedule' && ((github.event_name == 'workflow_dispatch' && inputs.e2e) || (github.event_name == 'pull_request' && contains(join(github.event.pull_request.labels.*.name, ','), 'e2e'))) }}
     needs: [build]
     runs-on: ubuntu-latest
     timeout-minutes: 45
@@ -362,10 +362,23 @@ jobs:
 
   ci-gate:
     name: ci-gate
-    if: github.event_name != 'schedule'
-    needs: [quality, test, build, secrets, sca, zizmor, actionlint, csp, axe, lhci]
+    if: ${{ always() && github.event_name != 'schedule' }}
+    needs: [quality, test, build, smoke, e2e-critical, secrets, sca, zizmor, actionlint, csp, axe]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Agregador
-        run: echo "ci-gate ok"
+      - name: Verificar checks obligatorios
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          node - <<'NODE'
+          const results = JSON.parse(process.env.NEEDS ?? '{}');
+          const unsuccessful = Object.entries(results)
+            .filter(([, { result }]) => result !== 'success')
+            .map(([name, { result }]) => `${name}: ${result}`);
+          if (unsuccessful.length > 0) {
+            console.error(`Checks obligatorios sin éxito:\n${unsuccessful.join('\n')}`);
+            process.exit(1);
+          }
+          console.log('ci-gate ok');
+          NODE
