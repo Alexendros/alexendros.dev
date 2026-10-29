@@ -1,0 +1,80 @@
+---
+import { portalBase, portalModules } from '../content/portalModules';
+---
+
+<div data-needs-configurator class="rounded-lg border border-border bg-card p-6 md:p-8">
+  <h2 id="portal-heading" class="text-xl font-bold">
+    Sitio web profesional: selecciona las necesidades del proyecto.
+  </h2>
+  <p class="mt-2 text-sm text-muted">
+    Base: {portalBase.delivery}. Plazo orientativo: {portalBase.timeline}. Los módulos y sus
+    dependencias se revisan antes de definir el calendario y las condiciones en la propuesta.
+  </p>
+
+  <ul class="mt-6 space-y-3" data-needs-list>
+    <li class="text-sm">
+      <strong>{portalBase.title}</strong>
+      <span class="block text-muted">{portalBase.short}</span>
+      <span class="block text-muted">{portalBase.scope}</span>
+    </li>
+    {
+      portalModules.map((module) => (
+        <li class="border-t border-border pt-3 text-sm">
+          <label class="flex cursor-pointer items-start gap-3" for={`mod-${module.id}`}>
+            <input
+              id={`mod-${module.id}`}
+              type="checkbox"
+              value={module.id}
+              data-module={module.id}
+              class="focus-ring mt-1"
+              aria-describedby="needs-summary"
+            />
+            <span>
+              <strong>{module.title}</strong>
+              <span class="block text-muted">{module.short}</span>
+              <span class="block text-muted">{module.scope}</span>
+              <span class="block text-muted">{module.timeline}</span>
+              {module.dependencies.map((dependency) => (
+                <span class="block text-xs text-muted">Requisito: {dependency}</span>
+              ))}
+            </span>
+          </label>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div
+    id="needs-summary"
+    class="mt-6 border-t border-border pt-4 text-sm"
+    aria-live="polite"
+    aria-atomic="true"
+    data-selected-modules
+  >
+    <strong>Necesidades seleccionadas</strong>
+    <p class="mt-2 text-muted" data-needs-empty>
+      Todavía no hay módulos seleccionados. La propuesta puede partir solo de la base.
+    </p>
+    <ul class="mt-2 list-disc pl-5 text-muted" data-needs-selected hidden></ul>
+  </div>
+
+  <div class="mt-6 flex flex-wrap items-center gap-4">
+    <a
+      href="/contacto?motivo=propuestaComercial&origen=servicios"
+      data-needs-cta
+      class="btn focus-ring inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-ink transition-colors hover:bg-primaryHover"
+    >
+      Solicitar propuesta
+    </a>
+    <a
+      href="/contacto?motivo=informacionCliente"
+      class="focus-ring rounded text-sm font-medium text-muted underline decoration-dotted underline-offset-4 hover:text-primary"
+    >
+      Solicitar información sin seleccionar módulos
+    </a>
+  </div>
+</div>
+
+<script>
+  import '../scripts/needsConfigurator';
+</script>
