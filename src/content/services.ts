@@ -11,49 +11,21 @@ export const serviceActionSchema = z
     newTab: z.boolean()
   })
   .superRefine((action, ctx) => {
-    if (action.kind === 'contact' || action.kind === 'configure') {
-      if (!action.href.startsWith('/') || action.href.startsWith('//')) {
-        ctx.addIssue({
-          code: 'custom',
-          message: `action.href interno inválido para kind=${action.kind}: ${action.href}`,
-          path: ['href']
-        });
-      }
-      if (action.newTab) {
-        ctx.addIssue({
-          code: 'custom',
-          message: `action.newTab debe ser false para kind=${action.kind}`,
-          path: ['newTab']
-        });
-      }
-      return;
-    }
-    try {
-      const url = new URL(action.href);
-      if (url.protocol !== 'https:') {
-        ctx.addIssue({
-          code: 'custom',
-          message: `action.href externo debe ser https: ${action.href}`,
-          path: ['href']
-        });
-      }
-    } catch {
+    if (!action.href.startsWith('/') || action.href.startsWith('//')) {
       ctx.addIssue({
         code: 'custom',
-        message: `action.href externo no es URL válida: ${action.href}`,
+        message: `action.href interno inválido para kind=${action.kind}: ${action.href}`,
         path: ['href']
       });
     }
-    if (!action.newTab) {
+    if (action.newTab) {
       ctx.addIssue({
         code: 'custom',
-        message: 'action.newTab debe ser true para enlaces externos',
+        message: `action.newTab debe ser false para kind=${action.kind}`,
         path: ['newTab']
       });
     }
   });
-
-export type ServiceAction = z.infer<typeof serviceActionSchema>;
 
 export const serviceCommercialSchema = z.object({
   engagement: z.literal('proposal'),
@@ -62,8 +34,6 @@ export const serviceCommercialSchema = z.object({
   guarantee: nonEmptyTrimmed,
   exclusions: nonEmptyList
 });
-
-export type ServiceCommercial = z.infer<typeof serviceCommercialSchema>;
 
 export const serviceSchema = z.object({
   slug: nonEmptyTrimmed,

@@ -62,10 +62,11 @@ export const contactSchema = z
       return 'particular';
     }, z.enum(entityTypes)),
     channel: z.enum(contactChannels),
-    email: z.preprocess(
-      (v) => (typeof v === 'string' && v.trim() === '' ? undefined : v),
-      z.string().trim().email().max(254).optional()
-    ),
+    email: z.preprocess((v) => {
+      if (typeof v !== 'string') return v;
+      const trimmed = v.trim();
+      return trimmed === '' ? undefined : trimmed;
+    }, z.email().max(254).optional()),
     /** UI mínima: default informacionCliente; query `motivo` allowlisted si llega. */
     reason: z.preprocess((v) => {
       if (typeof v === 'string' && (contactReasons as readonly string[]).includes(v)) return v;

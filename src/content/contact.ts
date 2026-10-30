@@ -94,14 +94,3 @@ export const contact = contactSchema.parse({
     ]
   }
 });
-
-/** Reservado para ofertas de reserva; hoy la página solo usa formulario. */
-export const publicBookingEvents: Array<{
-  kind: 'cal';
-  calLink: string;
-  url: string;
-  title: string;
-  summary: string;
-  cta: string;
-  id: string;
-}> = [];

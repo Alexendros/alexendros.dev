@@ -19,8 +19,8 @@ export const projectSchema = z.object({
   highlights: z.array(z.string()).min(1),
   results: z.array(z.string()).min(1).optional(),
   links: z.object({
-    prod: z.string().url().optional(),
-    github: z.string().url().optional()
+    prod: z.url().optional(),
+    github: z.url().optional()
   }),
   published: z.string().min(1),
   featured: z.boolean(),
@@ -57,12 +57,6 @@ export type ProjectProductType = Project['productType'];
  * evidencias con permiso; no son testimonios inventados. (Nota editorial: no
  * publicar este párrafo en la vista.)
  */
-export const availabilityLabels: Record<ProjectAvailability, string> = {
-  si: 'Disponible para consulta o encargo sobre esta obra',
-  no: 'No transferible (no se vende ni cede)',
-  reservado: 'Reservado — titular actual; consulta posible'
-};
-
 export const availabilityCtaLabels: Record<ProjectAvailability, string> = {
   si: 'Consultar sobre esta obra',
   no: 'Consultar sobre esta obra',
@@ -283,7 +277,3 @@ projects.forEach((p, i) => {
   if (projectSlugs.has(p.slug)) throw new Error(`Project slug duplicado: ${p.slug}`);
   projectSlugs.add(p.slug);
 });
-
-export function getFeaturedProjects() {
-  return projects.filter((p) => p.featured);
-}

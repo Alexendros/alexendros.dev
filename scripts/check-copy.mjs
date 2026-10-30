@@ -7,18 +7,7 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 const ROOT = process.cwd();
-const TARGETS = [
-  'src/content',
-  'src/components/Hero.astro',
-  'src/components/StickyCta.astro',
-  'src/components/ContactForm.tsx',
-  'src/components/consent/CookieBanner.tsx',
-  'src/pages/index.astro',
-  'src/pages/contacto.astro',
-  'src/pages/cookies.astro',
-  'src/pages/privacidad.astro',
-  'src/pages/identidad.astro'
-];
+const TARGETS = ['src/content', 'src/components', 'src/scripts', 'src/pages'];
 const EXT = /\.(astro|tsx|ts)$/;
 const BAD_LINE = /[,;][a-záéíóúñü]/;
 
@@ -64,15 +53,17 @@ function walk(dir, files = []) {
 
 function collectFiles() {
   const files = [];
-  for (const t of TARGETS) {
-    const abs = join(ROOT, t);
+  for (const target of TARGETS) {
+    const abs = join(ROOT, target);
+    let stats;
     try {
-      const st = statSync(abs);
-      if (st.isDirectory()) walk(abs, files);
-      else files.push(abs);
+      stats = statSync(abs);
     } catch {
-      /* ruta opcional */
+      console.error(`check:copy — target inexistente: ${target}`);
+      process.exit(1);
     }
+    if (stats.isDirectory()) walk(abs, files);
+    else files.push(abs);
   }
   return files;
 }
