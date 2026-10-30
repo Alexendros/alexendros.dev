@@ -1,0 +1,100 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Container from '../components/Container.astro';
+import Link from '../components/Link.astro';
+---
+
+<Layout
+  title="Accesibilidad — Alexendros"
+  description="Estado de accesibilidad de alexendros.dev: alcance, método, resultados de la última evaluación e incidencias conocidas."
+>
+  <Container size="narrow" class="pt-12 legal-prose">
+    <p class="font-mono">ACCESIBILIDAD</p>
+    <h1>Declaración de accesibilidad</h1>
+    <p>
+      Esta declaración describe el estado real de <strong>alexendros.dev</strong> a 29 de octubre de 2026.
+      El objetivo técnico del sitio es <strong>WCAG 2.2 nivel AA</strong>. No se declara conformidad
+      total.
+    </p>
+
+    <h2>Alcance evaluado</h2>
+    <p>
+      Plantillas públicas: inicio, servicios y sus cuatro fichas, proyectos y una ficha de proyecto,
+      metodología, sobre mí, contacto, identidad, privacidad y cookies. Incluye el menú móvil, los
+      diálogos de ficha, el aviso de cookies con su panel de preferencias y el formulario de
+      contacto con sus estados de error.
+    </p>
+
+    <h2>Método</h2>
+    <ul>
+      <li>
+        Automático: axe-core sobre 12 rutas (inicio, servicios, tres fichas, proyectos, una ficha,
+        metodología, identidad, contacto, cookies y privacidad) y comprobación de contraste por
+        tokens en tema claro y oscuro, ejecutadas en cada cambio del código.
+      </li>
+      <li>
+        Comprobaciones instrumentadas: un solo H1 y jerarquía sin saltos, landmarks únicos, nombres
+        accesibles de navegación, ausencia de enlaces vacíos e imágenes sin texto alternativo, foco
+        visible, reflujo a 320 CSS px, ampliación equivalente al 200 %, espaciado de texto,
+        reducción de movimiento y tamaño de objetivos.
+      </li>
+      <li>
+        Teclado: recorrido del menú móvil con apertura, cierre con Escape y retorno de foco; cierre
+        de diálogos con Escape y con clic en el fondo; decisiones de cookies sin ratón.
+      </li>
+    </ul>
+    <p>
+      La evaluación con lector de pantalla (NVDA o VoiceOver) <strong>no se ha realizado</strong>.
+      Tampoco se ha hecho una revisión visual por zoom real en navegador de escritorio.
+    </p>
+
+    <h2>Resultado</h2>
+    <ul>
+      <li>Sin violaciones detectadas por axe en las 12 rutas de la muestra.</li>
+      <li>
+        Un H1 por página, sin saltos de nivel de encabezado, con <code>main</code> y navegación nombrada.
+      </li>
+      <li>Sin desbordes horizontales a 320 CSS px ni con el texto espaciado según 1.4.12.</li>
+      <li>Foco visible por teclado en todos los elementos interactivos.</li>
+      <li>Reducción de movimiento respetada: sin animaciones de entrada activas.</li>
+      <li>
+        Los enlaces dentro de una frase conservan el tamaño de la línea de texto y quedan amparados
+        por la excepción de contenido en línea del criterio 2.5.8.
+      </li>
+    </ul>
+
+    <h2>Limitaciones e incidencias conocidas</h2>
+    <ul>
+      <li>
+        No se ha verificado con lectores de pantalla ni con navegadores distintos de Chromium.
+      </li>
+      <li>
+        Los vídeos, incrustaciones y documentos de terceros no forman parte del alcance: el sitio no
+        los usa.
+      </li>
+      <li>
+        Las fichas de proyecto describen imágenes de trabajos ajenos; su texto alternativo se limita
+        a lo que aporta la ficha.
+      </li>
+    </ul>
+
+    <h2>Contacto</h2>
+    <p>
+      Si encuentras una barrera, escribe a
+      <a href="mailto:contratacion@alexendros.dev" class="focus-ring rounded">
+        contratacion@alexendros.dev</a
+      >
+      indicando la dirección, el dispositivo y qué esperabas conseguir. También puedes usar el
+      <Link href="/contacto" variant="inline">formulario de contacto</Link>.
+    </p>
+
+    <h2>Normativa y estándares</h2>
+    <p>
+      El objetivo se fija en las <em>Web Content Accessibility Guidelines</em> 2.2 del W3C. La aplicabilidad
+      de normativa específica de accesibilidad a este sitio se revisa en el marco del programa de cumplimiento
+      de <code>docs/compliance/</code> y no se presupone aquí.
+    </p>
+
+    <p>Última actualización: 29 de octubre de 2026.</p>
+  </Container>
+</Layout>
