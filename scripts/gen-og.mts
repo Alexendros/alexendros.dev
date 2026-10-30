@@ -105,7 +105,12 @@ await writeOg(
   'Servicios profesionales',
   'Revisiones técnicas y colaboración por fases'
 );
-await writeOg('proyectos.png', 'REFERENCIAS', 'Referencias', 'Webs, catálogos y herramientas');
+await writeOg(
+  'proyectos.png',
+  'REFERENCIAS',
+  'Proyectos realizados por encargo',
+  'Webs, catálogos y herramientas'
+);
 await writeOg(
   'contacto.png',
   'CONTACTO',
