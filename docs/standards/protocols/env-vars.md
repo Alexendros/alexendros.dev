@@ -63,7 +63,6 @@ ENV_FILE=.env.provision bash scripts/env-push.sh --dry-run
 
 # 3) Sube de verdad, opcionalmente acotando claves o entornos
 ENV_FILE=.env.provision bash scripts/env-push.sh
-ENV_FILE=.env.provision bash scripts/env-push.sh --only RESEND_API_KEY --envs production,preview
 ```
 
 El script borra antes la clave en cada entorno (`vercel env rm … -y`) y la re-añade por stdin,
@@ -308,7 +307,6 @@ El sistema degrada de forma segura: vaciar una variable **desactiva** su funció
 - Quitar `PUBLIC_*` de tracking → los loaders no cargan scripts.
 - Quitar `TURNSTILE_SECRET_KEY` → el captcha deja de exigirse (recomendado reactivarlo enseguida).
 - Quitar `META_CAPI_TOKEN` → `isCapiConfigured()` es `false` y no hay envío server-side.
-- Quitar `RESEND_API_KEY`/`EMAIL_FROM` → el lead magnet sigue funcionando con la notificación SMTP.
 - Quitar `NOTION_TOKEN`/data source → el lead no se escribe en Notion, pero el email de contacto
   se sigue enviando.
 - Quitar `UPSTASH_*` → los endpoints de contacto pasan a **503 fail-closed** (no fail-open).

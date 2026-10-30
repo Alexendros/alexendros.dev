@@ -13,9 +13,7 @@ const CONSTANTS = {
   PUBLIC_SITE_URL: 'https://alexendros.dev',
   PUBLIC_POSTHOG_HOST: 'https://eu.i.posthog.com',
   PUBLIC_GTM_SS_DOMAIN: 'metrics.alexendros.dev',
-  PUBLIC_COOKIE_CONSENT_VERSION: '1',
-  EMAIL_FROM: 'hola@alexendros.dev',
-  EMAIL_FROM_NAME: 'Alexendros'
+  PUBLIC_COOKIE_CONSENT_VERSION: '1'
 };
 
 const TARGETS = [
@@ -42,12 +40,6 @@ const TARGETS = [
     label: 'Notion → integraciones internas → secreto',
     url: 'https://www.notion.so/my-integrations',
     patterns: [/\b(?:ntn|secret)_[A-Za-z0-9]{20,}/]
-  },
-  {
-    keys: ['CAL_WEBHOOK_SECRET'],
-    label: 'Cal.com → Developer → Webhooks → signing secret',
-    url: 'https://app.cal.com/settings/developer/webhooks',
-    manual: true
   },
   {
     keys: ['PUBLIC_GA4_ID'],
@@ -110,16 +102,6 @@ const TARGETS = [
     manual: true
   }
 ];
-
-function _readEnvFile() {
-  if (!existsSync(ENV_FILE)) return new Map();
-  const entries = new Map();
-  for (const line of readFileSync(ENV_FILE, 'utf8').split('\n')) {
-    const match = line.match(/^([A-Z0-9_]+)=(.*)$/);
-    if (match) entries.set(match[1], match[2]);
-  }
-  return entries;
-}
 
 function writeEnvFile(found) {
   const lines = existsSync(ENV_FILE) ? readFileSync(ENV_FILE, 'utf8').split('\n') : [];
