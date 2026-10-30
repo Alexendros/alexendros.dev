@@ -24,7 +24,7 @@ Atención a distancia o presencialmente en Valencia. El sitio prioriza claridad,
 
 ## Este repositorio
 
-Código fuente **público** del sitio en producción ([`Alexendros/alexendrosdev`](https://github.com/Alexendros/alexendrosdev)). Para contribuir o desplegar, empieza por [CONTRIBUTING](CONTRIBUTING.md). Arquitectura en [ARCHITECTURE.md](ARCHITECTURE.md); estándares, protocolos y registros en [docs/](docs/). Contrato para agentes: [AGENTS.md](AGENTS.md). Plan de cierre y evidencias: [PLAN-CIERRE-SHIP](docs/plans/PLAN-CIERRE-SHIP.md). Avisos de seguridad: [SECURITY.md](SECURITY.md).
+Código fuente **público** del sitio en producción ([`Alexendros/alexendros.dev`](https://github.com/Alexendros/alexendros.dev)). Para contribuir o desplegar, empieza por [CONTRIBUTING](CONTRIBUTING.md). Arquitectura en [ARCHITECTURE.md](ARCHITECTURE.md); estándares, protocolos y registros en [docs/](docs/). Contrato para agentes: [AGENTS.md](AGENTS.md). Plan de cierre y evidencias: [PLAN-CIERRE-SHIP](docs/plans/PLAN-CIERRE-SHIP.md). Avisos de seguridad: [SECURITY.md](SECURITY.md).
 
 ```bash
 pnpm i

@@ -1,6 +1,6 @@
 # IDENTIDAD DE CADA ELEMENTO — alexendros.dev
 
-Repo canónico **público**: [`Alexendros/alexendrosdev`](https://github.com/Alexendros/alexendrosdev). Deploy: Vercel Hobby proyecto **`alexendros-dev`** (apex producción).
+Repo canónico **público**: [`Alexendros/alexendros.dev`](https://github.com/Alexendros/alexendros.dev). Deploy: Vercel Hobby proyecto **`alexendros-dev`** (apex producción; `www` → apex).
 
 ## site.ts
 

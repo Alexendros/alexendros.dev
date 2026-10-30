@@ -6,40 +6,19 @@ import { resolve } from 'node:path';
  * CP-10 — redirects de vercel.json contra apex de producción (solo GET).
  * El preview estático local no aplica reglas de edge; esta suite habla con
  * https://alexendros.dev. Incluida en e2e-critical (rojo si apex cae).
+ *
+ * Importante: los samples de `:path*` deben resolver a una ruta que exista
+ * tras el redirect. Un segmento ficticio pasa el PR (pending/200) y rompe
+ * `main` en cuanto Production aplica el 308.
  */
 
 const APEX = 'https://alexendros.dev';
 const WWW = 'https://www.alexendros.dev';
 
-/**
- * Redirects declarados en vercel.json que el apex aún puede no aplicar
- * (página antigua en 200 hasta el deploy que los activa). Tras el merge,
- * el mismo test exige 301/308 cuando ya estén en producción.
- */
-const PENDING_APEX_REDIRECT_SOURCES = new Set([
-  '/servicios/sesion-profesional',
-  '/servicios/sesion-profesional/',
-  '/servicios/auditoria-normativa-ciberseguridad',
-  '/servicios/auditoria-normativa-ciberseguridad/',
-  // Canónica /metodo: apex aún aterriza en /proceso-y-entrega hasta promote.
-  '/metodologia',
-  '/metodologia/',
-  '/valores',
-  '/valores/',
-  '/como-trabajo',
-  '/como-trabajo/',
-  '/proceso-y-entrega',
-  '/proceso-y-entrega/'
-]);
-
-/** Destino legacy en apex mientras no se publique /metodo. */
-const LEGACY_METODO_FINAL = '/proceso-y-entrega';
-
-/**
- * Segmento de muestra para patrones `:path*`. Debe existir en el destino
- * (p. ej. /referencias/zedazo); un ficticio provoca 404 tras el 308 y rompe main.
- */
+/** Slug real de /referencias (y cualquier destino que conserve `:path*`). */
 const SAMPLE_PATH_SEGMENT = 'zedazo';
+
+const PERMANENT_REDIRECT = new Set([301, 308]);
 
 type VercelRedirect = {
   source: string;
@@ -47,6 +26,15 @@ type VercelRedirect = {
   permanent?: boolean;
   has?: unknown[];
 };
+
+function expandPathPattern(pattern: string): string {
+  return pattern.includes(':path*') ? pattern.replace(':path*', SAMPLE_PATH_SEGMENT) : pattern;
+}
+
+function pathnameOf(urlOrPath: string): string {
+  const path = urlOrPath.startsWith('http') ? new URL(urlOrPath).pathname : urlOrPath;
+  return path.replace(/\/$/, '') || '/';
+}
 
 function loadPathRedirects(): VercelRedirect[] {
   const raw = JSON.parse(readFileSync(resolve(process.cwd(), 'vercel.json'), 'utf8')) as {
@@ -56,22 +44,12 @@ function loadPathRedirects(): VercelRedirect[] {
   return raw.redirects.filter((r) => !r.has?.length);
 }
 
-/** Convierte un patrón Vercel `:path*` en una URL de muestra absoluta. */
 function sampleSourceUrl(source: string): string {
-  if (source.includes(':path*')) {
-    return `${APEX}${source.replace(':path*', SAMPLE_PATH_SEGMENT)}`;
-  }
-  return `${APEX}${source}`;
+  return `${APEX}${expandPathPattern(source)}`;
 }
 
 function expectedFinalPath(destination: string): string {
-  const withSample = destination.includes(':path*')
-    ? destination.replace(':path*', SAMPLE_PATH_SEGMENT)
-    : destination;
-  if (withSample.startsWith('http')) {
-    return new URL(withSample).pathname.replace(/\/$/, '') || '/';
-  }
-  return withSample.replace(/\/$/, '') || '/';
+  return pathnameOf(expandPathPattern(destination));
 }
 
 async function firstHop(
@@ -91,10 +69,30 @@ async function finalUrl(request: APIRequestContext, url: string): Promise<string
   return response.url();
 }
 
+async function assertPathRedirect(request: APIRequestContext, rule: VercelRedirect): Promise<void> {
+  const from = sampleSourceUrl(rule.source);
+  const hop = await firstHop(request, from);
+
+  expect(
+    PERMANENT_REDIRECT.has(hop.status),
+    `${rule.source}: primer salto debe ser permanente (got ${hop.status})`
+  ).toBe(true);
+  expect(hop.location, `${rule.source}: Location ausente`).toBeTruthy();
+
+  const final = await finalUrl(request, from);
+  const finalPath = pathnameOf(final);
+  const expected = expectedFinalPath(rule.destination);
+
+  expect(finalPath, `${rule.source} → esperado ${expected}, final ${finalPath} (${final})`).toBe(
+    expected
+  );
+  expect(new URL(final).origin).toBe(APEX);
+}
+
 test.describe('CP-10 edge producción', () => {
   test('www redirige a apex sin bucle', async ({ request }) => {
     const hop = await firstHop(request, `${WWW}/`);
-    expect([301, 308]).toContain(hop.status);
+    expect(PERMANENT_REDIRECT.has(hop.status)).toBe(true);
     expect(hop.location).toBeTruthy();
     expect(hop.location!).toMatch(/^https:\/\/alexendros\.dev\/?$/);
 
@@ -107,37 +105,7 @@ test.describe('CP-10 edge producción', () => {
     expect(redirects.length, 'vercel.json debe declarar redirects de path').toBeGreaterThan(5);
 
     for (const rule of redirects) {
-      const from = sampleSourceUrl(rule.source);
-      const hop = await firstHop(request, from);
-      const pending = PENDING_APEX_REDIRECT_SOURCES.has(rule.source);
-      const isPermanent = [301, 308].includes(hop.status);
-
-      if (pending && !isPermanent) {
-        expect(
-          [200, 404].includes(hop.status),
-          `${rule.source}: pendiente de deploy (got ${hop.status})`
-        ).toBe(true);
-        continue;
-      }
-
-      expect(
-        isPermanent,
-        `${rule.source}: primer salto debe ser permanente (got ${hop.status})`
-      ).toBe(true);
-      expect(hop.location, `${rule.source}: Location ausente`).toBeTruthy();
-
-      const final = await finalUrl(request, from);
-      const finalPath = new URL(final).pathname.replace(/\/$/, '') || '/';
-      const expected = expectedFinalPath(rule.destination);
-      if (pending && finalPath === LEGACY_METODO_FINAL && expected === '/metodo') {
-        expect(new URL(final).origin).toBe(APEX);
-        continue;
-      }
-      expect(
-        finalPath,
-        `${rule.source} → esperado ${expected}, final ${finalPath} (${final})`
-      ).toBe(expected);
-      expect(new URL(final).origin).toBe(APEX);
+      await assertPathRedirect(request, rule);
     }
   });
 
