@@ -4,7 +4,7 @@ Repo canónico **público**: [`Alexendros/alexendrosdev`](https://github.com/Ale
 
 ## site.ts
 
-Config global: name, url https://alexendros.dev apex, titleDefault "Alexendros — Tecnologías y servicios informáticos", nav Servicios profesionales/Proyectos realizados/Metodología clara, footer legal, social GitHub/LinkedIn/mailto. Fuente verdad SEO canonical OG JSON-LD Person + ProfessionalService (marca profesional individual).
+Config global: name, url https://alexendros.dev apex, titleDefault "Alexendros — Tecnologías y servicios informáticos", nav Servicios/Referencias/Metodología, footer legal, social GitHub/LinkedIn/mailto. Fuente verdad SEO canonical OG JSON-LD Person + ProfessionalService (marca profesional individual).
 
 ## profile.ts
 
@@ -27,19 +27,19 @@ Alejandro Domingo Agustí como persona responsable y Alexendros como marca profe
 
 ## Componentes
 
-- Header.astro: sticky blur; nav Servicios profesionales / Proyectos realizados / Metodología clara; CTA Formulario de contacto
-- Footer.astro: marca + Contratación (mailto) + nav + legal; tracking solo con consentimiento (CMP); sin Sobre mí en el pie
+- Header.astro: sticky blur; nav Servicios / Referencias / Metodología; CTA Contacto
+- Footer.astro: glass-bg + blur; marca + Contratación (mailto) + nav + legal; tracking solo con consentimiento (CMP); sin Sobre mí en el pie
 - Hero.astro: H1 de taxonomía; lista de cuatro enlaces; CTAs «Solicitar propuesta» y «Catálogo de servicios»
-- ServiceCard.astro / ProjectCard.astro: fichas de catálogo y proyectos con availability
+- ServiceCard.astro / ProjectCard.astro: fichas de catálogo y referencias con availability
 - ContactForm.tsx: isla React `client:load`, formulario mínimo (mensaje → nombre → canal → email|tel → consentimiento); motivo/categoría/refs ocultos o por query; errores por campo, honeypot, Turnstile opcional
-- DetailIsland.astro: dialog nativo sobre índices de servicios/proyectos con soft-nav (decisión 0022)
+- DetailIsland.astro: dialog nativo sobre índices de servicios/referencias con soft-nav (decisión 0022)
 - CookieBanner.tsx: isla CMP `vanilla-cookieconsent` v3 (`client:idle`); Consent Mode v2 default-deny
 
 ## Paginas
 
-- index.astro: Hero + Encargos habituales (decisión 0026; copy en tercera persona)
+- index.astro: Hero + Encargos habituales (decisión 0027; copy en tercera persona)
 - servicios/: Servicios profesionales + selector de necesidades; fichas con propuesta/plazo/entrega/garantía/exclusiones/requisitos
-- proyectos/: Proyectos realizados con availability si|no|reservado
+- referencias/: Referencias con availability si|no|reservado (308 desde /proyectos)
 - metodo.astro (Metodología clara), identidad.astro
 - contacto.astro: formulario mínimo + mailto; sin embed Cal en página
 - api/contact.ts: Zod, honeypot, rate-limit Upstash, idempotencia Redis (estados accepted/processing/conflict/unknown; no exactly-once Redis+SMTP), Proton SMTP; sin CAPI Lead (falta consentimiento publicidad)

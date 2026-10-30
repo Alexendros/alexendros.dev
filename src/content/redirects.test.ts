@@ -21,6 +21,9 @@ describe('redirecciones permanentes', () => {
       ['/como-trabajo/', '/metodo'],
       ['/proceso-y-entrega', '/metodo'],
       ['/proceso-y-entrega/', '/metodo'],
+      ['/proyectos', '/referencias'],
+      ['/proyectos/', '/referencias'],
+      ['/proyectos/:path*', '/referencias/:path*'],
       ['/aviso-legal', '/identidad'],
       ['/afiliados', '/'],
       ['/servicios/produccion-sitios-web', '/servicios'],
@@ -66,11 +69,13 @@ describe('redirecciones permanentes', () => {
     }
   });
 
-  it('las páginas retiradas ya no existen; sobre-mi y metodo sí', () => {
+  it('las páginas retiradas ya no existen; sobre-mi, metodo y referencias sí', () => {
     expect(existsSync(resolve(process.cwd(), 'src/pages/metodologia.astro'))).toBe(false);
     expect(existsSync(resolve(process.cwd(), 'src/pages/valores.astro'))).toBe(false);
     expect(existsSync(resolve(process.cwd(), 'src/pages/proceso-y-entrega.astro'))).toBe(false);
+    expect(existsSync(resolve(process.cwd(), 'src/pages/proyectos'))).toBe(false);
     expect(existsSync(resolve(process.cwd(), 'src/pages/metodo.astro'))).toBe(true);
     expect(existsSync(resolve(process.cwd(), 'src/pages/sobre-mi.astro'))).toBe(true);
+    expect(existsSync(resolve(process.cwd(), 'src/pages/referencias/index.astro'))).toBe(true);
   });
 });

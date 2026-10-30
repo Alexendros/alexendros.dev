@@ -49,6 +49,21 @@
       "permanent": true
     },
     {
+      "source": "/proyectos",
+      "destination": "/referencias",
+      "permanent": true
+    },
+    {
+      "source": "/proyectos/",
+      "destination": "/referencias",
+      "permanent": true
+    },
+    {
+      "source": "/proyectos/:path*",
+      "destination": "/referencias/:path*",
+      "permanent": true
+    },
+    {
       "source": "/aviso-legal",
       "destination": "/identidad",
       "permanent": true

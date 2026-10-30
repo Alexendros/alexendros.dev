@@ -5,8 +5,8 @@ const pages = [
   '/servicios',
   '/servicios/software-a-medida',
   '/metodo',
-  '/proyectos',
-  '/proyectos/zedazo',
+  '/referencias',
+  '/referencias/zedazo',
   '/contacto'
 ];
 

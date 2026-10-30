@@ -24,6 +24,7 @@ export const contactOrigins = [
   'proceso',
   'servicios',
   'home',
+  'referencias',
   'proyectos',
   'home-linux',
   'home-gestion',

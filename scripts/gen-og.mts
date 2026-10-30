@@ -105,12 +105,7 @@ await writeOg(
   'Servicios profesionales',
   'Revisiones técnicas y colaboración por fases'
 );
-await writeOg(
-  'proyectos.png',
-  'PROYECTOS',
-  'Proyectos realizados',
-  'Webs, catálogos y herramientas'
-);
+await writeOg('proyectos.png', 'REFERENCIAS', 'Referencias', 'Webs, catálogos y herramientas');
 await writeOg(
   'contacto.png',
   'CONTACTO',
@@ -127,5 +122,5 @@ for (const s of services) {
   await writeOg(`servicios/${s.slug}.png`, 'SERVICIO', s.ogTitle, s.short);
 }
 for (const p of projects) {
-  await writeOg(`proyectos/${p.slug}.png`, 'PROYECTO', p.title, p.short);
+  await writeOg(`proyectos/${p.slug}.png`, 'REFERENCIA', p.title, p.short);
 }

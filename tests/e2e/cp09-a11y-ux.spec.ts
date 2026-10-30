@@ -21,7 +21,7 @@ async function assertSingleH1AndMain(page: Page) {
 }
 
 test.describe('CP-09 landmarks y jerarquía', () => {
-  for (const path of ['/', '/servicios', '/contacto', '/metodo', '/proyectos'] as const) {
+  for (const path of ['/', '/servicios', '/contacto', '/metodo', '/referencias'] as const) {
     test(`${path}: banner, main y un solo H1`, async ({ page }) => {
       await page.emulateMedia({ reducedMotion: 'reduce' });
       await page.goto(path);
@@ -151,7 +151,7 @@ test.describe('CP-09 recorridos A–E (muestreo)', () => {
   });
 
   test('C: proyecto → CTA disponibilidad → contacto con proyecto', async ({ page }) => {
-    await page.goto('/proyectos/front-valencia');
+    await page.goto('/referencias/front-valencia');
     await assertSingleH1AndMain(page);
     const cta = page.getByRole('link', { name: 'Consultar sobre esta obra' });
     await expect(cta).toBeVisible();

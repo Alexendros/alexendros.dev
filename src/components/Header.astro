@@ -3,10 +3,9 @@ import { site } from '../content/site';
 import Link from './Link.astro';
 import Button from './Button.astro';
 import Container from './Container.astro';
-import { splitTwoLineLabel } from '../lib/stackedLabel';
 
 const path = Astro.url.pathname;
-const contactCta = splitTwoLineLabel('Formulario de contacto');
+const contactHref = '/contacto?motivo=propuestaComercial';
 ---
 
 <header id="site-header" class="sticky top-0 z-50 backdrop-blur border-b border-border glass-bg">
@@ -21,32 +20,17 @@ const contactCta = splitTwoLineLabel('Formulario de contacto');
       {
         site.nav.map((i) => {
           const current = path.startsWith(i.href);
-          const stacked = splitTwoLineLabel(i.label);
           return (
-            <Link
-              href={i.href}
-              variant="nav"
-              current={current}
-              class="inline-flex flex-col items-center text-center leading-tight"
-            >
-              <span>{stacked.primary}</span>
-              {stacked.secondary ? <span>{stacked.secondary}</span> : null}
+            <Link href={i.href} variant="nav" current={current} class="inline-flex items-center">
+              {i.label}
             </Link>
           );
         })
       }
     </nav>
     <div class="flex items-center gap-2 shrink-0">
-      <Button
-        href="/contacto"
-        size="sm"
-        class="hidden min-[360px]:inline-flex text-center leading-tight py-1"
-        aria-label="Formulario de contacto"
-      >
-        <span class="inline-flex flex-col items-center">
-          <span>{contactCta.primary}</span>
-          {contactCta.secondary ? <span>{contactCta.secondary}</span> : null}
-        </span>
+      <Button href={contactHref} size="sm" class="hidden min-[360px]:inline-flex">
+        Contacto
       </Button>
       <button
         type="button"
@@ -111,12 +95,12 @@ const contactCta = splitTwoLineLabel('Formulario de contacto');
       }
       <li>
         <Link
-          href="/contacto"
+          href={contactHref}
           variant="nav"
           current={path.startsWith('/contacto')}
           class="block py-3"
         >
-          Formulario de contacto
+          Contacto
         </Link>
       </li>
     </ul>

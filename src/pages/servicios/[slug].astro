@@ -15,7 +15,7 @@ const { service } = Astro.props;
 const pageUrl = new URL(`/servicios/${service.slug}/`, site.url).href;
 const isSoftware = service.slug === 'software-a-medida';
 const relatedCase = isSoftware
-  ? { href: '/proyectos/zedazo', label: 'Saber más sobre Zedazo' }
+  ? { href: '/referencias/zedazo', label: 'Saber más sobre Zedazo' }
   : null;
 const jsonLd = [
   {

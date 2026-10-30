@@ -12,8 +12,8 @@ const URLS = [
   '/servicios/informe-comercial',
   '/servicios/cumplimiento-normativo',
   '/servicios/ciberseguridad',
-  '/proyectos',
-  '/proyectos/front-valencia',
+  '/referencias',
+  '/referencias/front-valencia',
   '/metodo',
   '/contacto',
   '/cookies',
@@ -89,7 +89,7 @@ test.describe('CP-08 matriz UI — overflow y apilado', () => {
       await setVisualPrefs(page, { theme: 'dark', reducedMotion: true });
 
       // Muestreo representativo (no 13×4×2×2 = 208; bloqueante por ancho/tema).
-      for (const path of ['/', '/servicios', '/contacto', '/proyectos/front-valencia'] as const) {
+      for (const path of ['/', '/servicios', '/contacto', '/referencias/front-valencia'] as const) {
         await page.goto(path);
         await page.waitForLoadState('domcontentloaded');
         await assertNoOverflow(page, `${path}@${width}/dark/rm`);

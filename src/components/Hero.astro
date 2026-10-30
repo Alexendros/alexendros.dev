@@ -16,6 +16,10 @@ const taxonomyLinks = [
   {
     href: '/servicios/software-a-medida',
     label: 'Colaboración en proyectos de software'
+  },
+  {
+    href: '/servicios/informe-comercial?origen=home',
+    label: 'Auditoría técnica SEO de un sitio existente'
   }
 ] as const;
 ---
@@ -33,7 +37,7 @@ const taxonomyLinks = [
       <h1
         class="bp-h1 text-step-4 break-words font-bold leading-[1.05] tracking-tight max-w-3xl text-balance"
       >
-        Servicios informáticos y tecnologías para empresas y particulares.
+        Servicios informáticos y tecnológicos empresariales y profesionales.
       </h1>
     </div>
 
@@ -58,16 +62,7 @@ const taxonomyLinks = [
       }
     </ul>
 
-    <p class="mt-4" data-hero-item style="--i:3">
-      <a
-        href="/servicios/informe-comercial?origen=home"
-        class="focus-ring inline-flex min-h-11 items-center text-sm font-medium text-muted underline decoration-dotted underline-offset-4 hover:text-primary rounded"
-      >
-        Auditoría técnica SEO de un sitio existente →
-      </a>
-    </p>
-
-    <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3" data-hero-item style="--i:4">
+    <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3" data-hero-item style="--i:3">
       <Button href="/contacto?motivo=propuestaComercial&origen=home">Solicitar propuesta</Button>
       <Button href="/servicios?origen=home" variant="secondary">Catálogo de servicios</Button>
     </div>

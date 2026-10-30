@@ -13,11 +13,11 @@ const OUT = outIndex === -1 ? 'capturas' : (args[outIndex + 1] ?? 'capturas');
 const BASE = process.env.CAPTURAS_BASE ?? 'http://127.0.0.1:4321';
 
 const ROUTES = [
-  ['proyectos', '/proyectos/'],
-  ['front-valencia', '/proyectos/front-valencia/'],
-  ['graficas-nasve', '/proyectos/graficas-nasve/'],
-  ['zedazo', '/proyectos/zedazo/'],
-  ['alexendros-me', '/proyectos/alexendros-me/']
+  ['proyectos', '/referencias/'],
+  ['front-valencia', '/referencias/front-valencia/'],
+  ['graficas-nasve', '/referencias/graficas-nasve/'],
+  ['zedazo', '/referencias/zedazo/'],
+  ['alexendros-me', '/referencias/alexendros-me/']
 ];
 const VIEWPORTS = [
   ['320', 320, 900],

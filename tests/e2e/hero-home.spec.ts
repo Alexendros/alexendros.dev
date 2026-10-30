@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const H1 = 'Servicios informáticos y tecnologías para empresas y particulares.';
+const H1 = 'Servicios informáticos y tecnológicos empresariales y profesionales.';
 const TITLE = 'Alexendros — Tecnologías y servicios informáticos';
 const DESCRIPTION =
   'Sitios web profesionales, integración de catálogo y pagos, auditoría técnica SEO y colaboración en proyectos de software. Desde Valencia.';
@@ -17,6 +17,10 @@ const LIST_ITEMS = [
   {
     label: 'Colaboración en proyectos de software',
     href: '/servicios/software-a-medida'
+  },
+  {
+    label: 'Auditoría técnica SEO de un sitio existente',
+    href: '/servicios/informe-comercial?origen=home'
   }
 ] as const;
 
@@ -27,7 +31,8 @@ const OLD_STRINGS = [
   'Explorar servicios',
   'Tecnología clara para negocios: auditoría, diseño y desarrollo',
   'Protocolos claros de gestión para empresas',
-  'Ver servicios'
+  'Ver servicios',
+  'Servicios informáticos y tecnologías para empresas y particulares.'
 ] as const;
 
 test('Hero home: copy, enlaces, metadatos y sin cadenas antiguas', async ({ page }) => {
@@ -38,7 +43,7 @@ test('Hero home: copy, enlaces, metadatos y sin cadenas antiguas', async ({ page
   await expect(page.locator('h1')).toHaveCount(1);
 
   const items = hero.locator('ul > li');
-  await expect(items).toHaveCount(3);
+  await expect(items).toHaveCount(4);
   for (let i = 0; i < LIST_ITEMS.length; i++) {
     const link = items.nth(i).getByRole('link');
     // Link arrow: el → está aria-hidden; el nombre accesible es la etiqueta.
@@ -47,10 +52,9 @@ test('Hero home: copy, enlaces, metadatos y sin cadenas antiguas', async ({ page
     await expect(items.nth(i)).toHaveClass(/border-t/);
   }
 
-  const revisionLabel = 'Auditoría técnica SEO de un sitio existente →';
-  const revision = hero.getByRole('link', { name: revisionLabel });
-  await expect(revision).toBeVisible();
-  await expect(revision).toHaveAttribute('href', '/servicios/informe-comercial?origen=home');
+  await expect(
+    hero.getByRole('link', { name: 'Auditoría técnica SEO de un sitio existente →' })
+  ).toHaveCount(0);
 
   await expect(hero.getByRole('link', { name: 'Solicitar propuesta' })).toHaveAttribute(
     'href',
