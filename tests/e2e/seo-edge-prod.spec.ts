@@ -29,15 +29,17 @@ const PENDING_APEX_REDIRECT_SOURCES = new Set([
   '/como-trabajo',
   '/como-trabajo/',
   '/proceso-y-entrega',
-  '/proceso-y-entrega/',
-  // /proyectos → /referencias: apex sirve 200 hasta el promote de este PR.
-  '/proyectos',
-  '/proyectos/',
-  '/proyectos/:path*'
+  '/proceso-y-entrega/'
 ]);
 
 /** Destino legacy en apex mientras no se publique /metodo. */
 const LEGACY_METODO_FINAL = '/proceso-y-entrega';
+
+/**
+ * Segmento de muestra para patrones `:path*`. Debe existir en el destino
+ * (p. ej. /referencias/zedazo); un ficticio provoca 404 tras el 308 y rompe main.
+ */
+const SAMPLE_PATH_SEGMENT = 'zedazo';
 
 type VercelRedirect = {
   source: string;
@@ -57,16 +59,19 @@ function loadPathRedirects(): VercelRedirect[] {
 /** Convierte un patrón Vercel `:path*` en una URL de muestra absoluta. */
 function sampleSourceUrl(source: string): string {
   if (source.includes(':path*')) {
-    return `${APEX}${source.replace(':path*', 'muestra-cp10')}`;
+    return `${APEX}${source.replace(':path*', SAMPLE_PATH_SEGMENT)}`;
   }
   return `${APEX}${source}`;
 }
 
 function expectedFinalPath(destination: string): string {
-  if (destination.startsWith('http')) {
-    return new URL(destination).pathname.replace(/\/$/, '') || '/';
+  const withSample = destination.includes(':path*')
+    ? destination.replace(':path*', SAMPLE_PATH_SEGMENT)
+    : destination;
+  if (withSample.startsWith('http')) {
+    return new URL(withSample).pathname.replace(/\/$/, '') || '/';
   }
-  return destination.replace(/\/$/, '') || '/';
+  return withSample.replace(/\/$/, '') || '/';
 }
 
 async function firstHop(
