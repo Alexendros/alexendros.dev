@@ -36,7 +36,3 @@ export const articles: Article[] = [
     ]
   }
 ];
-
-export function getArticle(slug: string): Article | undefined {
-  return articles.find((a) => a.slug === slug);
-}

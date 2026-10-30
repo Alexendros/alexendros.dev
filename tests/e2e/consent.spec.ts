@@ -77,7 +77,7 @@ function requestsForHosts(seen: SeenRequest[], domains: readonly string[]): stri
  * `navigator.webdriver` es true (Playwright headless por defecto) no monta
  * ningún control. El init de beforeEach lo deja a false, que es lo que ve un
  * navegador real. Además hay que esperar a que el aviso esté montado (el
- * island del CMP hidrata en client:idle) antes de interactuar.
+ * script del CMP monta el aviso) antes de interactuar.
  */
 async function waitForCmp(page: Page): Promise<void> {
   await expect(page.locator('#cc-main .cm')).toBeVisible();
@@ -92,7 +92,7 @@ async function waitForCmpReady(page: Page): Promise<void> {
 }
 
 /**
- * Abre el panel desde el botón de /cookies tras hidratar el island (client:idle).
+ * Abre el panel desde el botón de /cookies cuando el script del CMP ya está listo.
  */
 async function openPreferencesFromCookies(page: Page) {
   await waitForCmpReady(page);

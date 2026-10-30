@@ -24,7 +24,7 @@ Todos en `src/components/`. Clases utilidad de Tailwind permitidas; valores de c
 
 ### Foco
 
-Un solo sistema: la clase `.focus-ring` (outline 2px `--brand` con offset 2px + anillo `--focus-ring`, ≥3:1 en ambos temas) aplicada a todo interactivo — Button, Link, navegación móvil, islas React (`ContactForm`, `NeedsConfigurator`) y barra CTA. No usar utilidades sueltas `focus-visible:outline*` ni depender del outline por defecto del navegador. El foco de hidratación y el mapa campo→control del formulario de contacto se tratan en el paquete de idempotencia/foco de contacto, no aquí.
+Un solo sistema: la clase `.focus-ring` (outline 2px `--brand` con offset 2px + anillo `--focus-ring`, ≥3:1 en ambos temas) aplicada a todo interactivo — Button, Link, navegación móvil, componentes Astro (`ContactForm`, `NeedsConfigurator`) y barra CTA. No usar utilidades sueltas `focus-visible:outline*` ni depender del outline por defecto del navegador. El foco de hidratación y el mapa campo→control del formulario de contacto se tratan en el paquete de idempotencia/foco de contacto, no aquí.
 
 ### Button
 
@@ -53,12 +53,11 @@ Un solo sistema: la clase `.focus-ring` (outline 2px `--brand` con offset 2px + 
 
 ### Section / SectionHeader
 
-- **Section:** `as?`, `cv?` (default true, `content-visibility`), `reveal?` (`data-reveal`), padding vertical de tokens. Componer con Container dentro.
-- **SectionHeader:** `index` ("FIG. 0X" vía Eyebrow), `title`, `description?`, `linkHref?/linkText?` (Link arrow), `align?: 'start'|'center'`.
+Retirados: la composición de secciones vive en cada página con `Container`, `Eyebrow` y utilidades de espaciado. No reintroducir sin un consumidor real en la vitrina o en una página.
 
 ### Container / Stack / Grid
 
-- **Container:** `size?: 'default'|'narrow'` (`--container` 72rem / `--container-narrow` 56rem), gutter `--gutter`. Sin padding vertical (lo da Section o la página).
+- **Container:** `size?: 'default'|'narrow'` (`--container` 72rem / `--container-narrow` 56rem), gutter `--gutter`. Sin padding vertical (lo da la página).
 - **Stack:** columna con `gap: var(--space-*)` (`gap` default `'4'`, claves `1…24`).
 - **Grid:** rejilla con gap de token; las columnas van en `class` con clases responsive (`sm:grid-cols-2 lg:grid-cols-4`).
 

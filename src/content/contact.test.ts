@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { contact, publicBookingEvents } from './contact';
+import { contact } from './contact';
 
 describe('reservas públicas de contacto R05', () => {
   it('las ofertas de catálogo son formulario y no hay servicios de reserva', () => {
@@ -13,7 +13,6 @@ describe('reservas públicas de contacto R05', () => {
       expect(offer.href).toBe('#escribir');
       expect(JSON.stringify(offer)).not.toMatch(/cal\.com/i);
     }
-    expect(publicBookingEvents).toEqual([]);
     expect(JSON.stringify(contact)).not.toMatch(/sesion-profesional/i);
     expect(JSON.stringify(contact)).not.toMatch(/retainer/i);
   });

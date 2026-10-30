@@ -1,5 +1,5 @@
-import { Client, isFullPage } from '@notionhq/client';
-import type { CreatePageParameters, PageObjectResponse } from '@notionhq/client';
+import { Client } from '@notionhq/client';
+import type { CreatePageParameters } from '@notionhq/client';
 
 type NotionProperties = NonNullable<CreatePageParameters['properties']>;
 
@@ -120,6 +120,3 @@ export function createNotionLeadsStore(
     }
   };
 }
-
-export type NotionPage = PageObjectResponse;
-export const isNotionPage = isFullPage;

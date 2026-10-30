@@ -33,14 +33,12 @@ No abras issues públicos con exploits, PoCs ofensivos, tokens, secretos ni PII.
 - Valores solo en GitHub Secrets / Vercel Env; nunca en el repo:
   - Proton SMTP (`SMTP_*`)
   - Upstash Redis (`UPSTASH_*`)
-  - Cal.com webhook (`CAL_WEBHOOK_SECRET`)
   - Notion (`NOTION_TOKEN`; `NOTION_LEADS_DATABASE_ID` es un id público de data source, no un secreto)
 - Rotar tokens ante sospecha de fuga o cadencia trimestral mínima del SMTP.
 - `/api/contact` es **fail-closed** sin Upstash o si Redis falla (HTTP 503 genérico). No devolver stacks, detalles Zod, ni nombres de variables al cliente.
-- `/api/cal/webhook` es **fail-closed** sin `CAL_WEBHOOK_SECRET`, Upstash o Notion (HTTP 503 genérico). Firma HMAC inválida → 401 genérico. Redis solo para idempotencia (`alexendros:cal:uid:{uid}:{trigger}`); Notion es la fuente de verdad de Leads. Logs sin PII.
 
 Renovate (`.github/renovate.json`) cubre `npm` y `github-actions`. No hay Dependabot de version-updates.
 
 ## Alcance
 
-Sitio de marketing/portfolio (alexendros.dev). Fuera de alcance: seguridad de terceros enlazados (Cal.com, Proton, Vercel, Upstash) más allá de su uso documentado.
+Sitio de marketing/portfolio (alexendros.dev). Fuera de alcance: seguridad de terceros enlazados (Proton, Vercel, Upstash) más allá de su uso documentado.

@@ -1,3 +1,5 @@
+// El build ESM solo expone exports nombrados; los tipos usan `export =` y
+// sugieren un default que no existe en runtime. No convertir a default import.
 import * as CookieConsent from 'vanilla-cookieconsent';
 import 'vanilla-cookieconsent/dist/cookieconsent.css';
 import {

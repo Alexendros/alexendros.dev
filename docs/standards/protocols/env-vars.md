@@ -63,7 +63,6 @@ ENV_FILE=.env.provision bash scripts/env-push.sh --dry-run
 
 # 3) Sube de verdad, opcionalmente acotando claves o entornos
 ENV_FILE=.env.provision bash scripts/env-push.sh
-ENV_FILE=.env.provision bash scripts/env-push.sh --only RESEND_API_KEY --envs production,preview
 ```
 
 El script borra antes la clave en cada entorno (`vercel env rm … -y`) y la re-añade por stdin,
@@ -110,7 +109,7 @@ vercel --prod      # producción (alexendros.dev)
 
 ### 4.1 SMTP — Proton Mail
 
-Endpoint afectado: `POST /api/contact`, `POST /api/afiliados`.
+Endpoint afectado: `POST /api/contact`.
 
 1. Necesitas un plan de Proton de pago con **SMTP submission** (Proton Mail Business/paid).
 2. Entra en Proton → **Settings → IMAP/SMTP** (o _Security and login → IMAP/SMTP tokens_).
@@ -130,7 +129,7 @@ Cargar en Vercel en `Production`, `Preview` y `Development`.
 
 ### 4.2 Upstash Redis
 
-Protege `/api/contact` (10/min), `/api/afiliados` (5/min) y la idempotencia del webhook de
+Protege `/api/contact` (10/min) y la idempotencia de los envíos del formulario.
 Sin estas variables los endpoints de contacto responden **503 fail-closed**.
 
 1. Entra en <https://console.upstash.com> → **Create Database**.
@@ -244,8 +243,9 @@ en el envío de contacto.
 ## 7. Email transaccional (retirado)
 
 Lead magnet, newsletter y Resend/doble opt-in se retiraron del código publicado. El contacto
-operativo usa Proton SMTP (`SMTP_*`). Si quedan variables `RESEND_*` / `UNSUBSCRIBE_SECRET` en
-Vercel, pueden borrarse; ya no tienen consumidor.
+operativo usa Proton SMTP (`SMTP_*`). Las variables `RESEND_*`, `EMAIL_FROM*` y
+`UNSUBSCRIBE_SECRET` ya no existen en `.env.example` ni tienen consumidor: si siguen en Vercel,
+pueden borrarse.
 
 ## 8. Variables de referencia
 
@@ -308,7 +308,6 @@ El sistema degrada de forma segura: vaciar una variable **desactiva** su funció
 - Quitar `PUBLIC_*` de tracking → los loaders no cargan scripts.
 - Quitar `TURNSTILE_SECRET_KEY` → el captcha deja de exigirse (recomendado reactivarlo enseguida).
 - Quitar `META_CAPI_TOKEN` → `isCapiConfigured()` es `false` y no hay envío server-side.
-- Quitar `RESEND_API_KEY`/`EMAIL_FROM` → el lead magnet sigue funcionando con la notificación SMTP.
 - Quitar `NOTION_TOKEN`/data source → el lead no se escribe en Notion, pero el email de contacto
   se sigue enviando.
 - Quitar `UPSTASH_*` → los endpoints de contacto pasan a **503 fail-closed** (no fail-open).

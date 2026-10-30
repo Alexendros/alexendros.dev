@@ -10,22 +10,22 @@ Sitio profesional de conversión + contratación. Producción: [https://alexendr
 
 ## Stack
 
-Astro 7.3 hybrid + islas React (`ContactForm` con `client:load`, CMP `CookieBanner` con `client:idle`) + Tailwind (PostCSS) + TypeScript estricto + Zod. Fuentes Inter + JetBrains Mono self-hosted. Tracking comercial (GA4, Meta, Clarity, PostHog, LinkedIn, GTM) solo con consentimiento previo y granular (Consent Mode v2 default-deny). Vercel Analytics y Speed Insights solo en builds de Vercel (`__IS_VERCEL__`).
+Astro 7.3 con `output: 'static'` y rutas on-demand (`prerender = false`) + Tailwind (PostCSS) + TypeScript estricto + Zod. Sin islas React: formulario, CMP y configurador son componentes Astro con scripts vanilla. Fuentes Inter + JetBrains Mono self-hosted. Tracking comercial (GA4, Meta, Clarity, PostHog, LinkedIn, GTM) solo con consentimiento previo y granular (Consent Mode v2 default-deny). Vercel Analytics y Speed Insights solo en builds de Vercel (`__IS_VERCEL__`).
 
 ## Runtime
 
-| Capa                 | Dónde                                                                  | Notas                               |
-| -------------------- | ---------------------------------------------------------------------- | ----------------------------------- |
-| Páginas SSG          | `src/pages/*.astro`                                                    | Contenido tipado; 0 JS de contenido |
-| Islas cliente        | `ContactForm.tsx` (`client:load`), `CookieBanner.tsx` (`client:idle`)  | Formulario + CMP                    |
-| APIs serverless      | `src/pages/api/contact.ts`, `src/pages/api/cal/webhook.ts`, CSP report | Adapter `@astrojs/vercel`           |
-| Contenido            | `src/content/*.ts`                                                     | Zod en build; no CMS                |
-| Estáticos de preview | `.vercel/output/static`                                                | `pnpm preview` / job `smoke`        |
+| Capa                 | Dónde                                                              | Notas                                 |
+| -------------------- | ------------------------------------------------------------------ | ------------------------------------- |
+| Páginas SSG          | `src/pages/*.astro`                                                | Contenido tipado; 0 JS de contenido   |
+| Scripts cliente      | `src/scripts/*.ts` (reveal, header, CMP, formulario, configurador) | Importados desde Layout y componentes |
+| APIs serverless      | `src/pages/api/contact.ts`, `src/pages/api/csp-report.ts`          | Adapter `@astrojs/vercel`             |
+| Contenido            | `src/content/*.ts`                                                 | Zod en build; no CMS                  |
+| Estáticos de preview | `.vercel/output/static`                                            | `pnpm preview` / job `smoke`          |
 
 ## APIs
 
 - `POST /api/contact` — Zod, honeypot, rate-limit Upstash, Proton SMTP, Turnstile si hay secreto. Fail-closed (503) sin Redis/SMTP. Idempotencia con estados `processing` | `accepted` | `retryable_failure` | `unknown` (contrato HTTP: 200 accepted/+replay, 202 processing + `Retry-After`, 409 conflict, 503 retryable_failure|unknown). Un claim ocupado no es éxito final.
-- `POST /api/cal/webhook` — HMAC `X-Cal-Signature-256`, upsert Notion Leads, Redis solo idempotencia.
+- `POST /api/csp-report` — colector de violaciones CSP (Report-Only).
 
 Variables: [`.env.example`](.env.example) y [docs/standards/protocols/env-vars.md](docs/standards/protocols/env-vars.md). Nunca en git.
 
