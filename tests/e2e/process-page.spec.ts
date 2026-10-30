@@ -14,8 +14,9 @@ for (const width of [320, 390, 768, 1280]) {
     await expect(
       page.getByRole('heading', { name: 'De la idea al proyecto publicado', exact: true })
     ).toHaveCount(0);
+    await expect(page.locator('#sticky-cta')).toHaveCount(0);
     await expect(
-      page.locator('#sticky-cta').getByRole('link', { name: 'Solicitar propuesta', exact: true })
+      page.getByRole('link', { name: 'Solicitar propuesta', exact: true })
     ).toHaveAttribute('href', /origen=proceso/);
     await expect(page.locator('.delivery-page')).toHaveCount(0);
     await expect(page.locator('.pagehead-rule')).toHaveCount(1);
@@ -43,24 +44,16 @@ test('proceso: contenido esencial sin JavaScript', async ({ browser, baseURL }) 
   await page.goto(`${baseURL}${route}`);
   await expect(page.locator('h1')).toBeVisible();
   await expect(page.locator('#proceso')).toBeVisible();
-  await expect(page.locator('#sticky-cta')).toBeVisible();
-  await expect(
-    page.locator('#sticky-cta').getByRole('link', { name: 'Solicitar propuesta', exact: true })
-  ).toBeVisible();
+  await expect(page.locator('#sticky-cta')).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'Solicitar propuesta', exact: true })).toBeVisible();
   await expect(page.locator('.delivery-page')).toHaveCount(0);
   await context.close();
 });
 
-test('proceso: ancla bajo la cabecera y sticky de presupuesto', async ({ page }) => {
+test('proceso: ancla bajo la cabecera', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto(route);
-  const sticky = page.locator('#sticky-cta');
-  await expect(sticky).toBeVisible();
-  await expect(sticky).toHaveClass(/is-visible/);
-  await expect(sticky.getByRole('link', { name: 'Solicitar propuesta' })).toHaveAttribute(
-    'href',
-    /origen=proceso/
-  );
+  await expect(page.locator('#sticky-cta')).toHaveCount(0);
 
   await page.locator('#proceso').scrollIntoViewIfNeeded();
   await expect(page.locator('#proceso')).toBeInViewport();
@@ -77,7 +70,7 @@ test('proceso: ancla bajo la cabecera y sticky de presupuesto', async ({ page })
   expect(clearance!.sectionTop).toBeGreaterThanOrEqual(clearance!.headerBottom - 1);
 });
 
-test('proceso: CTAs llevan origen', async ({ page }) => {
+test('proceso: CTAs llevan origen y sin duraciones en pasos', async ({ page }) => {
   await page.goto(route);
   await expect(page.locator('main details')).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Un caso', exact: true })).toHaveCount(0);
@@ -86,9 +79,13 @@ test('proceso: CTAs llevan origen', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'Ver precios' })).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Reservar una llamada' })).toHaveCount(0);
   await expect(
-    page.locator('#sticky-cta').getByRole('link', { name: 'Solicitar propuesta', exact: true })
+    page.getByRole('link', { name: 'Solicitar propuesta', exact: true })
   ).toHaveAttribute('href', /origen=proceso/);
   await expect(page.getByText('un acuerdo por escrito.')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Desarrollo y construcción' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Previsualización y entrega' })).toBeVisible();
+  await expect(page.getByText('30 min')).toHaveCount(0);
+  await expect(page.getByText('1–2 días')).toHaveCount(0);
+  await expect(page.getByText(/Orientativo:\s*10 días/)).toHaveCount(0);
+  await expect(page.getByText('2–3 días')).toHaveCount(0);
 });

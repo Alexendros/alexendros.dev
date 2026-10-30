@@ -97,14 +97,12 @@ test.describe('CP-08 matriz UI — overflow y apilado', () => {
     });
   }
 
-  test('320px: CMP por encima del sticky; controles clicables sin force', async ({ page }) => {
+  test('320px: CMP por encima de la cabecera; controles clicables sin force', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: VIEWPORT_HEIGHT });
     await setVisualPrefs(page, { theme: 'light', reducedMotion: false });
     await page.goto('/');
     await expect(page.locator('#cc-main .cm')).toBeVisible();
-    await page.evaluate(() => {
-      document.getElementById('sticky-cta')?.classList.add('is-visible');
-    });
+    await expect(page.locator('#sticky-cta')).toHaveCount(0);
 
     const stack = await page.evaluate(() => {
       const z = (el: Element | null) => {
@@ -120,11 +118,9 @@ test.describe('CP-08 matriz UI — overflow y apilado', () => {
       };
       return {
         cmp: z(document.querySelector('#cc-main')),
-        sticky: z(document.getElementById('sticky-cta')),
         header: z(document.getElementById('site-header'))
       };
     });
-    expect(stack.cmp).toBeGreaterThan(stack.sticky);
     expect(stack.cmp).toBeGreaterThan(stack.header);
 
     const accept = page.locator('#cc-main .cm').getByRole('button', { name: 'Aceptar todas' });

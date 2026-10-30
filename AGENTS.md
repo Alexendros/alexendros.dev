@@ -21,7 +21,7 @@ Plan de cierre vigente: [`docs/plans/PLAN-CIERRE-SHIP.md`](docs/plans/PLAN-CIERR
 - Preferir repo público + Vercel Hobby para preview por PR (decisión 1B); relajar Deployment Protection/SSO de previews para URLs compartibles (decisión 2A).
 - Versionado (semantic-release / release.yml) distinto de promote a producción; content=patch, feat=minor, breaking=major.
 - Al trabajar desde `main`, abrir rama `cursor/…`, commit/push y PR en borrador (no push directo a default).
-- Nav principal en barra desde `lg` con rótulos cortos en una línea: Servicios, Referencias, Metodología; CTA de cabecera «Contacto» (`/contacto?motivo=propuestaComercial`). Sticky móvil ADR 0025 (mantiene 0024): «Solicitar propuesta»; en `/metodo` sticky en todos los anchos con «Solicitar propuesta» (CTA único desde la decisión 0026).
+- Nav principal en barra desde `lg` con rótulos cortos en una línea: Servicios, Referencias, Metodología; CTA de cabecera «Contacto» (`/contacto?motivo=propuestaComercial`). Sin banner sticky; en `/metodo` el CTA «Solicitar propuesta» va en página (decisión 0027).
 
 ## Learned Workspace Facts
 

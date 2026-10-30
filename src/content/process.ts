@@ -1,7 +1,6 @@
 export type ProcessStep = {
   id: string;
   title: string;
-  duration: string;
   description: string;
   receive: string;
 };
@@ -24,14 +23,12 @@ export const processPage = {
     {
       id: 'hablamos',
       title: 'Conversación inicial',
-      duration: '30 min',
       description: 'El cliente explica el objetivo, el alcance y el resultado que busca.',
       receive: 'Propuesta con alcance y plazo en un día laborable.'
     },
     {
       id: 'escrito',
       title: 'Acuerdo por escrito',
-      duration: '1–2 días',
       description:
         'Queda definido qué incluye, qué no, el alcance económico y la fecha de entrega.',
       receive: 'un acuerdo por escrito.'
@@ -39,7 +36,6 @@ export const processPage = {
     {
       id: 'construyo',
       title: 'Desarrollo y construcción',
-      duration: 'Orientativo: 10 días laborables en una web sencilla',
       description:
         'Se muestran avances en 2–3 momentos. Si el alcance crece, se comunica el cambio antes de seguir.',
       receive: 'Versiones para revisar y comentar.'
@@ -47,7 +43,6 @@ export const processPage = {
     {
       id: 'publico',
       title: 'Previsualización y entrega',
-      duration: '2–3 días',
       description:
         'Se comprueba el funcionamiento con el cliente y se entrega la formación de uso.',
       receive: 'Producto acordado con instrucciones de uso y soporte para incidencias.'

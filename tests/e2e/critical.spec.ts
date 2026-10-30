@@ -9,7 +9,7 @@ test.describe('critical paths', () => {
     const res = await page.goto('/');
     expect(res?.ok()).toBeTruthy();
     await expect(page.getByRole('banner')).toBeVisible();
-    await expect(page.locator('a[href="/contacto"]').first()).toBeVisible();
+    await expect(page.getByRole('banner').getByRole('link', { name: 'Contacto' })).toBeVisible();
   });
 
   test('header sticky no es transparente', async ({ page }) => {
@@ -50,7 +50,7 @@ test.describe('critical paths', () => {
     expect(await page.evaluate(() => 'gtag' in window)).toBe(false);
   });
 
-  test('a 320px el CMP queda por encima del sticky CTA (sin solape de apilado)', async ({
+  test('a 320px el CMP queda por encima de la cabecera (sin solape de apilado)', async ({
     page
   }) => {
     await page.addInitScript(() => {
@@ -59,15 +59,11 @@ test.describe('critical paths', () => {
     await page.setViewportSize({ width: 320, height: 720 });
     await page.goto('/');
     await expect(page.locator('#cc-main .cm')).toBeVisible();
-    // Forzar sticky CTA visible para medir z-index relativo al CMP.
-    await page.evaluate(() => {
-      document.getElementById('sticky-cta')?.classList.add('is-visible');
-    });
+    await expect(page.locator('#sticky-cta')).toHaveCount(0);
     const stack = await page.evaluate(() => {
       const cmp = document.querySelector('#cc-main');
-      const sticky = document.getElementById('sticky-cta');
       const header = document.getElementById('site-header');
-      if (!cmp || !sticky || !header) return null;
+      if (!cmp || !header) return null;
       const z = (el: Element) => {
         let node: Element | null = el;
         let max = 0;
@@ -78,10 +74,9 @@ test.describe('critical paths', () => {
         }
         return max;
       };
-      return { cmp: z(cmp), sticky: z(sticky), header: z(header) };
+      return { cmp: z(cmp), header: z(header) };
     });
     expect(stack).not.toBeNull();
-    expect(stack!.cmp).toBeGreaterThan(stack!.sticky);
     expect(stack!.cmp).toBeGreaterThan(stack!.header);
   });
 });

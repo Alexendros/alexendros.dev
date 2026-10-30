@@ -849,39 +849,6 @@
   }
   /* stylelint-enable selector-class-pattern */
 
-  .pb-safe {
-    padding-bottom: max(0px, env(safe-area-inset-bottom));
-  }
-
-  /* Sticky CTA móvil: entrada con transform/opacity (sustituye el salto de hidden). */
-  #sticky-cta {
-    visibility: hidden;
-    pointer-events: none;
-    opacity: 0;
-    transform: translateY(100%);
-    transition:
-      opacity var(--dur-base) var(--ease-out),
-      transform var(--dur-base) var(--ease-out),
-      visibility var(--dur-base) var(--ease-out);
-  }
-
-  #sticky-cta.is-visible {
-    visibility: visible;
-    pointer-events: auto;
-    opacity: 1;
-    transform: none;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    #sticky-cta {
-      transition-duration: 0ms;
-    }
-  }
-
-  .force-reduced-motion #sticky-cta {
-    transition-duration: 0ms;
-  }
-
   /* Reveal v2 (scroll): stagger por índice (--i en línea) con tokens.
      Solo se oculta cuando el JS confirma observer activo (clase
      `reveal-enabled`): sin JS o sin IntersectionObserver el contenido
