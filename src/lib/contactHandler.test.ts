@@ -91,22 +91,6 @@ describe('handleContactPost', () => {
     expect(sendMail).toHaveBeenCalledOnce();
   });
 
-  it('WhatsApp con teléfono → 200', async () => {
-    const res = await handleContactPost(
-      postJson({
-        name: 'Alex Endros',
-        entityType: 'empresa',
-        channel: 'whatsapp',
-        phone: '+34 600 000 000',
-        reason: 'proyectoEspecial',
-        message: 'Necesito una sesión para priorizar el siguiente paso.',
-        consent: true
-      }),
-      deps()
-    );
-    expect(res.status).toBe(200);
-  });
-
   it('falta name → 400 genérico', async () => {
     const { name: _n, ...rest } = validBody;
     const res = await handleContactPost(postJson(rest), deps());
@@ -120,13 +104,15 @@ describe('handleContactPost', () => {
     expect(res.status).toBe(400);
   });
 
-  it('WhatsApp sin teléfono → 400', async () => {
+  it('canal no admitido → 400', async () => {
     const res = await handleContactPost(
       postJson({
         name: 'Alex Endros',
         entityType: 'particular',
         channel: 'whatsapp',
+        email: 'alex@example.com',
         reason: 'informacionCliente',
+        message: 'Petición de prueba con un canal retirado.',
         consent: true
       }),
       deps()

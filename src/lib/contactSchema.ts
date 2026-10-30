@@ -13,7 +13,7 @@ import {
 } from '../content/portalModules';
 
 export const entityTypes = ['particular', 'empresa', 'institucion'] as const;
-export const contactChannels = ['whatsapp', 'correo'] as const;
+export const contactChannels = ['correo'] as const;
 export const contactReasons = [
   'proyectoEspecial',
   'propuestaComercial',
@@ -61,16 +61,6 @@ export const contactSchema = z
       return 'particular';
     }, z.enum(entityTypes)),
     channel: z.enum(contactChannels),
-    phone: z.preprocess(
-      (v) => (typeof v === 'string' && v.trim() === '' ? undefined : v),
-      z
-        .string()
-        .trim()
-        .min(9)
-        .max(20)
-        .regex(/^[+\d\s()-]+$/)
-        .optional()
-    ),
     email: z.preprocess(
       (v) => (typeof v === 'string' && v.trim() === '' ? undefined : v),
       z.string().trim().email().max(254).optional()
@@ -103,13 +93,6 @@ export const contactSchema = z
     rejectUnsafe(data.name, ctx, 'name');
     rejectUnsafe(data.message, ctx, 'message');
 
-    if (data.channel === 'whatsapp' && !data.phone) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['phone'],
-        message: 'falta'
-      });
-    }
     if (data.channel === 'correo' && !data.email) {
       ctx.addIssue({
         code: 'custom',
@@ -154,7 +137,6 @@ export const fieldLabels: Record<string, string> = {
   name: 'Nombre',
   entityType: 'Categoría',
   channel: 'Canal de respuesta',
-  phone: 'Teléfono WhatsApp',
   email: 'Correo electrónico',
   reason: 'Motivo',
   message: 'La petición',
@@ -191,11 +173,10 @@ export function formatContactFieldErrors(error: z.ZodError): FieldError[] {
 export function buildContactMessage(input: ContactInput): string {
   const lines = [
     `Categoría: ${entityLabels[input.entityType]}`,
-    `Canal preferido: ${input.channel === 'whatsapp' ? 'WhatsApp' : 'Correo electrónico'}`,
+    'Canal preferido: Correo electrónico',
     `Motivo: ${reasonLabels[input.reason]}`,
     `Petición:\n${input.message}`
   ];
-  if (input.phone) lines.push(`Teléfono: ${input.phone}`);
   if (input.email) lines.push(`Email: ${input.email}`);
   if (input.modules) {
     const names = portalModuleDisplayNames(input.modules);
