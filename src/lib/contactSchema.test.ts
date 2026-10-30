@@ -18,23 +18,9 @@ const validCorreo = {
   consent: true as const
 };
 
-const validWhatsapp = {
-  name: 'Alex Endros',
-  entityType: 'empresa' as const,
-  channel: 'whatsapp' as const,
-  phone: '+34 600 000 000',
-  reason: 'proyectoEspecial' as const,
-  message: 'Necesito una sesión para priorizar el siguiente paso.',
-  consent: true as const
-};
-
 describe('parseContactBody R04', () => {
   it('acepta correo con email y sin teléfono', () => {
     expect(parseContactBody(validCorreo).success).toBe(true);
-  });
-
-  it('acepta WhatsApp con teléfono y sin email', () => {
-    expect(parseContactBody(validWhatsapp).success).toBe(true);
   });
 
   it('acepta sin motivo y aplica default informacionCliente', () => {
@@ -48,10 +34,6 @@ describe('parseContactBody R04', () => {
   it('rechaza sin mensaje de petición', () => {
     const { message: _m, ...rest } = validCorreo;
     expect(parseContactBody(rest).success).toBe(false);
-  });
-
-  it('rechaza WhatsApp sin teléfono', () => {
-    expect(parseContactBody({ ...validWhatsapp, phone: undefined }).success).toBe(false);
   });
 
   it('rechaza correo sin email', () => {
@@ -174,16 +156,8 @@ describe('parseContactBody (formulario mínimo)', () => {
     expect(parsed.data.reason).toBe('informacionCliente');
   });
 
-  it('rechaza teléfono con caracteres no permitidos', () => {
-    const parsed = parseContactBody({
-      ...validCorreo,
-      channel: 'whatsapp',
-      phone: 'abc-not-a-phone',
-      email: undefined
-    });
-    expect(parsed.success).toBe(false);
-    if (parsed.success) return;
-    expect(formatContactFieldErrors(parsed.error).some((e) => e.field === 'phone')).toBe(true);
+  it('rechaza un canal distinto de correo', () => {
+    expect(parseContactBody({ ...validCorreo, channel: 'whatsapp' }).success).toBe(false);
   });
 
   it('rechaza markup en el mensaje', () => {

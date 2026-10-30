@@ -9,7 +9,6 @@ async function fillContactForm(
   const email = opts.email ?? 'test@example.com';
   await page.getByLabel('Mensaje*').fill(message);
   await page.getByLabel('Nombre*').fill(name);
-  await page.getByRole('radio', { name: 'Correo electrónico' }).check();
   await page.getByLabel('Correo electrónico*').fill(email);
   await page.getByLabel(/Acepto/).check();
 }
@@ -46,7 +45,6 @@ test('F04: contacto valida canal y envía', async ({ page }) => {
 
   await page.getByLabel('Mensaje*').fill('Necesito información sobre el informe comercial.');
   await page.getByLabel('Nombre*').fill('A');
-  await page.getByRole('radio', { name: 'Correo electrónico' }).check();
   await page.getByLabel('Correo electrónico*').fill('test@example.com');
   await page.getByLabel(/Acepto/).check();
   await page.getByRole('button', { name: /Enviar/ }).click();
@@ -57,7 +55,7 @@ test('F04: contacto valida canal y envía', async ({ page }) => {
   await expect(page.getByRole('status')).toContainText(/Mensaje enviado/i, { timeout: 10000 });
 });
 
-test('F04: WhatsApp sin teléfono no envía', async ({ page }) => {
+test('F04: sin correo de respuesta no se envía y el canal es único', async ({ page }) => {
   let posted = false;
   await mockContact(page, async (route) => {
     posted = true;
@@ -69,9 +67,9 @@ test('F04: WhatsApp sin teléfono no envía', async ({ page }) => {
   });
 
   await page.goto('/contacto');
+  await expect(page.getByRole('radio', { name: 'WhatsApp' })).toHaveCount(0);
   await page.getByLabel('Mensaje*').fill('Necesito información sobre el informe comercial.');
   await page.getByLabel('Nombre*').fill('Test Cliente');
-  await page.getByRole('radio', { name: 'WhatsApp' }).check();
   await page.getByLabel(/Acepto/).check();
   await page.getByRole('button', { name: /Enviar/ }).click();
   await expect(page.getByRole('alert')).toBeVisible();
@@ -117,7 +115,6 @@ test('UI-02: errores de envío con aria-invalid', async ({ page }) => {
 
 test('UI-03: canal correo enfoca el email', async ({ page }) => {
   await page.goto('/contacto');
-  await page.getByRole('radio', { name: 'Correo electrónico' }).check();
   const email = page.getByLabel('Correo electrónico*');
   await expect(email).toBeVisible();
   await email.focus();

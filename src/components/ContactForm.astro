@@ -1,5 +1,5 @@
 ---
-import { contactChannels, portalModuleDisplayNames, type ContactInput } from '../lib/contactSchema';
+import { portalModuleDisplayNames, type ContactInput } from '../lib/contactSchema';
 
 interface Props {
   successMessage: string;
@@ -93,30 +93,7 @@ const moduleLabels = initialModules ? portalModuleDisplayNames(initialModules) :
     <p id="contact-name-error" role="alert" class={errorClass} hidden></p>
   </div>
 
-  <fieldset
-    id="contact-channel"
-    tabindex="-1"
-    class="focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-  >
-    <legend class="text-sm">Preferencia de respuesta*</legend>
-    <div class="mt-2 flex flex-wrap gap-4">
-      {
-        contactChannels.map((channel) => (
-          <label class="inline-flex items-center gap-2 text-sm">
-            <input type="radio" name="channel" value={channel} checked={channel === 'correo'} />
-            {channel === 'whatsapp' ? 'WhatsApp' : 'Correo electrónico'}
-          </label>
-        ))
-      }
-    </div>
-    <p id="contact-channel-error" role="alert" class={errorClass} hidden></p>
-  </fieldset>
-
-  <div data-contact-phone-wrapper hidden>
-    <label for="contact-phone" class="text-sm">Teléfono WhatsApp*</label>
-    <input id="contact-phone" name="phone" type="tel" autocomplete="tel" class={inputClass} />
-    <p id="contact-phone-error" role="alert" class={errorClass} hidden></p>
-  </div>
+  <input type="hidden" name="channel" value="correo" />
 
   <div data-contact-email-wrapper>
     <label for="contact-email" class="text-sm">Correo electrónico*</label>

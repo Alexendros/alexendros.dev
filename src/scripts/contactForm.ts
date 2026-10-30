@@ -18,7 +18,6 @@ const FIELD_IDS: Record<string, string> = {
   name: 'contact-name',
   entityType: 'contact-entity',
   channel: 'contact-channel',
-  phone: 'contact-phone',
   email: 'contact-email',
   message: 'contact-message',
   consent: 'contact-consent'
@@ -58,7 +57,6 @@ function logicalPayloadKey(data: ContactInput): string {
     name: data.name,
     entityType: data.entityType,
     channel: data.channel,
-    phone: data.phone ?? null,
     email: data.email ?? null,
     reason: data.reason,
     message: data.message,
@@ -100,7 +98,6 @@ function initContactForm(form: HTMLFormElement): void {
 
   const success = document.querySelector<HTMLElement>('[data-contact-success]')!;
   const submit = form.querySelector<HTMLButtonElement>('[data-contact-submit]')!;
-  const phoneWrapper = form.querySelector<HTMLElement>('[data-contact-phone-wrapper]')!;
   const emailWrapper = form.querySelector<HTMLElement>('[data-contact-email-wrapper]')!;
   const errorSummary = form.querySelector<HTMLElement>('[data-contact-errors]')!;
   const errorCount = form.querySelector<HTMLElement>('[data-contact-error-count]')!;
@@ -108,15 +105,7 @@ function initContactForm(form: HTMLFormElement): void {
   const modulesWrapper = form.querySelector<HTMLElement>('[data-contact-modules]')!;
   const moduleLabels = form.querySelector<HTMLElement>('[data-contact-module-labels]')!;
   const turnstileContainer = form.querySelector<HTMLElement>('[data-turnstile]');
-  if (
-    !success ||
-    !submit ||
-    !phoneWrapper ||
-    !emailWrapper ||
-    !errorSummary ||
-    !errorCount ||
-    !errorList
-  ) {
+  if (!success || !submit || !emailWrapper || !errorSummary || !errorCount || !errorList) {
     delete form.dataset.contactInitialized;
     return;
   }
@@ -189,12 +178,6 @@ function initContactForm(form: HTMLFormElement): void {
     strong.textContent = labels;
     wrapper.appendChild(strong);
     form.querySelector('h2')?.after(wrapper);
-  }
-
-  function updateChannel(): void {
-    const channel = formValue('channel');
-    phoneWrapper.hidden = channel !== 'whatsapp';
-    emailWrapper.hidden = channel !== 'correo';
   }
 
   function setSending(sending: boolean): void {
@@ -307,7 +290,6 @@ function initContactForm(form: HTMLFormElement): void {
       name: data.get('name'),
       entityType: data.get('entityType'),
       channel: data.get('channel'),
-      phone: data.get('phone') || undefined,
       email: data.get('email') || undefined,
       reason: data.get('reason'),
       message: data.get('message'),
@@ -379,12 +361,8 @@ function initContactForm(form: HTMLFormElement): void {
     }
   }
 
-  form.addEventListener('change', (event) => {
-    if (event.target instanceof HTMLInputElement && event.target.name === 'channel')
-      updateChannel();
-  });
   form.addEventListener('submit', submitForm);
-  updateChannel();
+  emailWrapper.hidden = false;
 
   if (turnstileContainer) {
     const siteKey = turnstileContainer.dataset.siteKey;

@@ -21,11 +21,12 @@ test('F07: el pie no tiene tagline, hola@ ni párrafo de cookies', async ({ page
   await expect(footer.getByRole('link', { name: 'LinkedIn' })).toBeVisible();
 });
 
-test('F08: Identidad muestra NIF y CP sin calle', async ({ page }) => {
+test('F08: Identidad publica NIF, domicilio completo y contacto', async ({ page }) => {
   await page.goto('/identidad');
   const main = page.locator('main');
   await expect(main).toContainText('21002968N');
-  await expect(main).toContainText('46023');
+  await expect(main).toContainText('Calle Pobla de Farnals');
+  await expect(main).toContainText('46022');
   await expect(main).toContainText('Valencia');
   await expect(main).toContainText('España');
   await expect(main).not.toContainText(/Higinio/i);
@@ -47,5 +48,6 @@ test('privacidad nombra AEPD y campos del formulario', async ({ page }) => {
   const main = page.locator('main');
   await expect(main).toContainText('AEPD');
   await expect(main).toContainText('nombre');
-  await expect(main).toContainText('WhatsApp');
+  await expect(main).toContainText('correo electrónico de respuesta');
+  await expect(main).not.toContainText('WhatsApp');
 });

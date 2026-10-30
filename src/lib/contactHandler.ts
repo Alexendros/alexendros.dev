@@ -118,8 +118,7 @@ export function methodNotAllowed(): Response {
 function mailFields(data: ContactInput) {
   const subject = reasonLabels[data.reason];
   const message = buildContactMessage(data);
-  const email =
-    data.email ?? `whatsapp-${(data.phone ?? 'sin-tel').replace(/\D/g, '')}@alexendros.dev`;
+  const email = data.email ?? 'sin-correo@alexendros.dev';
   return {
     name: data.name,
     email,

@@ -527,7 +527,6 @@ test('PRIV-03b: revocación en el mismo documento emite opt-out sin reiniciar', 
 
 test('PRIV-04: el formulario no envía email, teléfono ni mensaje a tracking', async ({ page }) => {
   const markerEmail = 'pii-marker-e2e@example.invalid';
-  const markerPhone = '600111222';
   const markerMessage = 'PII-MARKER-MENSAJE-CONTACTO-E2E';
   const seenPayloads: string[] = [];
 
@@ -569,17 +568,15 @@ test('PRIV-04: el formulario no envía email, teléfono ni mensaje a tracking', 
   await page.goto('/contacto');
   await page.getByLabel('Mensaje*').fill(markerMessage);
   await page.getByLabel('Nombre*').fill('Cliente PII');
-  await page.getByRole('radio', { name: 'WhatsApp' }).check();
-  await page.getByLabel('Teléfono WhatsApp*').fill(markerPhone);
+  await page.getByLabel('Correo electrónico*').fill(markerEmail);
   await page.getByLabel(/Acepto/).check();
   await page.getByRole('button', { name: /Enviar/ }).click();
   await expect(page.getByRole('status')).toContainText(/Mensaje enviado/i, { timeout: 10000 });
 
-  // Segundo recorrido con correo para cubrir ese canal.
+  // Segundo recorrido con otro remitente para descartar persistencia entre envíos.
   await page.goto('/contacto');
   await page.getByLabel('Mensaje*').fill(markerMessage);
   await page.getByLabel('Nombre*').fill('Cliente PII Mail');
-  await page.getByRole('radio', { name: 'Correo electrónico' }).check();
   await page.getByLabel('Correo electrónico*').fill(markerEmail);
   await page.getByLabel(/Acepto/).check();
   await page.getByRole('button', { name: /Enviar/ }).click();
@@ -587,7 +584,6 @@ test('PRIV-04: el formulario no envía email, teléfono ni mensaje a tracking', 
 
   const joined = seenPayloads.join('\n');
   expect(joined).not.toContain(markerEmail);
-  expect(joined).not.toContain(markerPhone);
   expect(joined).not.toContain(markerMessage);
   expect(joined).not.toContain('Cliente PII');
 });

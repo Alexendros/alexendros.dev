@@ -41,7 +41,7 @@ Los nombres se inventarían en `.env.example` y `src/env.d.ts`; nunca se registr
 - Regiones, encargados, subencargados y transferencias internacionales.
 - Contratos/DPA y condiciones aplicables, conservados fuera del repositorio público.
 - Plazos de conservación y borrado por sistema.
-- Decisión y operativa de WhatsApp, teléfono y reservas.
+- Canales de contacto: WhatsApp y teléfono retirados del formulario; solo correo electrónico.
 - Base jurídica por finalidad y textos de privacidad correspondientes.
 - IDs y estado real de analítica, publicidad, Turnstile y Notion.
 

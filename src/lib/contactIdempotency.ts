@@ -57,7 +57,6 @@ export function normalizeContactPayload(data: ContactInput): string {
     name: data.name,
     entityType: data.entityType,
     channel: data.channel,
-    phone: data.phone ?? null,
     email: data.email ?? null,
     reason: data.reason,
     message: data.message,
