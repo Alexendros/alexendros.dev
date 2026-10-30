@@ -1,6 +1,6 @@
 # Alexendros — Tecnologías y servicios informáticos
 
-Sitio profesional de [alexendros.dev](https://alexendros.dev): sitios web, integración de catálogo y pagos, aplicaciones para Linux e integración de Inteligencia Artificial. Desde Valencia.
+Sitio profesional de [alexendros.dev](https://alexendros.dev): sitios web, integración de catálogo y pagos, auditoría técnica SEO y colaboración en proyectos de software. Desde Valencia.
 
 ## Servicios y colaboración técnica
 

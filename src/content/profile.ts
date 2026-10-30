@@ -22,7 +22,7 @@ export const profile = {
     },
     {
       title: 'Lo acordado, por escrito',
-      body: 'Antes de empezar quedan definidos el alcance, las exclusiones y el importe. Sin sorpresas en la factura.'
+      body: 'Antes de empezar quedan definidos el alcance, las exclusiones y las condiciones de la propuesta. Sin sorpresas en la factura.'
     }
   ],
   trajectory:

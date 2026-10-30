@@ -14,7 +14,7 @@ const Heading = headingLevel;
 ---
 
 <article
-  class="card-lift group relative border border-border rounded-lg overflow-hidden hover:border-primarySoft bg-card flex flex-col h-full focus-within:outline focus-within:outline-2 focus-within:outline-primary focus-within:outline-offset-2"
+  class="card-lift group relative border border-border rounded-lg overflow-hidden hover:border-primarySoft bg-card flex flex-col h-full has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-primary has-[:focus-visible]:outline-offset-2"
 >
   <Image
     src={project.cover}
@@ -28,7 +28,9 @@ const Heading = headingLevel;
     onload="this.classList.add('is-loaded')"
   />
   <div class="p-6 flex-1 flex flex-col">
-    <Heading class="font-bold text-base mt-1 group-hover:text-primary transition-colors">
+    <Heading
+      class="font-bold text-lg leading-tight mt-1 group-hover:text-primary transition-colors"
+    >
       <a href={`/proyectos/${project.slug}`} class="rounded after:absolute after:inset-0">
         {project.title}
       </a>
@@ -36,7 +38,7 @@ const Heading = headingLevel;
     <p class="mt-2 text-xs font-mono text-muted text-pretty break-words">
       {productTypeLabels[project.productType]} · {workKindLabels[project.workKind]}
     </p>
-    <p class="mt-2 text-sm text-muted">{project.short}</p>
+    <p class="mt-2 text-step--1 text-muted">{project.short}</p>
     {
       project.metrics && project.metrics.length > 0 && (
         <p class="mt-2 text-xs font-medium text-primary">

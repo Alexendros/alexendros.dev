@@ -231,7 +231,7 @@ export const projects: Project[] = [
     slug: 'alexendros-me',
     title: 'Alexendros.me',
     short:
-      'Web personal rápida y clara, centrada en explicar los servicios sin distraer a quien la visita.',
+      'Web personal rápida y clara, centrada en publicar textos largos sin distraer a quien la visita.',
     summary:
       'Espacio propio para explicar servicios y publicar textos largos, con lectura cómoda, privacidad respetada y sin elementos que distraigan.',
     role: 'Diseño, contenido y desarrollo',
