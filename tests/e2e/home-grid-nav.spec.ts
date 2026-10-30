@@ -17,7 +17,7 @@ test('F01: home es hero estable + caminos (sin proceso ni caso)', async ({ page 
 
   const h1 = page.getByRole('heading', {
     level: 1,
-    name: /Servicios informáticos y tecnologías para empresas y particulares\./
+    name: /Servicios informáticos y tecnológicos empresariales y profesionales\./
   });
   await expect(h1).toBeVisible();
   await expect(
@@ -29,7 +29,7 @@ test('F01: home es hero estable + caminos (sin proceso ni caso)', async ({ page 
   await expect(page.getByText(/Pare las rotativas/)).toHaveCount(0);
 
   const banner = page.getByRole('banner');
-  await expect(banner.getByRole('link', { name: 'Formulario de contacto' })).toBeVisible();
+  await expect(banner.getByRole('link', { name: 'Contacto', exact: true })).toBeVisible();
   await expect(
     page.locator('[data-hero]').getByRole('link', { name: 'Solicitar propuesta' })
   ).toBeVisible();
@@ -37,16 +37,17 @@ test('F01: home es hero estable + caminos (sin proceso ni caso)', async ({ page 
     page.locator('[data-hero]').getByRole('link', { name: 'Catálogo de servicios' })
   ).toBeVisible();
 
+  await expect(banner.getByRole('link', { name: 'Servicios', exact: true })).toBeVisible();
+  await expect(banner.getByRole('link', { name: 'Referencias', exact: true })).toBeVisible();
+  await expect(banner.getByRole('link', { name: 'Metodología', exact: true })).toBeVisible();
+  await expect(banner.getByRole('link', { name: 'Cómo trabajo', exact: true })).toHaveCount(0);
   await expect(
     banner.getByRole('link', { name: 'Servicios profesionales', exact: true })
-  ).toBeVisible();
-  await expect(
-    banner.getByRole('link', { name: 'Proyectos realizados', exact: true })
-  ).toBeVisible();
-  await expect(banner.getByRole('link', { name: 'Metodología clara', exact: true })).toBeVisible();
-  await expect(banner.getByRole('link', { name: 'Cómo trabajo', exact: true })).toHaveCount(0);
-  await expect(banner.getByRole('link', { name: 'Servicios', exact: true })).toHaveCount(0);
-  await expect(banner.getByRole('link', { name: 'Metodología', exact: true })).toHaveCount(0);
+  ).toHaveCount(0);
+  await expect(banner.getByRole('link', { name: 'Proyectos realizados', exact: true })).toHaveCount(
+    0
+  );
+  await expect(banner.getByRole('link', { name: 'Metodología clara', exact: true })).toHaveCount(0);
   await expect(banner.getByRole('link', { name: 'Valores', exact: true })).toHaveCount(0);
 
   await expect(

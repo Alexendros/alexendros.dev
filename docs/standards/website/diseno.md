@@ -69,7 +69,7 @@ Extraído de Layout: primer foco de la página, salta a `#contenido`, visible so
 ### H1 de la home (taxonomía de servicios)
 
 - **Uso:** solo el H1 de la home (`Hero.astro`). Titular fijo de posicionamiento en tercera persona; lista semántica de cuatro servicios; sin rotación.
-- **CTAs:** primario «Solicitar propuesta» (`/contacto?motivo=propuestaComercial&origen=home`) y secundario «Catálogo de servicios» (`/servicios?origen=home`) en el hero; cabecera siempre «Formulario de contacto» (sin rótulo corto «Contacto»). Sticky móvil (ADR 0025, mantiene 0024): «Solicitar propuesta» vía `Button` `size="sm"`, sin precio ni jerga. En `/metodo` el sticky es visible en todos los anchos con «Solicitar presupuesto» (`origen=proceso`) y sustituye el bloque de cierre en página.
+- **CTAs:** primario «Solicitar propuesta» (`/contacto?motivo=propuestaComercial&origen=home`) y secundario «Catálogo de servicios» (`/servicios?origen=home`) en el hero; cabecera «Contacto» (`/contacto?motivo=propuestaComercial`). Sin banner sticky. En `/metodo` el cierre en página usa «Solicitar propuesta» (`origen=proceso`).
 - **DetailIsland:** soft-nav con `<dialog>` + `pushState` (ADR 0022). Sin View Transitions (ADR 0004). Scrim y sombra vía `--scrim` / `--shadow-2` en CSS del dialog.
 - **Motion:** la entrada escalonada del hero (`data-hero-item`) sigue las reglas generales de reveal; con `prefers-reduced-motion` no hay animación.
 - **Don't:** no reintroducir ventana rotatoria en el producto; no añadir librerías de motion; no animar con propiedades distintas de `transform`/`opacity`.

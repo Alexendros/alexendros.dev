@@ -66,7 +66,7 @@ describe('processPage — copy público de metodología', () => {
     expect(new Set(stepIds).size).toBe(stepIds.length);
     for (const step of processPage.steps) {
       nonEmpty(step.title, `step.${step.id}.title`);
-      nonEmpty(step.duration, `step.${step.id}.duration`);
+      expect(step).not.toHaveProperty('duration');
       nonEmpty(step.description, `step.${step.id}.description`);
       nonEmpty(step.receive, `step.${step.id}.receive`);
     }

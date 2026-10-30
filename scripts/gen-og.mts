@@ -107,8 +107,8 @@ await writeOg(
 );
 await writeOg(
   'proyectos.png',
-  'PROYECTOS',
-  'Proyectos realizados',
+  'REFERENCIAS',
+  'Proyectos realizados por encargo',
   'Webs, catálogos y herramientas'
 );
 await writeOg(
@@ -127,5 +127,5 @@ for (const s of services) {
   await writeOg(`servicios/${s.slug}.png`, 'SERVICIO', s.ogTitle, s.short);
 }
 for (const p of projects) {
-  await writeOg(`proyectos/${p.slug}.png`, 'PROYECTO', p.title, p.short);
+  await writeOg(`proyectos/${p.slug}.png`, 'REFERENCIA', p.title, p.short);
 }

@@ -8,27 +8,26 @@ import { availabilityCtaLabels, productTypeLabels, projects } from '../../conten
 
 const detailItems = projects.map((p) => ({
   slug: p.slug,
-  path: `/proyectos/${p.slug}`,
+  path: `/referencias/${p.slug}`,
   title: p.title,
   short: p.short,
   description: p.summary,
   meta: productTypeLabels[p.productType],
   ctaLabel: availabilityCtaLabels[p.availability],
-  ctaHref: `/contacto?motivo=informacionCliente&proyecto=${p.slug}&origen=proyectos`
+  ctaHref: `/contacto?motivo=informacionCliente&proyecto=${p.slug}&origen=referencias`
 }));
 ---
 
 <Layout
-  title="Proyectos realizados — Alexendros"
-  description="Proyectos realizados por Alexendros con el alcance acordado en cada encargo."
+  title="Proyectos realizados por encargo — Alexendros"
+  description="Proyectos realizados por encargo con el alcance acordado en cada caso."
   ogImage="/og/proyectos.png"
-  ogImageAlt="Proyectos realizados por Alexendros con el alcance acordado en cada encargo"
+  ogImageAlt="Proyectos realizados por encargo"
 >
   <Container class="py-16 md:py-24">
     <header>
       <h1 class="text-step-3 break-words font-bold max-w-3xl text-balance">
-        Proyectos realizados{' '}
-        <span class="text-primary">con el alcance acordado en cada encargo</span>
+        Proyectos realizados por encargo.
       </h1>
       <div class="pagehead-rule mt-4 h-px bg-border" aria-hidden="true"></div>
     </header>
@@ -41,6 +40,6 @@ const detailItems = projects.map((p) => ({
         ))
       }
     </Grid>
-    <DetailIsland basePath="/proyectos" items={detailItems} />
+    <DetailIsland basePath="/referencias" items={detailItems} />
   </Container>
 </Layout>

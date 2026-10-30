@@ -59,25 +59,9 @@ test.describe('F02 F03 F10 servicios y selector de necesidades', () => {
     await expect(page.locator('[data-contact-modules]')).toHaveCount(0);
   });
 
-  test('F10: la barra móvil pide propuesta sin importe ni SEO', async ({ page }) => {
+  test('F10: no hay banner sticky de propuesta', async ({ page }) => {
     await page.setViewportSize({ width: 360, height: 740 });
-    await page.addInitScript(() => {
-      try {
-        localStorage.removeItem('alexendros.sticky-cta.v1');
-      } catch {
-        /* ignore */
-      }
-    });
     await page.goto('/servicios');
-    const sticky = page.locator('#sticky-cta');
-    await expect(sticky).toBeAttached();
-    await expect(sticky).not.toContainText(/gratis|€|\bEUR\b/i);
-    await expect(sticky).not.toContainText(/\bSEO\b/);
-    await expect(sticky.locator('#sticky-cta-link')).toHaveText(/Solicitar\s*propuesta/);
-    await page.evaluate(() => {
-      window.scrollTo(0, 1200);
-      document.getElementById('sticky-cta')?.classList.add('is-visible');
-    });
-    await expect(sticky).toBeVisible();
+    await expect(page.locator('#sticky-cta')).toHaveCount(0);
   });
 });

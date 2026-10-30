@@ -14,7 +14,7 @@ fi
 required_files=(
   index.html
   servicios/index.html
-  proyectos/index.html
+  referencias/index.html
   contacto/index.html
   metodo/index.html
 )
@@ -75,7 +75,7 @@ for _ in $(seq 1 20); do
   sleep 0.25
 done
 
-routes=(/ /servicios/ /proyectos/ /contacto/ /metodo/)
+routes=(/ /servicios/ /referencias/ /contacto/ /metodo/)
 for path in "${routes[@]}"; do
   code=$(curl -fsS -o /tmp/alexendros-smoke-body.html -w '%{http_code}' "${BASE}${path}")
   if [[ "$code" != "200" ]]; then

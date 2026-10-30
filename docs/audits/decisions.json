@@ -381,16 +381,31 @@
       "id": "0026",
       "sequence": 26,
       "timestamp": "2026-10-29T17:10:00Z",
-      "active": true,
+      "active": false,
       "title": "Taxonomía de revisiones técnicas y marca profesional individual",
       "summary": "Los servicios se nombran por su alcance técnico real; Alexendros se estructura como marca de Alejandro Domingo Agustí, sin entidad ni equipo corporativo inventados.",
       "recordType": "decision",
-      "status": "aceptada",
+      "status": "superseded",
       "supersedes": ["0021"],
-      "supersededBy": null,
+      "supersededBy": "0027",
       "context": "Los nombres anteriores podían interpretarse como promesas de resultado comercial, dictamen jurídico o cobertura de seguridad completa. La entidad debía expresar con precisión la operativa individual.",
       "decision": "Usar Auditoría técnica SEO, Revisión técnica de privacidad/cookies/accesibilidad, Revisión básica de seguridad web, Colaboración en proyectos de software, Sitio web profesional e Integración de catálogo y pagos. Se conservan de 0021, y quedan por tanto vigentes en esta decisión: URLs de una palabra (/servicios, /proyectos, /metodo), rótulos de navegación «Servicios profesionales», «Proyectos realizados» y «Metodología clara», redirecciones 308 desde las rutas antiguas, home limitada a hero más encargos habituales y pie sin «Sobre mí». Cada ficha incluye requisitos del cliente. El CTA se unifica como «Solicitar propuesta» en todo el sitio, incluido /metodo, donde sustituye al rótulo «Solicitar presupuesto». Las condiciones económicas solo se mencionan como parte de la propuesta, nunca como importe o presupuesto público. Evitar promesas absolutas y describir muestras, límites y exclusiones. JSON-LD vincula ProfessionalService Alexendros con su fundador Person Alejandro Domingo Agustí.",
       "consequences": "Actualizar catálogo, contacto, README, OG y pruebas de estructura/copy. La revisión editorial independiente queda registrada como pendiente antes de dar por cerrado el criterio humano de esta fase."
+    },
+    {
+      "id": "0027",
+      "sequence": 27,
+      "timestamp": "2026-10-30T10:10:00Z",
+      "active": true,
+      "title": "Nav corta, referencias y CTA Contacto",
+      "summary": "Rótulos de navegación en una palabra, canónica /referencias, CTA Contacto, sin banner sticky y pasos de /metodo sin duraciones.",
+      "recordType": "decision",
+      "status": "aceptada",
+      "supersedes": ["0026"],
+      "supersededBy": null,
+      "context": "La revisión visual sobre Preview pedía acortar la cabecera, renombrar Proyectos a Referencias, unificar el CTA Contacto con el formulario comercial, alinear la auditoría SEO al listado del hero, retirar el sticky y las duraciones de los pasos.",
+      "decision": "Conservar el catálogo y la marca individual de 0026. Nav: Servicios (/servicios), Referencias (/referencias), Metodología (/metodo), sin etiquetas apiladas. 308 permanente desde /proyectos y /proyectos/* hacia /referencias. CTA de cabecera Contacto → /contacto?motivo=propuestaComercial (también en viewport estrecho); el menú hamburguesa no duplica Contacto. El CTA Solicitar propuesta del hero usa el mismo formulario con origen=home. H1 de home: «Servicios informáticos y tecnológicos empresariales y profesionales.» Hero: cuatro enlaces iguales (sitio, catálogo y pagos, colaboración, auditoría SEO). Pie con glass-bg y backdrop-blur como la cabecera. Retirar StickyCta del layout; en /metodo el cierre «Solicitar propuesta» queda en página. Los pasos de metodología no muestran duraciones.",
+      "consequences": "Actualizar site.ts, Header, Hero, Footer, DetailIsland, Layout, process.ts, vercel.json, AGENTS, e2e (sin sticky), allowlist de origen (referencias) y regenerar OG de índice de referencias."
     }
   ]
 }

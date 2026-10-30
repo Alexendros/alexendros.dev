@@ -7,9 +7,9 @@ export const site = {
   locale: 'es',
   ogLocale: 'es_ES',
   nav: [
-    { label: 'Servicios profesionales', href: '/servicios' },
-    { label: 'Proyectos realizados', href: '/proyectos' },
-    { label: 'Metodología clara', href: '/metodo' }
+    { label: 'Servicios', href: '/servicios' },
+    { label: 'Referencias', href: '/referencias' },
+    { label: 'Metodología', href: '/metodo' }
   ],
   /** Enlaces legales del pie (Contacto va en la columna Navegación). */
   footerNav: [
@@ -18,7 +18,7 @@ export const site = {
     { label: 'Cookies', href: '/cookies' },
     { label: 'Accesibilidad', href: '/accesibilidad' }
   ],
-  footerExtraNav: [{ label: 'Contacto', href: '/contacto' }],
+  footerExtraNav: [{ label: 'Contacto', href: '/contacto?motivo=propuestaComercial' }],
   social: {
     github: 'https://github.com/alexendros',
     linkedin: 'https://linkedin.com/in/alexendros',

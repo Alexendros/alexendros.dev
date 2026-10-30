@@ -15,13 +15,13 @@ test('DI-01: /servicios abre ficha en dialog y actualiza la URL', async ({ page 
   await expect(page).toHaveURL(/\/servicios\/?$/);
 });
 
-test('DI-02: /proyectos abre ficha en dialog', async ({ page }) => {
-  await page.goto('/proyectos');
-  const cardLink = page.locator('main a[href^="/proyectos/"]').first();
+test('DI-02: /referencias abre ficha en dialog', async ({ page }) => {
+  await page.goto('/referencias');
+  const cardLink = page.locator('main a[href^="/referencias/"]').first();
   await cardLink.click();
   const dialog = page.locator('dialog[data-detail-island][open]');
   await expect(dialog).toBeVisible();
-  await expect(page).toHaveURL(/\/proyectos\/.+/);
+  await expect(page).toHaveURL(/\/referencias\/.+/);
 });
 
 test('DI-03: Esc cierra el dialog y restaura el índice', async ({ page }) => {

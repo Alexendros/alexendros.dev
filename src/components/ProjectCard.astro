@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import { productTypeLabels, workKindLabels, type Project } from '../content/projects';
+import { productTypeLabels, type Project } from '../content/projects';
 
 interface Props {
   project: Project;
@@ -31,12 +31,12 @@ const Heading = headingLevel;
     <Heading
       class="font-bold text-lg leading-tight mt-1 group-hover:text-primary transition-colors"
     >
-      <a href={`/proyectos/${project.slug}`} class="rounded after:absolute after:inset-0">
+      <a href={`/referencias/${project.slug}`} class="rounded after:absolute after:inset-0">
         {project.title}
       </a>
     </Heading>
     <p class="mt-2 text-xs font-mono text-muted text-pretty break-words">
-      {productTypeLabels[project.productType]} · {workKindLabels[project.workKind]}
+      {productTypeLabels[project.productType]}
     </p>
     <p class="mt-2 text-step--1 text-muted">{project.short}</p>
     {

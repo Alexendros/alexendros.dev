@@ -2,9 +2,10 @@
 import Layout from '../layouts/Layout.astro';
 import Container from '../components/Container.astro';
 import Grid from '../components/Grid.astro';
+import Button from '../components/Button.astro';
 import { processPage } from '../content/process';
 
-const { seo, hero, steps } = processPage;
+const { seo, hero, steps, close } = processPage;
 ---
 
 <Layout
@@ -13,7 +14,7 @@ const { seo, hero, steps } = processPage;
   ogImage="/og/proceso-y-entrega.png"
   ogImageAlt="Metodología clara. Desde la idea hasta el producto entregado"
 >
-  <Container class="py-16 md:py-24 pb-28">
+  <Container class="py-16 md:py-24">
     <header>
       <h1 id="delivery-hero-title" class="text-step-3 break-words font-bold max-w-3xl text-balance">
         {hero.h1Lead}<span class="text-primary">{hero.h1Accent}</span>
@@ -28,7 +29,6 @@ const { seo, hero, steps } = processPage;
             <li class="min-w-0 border-t-2 border-primary pt-5">
               <span class="steps-num block font-mono text-sm text-primary" aria-hidden="true" />
               <h2 class="font-bold text-lg mt-2">{step.title}</h2>
-              <p class="mt-1 text-xs font-mono text-primary">{step.duration}</p>
               <p class="mt-3 text-sm text-muted">{step.description}</p>
               <p class="mt-4 text-sm">
                 <strong>Se recibe:</strong> {step.receive}
@@ -37,6 +37,16 @@ const { seo, hero, steps } = processPage;
           ))
         }
       </Grid>
+    </section>
+
+    <section class="mt-16 max-w-2xl" aria-labelledby="metodo-close-heading">
+      <h2 id="metodo-close-heading" class="text-step-2 font-bold">
+        {close.heading}
+      </h2>
+      <p class="mt-3 text-muted">{close.body}</p>
+      <div class="mt-6">
+        <Button href={close.href}>{close.heading}</Button>
+      </div>
     </section>
   </Container>
 </Layout>
