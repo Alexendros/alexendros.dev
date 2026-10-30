@@ -43,9 +43,6 @@ pnpm-debug.log*
 .cursor/
 .worktrees/
 
-# Informes de fase del Protocolo Trifásico (no se versionan)
-.ai/skills/.phase/
-
 # Material de trabajo local (no forma parte del producto)
 PLAN.md
 extraccion-website-alexendrosdev.txt
