@@ -15,7 +15,8 @@ export const site = {
   footerNav: [
     { label: 'Identidad', href: '/identidad' },
     { label: 'Privacidad', href: '/privacidad' },
-    { label: 'Cookies', href: '/cookies' }
+    { label: 'Cookies', href: '/cookies' },
+    { label: 'Accesibilidad', href: '/accesibilidad' }
   ],
   footerExtraNav: [{ label: 'Contacto', href: '/contacto' }],
   social: {
