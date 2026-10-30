@@ -97,7 +97,7 @@ await writeOg(
   'home.png',
   'ALEXENDROS.DEV',
   'Servicios informáticos y tecnologías',
-  'Valencia · Sitios web, Linux e Inteligencia Artificial'
+  'Valencia · Sitios web, catálogo, auditoría y software'
 );
 await writeOg(
   'servicios.png',

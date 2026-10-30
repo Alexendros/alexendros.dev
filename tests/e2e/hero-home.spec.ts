@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 const H1 = 'Servicios informáticos y tecnologías para empresas y particulares.';
 const TITLE = 'Alexendros — Tecnologías y servicios informáticos';
 const DESCRIPTION =
-  'Sitios web profesionales, integración de catálogo y pagos, aplicaciones para Linux e integración de Inteligencia Artificial. Desde Valencia.';
+  'Sitios web profesionales, integración de catálogo y pagos, auditoría técnica SEO y colaboración en proyectos de software. Desde Valencia.';
 
 const LIST_ITEMS = [
   {

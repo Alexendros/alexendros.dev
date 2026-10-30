@@ -11,7 +11,7 @@ const { seo, hero, steps } = processPage;
   title={seo.title}
   description={seo.description}
   ogImage="/og/proceso-y-entrega.png"
-  ogImageAlt="Metodología clara e integral. Desde la idea hasta el producto entregado"
+  ogImageAlt="Metodología clara. Desde la idea hasta el producto entregado"
 >
   <Container class="py-16 md:py-24 pb-28">
     <header>
@@ -21,11 +21,7 @@ const { seo, hero, steps } = processPage;
       <div class="pagehead-rule mt-4 h-px bg-border" aria-hidden="true"></div>
     </header>
 
-    <section
-      id="proceso"
-      class="mt-16 scroll-mt-[calc(var(--header-h)+var(--space-6))]"
-      aria-labelledby="delivery-hero-title"
-    >
+    <section id="proceso" class="mt-16" aria-labelledby="delivery-hero-title">
       <Grid as="ol" gap="6" role="list" class="steps md:grid-cols-2 lg:grid-cols-4 list-none p-0">
         {
           steps.map((step) => (

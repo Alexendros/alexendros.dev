@@ -279,7 +279,7 @@ export const services: Service[] = [
     title: 'Colaboración en proyectos de software',
     ogTitle: 'Colaboración en proyectos de software',
     short:
-      'Integración en proyectos grandes con más compañeros: diseño y desarrollo por fases, con alcance y plazo escritos.',
+      'Trabajo por fases con equipos que ya tienen un producto en marcha, con alcance y plazo escritos.',
     description:
       'Colaboración técnica en proyectos de software con equipo existente o ampliado. La intervención se alinea al ritmo del proyecto, se entrega por fases y deja alcance y plazo escritos antes de cada una. No es una web de escaparate ni un paquete cerrado; es trabajo conjunto en un producto o herramienta mayor.',
     audience: [

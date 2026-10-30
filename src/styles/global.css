@@ -219,6 +219,7 @@
     font-size: var(--step-0);
     line-height: var(--leading-body);
     scrollbar-gutter: stable;
+    scroll-padding-top: calc(var(--header-h) + var(--space-4));
   }
 
   /* Scroll lock mientras hay un dialog modal abierto (DetailIsland). */
@@ -363,12 +364,14 @@
     pointer-events: none;
   }
 
-  .card-lift:hover {
-    transform: translateY(-4px);
-  }
+  @media (hover: hover) {
+    .card-lift:hover {
+      transform: translateY(-4px);
+    }
 
-  .card-lift:hover::before {
-    opacity: 1;
+    .card-lift:hover::before {
+      opacity: 1;
+    }
   }
 
   /* Filete izquierdo de marca en tarjetas planas (valores, ejes, precios). */
