@@ -29,7 +29,11 @@ const PENDING_APEX_REDIRECT_SOURCES = new Set([
   '/como-trabajo',
   '/como-trabajo/',
   '/proceso-y-entrega',
-  '/proceso-y-entrega/'
+  '/proceso-y-entrega/',
+  // /proyectos → /referencias: apex sirve 200 hasta el promote de este PR.
+  '/proyectos',
+  '/proyectos/',
+  '/proyectos/:path*'
 ]);
 
 /** Destino legacy en apex mientras no se publique /metodo. */
