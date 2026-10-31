@@ -70,16 +70,10 @@ const vias = [
   <input type="hidden" name="modules" value={initialModules} />
   <input type="hidden" name="channel" value="correo" />
 
-  {
-    moduleLabels && (
-      <p class="text-sm opacity-70" data-contact-modules>
-        Módulos indicados:{' '}
-        <strong class="opacity-100" data-contact-module-labels>
-          {moduleLabels}
-        </strong>
-      </p>
-    )
-  }
+  <p class="text-sm opacity-70" data-contact-modules hidden={!moduleLabels}>
+    Módulos indicados:{' '}
+    <strong class="opacity-100" data-contact-module-labels>{moduleLabels}</strong>
+  </p>
 
   <fieldset class="fieldset min-w-0" id="contact-ways" data-contact-ways>
     <legend class="fieldset-legend">Por dónde empezar</legend>
@@ -190,7 +184,12 @@ const vias = [
     </p>
     <p class="label mt-1 justify-between whitespace-normal" id="contact-message-hint">
       <span>Qué se necesita, para cuándo y enlaces de referencia.</span>
-      <span aria-live="polite" id="contact-message-count" data-message-count>0 / 600</span>
+      <span
+        aria-live="polite"
+        id="contact-message-count"
+        class="shrink-0 whitespace-nowrap"
+        data-message-count>0 / 600</span
+      >
     </p>
   </fieldset>
 
