@@ -28,7 +28,8 @@ export const contactOrigins = [
   'proyectos',
   'home-linux',
   'home-gestion',
-  'home-ia'
+  'home-ia',
+  'referido'
 ] as const;
 
 /** Identificadores de vía del formulario (página única). */
