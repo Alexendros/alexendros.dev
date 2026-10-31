@@ -120,11 +120,13 @@ test.describe('CP-09 contacto — foco, errores y axe', () => {
   test('Enviar sin datos marca aria-invalid y axe sin violaciones', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/contacto');
-    await expect(page.getByRole('button', { name: /Enviar/ })).toBeEnabled({ timeout: 10_000 });
+    await expect(page.getByRole('button', { name: /Enviar|Solicitar propuesta/ })).toBeEnabled({
+      timeout: 10_000
+    });
 
-    const name = page.getByLabel('Nombre*');
+    const name = page.getByLabel(/^Nombre\*?$/);
     await expect(name).toBeVisible();
-    await page.getByRole('button', { name: /Enviar/ }).click();
+    await page.getByRole('button', { name: /Enviar|Solicitar propuesta/ }).click();
     await expect(name).toHaveAttribute('aria-invalid', 'true');
     await expect(name).toBeFocused();
 
@@ -204,7 +206,7 @@ test.describe('CP-09 reflow 320 y zoom 200%', () => {
       document.documentElement.style.zoom = '2';
     });
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    const sendBtn = page.getByRole('button', { name: /Enviar/ });
+    const sendBtn = page.getByRole('button', { name: /Enviar|Solicitar propuesta/ });
     await expect(sendBtn).toBeVisible();
     const box = await sendBtn.boundingBox();
     expect(box).not.toBeNull();

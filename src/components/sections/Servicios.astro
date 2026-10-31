@@ -27,7 +27,11 @@ import { homeServiciosIntro, homeVias } from '../../content/home';
             </div>
             <p class="text-sm font-semibold text-accent">{via.delivery}</p>
             <div class="card-actions justify-end">
-              <a class="btn btn-primary btn-sm" href={`/?origen=servicios&via=${via.id}#contacto`}>
+              <a
+                class="btn btn-primary btn-sm"
+                href={`/?origen=servicios&via=${via.id}#contacto`}
+                data-pick-via={via.id}
+              >
                 Solicitar esta vía
               </a>
             </div>
