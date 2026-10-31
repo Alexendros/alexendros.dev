@@ -17,6 +17,7 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:contract": "vitest run src/lib/contactSchema.test.ts src/lib/contactSchema.property.test.ts src/lib/smtpConfig.test.ts src/lib/smtpConfig.property.test.ts src/lib/contactIdempotency.test.ts src/lib/contactHandler.test.ts src/lib/securityHeaders.test.ts",
+    "gen:cv": "node scripts/build-cv-pdf.mjs",
     "gen:og": "node --import tsx --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"./scripts/asset-stub-loader.mjs\", pathToFileURL(\"./\"));' scripts/gen-og.mts",
     "check:contrast": "node scripts/check-contrast.mjs",
     "check:records": "node scripts/check-records.mjs",
