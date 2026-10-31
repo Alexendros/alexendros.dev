@@ -37,7 +37,8 @@ test('DI-03: Esc cierra el dialog y restaura el índice', async ({ page }) => {
 
 test('DI-04: tras cerrar, Atrás no reabre la ficha', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('link', { name: 'Catálogo de servicios' }).click();
+  // Página única: la home ya no enlaza al catálogo; se entra por URL.
+  await page.goto('/servicios');
   await expect(page).toHaveURL(/\/servicios/);
 
   const cardLink = page.locator('[data-services-grid] a[href^="/servicios/"]').first();

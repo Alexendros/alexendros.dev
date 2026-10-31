@@ -53,7 +53,15 @@ test.describe('CP-09 teclado — menú móvil', () => {
     // Enter puede llegar antes que el listener y el botón no responde.
     await expect(page.locator('html[data-header-ready="true"]')).toBeAttached();
     // Abrir con teclado (Enter en <button type="button">).
-    await menuBtn.focus();
+    // El CMP devuelve el foco a su propio nodo un instante después de
+    // ocultarse; reenfocar hasta que el botón conserve el foco.
+    await expect
+      .poll(async () => {
+        await menuBtn.focus();
+        await page.waitForTimeout(50);
+        return menuBtn.evaluate((el) => el === document.activeElement);
+      })
+      .toBe(true);
     await page.keyboard.press('Enter');
     await expect(menuBtn).toHaveAttribute('aria-expanded', 'true');
     await expect(menuBtn).toHaveAttribute('aria-label', 'Cerrar menú');
@@ -112,11 +120,13 @@ test.describe('CP-09 contacto — foco, errores y axe', () => {
   test('Enviar sin datos marca aria-invalid y axe sin violaciones', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/contacto');
-    await expect(page.getByRole('button', { name: /Enviar/ })).toBeEnabled({ timeout: 10_000 });
+    await expect(page.getByRole('button', { name: /Enviar|Solicitar propuesta/ })).toBeEnabled({
+      timeout: 10_000
+    });
 
-    const name = page.getByLabel('Nombre*');
+    const name = page.getByLabel(/^Nombre\*?$/);
     await expect(name).toBeVisible();
-    await page.getByRole('button', { name: /Enviar/ }).click();
+    await page.getByRole('button', { name: /Enviar|Solicitar propuesta/ }).click();
     await expect(name).toHaveAttribute('aria-invalid', 'true');
     await expect(name).toBeFocused();
 
@@ -163,8 +173,12 @@ test.describe('CP-09 recorridos A–E (muestreo)', () => {
   test('D: proceso → contacto', async ({ page }) => {
     await page.goto('/metodo');
     await assertSingleH1AndMain(page);
-    await page.getByRole('link', { name: 'Solicitar propuesta', exact: true }).click();
-    await expect(page).toHaveURL(/\/contacto/);
+    await page
+      .getByRole('main')
+      .getByRole('link', { name: 'Solicitar propuesta', exact: true })
+      .first()
+      .click();
+    await expect(page).toHaveURL(/origen=proceso#contacto/);
   });
 });
 
@@ -192,7 +206,7 @@ test.describe('CP-09 reflow 320 y zoom 200%', () => {
       document.documentElement.style.zoom = '2';
     });
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    const sendBtn = page.getByRole('button', { name: /Enviar/ });
+    const sendBtn = page.getByRole('button', { name: /Enviar|Solicitar propuesta/ });
     await expect(sendBtn).toBeVisible();
     const box = await sendBtn.boundingBox();
     expect(box).not.toBeNull();

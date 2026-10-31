@@ -10,6 +10,11 @@ import { resolve } from 'node:path';
  * Importante: los samples de `:path*` deben resolver a una ruta que exista
  * tras el redirect. Un segmento ficticio pasa el PR (pending/200) y rompe
  * `main` en cuanto Production aplica el 308.
+ *
+ * Si producción aún no sirve la regla de la rama (Location distinto o 200),
+ * se anota `pendiente-despliegue` y se valida el destino contra el build
+ * local (ruta 200; si hay ancla, el id existe). Así el PR no espera a que
+ * apex ya tenga los redirects con ancla SPA. redirects.test.ts cubre el mapa.
  */
 
 const APEX = 'https://alexendros.dev';
@@ -48,10 +53,6 @@ function sampleSourceUrl(source: string): string {
   return `${APEX}${expandPathPattern(source)}`;
 }
 
-function expectedFinalPath(destination: string): string {
-  return pathnameOf(expandPathPattern(destination));
-}
-
 async function firstHop(
   request: APIRequestContext,
   url: string
@@ -69,24 +70,57 @@ async function finalUrl(request: APIRequestContext, url: string): Promise<string
   return response.url();
 }
 
+function splitDestination(destination: string): { path: string; hash: string } {
+  const expanded = expandPathPattern(destination);
+  if (expanded.startsWith('http')) {
+    const u = new URL(expanded);
+    return { path: `${u.origin}${pathnameOf(u.pathname)}`, hash: u.hash.slice(1) };
+  }
+  const [path, hash = ''] = expanded.split('#');
+  return { path: pathnameOf(path!), hash };
+}
+
+/**
+ * Comprueba una regla del vercel.json de la rama. Si producción ya la sirve
+ * (Location coincide), valida el salto real sin bucle. Si aún no está
+ * desplegada (la PR la añade o la cambia), valida el destino contra el build
+ * local: la ruta responde 200 y, si hay ancla, el id existe en la página.
+ */
 async function assertPathRedirect(request: APIRequestContext, rule: VercelRedirect): Promise<void> {
   const from = sampleSourceUrl(rule.source);
+  const dest = splitDestination(rule.destination);
   const hop = await firstHop(request, from);
 
-  expect(
-    PERMANENT_REDIRECT.has(hop.status),
-    `${rule.source}: primer salto debe ser permanente (got ${hop.status})`
-  ).toBe(true);
-  expect(hop.location, `${rule.source}: Location ausente`).toBeTruthy();
+  const location = hop.location ? new URL(hop.location, APEX) : null;
+  const served =
+    location !== null &&
+    PERMANENT_REDIRECT.has(hop.status) &&
+    (dest.path.startsWith('http')
+      ? `${location.origin}${pathnameOf(location.pathname)}` === dest.path
+      : location.origin === APEX && pathnameOf(location.pathname) === dest.path) &&
+    location.hash.slice(1) === dest.hash;
 
-  const final = await finalUrl(request, from);
-  const finalPath = pathnameOf(final);
-  const expected = expectedFinalPath(rule.destination);
+  if (served) {
+    if (dest.path.startsWith('http')) return;
+    const final = await finalUrl(request, from);
+    expect(pathnameOf(final), `${rule.source} → ${dest.path}`).toBe(dest.path);
+    expect(new URL(final).origin).toBe(APEX);
+    return;
+  }
 
-  expect(finalPath, `${rule.source} → esperado ${expected}, final ${finalPath} (${final})`).toBe(
-    expected
-  );
-  expect(new URL(final).origin).toBe(APEX);
+  test.info().annotations.push({
+    type: 'pendiente-despliegue',
+    description: `${rule.source} → ${rule.destination} (producción: ${hop.status} ${hop.location ?? '-'})`
+  });
+  expect(rule.permanent ?? true, `${rule.source}: debe ser permanente`).toBe(true);
+  if (dest.path.startsWith('http')) return;
+  const local = await request.get(dest.path, { maxRedirects: 0 });
+  expect(local.status(), `${rule.source}: destino local ${dest.path} debe dar 200`).toBe(200);
+  if (dest.hash) {
+    expect(await local.text(), `${rule.source}: falta id="${dest.hash}" en ${dest.path}`).toMatch(
+      new RegExp(`id=["']?${dest.hash}["'\\s>]`)
+    );
+  }
 }
 
 test.describe('CP-10 edge producción', () => {
@@ -96,8 +130,9 @@ test.describe('CP-10 edge producción', () => {
     expect(hop.location).toBeTruthy();
     expect(hop.location!).toMatch(/^https:\/\/alexendros\.dev\/?$/);
 
-    const final = await finalUrl(request, `${WWW}/servicios`);
-    expect(final).toMatch(/^https:\/\/alexendros\.dev\/servicios\/?$/);
+    // Ruta estable (no ancla SPA): /servicios → /#servicios tras promote.
+    const final = await finalUrl(request, `${WWW}/privacidad`);
+    expect(final).toMatch(/^https:\/\/alexendros\.dev\/privacidad\/?$/);
   });
 
   test('cada redirect de path en vercel.json llega al destino sin bucle', async ({ request }) => {
