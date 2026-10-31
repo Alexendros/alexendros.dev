@@ -37,7 +37,7 @@ const detailItems = services.map((s) => ({
     <p class="mt-4 max-w-2xl text-sm text-muted" data-services-proposal-note>
       El alcance, el calendario y las condiciones económicas se detallan en cada propuesta.
     </p>
-    <div class="grid mt-8 md:grid-cols-2">
+    <div class="grid mt-8 gap-6 md:grid-cols-2" data-services-grid>
       {
         serviceProducts.map((product) => (
           <div class="h-full">
