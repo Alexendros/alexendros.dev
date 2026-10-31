@@ -5,7 +5,7 @@ export const homeHero = {
   command: 'nuevo-encargo',
   title: 'Auditoría, diseño y construcción de páginas web, tiendas y herramientas para negocios.',
   lead: 'Desde Valencia y en remoto. Cada encargo empieza con alcance, plazo y condiciones por escrito.',
-  primaryCta: { label: 'Solicitar propuesta', href: '#contacto' },
+  primaryCta: { label: 'Solicitar propuesta', href: '/?origen=home#contacto' },
   secondaryCta: { label: 'Ver servicios', href: '#servicios' },
   browserUrl: 'alexendros.dev/propuesta',
   checklist: [
@@ -58,7 +58,7 @@ export const homeVias = [
     badge: 'Revisión',
     title: 'Revisar lo que ya existe',
     short:
-      'Informe claro sobre la web actual, con hallazgos ordenados por impacto y plan de mejoras.',
+      'Informe claro sobre la web actual, con los problemas ordenados por impacto y plan de mejoras.',
     tags: ['Posicionamiento en buscadores', 'Cumplimiento normativo', 'Ciberseguridad'],
     delivery: 'Entrega: informe por escrito',
     formLabel: 'Revisar lo que ya existe',

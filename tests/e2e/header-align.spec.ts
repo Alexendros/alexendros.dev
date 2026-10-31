@@ -20,7 +20,7 @@ test('C-11: cabecera con menú móvil a 768 px', async ({ page }) => {
   const info = await page.evaluate(() => {
     const header = document.getElementById('site-header');
     const desktopNav = header?.querySelector('.navbar-center');
-    const mobileMenu = header?.querySelector('details.dropdown');
+    const mobileMenu = header?.querySelector('[data-menu-button]');
     const navDisplay = desktopNav ? getComputedStyle(desktopNav).display : 'none';
     const menuDisplay = mobileMenu ? getComputedStyle(mobileMenu).display : 'none';
     return {
