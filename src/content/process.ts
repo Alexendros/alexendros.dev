@@ -48,6 +48,6 @@ export const processPage = {
   close: {
     heading: 'Solicitar propuesta',
     body: 'La respuesta llega en un día laborable.',
-    href: '/#contacto'
+    href: '/?origen=proceso#contacto'
   }
 } as const;
