@@ -4,13 +4,13 @@ import { homeHero, homeStats } from '../../content/home';
 
 <section id="top" class="hero scroll-mt-nav">
   <div
-    class="hero-content w-full max-w-6xl flex-col items-center gap-10 px-4 py-14 lg:flex-row lg:py-20"
+    class="hero-content w-full min-w-0 max-w-6xl flex-col items-center gap-10 px-4 py-14 lg:flex-row lg:py-20"
   >
-    <div class="flex-1">
-      <p class="rise rise-1 mb-4 text-sm opacity-70" aria-hidden="true">
+    <div class="min-w-0 flex-1">
+      <p class="rise rise-1 mb-4 text-sm" aria-hidden="true">
         <span class="text-accent">{homeHero.prompt}</span>
         {' '}
-        {homeHero.command}<span class="cursor-blink"></span>
+        <span class="opacity-70">{homeHero.command}</span><span class="cursor-blink"></span>
       </p>
       <h1 class="rise rise-2 text-4xl font-extrabold leading-tight tracking-tight lg:text-5xl">
         {homeHero.title}
@@ -25,7 +25,7 @@ import { homeHero, homeStats } from '../../content/home';
         >
       </div>
     </div>
-    <div class="rise rise-3 w-full max-w-xl flex-1" aria-hidden="true">
+    <div class="rise rise-3 w-full min-w-0 max-w-xl flex-1" aria-hidden="true">
       <div class="mockup-browser border border-base-300 bg-base-100">
         <div class="mockup-browser-toolbar">
           <div class="input">{homeHero.browserUrl}</div>
@@ -71,7 +71,7 @@ import { homeHero, homeStats } from '../../content/home';
       ))
     }
   </ul>
-  <div class="stats stats-vertical w-full border border-base-300 bg-base-100 sm:stats-horizontal">
+  <div class="stats stats-vertical w-full border border-base-300 bg-base-100 lg:stats-horizontal">
     {
       homeStats.map((stat) => (
         <div class="stat">
