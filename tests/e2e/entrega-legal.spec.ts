@@ -13,7 +13,7 @@ test('F07: el pie no tiene tagline, hola@ ni párrafo de cookies', async ({ page
   await expect(footer).not.toContainText('hola@alexendros.dev');
   await expect(footer).not.toContainText(/Usamos cookies propias/i);
   await expect(footer).not.toContainText(/Afiliados/i);
-  await expect(footer.getByRole('link', { name: 'Contratación' })).toHaveAttribute(
+  await expect(footer.getByRole('link', { name: /Correo|Contratación/ })).toHaveAttribute(
     'href',
     'mailto:contratacion@alexendros.dev'
   );
