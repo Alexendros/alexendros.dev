@@ -4,7 +4,7 @@ export const prerender = false;
 import { isAllowedReferralCode } from '../../content/referralCodes';
 import { normalizeReferralCode, REFERRAL_MAX_AGE_SECONDS } from '../../lib/referral';
 
-const CONTACT_DEST = '/#contacto';
+const CONTACT_DEST = '/?origen=referido#contacto';
 const raw = Astro.params.code ?? '';
 const code = normalizeReferralCode(raw);
 

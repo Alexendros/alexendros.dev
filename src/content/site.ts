@@ -19,7 +19,7 @@ export const site = {
   ],
   footerExtraNav: [
     { label: 'Experiencia', href: '/experiencia' },
-    { label: 'Contacto', href: '/#contacto' }
+    { label: 'Contacto', href: '/?origen=home#contacto' }
   ],
   social: {
     github: 'https://github.com/alexendros',

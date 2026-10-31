@@ -21,7 +21,7 @@ test('Hero home: copy, CTAs, metadatos y sin cadenas antiguas', async ({ page })
 
   await expect(hero.getByRole('link', { name: 'Solicitar propuesta' })).toHaveAttribute(
     'href',
-    '#contacto'
+    '/?origen=home#contacto'
   );
   await expect(hero.getByRole('link', { name: 'Ver servicios' })).toHaveAttribute(
     'href',

@@ -75,7 +75,7 @@ describe('processPage — copy público de metodología', () => {
 
     expect(processPage.close.heading).toBe('Solicitar propuesta');
     expect(processPage.close.body).toMatch(/en un día laborable/i);
-    expect(processPage.close.href).toBe('/#contacto');
+    expect(processPage.close.href).toBe('/?origen=proceso#contacto');
   });
 
   it('mantiene densidad baja y evita el glosario técnico', () => {
