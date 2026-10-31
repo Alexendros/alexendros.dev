@@ -100,7 +100,7 @@ const iconClass = 'shrink-0';
           {
             [...site.nav, ...site.footerExtraNav].map((i) => (
               <li>
-                <Link href={i.href} variant="nav">
+                <Link href={i.href} variant="nav" class="inline-block py-1">
                   {i.label}
                 </Link>
               </li>
@@ -114,7 +114,7 @@ const iconClass = 'shrink-0';
           {
             site.footerNav.map((i) => (
               <li>
-                <Link href={i.href} variant="nav">
+                <Link href={i.href} variant="nav" class="inline-block py-1">
                   {i.label}
                 </Link>
               </li>
