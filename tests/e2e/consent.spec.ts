@@ -566,21 +566,35 @@ test('PRIV-04: el formulario no envía email, teléfono ni mensaje a tracking', 
   await expect.poll(async () => (await readConsentStorage(page))?.marketing).toBe(true);
 
   await page.goto('/contacto');
-  await page.getByLabel('Mensaje*').fill(markerMessage);
-  await page.getByLabel('Nombre*').fill('Cliente PII');
-  await page.getByLabel('Correo electrónico*').fill(markerEmail);
+  await page.getByLabel(/^Mensaje\*?$/).fill(markerMessage);
+  await page.getByLabel(/^Nombre\*?$/).fill('Cliente PII');
+  await page.getByLabel(/^Correo electrónico\*?$/).fill(markerEmail);
   await page.getByLabel(/Acepto/).check();
-  await page.getByRole('button', { name: /Enviar/ }).click();
-  await expect(page.getByRole('status')).toContainText(/Mensaje enviado/i, { timeout: 10000 });
+  // Formulario v4: si hay bloque «Por dónde empezar», marcar una vía.
+  {
+    const way = page.locator('#contact-ways input[type="checkbox"]').first();
+    if ((await way.count()) > 0 && !(await way.isChecked())) await way.check();
+  }
+  await page.getByRole('button', { name: /Enviar|Solicitar propuesta/ }).click();
+  await expect(page.getByRole('status')).toContainText(/Mensaje enviado|Solicitud enviada/i, {
+    timeout: 10000
+  });
 
   // Segundo recorrido con otro remitente para descartar persistencia entre envíos.
   await page.goto('/contacto');
-  await page.getByLabel('Mensaje*').fill(markerMessage);
-  await page.getByLabel('Nombre*').fill('Cliente PII Mail');
-  await page.getByLabel('Correo electrónico*').fill(markerEmail);
+  await page.getByLabel(/^Mensaje\*?$/).fill(markerMessage);
+  await page.getByLabel(/^Nombre\*?$/).fill('Cliente PII Mail');
+  await page.getByLabel(/^Correo electrónico\*?$/).fill(markerEmail);
   await page.getByLabel(/Acepto/).check();
-  await page.getByRole('button', { name: /Enviar/ }).click();
-  await expect(page.getByRole('status')).toContainText(/Mensaje enviado/i, { timeout: 10000 });
+  // Formulario v4: si hay bloque «Por dónde empezar», marcar una vía.
+  {
+    const way = page.locator('#contact-ways input[type="checkbox"]').first();
+    if ((await way.count()) > 0 && !(await way.isChecked())) await way.check();
+  }
+  await page.getByRole('button', { name: /Enviar|Solicitar propuesta/ }).click();
+  await expect(page.getByRole('status')).toContainText(/Mensaje enviado|Solicitud enviada/i, {
+    timeout: 10000
+  });
 
   const joined = seenPayloads.join('\n');
   expect(joined).not.toContain(markerEmail);
