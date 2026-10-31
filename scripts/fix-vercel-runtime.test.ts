@@ -38,8 +38,8 @@ describe('nodeRuntimeFromEngines', () => {
 });
 
 describe('readTargetRuntime', () => {
-  it('lee engines.node 22.x del package.json del repo', () => {
-    expect(readTargetRuntime(path.join(repoRoot, 'package.json'))).toBe('nodejs22.x');
+  it('lee engines.node 24.x del package.json del repo', () => {
+    expect(readTargetRuntime(path.join(repoRoot, 'package.json'))).toBe('nodejs24.x');
   });
 });
 
