@@ -64,7 +64,10 @@ export function initReferencias(): void {
     });
     actionNodes.forEach((n) => actions.appendChild(n));
     const title = body.querySelector('[data-tpl-title]');
-    if (title && !title.id) title.id = 'ref-dialog-title';
+    if (title) {
+      if (!title.id) title.id = 'ref-dialog-title';
+      dialog.setAttribute('aria-labelledby', title.id);
+    }
     dialog.showModal();
     closeBtn?.focus();
   }
