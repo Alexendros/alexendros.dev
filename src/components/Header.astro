@@ -9,10 +9,21 @@ const contactHref = '/#contacto';
   class="navbar sticky top-0 z-50 border-b border-base-300 bg-base-100 px-3 lg:px-8"
 >
   <div class="navbar-start">
-    <details class="dropdown lg:hidden" id="mm">
-      <summary class="btn btn-ghost btn-square" aria-label="Abrir menú">☰</summary>
+    <div class="relative lg:hidden">
+      <button
+        type="button"
+        class="btn btn-ghost btn-square"
+        data-menu-button
+        aria-label="Abrir menú"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+      >
+        <span aria-hidden="true">☰</span>
+      </button>
       <ul
-        class="menu dropdown-content z-10 mt-3 w-64 rounded-box border border-base-300 bg-base-100 p-2 shadow"
+        id="mobile-nav"
+        hidden
+        class="menu absolute left-0 z-10 mt-3 w-64 rounded-box border border-base-300 bg-base-100 p-2 shadow"
       >
         {
           site.nav.map((item) => (
@@ -25,7 +36,7 @@ const contactHref = '/#contacto';
           <a class="btn btn-primary" href={contactHref}>Solicitar propuesta</a>
         </li>
       </ul>
-    </details>
+    </div>
     <a class="btn btn-ghost text-lg font-extrabold tracking-tight" href="/#top">
       Alexendros<span class="text-sm font-normal opacity-60">.dev</span>
     </a>
@@ -58,5 +69,7 @@ const contactHref = '/#contacto';
 
 <script>
   import { initThemeToggle } from '../scripts/themeToggle';
+  import { initMobileMenu } from '../scripts/mobileMenu';
   initThemeToggle();
+  initMobileMenu();
 </script>
