@@ -1044,22 +1044,6 @@
     border: 0;
   }
 
-  /* Numeración visual de pasos: el contador vive en un span aria-hidden
-     para no duplicar la lectura del <ol> (Safari con list-style: none). */
-  .steps {
-    counter-reset: step;
-    list-style: none;
-    padding: 0;
-  }
-
-  .steps > li {
-    counter-increment: step;
-  }
-
-  .steps > li > .steps-num::before {
-    content: counter(step, decimal-leading-zero);
-  }
-
   /* Honeypot: fuera de pantalla (no display:none; algunos bots lo ignoran). */
   .honeypot {
     position: absolute;
@@ -1075,5 +1059,101 @@
      sólido para que el trazo se perciba como azul pálido sobre papel. */
   .text-brand-line {
     color: var(--brand);
+  }
+
+  /* Página única daisyUI: marco, foco, rise, anclas. */
+  .navbar {
+    padding-top: env(safe-area-inset-top, 0);
+  }
+
+  .scroll-mt-nav {
+    scroll-margin-top: calc(var(--header-h) + env(safe-area-inset-top, 0));
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono, 'JetBrains Mono Variable', monospace);
+    font-size: 0.8125rem;
+    letter-spacing: var(--tracking-eyebrow);
+    opacity: 0.7;
+  }
+
+  .js-only {
+    display: none;
+  }
+
+  .js .js-only {
+    display: inline-flex;
+  }
+
+  .btn:focus-visible,
+  .link:focus-visible,
+  .checkbox:focus-visible,
+  .collapse summary:focus-visible,
+  [data-theme-toggle]:focus-visible,
+  .card label:has(.checkbox):focus-within {
+    outline: 2px solid var(--color-primary, var(--brand));
+    outline-offset: 2px;
+  }
+
+  .cursor-blink {
+    display: inline-block;
+    width: 0.5ch;
+    height: 1em;
+    margin-left: 0.1em;
+    vertical-align: text-bottom;
+    background: currentcolor;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .js .cursor-blink {
+      animation: cursor-blink 1s step-end infinite;
+    }
+
+    /* Solo con .js: sin JS el contenido ya está visible (estado final = partida). */
+    .js .rise {
+      animation: rise-in 0.6s var(--ease-out, ease) both;
+    }
+
+    .js .rise-1 {
+      animation-delay: 0.05s;
+    }
+
+    .js .rise-2 {
+      animation-delay: 0.1s;
+    }
+
+    .js .rise-3 {
+      animation-delay: 0.2s;
+    }
+
+    .js .rise-4 {
+      animation-delay: 0.3s;
+    }
+
+    .js .rise-5 {
+      animation-delay: 0.4s;
+    }
+
+    .js .rise-6 {
+      animation-delay: 0.5s;
+    }
+  }
+
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.5rem);
+    }
+
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes cursor-blink {
+    50% {
+      opacity: 0;
+    }
   }
 }
