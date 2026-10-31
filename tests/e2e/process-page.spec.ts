@@ -2,11 +2,10 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { processPage } from '../../src/content/process';
 
-const route = '/metodo';
-// Diseño de página única: el texto sale del contenido, no de literales.
-const H1 = `${processPage.hero.h1Lead}${processPage.hero.h1Accent}`;
-const cta = (page: import('@playwright/test').Page) =>
-  page.getByRole('main').getByRole('link', { name: 'Solicitar propuesta', exact: true });
+/** Metodología vive en la home (#metodo); /metodo queda como HTML residual / SEO. */
+const route = '/';
+const SECTION = '#metodo';
+const TITLE = processPage.title;
 
 for (const width of [320, 390, 768, 1280]) {
   test(`proceso: contenido y reflow a ${width}px`, async ({ page }) => {
@@ -14,14 +13,14 @@ for (const width of [320, 390, 768, 1280]) {
     const response = await page.goto(route);
     expect(response?.status()).toBe(200);
     await expect(page.locator('h1')).toHaveCount(1);
-    await expect(page.locator('h1')).toHaveText(H1);
+    const metodo = page.locator(SECTION);
+    await expect(metodo).toBeVisible();
+    await expect(metodo.getByRole('heading', { level: 2, name: TITLE, exact: true })).toBeVisible();
     await expect(
       page.getByRole('heading', { name: 'De la idea al proyecto publicado', exact: true })
     ).toHaveCount(0);
     await expect(page.locator('#sticky-cta')).toHaveCount(0);
-    await expect(cta(page)).toHaveAttribute('href', /origen=proceso/);
     await expect(page.locator('.delivery-page')).toHaveCount(0);
-    await expect(page.locator('.pagehead-rule')).toHaveCount(1);
     const overflows = await page.evaluate(
       () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1
     );
@@ -33,7 +32,9 @@ for (const scheme of ['light', 'dark'] as const) {
   test(`proceso: axe en ${scheme}`, async ({ page }) => {
     await page.emulateMedia({ colorScheme: scheme, reducedMotion: 'reduce' });
     await page.goto(route);
+    await page.locator(SECTION).scrollIntoViewIfNeeded();
     const results = await new AxeBuilder({ page })
+      .include(SECTION)
       .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
       .analyze();
     expect(results.violations).toEqual([]);
@@ -45,9 +46,9 @@ test('proceso: contenido esencial sin JavaScript', async ({ browser, baseURL }) 
   const page = await context.newPage();
   await page.goto(`${baseURL}${route}`);
   await expect(page.locator('h1')).toBeVisible();
-  await expect(page.locator('#proceso')).toBeVisible();
+  await expect(page.locator(SECTION)).toBeVisible();
+  await expect(page.locator('#steps')).toBeVisible();
   await expect(page.locator('#sticky-cta')).toHaveCount(0);
-  await expect(cta(page)).toBeVisible();
   await expect(page.locator('.delivery-page')).toHaveCount(0);
   await context.close();
 });
@@ -57,11 +58,11 @@ test('proceso: ancla bajo la cabecera', async ({ page }) => {
   await page.goto(route);
   await expect(page.locator('#sticky-cta')).toHaveCount(0);
 
-  await page.locator('#proceso').scrollIntoViewIfNeeded();
-  await expect(page.locator('#proceso')).toBeInViewport();
+  await page.locator(SECTION).scrollIntoViewIfNeeded();
+  await expect(page.locator(SECTION)).toBeInViewport();
 
   const clearance = await page.evaluate(() => {
-    const section = document.getElementById('proceso');
+    const section = document.getElementById('metodo');
     const header = document.getElementById('site-header');
     if (!section || !header) return null;
     const sectionTop = section.getBoundingClientRect().top;
@@ -72,17 +73,15 @@ test('proceso: ancla bajo la cabecera', async ({ page }) => {
   expect(clearance!.sectionTop).toBeGreaterThanOrEqual(clearance!.headerBottom - 1);
 });
 
-test('proceso: CTAs llevan origen y sin duraciones en pasos', async ({ page }) => {
+test('proceso: pasos visibles y sin duraciones comerciales', async ({ page }) => {
   await page.goto(route);
-  await expect(page.locator('main details')).toHaveCount(0);
-  await expect(page.getByRole('heading', { name: 'Un caso', exact: true })).toHaveCount(0);
-  await expect(page.getByRole('heading', { name: 'Dudas rápidas', exact: true })).toHaveCount(0);
+  const metodo = page.locator(SECTION);
+  await expect(metodo.getByRole('heading', { name: 'Un caso', exact: true })).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Pedir presupuesto' })).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Ver precios' })).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Reservar una llamada' })).toHaveCount(0);
-  await expect(cta(page)).toHaveAttribute('href', /origen=proceso/);
   for (const step of processPage.steps) {
-    await expect(page.getByRole('heading', { name: step.title, exact: true })).toBeVisible();
+    await expect(metodo.getByRole('heading', { level: 3, name: step.title })).toBeVisible();
   }
   await expect(page.getByText('30 min')).toHaveCount(0);
   await expect(page.getByText('1–2 días')).toHaveCount(0);

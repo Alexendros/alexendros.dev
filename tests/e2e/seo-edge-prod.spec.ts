@@ -10,6 +10,11 @@ import { resolve } from 'node:path';
  * Importante: los samples de `:path*` deben resolver a una ruta que exista
  * tras el redirect. Un segmento ficticio pasa el PR (pending/200) y rompe
  * `main` en cuanto Production aplica el 308.
+ *
+ * Si producción aún no sirve la regla de la rama (Location distinto o 200),
+ * se anota `pendiente-despliegue` y se valida el destino contra el build
+ * local (ruta 200; si hay ancla, el id existe). Así el PR no espera a que
+ * apex ya tenga los redirects con ancla SPA. redirects.test.ts cubre el mapa.
  */
 
 const APEX = 'https://alexendros.dev';
@@ -125,8 +130,9 @@ test.describe('CP-10 edge producción', () => {
     expect(hop.location).toBeTruthy();
     expect(hop.location!).toMatch(/^https:\/\/alexendros\.dev\/?$/);
 
-    const final = await finalUrl(request, `${WWW}/servicios`);
-    expect(final).toMatch(/^https:\/\/alexendros\.dev\/servicios\/?$/);
+    // Ruta estable (no ancla SPA): /servicios → /#servicios tras promote.
+    const final = await finalUrl(request, `${WWW}/privacidad`);
+    expect(final).toMatch(/^https:\/\/alexendros\.dev\/privacidad\/?$/);
   });
 
   test('cada redirect de path en vercel.json llega al destino sin bucle', async ({ request }) => {
