@@ -219,7 +219,8 @@ test('T-CON-01b: accepted con replay true muestra éxito', async ({ page }) => {
 });
 
 test('AXD-005: correo visible si el script no hidrata', async ({ page }) => {
-  await page.route('**/contactForm*', (route) => route.abort());
+  // El script del formulario se empaqueta como ContactForm.astro_…js.
+  await page.route(/\/_astro\/(?:contactForm|ContactForm)[^/]*\.js/, (route) => route.abort());
   await page.goto('/contacto');
   const nojs = page.locator('[data-contact-nojs]');
   await expect(nojs).toBeVisible({ timeout: 10_000 });

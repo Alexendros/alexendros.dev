@@ -169,6 +169,20 @@ function initContactForm(form: HTMLFormElement): void {
       ''
   );
   setHiddenValue('origin', originFromSearch(params.get('origen') ?? formValue('origin')) ?? '');
+
+  // Enlaces «/?origen=…#contacto» en la misma página: fijar el origen sin
+  // recargar y bajar al formulario (sin JS, el enlace recarga y lo lee de la URL).
+  document.addEventListener('click', (event) => {
+    const link = (event.target as Element | null)?.closest?.('a[href*="#contacto"]');
+    if (!(link instanceof HTMLAnchorElement)) return;
+    const url = new URL(link.href, window.location.href);
+    if (url.pathname !== window.location.pathname || !url.searchParams.has('origen')) return;
+    event.preventDefault();
+    const origin = originFromSearch(url.searchParams.get('origen'));
+    if (origin) setHiddenValue('origin', origin);
+    history.pushState(null, '', `${url.search}${url.hash}`);
+    document.getElementById('contacto')?.scrollIntoView();
+  });
   const modules =
     serializePortalModuleIds(normalizePortalModuleIds(params.get('modulos'))) ||
     formValue('modules');

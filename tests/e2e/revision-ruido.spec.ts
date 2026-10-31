@@ -27,9 +27,8 @@ for (const p of pages) {
     await expect(page.locator('h1')).toHaveCount(1);
     const text = await page.locator('main').innerText();
     for (const re of forbidden) expect(text).not.toMatch(re);
-    await expect(page.locator('footer a[href="/contacto?motivo=propuestaComercial"]')).toHaveCount(
-      1
-    );
+    // Página única: el pie lleva a la sección de contacto con origen.
+    await expect(page.locator('footer a[href$="#contacto"]')).toHaveCount(1);
     await expect(page.locator('footer a[href="/sobre-mi"]')).toHaveCount(0);
     await expect(page.locator('footer a[href="mailto:contratacion@alexendros.dev"]')).toBeVisible();
   });

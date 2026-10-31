@@ -1,5 +1,5 @@
 ---
-import { homeContactoIntro, homeExperienciaTeaser } from '../../content/home';
+import { homeContactoIntro } from '../../content/home';
 import { site } from '../../content/site';
 import ContactForm from '../ContactForm.astro';
 
@@ -29,17 +29,6 @@ const { turnstileSiteKey } = Astro.props;
         <a class="btn btn-outline btn-sm" href={site.social.github} rel="noopener">GitHub</a>
         <a class="btn btn-outline btn-sm" href={site.social.linkedin} rel="noopener">LinkedIn</a>
       </div>
-      <aside class="card card-border bg-base-100 mt-8">
-        <div class="card-body">
-          <h3 class="card-title text-base">{homeExperienciaTeaser.title}</h3>
-          <p class="text-sm opacity-80">{homeExperienciaTeaser.body}</p>
-          <div class="card-actions">
-            <a class="btn btn-ghost btn-sm" href={homeExperienciaTeaser.href}
-              >{homeExperienciaTeaser.cta}</a
-            >
-          </div>
-        </div>
-      </aside>
     </div>
     <div class="min-w-0 lg:col-span-3">
       <div class="card card-border bg-base-100">
