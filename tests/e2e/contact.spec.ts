@@ -85,7 +85,8 @@ test('contacto muestra canales horizontales y sin servicios de entrada', async (
   await expect(page.getByRole('heading', { name: 'Formulario', exact: true })).toHaveCount(0);
 
   const footer = page.locator('footer');
-  await expect(footer.getByRole('link', { name: 'Contratación' })).toBeVisible();
+  // Pie de página única: el correo se rotula «Correo».
+  await expect(footer.getByRole('link', { name: /Correo|Contratación/ })).toBeVisible();
   await expect(footer.locator('a[href="mailto:contratacion@alexendros.dev"]')).toBeVisible();
   await expect(footer.getByRole('link', { name: 'GitHub' })).toBeVisible();
   await expect(footer.getByRole('link', { name: 'LinkedIn' })).toBeVisible();
@@ -207,7 +208,7 @@ test('CFG-06: servicio y proyecto allowlisted; desconocidos se descartan', async
 
 test('CFG-07: ficha de servicio llega con contexto oculto', async ({ page }) => {
   await page.goto('/servicios/informe-comercial');
-  await page.locator('#contenido').getByRole('link', { name: 'Solicitar propuesta' }).click();
+  await page.locator('main [data-product-action="primary"]').first().click();
   await expect(page).toHaveURL(/servicio=informe-comercial/);
   await expect(page.locator('#contact-service')).toHaveValue('informe-comercial', {
     timeout: 10_000

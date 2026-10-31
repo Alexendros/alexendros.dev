@@ -53,7 +53,15 @@ test.describe('CP-09 teclado — menú móvil', () => {
     // Enter puede llegar antes que el listener y el botón no responde.
     await expect(page.locator('html[data-header-ready="true"]')).toBeAttached();
     // Abrir con teclado (Enter en <button type="button">).
-    await menuBtn.focus();
+    // El CMP devuelve el foco a su propio nodo un instante después de
+    // ocultarse; reenfocar hasta que el botón conserve el foco.
+    await expect
+      .poll(async () => {
+        await menuBtn.focus();
+        await page.waitForTimeout(50);
+        return menuBtn.evaluate((el) => el === document.activeElement);
+      })
+      .toBe(true);
     await page.keyboard.press('Enter');
     await expect(menuBtn).toHaveAttribute('aria-expanded', 'true');
     await expect(menuBtn).toHaveAttribute('aria-label', 'Cerrar menú');
@@ -163,8 +171,12 @@ test.describe('CP-09 recorridos A–E (muestreo)', () => {
   test('D: proceso → contacto', async ({ page }) => {
     await page.goto('/metodo');
     await assertSingleH1AndMain(page);
-    await page.getByRole('link', { name: 'Solicitar propuesta', exact: true }).click();
-    await expect(page).toHaveURL(/\/contacto/);
+    await page
+      .getByRole('main')
+      .getByRole('link', { name: 'Solicitar propuesta', exact: true })
+      .first()
+      .click();
+    await expect(page).toHaveURL(/origen=proceso#contacto/);
   });
 });
 

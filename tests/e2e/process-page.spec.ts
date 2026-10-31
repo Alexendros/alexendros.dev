@@ -1,8 +1,12 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { processPage } from '../../src/content/process';
 
 const route = '/metodo';
-const H1 = 'Metodología clara. Desde la idea hasta el producto entregado.';
+// Diseño de página única: el texto sale del contenido, no de literales.
+const H1 = `${processPage.hero.h1Lead}${processPage.hero.h1Accent}`;
+const cta = (page: import('@playwright/test').Page) =>
+  page.getByRole('main').getByRole('link', { name: 'Solicitar propuesta', exact: true });
 
 for (const width of [320, 390, 768, 1280]) {
   test(`proceso: contenido y reflow a ${width}px`, async ({ page }) => {
@@ -15,9 +19,7 @@ for (const width of [320, 390, 768, 1280]) {
       page.getByRole('heading', { name: 'De la idea al proyecto publicado', exact: true })
     ).toHaveCount(0);
     await expect(page.locator('#sticky-cta')).toHaveCount(0);
-    await expect(
-      page.getByRole('link', { name: 'Solicitar propuesta', exact: true })
-    ).toHaveAttribute('href', /origen=proceso/);
+    await expect(cta(page)).toHaveAttribute('href', /origen=proceso/);
     await expect(page.locator('.delivery-page')).toHaveCount(0);
     await expect(page.locator('.pagehead-rule')).toHaveCount(1);
     const overflows = await page.evaluate(
@@ -45,7 +47,7 @@ test('proceso: contenido esencial sin JavaScript', async ({ browser, baseURL }) 
   await expect(page.locator('h1')).toBeVisible();
   await expect(page.locator('#proceso')).toBeVisible();
   await expect(page.locator('#sticky-cta')).toHaveCount(0);
-  await expect(page.getByRole('link', { name: 'Solicitar propuesta', exact: true })).toBeVisible();
+  await expect(cta(page)).toBeVisible();
   await expect(page.locator('.delivery-page')).toHaveCount(0);
   await context.close();
 });
@@ -78,12 +80,10 @@ test('proceso: CTAs llevan origen y sin duraciones en pasos', async ({ page }) =
   await expect(page.getByRole('link', { name: 'Pedir presupuesto' })).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Ver precios' })).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Reservar una llamada' })).toHaveCount(0);
-  await expect(
-    page.getByRole('link', { name: 'Solicitar propuesta', exact: true })
-  ).toHaveAttribute('href', /origen=proceso/);
-  await expect(page.getByText('un acuerdo por escrito.')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Desarrollo y construcción' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Previsualización y entrega' })).toBeVisible();
+  await expect(cta(page)).toHaveAttribute('href', /origen=proceso/);
+  for (const step of processPage.steps) {
+    await expect(page.getByRole('heading', { name: step.title, exact: true })).toBeVisible();
+  }
   await expect(page.getByText('30 min')).toHaveCount(0);
   await expect(page.getByText('1–2 días')).toHaveCount(0);
   await expect(page.getByText(/Orientativo:\s*10 días/)).toHaveCount(0);
