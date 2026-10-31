@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import PageHead from '../components/PageHead.astro';
-import Container from '../components/Container.astro';
 import Link from '../components/Link.astro';
 import ContactForm from '../components/ContactForm.astro';
 import { contact } from '../content/contact';
@@ -30,7 +29,7 @@ const initialModules = serializePortalModuleIds(normalizePortalModuleIds(params.
   ogImage="/og/contacto.png"
   ogImageAlt="Formulario de contacto de Alexendros.dev"
 >
-  <Container size="narrow" class="py-16 md:py-24">
+  <div class="mx-auto max-w-3xl px-4 py-16 md:py-24">
     <PageHead
       title="Contacto"
       description="Propuesta comercial o información sobre un servicio. Alcance, plazo y condiciones quedan por escrito."
@@ -53,5 +52,5 @@ const initialModules = serializePortalModuleIds(normalizePortalModuleIds(params.
       Los datos se usan solo para responder a esta petición. Consulta la{' '}
       <Link href="/privacidad" variant="inline">política de privacidad</Link> antes de enviar.
     </p>
-  </Container>
+  </div>
 </Layout>

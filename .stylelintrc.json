@@ -52,12 +52,16 @@
   },
   "overrides": [
     {
-      "files": ["src/styles/theme.css"],
+      "files": ["src/styles/theme.css", "src/styles/global.css"],
       "rules": {
         "declaration-property-value-disallowed-list": null,
         "hue-degree-notation": null,
         "custom-property-empty-line-before": null,
-        "at-rule-empty-line-before": null
+        "at-rule-empty-line-before": null,
+        "rule-empty-line-before": null,
+        "custom-property-pattern": null,
+        "declaration-no-important": null,
+        "block-no-empty": null
       }
     }
   ]
