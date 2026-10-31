@@ -70,16 +70,10 @@ const vias = [
   <input type="hidden" name="modules" value={initialModules} />
   <input type="hidden" name="channel" value="correo" />
 
-  {
-    moduleLabels && (
-      <p class="text-sm opacity-70" data-contact-modules>
-        Módulos indicados:{' '}
-        <strong class="opacity-100" data-contact-module-labels>
-          {moduleLabels}
-        </strong>
-      </p>
-    )
-  }
+  <p class="text-sm opacity-70" data-contact-modules hidden={!moduleLabels}>
+    Módulos indicados:{' '}
+    <strong class="opacity-100" data-contact-module-labels>{moduleLabels}</strong>
+  </p>
 
   <fieldset class="fieldset min-w-0" id="contact-ways" data-contact-ways>
     <legend class="fieldset-legend">Por dónde empezar</legend>
