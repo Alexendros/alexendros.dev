@@ -247,3 +247,15 @@
   }
   /* stylelint-enable declaration-no-important, declaration-property-value-disallowed-list */
 }
+
+/* Fuera de capas para ganar a daisyUI (components). Sin JS el botón de tema
+   no funciona y se oculta; foco en primary en menú y logo. */
+html:not(.js) .js-only {
+  display: none;
+}
+
+.menu li > a:focus-visible,
+#site-header a.btn:focus-visible {
+  outline: 2px solid var(--color-primary, var(--brand));
+  outline-offset: 2px;
+}

@@ -81,9 +81,9 @@ const vias = [
     )
   }
 
-  <fieldset class="fieldset" id="contact-ways" data-contact-ways>
+  <fieldset class="fieldset min-w-0" id="contact-ways" data-contact-ways>
     <legend class="fieldset-legend">Por dónde empezar</legend>
-    <p class="label mb-1">Marcar una o varias opciones</p>
+    <p class="label mb-1 whitespace-normal">Marcar una o varias opciones</p>
     <div class="grid gap-2">
       {
         vias.map((via) => (
@@ -120,7 +120,7 @@ const vias = [
     <p id="contact-vias-error" role="alert" class="mt-1 text-sm text-error" hidden></p>
   </fieldset>
 
-  <fieldset class="fieldset">
+  <fieldset class="fieldset min-w-0">
     <label class="fieldset-legend" for="contact-name">Nombre</label>
     <input
       id="contact-name"
@@ -136,7 +136,7 @@ const vias = [
     </p>
   </fieldset>
 
-  <fieldset class="fieldset" data-contact-email-wrapper>
+  <fieldset class="fieldset min-w-0" data-contact-email-wrapper>
     <label class="fieldset-legend" for="contact-email">Correo electrónico</label>
     <input
       id="contact-email"
@@ -152,7 +152,7 @@ const vias = [
     </p>
   </fieldset>
 
-  <fieldset class="fieldset">
+  <fieldset class="fieldset min-w-0">
     <label class="fieldset-legend" for="contact-sitio">
       Sitio web actual <span class="opacity-60">(si existe)</span>
     </label>
@@ -169,7 +169,7 @@ const vias = [
     </p>
   </fieldset>
 
-  <fieldset class="fieldset">
+  <fieldset class="fieldset min-w-0">
     <label class="fieldset-legend" for="contact-message">Mensaje</label>
     <textarea
       id="contact-message"
@@ -188,7 +188,7 @@ const vias = [
       hidden
     >
     </p>
-    <p class="label mt-1 justify-between" id="contact-message-hint">
+    <p class="label mt-1 justify-between whitespace-normal" id="contact-message-hint">
       <span>Qué se necesita, para cuándo y enlaces de referencia.</span>
       <span aria-live="polite" id="contact-message-count" data-message-count>0 / 600</span>
     </p>
