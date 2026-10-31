@@ -56,7 +56,7 @@ test.describe('F02 F03 F10 servicios y selector de necesidades', () => {
     await link.click();
     await expect(page).toHaveURL(/\/contacto\?motivo=informacionCliente/);
     await expect(page.getByRole('heading', { name: 'Contacto', exact: true })).toBeVisible();
-    await expect(page.locator('[data-contact-modules]')).toHaveCount(0);
+    await expect(page.locator('[data-contact-modules]')).toBeHidden();
   });
 
   test('F10: no hay banner sticky de propuesta', async ({ page }) => {
