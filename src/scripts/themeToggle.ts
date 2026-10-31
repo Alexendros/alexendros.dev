@@ -49,6 +49,7 @@ function applyMode(mode: ThemeMode, input: HTMLInputElement, button: HTMLButtonE
 }
 
 export function initThemeToggle(): void {
+  document.documentElement.classList.add('js');
   const input = document.querySelector<HTMLInputElement>('[data-theme-input]');
   const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
   if (!input || !button) return;
