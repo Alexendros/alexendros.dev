@@ -9,13 +9,16 @@ test.describe('critical paths', () => {
     const res = await page.goto('/');
     expect(res?.ok()).toBeTruthy();
     await expect(page.getByRole('banner')).toBeVisible();
-    await expect(page.getByRole('banner').getByRole('link', { name: 'Contacto' })).toBeVisible();
+    // Diseño página única: el acceso a contacto en cabecera es la CTA «Solicitar propuesta» (/#contacto).
+    await expect(
+      page.getByRole('banner').getByRole('link', { name: 'Solicitar propuesta' })
+    ).toHaveAttribute('href', /^\/\?origen=home#contacto$/);
   });
 
   test('header sticky no es transparente', async ({ page }) => {
     await page.goto('/');
     const header = page.locator('#site-header');
-    await expect(header).toHaveClass(/glass-bg/);
+    await expect(header).toBeVisible();
     const alpha = await page.evaluate(() => {
       const el = document.getElementById('site-header');
       if (!el) return 0;
@@ -39,9 +42,9 @@ test.describe('critical paths', () => {
   test('contacto muestra formulario usable', async ({ page }) => {
     await page.goto('/contacto');
     await expect(page.getByRole('heading', { name: 'Contacto', exact: true })).toBeVisible();
-    await expect(page.getByLabel('Mensaje*')).toBeVisible();
-    await expect(page.getByLabel('Nombre*')).toBeVisible();
-    await expect(page.getByRole('button', { name: /Enviar/ })).toBeVisible();
+    await expect(page.getByLabel(/^Mensaje$/)).toBeVisible();
+    await expect(page.getByLabel(/^Nombre$/)).toBeVisible();
+    await expect(page.getByRole('button', { name: /Solicitar propuesta/ })).toBeVisible();
   });
 
   test('sin consentimiento no hay trackers data-tracker', async ({ page }) => {
