@@ -154,8 +154,15 @@
     display: inline-flex;
   }
 
+  /* Sin JS el botón de tema no funciona: oculto aunque .btn fije display. */
+  html:not(.js) .js-only.btn {
+    display: none;
+  }
+
   .btn:focus-visible,
   .link:focus-visible,
+  .menu li > a:focus-visible,
+  #site-header a.btn:focus-visible,
   .checkbox:focus-visible,
   [data-theme-toggle]:focus-visible,
   .collapse-title:focus-visible,
