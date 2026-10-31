@@ -15,7 +15,12 @@ const featured = projects.filter((p) => p.featured || true);
     {homeReferenciasIntro.title}
   </h2>
 
-  <div class="join mt-6" role="group" aria-label="Filtrar proyectos" data-ref-filters>
+  <div
+    class="join join-vertical mt-6 w-full sm:join-horizontal sm:w-auto"
+    role="group"
+    aria-label="Filtrar proyectos"
+    data-ref-filters
+  >
     {
       homeReferenciasIntro.filters.map((f, i) => (
         <button
