@@ -9,7 +9,10 @@ test.describe('critical paths', () => {
     const res = await page.goto('/');
     expect(res?.ok()).toBeTruthy();
     await expect(page.getByRole('banner')).toBeVisible();
-    await expect(page.getByRole('banner').getByRole('link', { name: 'Contacto' })).toBeVisible();
+    // Diseño página única: el acceso a contacto en cabecera es la CTA «Solicitar propuesta» (/#contacto).
+    await expect(
+      page.getByRole('banner').getByRole('link', { name: 'Solicitar propuesta' })
+    ).toHaveAttribute('href', '/#contacto');
   });
 
   test('header sticky no es transparente', async ({ page }) => {
