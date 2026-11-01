@@ -7,7 +7,7 @@ import { serviceProducts, services } from '../../content/services';
 
 const detailItems = services.map((s) => ({
   slug: s.slug,
-  path: `/servicios/${s.slug}`,
+  path: `/servicios/${s.slug}/`,
   title: s.title,
   short: s.short,
   description: s.description,
@@ -18,7 +18,7 @@ const detailItems = services.map((s) => ({
 
 <Layout
   title="Servicios profesionales — Alexendros"
-  description="Auditoría técnica SEO, privacidad y accesibilidad, seguridad web, colaboración técnica y sitio profesional por módulos."
+  description="Revisión técnica para aparecer en buscadores, privacidad y accesibilidad, seguridad web, colaboración técnica y sitio profesional por módulos."
   ogImage="/og/servicios.png"
   ogImageAlt="Servicios profesionales de Alexendros.dev"
 >
@@ -54,7 +54,7 @@ const detailItems = services.map((s) => ({
         <p class="mt-4 rounded-lg border border-border bg-card p-4 text-sm">
           Sin JavaScript el selector no guarda la selección. Puedes{' '}
           <a
-            href="/contacto?motivo=propuestaComercial"
+            href="/contacto/?motivo=propuestaComercial"
             class="underline decoration-dotted underline-offset-2 text-primary"
           >
             pedir una propuesta

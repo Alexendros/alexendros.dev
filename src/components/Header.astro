@@ -1,7 +1,7 @@
 ---
 import { site } from '../content/site';
 
-const contactHref = '/?origen=home#contacto';
+const contactHref = '/contacto/?motivo=propuestaComercial';
 ---
 
 <header
@@ -33,7 +33,7 @@ const contactHref = '/?origen=home#contacto';
           ))
         }
         <li class="mt-2">
-          <a class="btn btn-primary" href={contactHref}>Solicitar propuesta</a>
+          <a class="btn btn-primary" href={contactHref}>Contacto</a>
         </li>
       </ul>
     </div>
@@ -63,7 +63,7 @@ const contactHref = '/?origen=home#contacto';
     >
       <span aria-hidden="true">◐</span>
     </button>
-    <a class="btn btn-primary hidden sm:inline-flex" href={contactHref}>Solicitar propuesta</a>
+    <a class="btn btn-primary hidden sm:inline-flex" href={contactHref}>Contacto</a>
   </div>
 </header>
 

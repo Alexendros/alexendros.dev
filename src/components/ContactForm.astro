@@ -57,6 +57,7 @@ const vias = [
   >
     La solicitud
   </h2>
+  <p class="text-sm opacity-70">Los campos con * son obligatorios.</p>
 
   <div class="honeypot" aria-hidden="true">
     <label for="contact-website">Sitio web</label>
@@ -115,7 +116,7 @@ const vias = [
   </fieldset>
 
   <fieldset class="fieldset min-w-0">
-    <label class="fieldset-legend" for="contact-name">Nombre</label>
+    <label class="fieldset-legend" for="contact-name">Nombre *</label>
     <input
       id="contact-name"
       name="name"
@@ -131,7 +132,7 @@ const vias = [
   </fieldset>
 
   <fieldset class="fieldset min-w-0" data-contact-email-wrapper>
-    <label class="fieldset-legend" for="contact-email">Correo electrónico</label>
+    <label class="fieldset-legend" for="contact-email">Correo electrónico *</label>
     <input
       id="contact-email"
       name="email"
@@ -148,7 +149,7 @@ const vias = [
 
   <fieldset class="fieldset min-w-0">
     <label class="fieldset-legend" for="contact-sitio">
-      Sitio web actual <span class="opacity-60">(si existe)</span>
+      Sitio web actual <span class="opacity-60">(opcional)</span>
     </label>
     <input
       id="contact-sitio"
@@ -164,14 +165,14 @@ const vias = [
   </fieldset>
 
   <fieldset class="fieldset min-w-0">
-    <label class="fieldset-legend" for="contact-message">Mensaje</label>
+    <label class="fieldset-legend" for="contact-message">Mensaje *</label>
     <textarea
       id="contact-message"
       name="message"
       class="textarea validator h-32 w-full"
       required
       minlength="10"
-      maxlength="600"
+      maxlength="1500"
       aria-required="true"
       aria-describedby="contact-message-hint contact-message-error contact-message-count"
     ></textarea>
@@ -188,7 +189,7 @@ const vias = [
         aria-live="polite"
         id="contact-message-count"
         class="shrink-0 whitespace-nowrap"
-        data-message-count>0 / 600</span
+        data-message-count>0 / 1500</span
       >
     </p>
   </fieldset>
@@ -203,7 +204,7 @@ const vias = [
     />
     <span>
       Acepto el tratamiento de mis datos para responder a esta solicitud según la{' '}
-      <a href="/privacidad" class="link link-hover">política de privacidad</a>.
+      <a href="/privacidad/" class="link link-hover">política de privacidad</a>.
     </span>
   </label>
   <p id="contact-consent-error" role="alert" class="text-sm text-error" hidden></p>

@@ -20,9 +20,9 @@ async function fillContactForm(
     await page.locator('input[name="via"][value="otra"]').check();
     await page.getByLabel('Describir la otra necesidad').fill(opts.otra);
   }
-  await page.getByLabel(/^Mensaje$/).fill(message);
-  await page.getByLabel(/^Nombre$/).fill(name);
-  await page.getByLabel(/^Correo electrónico$/).fill(email);
+  await page.getByLabel(/^Mensaje( \*)?$/).fill(message);
+  await page.getByLabel(/^Nombre( \*)?$/).fill(name);
+  await page.getByLabel(/^Correo electrónico( \*)?$/).fill(email);
   if (opts.sitio) await page.getByLabel(/Sitio web actual/).fill(opts.sitio);
   await page.getByLabel(/Acepto/).check();
 }
@@ -55,9 +55,9 @@ test('vacío: foco al primer error', async ({ page }) => {
 test('Otra vacía: error de detalle', async ({ page }) => {
   await page.goto('/contacto');
   await page.locator('input[name="via"][value="otra"]').check();
-  await page.getByLabel(/^Nombre$/).fill('Test Cliente');
-  await page.getByLabel(/^Correo electrónico$/).fill('test@example.com');
-  await page.getByLabel(/^Mensaje$/).fill('Necesito algo fuera del catálogo habitual.');
+  await page.getByLabel(/^Nombre( \*)?$/).fill('Test Cliente');
+  await page.getByLabel(/^Correo electrónico( \*)?$/).fill('test@example.com');
+  await page.getByLabel(/^Mensaje( \*)?$/).fill('Necesito algo fuera del catálogo habitual.');
   await page.getByLabel(/Acepto/).check();
   await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
   await expect(page.locator('#contact-otra-error')).toBeVisible();

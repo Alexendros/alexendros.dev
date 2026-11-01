@@ -84,8 +84,8 @@ export const services: Service[] = [
   {
     slug: 'informe-comercial',
     kind: 'service',
-    title: 'Auditoría técnica SEO',
-    ogTitle: 'Auditoría técnica SEO',
+    title: 'Revisión técnica para aparecer en buscadores',
+    ogTitle: 'Revisión técnica para aparecer en buscadores',
     short:
       'Revisión de indexación, estructura y rendimiento con incidencias priorizadas y métricas de referencia.',
     description:
@@ -136,7 +136,7 @@ export const services: Service[] = [
     action: {
       kind: 'contact',
       label: 'Solicitar propuesta',
-      href: '/contacto?motivo=informacionCliente&servicio=informe-comercial',
+      href: '/contacto/?motivo=informacionCliente&servicio=informe-comercial',
       newTab: false
     }
   },
@@ -189,7 +189,7 @@ export const services: Service[] = [
     action: {
       kind: 'contact',
       label: 'Solicitar propuesta',
-      href: '/contacto?motivo=informacionCliente&servicio=cumplimiento-normativo',
+      href: '/contacto/?motivo=informacionCliente&servicio=cumplimiento-normativo',
       newTab: false
     }
   },
@@ -239,19 +239,19 @@ export const services: Service[] = [
     action: {
       kind: 'contact',
       label: 'Solicitar propuesta',
-      href: '/contacto?motivo=informacionCliente&servicio=ciberseguridad',
+      href: '/contacto/?motivo=informacionCliente&servicio=ciberseguridad',
       newTab: false
     }
   },
   {
     slug: 'software-a-medida',
     kind: 'service',
-    title: 'Colaboración en proyectos de software',
-    ogTitle: 'Colaboración en proyectos de software',
+    title: 'Colaboración en proyectos de programación',
+    ogTitle: 'Colaboración en proyectos de programación',
     short:
       'Trabajo por fases con equipos que ya tienen un producto en marcha, con alcance y plazo escritos.',
     description:
-      'Colaboración técnica en proyectos de software con equipo existente o ampliado. La intervención se alinea al ritmo del proyecto, se entrega por fases y deja alcance y plazo escritos antes de cada una. No es una web de escaparate ni un paquete cerrado; es trabajo conjunto en un producto o herramienta mayor.',
+      'Colaboración técnica en proyectos de programación con equipo existente o ampliado. La intervención se alinea al ritmo del proyecto, se entrega por fases y deja alcance y plazo escritos antes de cada una. No es una web de escaparate ni un paquete cerrado; es trabajo conjunto en un producto o herramienta mayor.',
     audience: [
       'Equipos que ya tienen un proyecto en marcha y necesitan refuerzo técnico fiable',
       'Negocios con un producto o herramienta grande donde hace falta construir por fases con más manos'
@@ -300,7 +300,7 @@ export const services: Service[] = [
     action: {
       kind: 'contact',
       label: 'Solicitar propuesta',
-      href: '/contacto?motivo=propuestaComercial&origen=servicios&servicio=software-a-medida',
+      href: '/contacto/?motivo=propuestaComercial&origen=servicios&servicio=software-a-medida',
       newTab: false
     }
   }
@@ -314,7 +314,7 @@ export const serviceProducts: ProductCard[] = services.map((service) => ({
   slug: service.slug,
   title: service.title,
   short: service.short,
-  href: `/servicios/${service.slug}`,
+  href: `/servicios/${service.slug}/`,
   ctaLabel: SERVICE_PRODUCT_CTA
 }));
 

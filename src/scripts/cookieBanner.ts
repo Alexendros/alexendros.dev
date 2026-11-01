@@ -112,7 +112,7 @@ export function initCookieBanner(): void {
               description:
                 'Guardamos un dato técnico para recordar tu decisión. El resto (medición de visitas y publicidad) no se enciende hasta que tú lo permitas. ' +
                 '«Aceptar todas» activa analítica y publicidad. «Rechazar opcionales» deja solo lo técnico. «Configurar» abre el detalle por categoría. ' +
-                '<a href="/cookies">Explicación completa en Cookies</a>.',
+                '<a href="/cookies/">Explicación completa en Cookies</a>.',
               acceptAllBtn: 'Aceptar todas',
               acceptNecessaryBtn: 'Rechazar opcionales',
               showPreferencesBtn: 'Configurar'
@@ -127,7 +127,7 @@ export function initCookieBanner(): void {
                 {
                   title: 'Qué implica cada interruptor',
                   description:
-                    'En lenguaje llano: cada fila es un tipo de dato. Lo técnico no se puede apagar porque sin él el sitio no recuerda esta elección. Lo demás es opcional. Detalle, titulares y plazos están en <a href="/cookies">Cookies</a>.'
+                    'En lenguaje llano: cada fila es un tipo de dato. Lo técnico no se puede apagar porque sin él el sitio no recuerda esta elección. Lo demás es opcional. Detalle, titulares y plazos están en <a href="/cookies/">Cookies</a>.'
                 },
                 {
                   title: 'Técnicas (obligatorias)',

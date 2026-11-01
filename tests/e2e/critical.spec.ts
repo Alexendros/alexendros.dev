@@ -9,10 +9,10 @@ test.describe('critical paths', () => {
     const res = await page.goto('/');
     expect(res?.ok()).toBeTruthy();
     await expect(page.getByRole('banner')).toBeVisible();
-    // Diseño página única: el acceso a contacto en cabecera es la CTA «Solicitar propuesta» (/#contacto).
+    // El acceso a contacto en cabecera es el botón «Contacto» (/contacto/).
     await expect(
-      page.getByRole('banner').getByRole('link', { name: 'Solicitar propuesta' })
-    ).toHaveAttribute('href', /^\/\?origen=home#contacto$/);
+      page.getByRole('banner').getByRole('link', { name: 'Contacto', exact: true }).first()
+    ).toHaveAttribute('href', '/contacto/?motivo=propuestaComercial');
   });
 
   test('header sticky no es transparente', async ({ page }) => {
@@ -42,8 +42,8 @@ test.describe('critical paths', () => {
   test('contacto muestra formulario usable', async ({ page }) => {
     await page.goto('/contacto');
     await expect(page.getByRole('heading', { name: 'Contacto', exact: true })).toBeVisible();
-    await expect(page.getByLabel(/^Mensaje$/)).toBeVisible();
-    await expect(page.getByLabel(/^Nombre$/)).toBeVisible();
+    await expect(page.getByLabel(/^Mensaje( \*)?$/)).toBeVisible();
+    await expect(page.getByLabel(/^Nombre( \*)?$/)).toBeVisible();
     await expect(page.getByRole('button', { name: /Solicitar propuesta/ })).toBeVisible();
   });
 

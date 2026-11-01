@@ -8,10 +8,10 @@ export type ProcessStep = {
 /** Pasos alineados al mock v4 (copia aprobada). */
 export const processPage = {
   seo: {
-    title: 'Metodología clara — Alexendros',
+    title: 'Cómo se trabaja — Alexendros',
     description:
       'Metodología clara. Desde la idea hasta el producto entregado. Método de trabajo para sitios web y productos digitales.',
-    ogTitle: 'Metodología clara'
+    ogTitle: 'Cómo se trabaja'
   },
   hero: {
     h1Lead: 'Cómo se trabaja, paso a paso.',
@@ -48,6 +48,6 @@ export const processPage = {
   close: {
     heading: 'Solicitar propuesta',
     body: 'La respuesta llega en un día laborable.',
-    href: '/?origen=proceso#contacto'
+    href: '/contacto/?origen=proceso&motivo=propuestaComercial'
   }
 } as const;

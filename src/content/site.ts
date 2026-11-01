@@ -7,20 +7,17 @@ export const site = {
   locale: 'es',
   ogLocale: 'es_ES',
   nav: [
-    { label: 'Servicios', href: '/#servicios' },
-    { label: 'Referencias', href: '/#referencias' },
-    { label: 'Metodología', href: '/#metodo' }
+    { label: 'Servicios', href: '/servicios/' },
+    { label: 'Referencias', href: '/referencias/' },
+    { label: 'Metodología', href: '/metodo/' }
   ],
   footerNav: [
-    { label: 'Identidad', href: '/identidad' },
-    { label: 'Privacidad', href: '/privacidad' },
-    { label: 'Cookies', href: '/cookies' },
-    { label: 'Accesibilidad', href: '/accesibilidad' }
+    { label: 'Identidad', href: '/identidad/' },
+    { label: 'Privacidad', href: '/privacidad/' },
+    { label: 'Cookies', href: '/cookies/' },
+    { label: 'Accesibilidad', href: '/accesibilidad/' }
   ],
-  footerExtraNav: [
-    { label: 'Experiencia', href: '/experiencia' },
-    { label: 'Contacto', href: '/?origen=home#contacto' }
-  ],
+  footerExtraNav: [{ label: 'Contacto', href: '/contacto/?motivo=propuestaComercial' }],
   social: {
     github: 'https://github.com/alexendros',
     linkedin: 'https://linkedin.com/in/alexendros',

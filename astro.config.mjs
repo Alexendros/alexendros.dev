@@ -4,6 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
 
 export default defineConfig({
+  trailingSlash: 'always',
   site: 'https://alexendros.dev',
   integrations: [
     sitemap({
