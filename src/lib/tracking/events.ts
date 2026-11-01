@@ -13,7 +13,8 @@ export type FunnelEvent =
   | 'form_step'
   | 'form_submit'
   | 'contact_form_success'
-  | 'form_abandon_step';
+  | 'form_abandon_step'
+  | 'contact_click';
 
 type Props = Record<string, string | number | boolean | null | undefined>;
 
@@ -22,6 +23,8 @@ function gtagEvent(event: FunnelEvent, props: Props): void {
   const target = window as Window & { gtag?: Gtag; dataLayer?: unknown[] };
   if (typeof target.gtag !== 'function') return;
   target.gtag('event', event, props);
+  // Conversión GA4: evento recomendado generate_lead (marcarlo como evento clave en GA4).
+  if (event === 'contact_form_success') target.gtag('event', 'generate_lead', props);
 }
 
 function metaEvent(event: FunnelEvent, props: Props): void {
@@ -32,6 +35,9 @@ function metaEvent(event: FunnelEvent, props: Props): void {
   // Lead solo tras aceptación contractual del formulario (no en el intento).
   if (event === 'contact_form_success') {
     target.fbq('track', 'Lead', props);
+  }
+  if (event === 'contact_click') {
+    target.fbq('track', 'Contact', props);
   }
 }
 
@@ -53,6 +59,22 @@ export function track(event: FunnelEvent, props: Props = {}): void {
   gtagEvent(event, props);
   metaEvent(event, props);
   postHogEvent(event, props);
+}
+
+export type ContactChannel = 'phone' | 'whatsapp';
+
+/** Clasifica un href de contacto directo (tel:, wa.me, api.whatsapp.com). */
+export function contactChannelFromHref(href: string): ContactChannel | null {
+  const value = href.trim().toLowerCase();
+  if (value.startsWith('tel:')) return 'phone';
+  if (value.startsWith('whatsapp:')) return 'whatsapp';
+  try {
+    const host = new URL(value).hostname;
+    if (host === 'wa.me' || host === 'api.whatsapp.com') return 'whatsapp';
+  } catch {
+    return null;
+  }
+  return null;
 }
 
 /**
@@ -78,6 +100,12 @@ export function setupFunnelTracking(): void {
     const anchor = element?.closest?.('a[href]');
     if (!anchor) return;
     const href = anchor.getAttribute('href') ?? '';
+    const channel = contactChannelFromHref(href);
+    if (channel) {
+      // Sin el número: solo canal y ruta.
+      track('contact_click', { channel, path: window.location.pathname });
+      return;
+    }
     if (href.startsWith('/contacto')) {
       track('cta_click', { href, label: anchor.textContent?.trim().slice(0, 80) ?? '' });
     }
