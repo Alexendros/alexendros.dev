@@ -26,11 +26,14 @@ for (const p of walk(DIST)) {
 let errors = 0,
   warns = 0;
 for (const [from, href] of links) {
-  if (
-    /^(mailto:|tel:|javascript:)/.test(href) ||
-    (/^https?:/.test(href) && !href.startsWith(ORIGIN))
-  )
-    continue;
+  if (/^(mailto:|tel:|javascript:)/.test(href)) continue;
+  if (/^https?:/.test(href)) {
+    try {
+      if (new URL(href).origin !== ORIGIN) continue;
+    } catch {
+      continue;
+    }
+  }
   const u = new URL(href, ORIGIN + (from === '/' ? '/' : from + '/'));
   const path = norm(u.pathname);
   if (path.includes('.')) {
