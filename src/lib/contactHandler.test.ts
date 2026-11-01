@@ -251,6 +251,68 @@ describe('handleContactPost', () => {
     errorSpy.mockRestore();
   });
 
+  it('OPS-02: fallo Notion → correo FALLO NOTION con datos y push sin PII; cliente 200', async () => {
+    const sendMail = vi.fn(async () => undefined);
+    const sendCrmFailureMail = vi.fn(async (_p: unknown) => undefined);
+    const sendAlertWebhook = vi.fn(async (_t: string) => undefined);
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const res = await handleContactPost(
+      postJson(validBody),
+      deps({
+        sendMail,
+        sendCrmFailureMail,
+        sendAlertWebhook,
+        saveLead: async () => {
+          throw new Error('notion down');
+        }
+      })
+    );
+    expect(res.status).toBe(200);
+    expect((await res.json()).status).toBe('accepted');
+    expect(sendCrmFailureMail).toHaveBeenCalledOnce();
+    const mail = sendCrmFailureMail.mock.calls[0]?.[0] as unknown as Record<string, string>;
+    expect(mail.name).toBe(validBody.name);
+    expect(mail.email).toBe(validBody.email);
+    expect(mail.message).toContain(validBody.message);
+    expect(sendAlertWebhook).toHaveBeenCalledOnce();
+    const text = String(sendAlertWebhook.mock.calls[0]?.[0]);
+    expect(text).toMatch(/revisa el correo/i);
+    expect(text).not.toContain(validBody.email);
+    expect(text).not.toContain(validBody.name);
+    errorSpy.mockRestore();
+  });
+
+  it('OPS-02: si fallan el correo de aviso y el push, el cliente sigue con 200', async () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const res = await handleContactPost(
+      postJson(validBody),
+      deps({
+        saveLead: async () => {
+          throw new Error('notion down');
+        },
+        sendCrmFailureMail: async () => {
+          throw new Error('smtp');
+        },
+        sendAlertWebhook: async () => {
+          throw new Error('push');
+        }
+      })
+    );
+    expect(res.status).toBe(200);
+    errorSpy.mockRestore();
+  });
+
+  it('OPS-02: Notion ok → sin avisos', async () => {
+    const sendCrmFailureMail = vi.fn(async (_p: unknown) => undefined);
+    const sendAlertWebhook = vi.fn(async (_t: string) => undefined);
+    await handleContactPost(
+      postJson(validBody),
+      deps({ saveLead: async () => undefined, sendCrmFailureMail, sendAlertWebhook })
+    );
+    expect(sendCrmFailureMail).not.toHaveBeenCalled();
+    expect(sendAlertWebhook).not.toHaveBeenCalled();
+  });
+
   it('OPS-01: CRM ok no altera accepted ni promete registro', async () => {
     const saveLead = vi.fn(async () => undefined);
     const res = await handleContactPost(postJson(validBody), deps({ saveLead }));
