@@ -110,7 +110,7 @@ export function initCookieBanner(): void {
             consentModal: {
               title: 'Valoramos tu privacidad',
               description:
-                'Guardamos un dato técnico para recordar tu decisión. Medición y publicidad solo si las aceptas. <a href="/cookies/">Más detalle</a>.',
+                'Guardamos un dato técnico para recordar tu decisión. Medición y publicidad, solo si aceptas.',
               acceptAllBtn: 'Aceptar todas',
               acceptNecessaryBtn: 'Rechazar opcionales',
               showPreferencesBtn: 'Configurar'
