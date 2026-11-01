@@ -41,7 +41,27 @@ import Layout from '../layouts/Layout.astro';
     <h2>Encargados y destinatarios</h2>
     <p>
       Correo: Proton Mail. Alojamiento del sitio: Vercel. No se ceden ni se venden datos a terceros
-      con fines comerciales.
+      con fines comerciales. Además, actúan como encargados del tratamiento:
+    </p>
+    <ul>
+      <li>
+        <strong>Notion</strong> (Notion Labs, Inc.): guarda los datos del formulario de contacto
+        (nombre, correo, motivo y mensaje) para gestionar la respuesta.
+      </li>
+      <li>
+        <strong>Upstash</strong> (Upstash, Inc.): limita el número de envíos para evitar abusos.
+        Guarda la dirección IP durante unos 2 minutos y una huella cifrada (SHA-256) del envío
+        durante 10 minutos para no procesarlo dos veces; no guarda el contenido del mensaje.
+      </li>
+      <li>
+        <strong>Cloudflare</strong> (Cloudflare, Inc.), con Turnstile: comprueba que el envío lo
+        hace una persona y no un robot, a partir de datos técnicos del navegador y la dirección IP.
+      </li>
+    </ul>
+    <p>
+      Estas empresas tienen sede en Estados Unidos, por lo que puede haber transferencias
+      internacionales de datos. Se amparan en el Marco de Privacidad de Datos UE-EE. UU. y, en su
+      defecto, en cláusulas contractuales tipo de la Comisión Europea.
     </p>
 
     <h2>Derechos</h2>
