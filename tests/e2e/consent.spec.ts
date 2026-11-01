@@ -271,15 +271,15 @@ test('TEST-LEGAL-02: el pie enlaza a Identidad, Privacidad y Cookies', async ({ 
   const footer = page.locator('footer');
   await expect(footer.getByRole('link', { name: /Identidad/i }).first()).toHaveAttribute(
     'href',
-    '/identidad'
+    '/identidad/'
   );
   await expect(footer.getByRole('link', { name: /Privacidad/i }).first()).toHaveAttribute(
     'href',
-    '/privacidad'
+    '/privacidad/'
   );
   await expect(footer.getByRole('link', { name: /Cookies/i }).first()).toHaveAttribute(
     'href',
-    '/cookies'
+    '/cookies/'
   );
 
   await page.goto('/cookies');
@@ -566,9 +566,9 @@ test('PRIV-04: el formulario no envía email, teléfono ni mensaje a tracking', 
   await expect.poll(async () => (await readConsentStorage(page))?.marketing).toBe(true);
 
   await page.goto('/contacto');
-  await page.getByLabel(/^Mensaje\*?$/).fill(markerMessage);
-  await page.getByLabel(/^Nombre\*?$/).fill('Cliente PII');
-  await page.getByLabel(/^Correo electrónico\*?$/).fill(markerEmail);
+  await page.getByLabel(/^Mensaje( \*)?$/).fill(markerMessage);
+  await page.getByLabel(/^Nombre( \*)?$/).fill('Cliente PII');
+  await page.getByLabel(/^Correo electrónico( \*)?$/).fill(markerEmail);
   await page.getByLabel(/Acepto/).check();
   // Formulario v4: si hay bloque «Por dónde empezar», marcar una vía.
   {
@@ -582,9 +582,9 @@ test('PRIV-04: el formulario no envía email, teléfono ni mensaje a tracking', 
 
   // Segundo recorrido con otro remitente para descartar persistencia entre envíos.
   await page.goto('/contacto');
-  await page.getByLabel(/^Mensaje\*?$/).fill(markerMessage);
-  await page.getByLabel(/^Nombre\*?$/).fill('Cliente PII Mail');
-  await page.getByLabel(/^Correo electrónico\*?$/).fill(markerEmail);
+  await page.getByLabel(/^Mensaje( \*)?$/).fill(markerMessage);
+  await page.getByLabel(/^Nombre( \*)?$/).fill('Cliente PII Mail');
+  await page.getByLabel(/^Correo electrónico( \*)?$/).fill(markerEmail);
   await page.getByLabel(/Acepto/).check();
   // Formulario v4: si hay bloque «Por dónde empezar», marcar una vía.
   {

@@ -41,7 +41,7 @@ test.describe('F02 F03 F10 servicios y selector de necesidades', () => {
     await expect(summary.locator('li')).toHaveCount(4);
     await expect(configurator.getByRole('link', { name: 'Solicitar propuesta' })).toHaveAttribute(
       'href',
-      '/contacto?motivo=propuestaComercial&origen=servicios&modulos=tienda%2Cmensajeria%2Cusuarios%2Ccontenidos'
+      '/contacto/?motivo=propuestaComercial&origen=servicios&modulos=tienda%2Cmensajeria%2Cusuarios%2Ccontenidos'
     );
     await expect(configurator).not.toContainText(/€|\bEUR\b|\+\s*IVA\b/i);
   });
@@ -52,9 +52,9 @@ test.describe('F02 F03 F10 servicios y selector de necesidades', () => {
     const link = configurator.getByRole('link', {
       name: /Solicitar información sin seleccionar módulos/i
     });
-    await expect(link).toHaveAttribute('href', '/contacto?motivo=informacionCliente');
+    await expect(link).toHaveAttribute('href', '/contacto/?motivo=informacionCliente');
     await link.click();
-    await expect(page).toHaveURL(/\/contacto\?motivo=informacionCliente/);
+    await expect(page).toHaveURL(/\/contacto\/\?motivo=informacionCliente/);
     await expect(page.getByRole('heading', { name: 'Contacto', exact: true })).toBeVisible();
     await expect(page.locator('[data-contact-modules]')).toBeHidden();
   });
