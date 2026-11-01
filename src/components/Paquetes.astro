@@ -1,0 +1,44 @@
+---
+import { paquetes, precioTexto, plazoTexto, paqueteContactoHref } from '../content/paquetes';
+
+interface Props {
+  headingLevel?: 'h2' | 'h3';
+}
+const { headingLevel = 'h3' } = Astro.props;
+const Heading = headingLevel;
+---
+
+<div class="mt-10 grid gap-6 md:grid-cols-3" data-paquetes>
+  {
+    paquetes.map((p) => (
+      <article
+        class="card card-border bg-base-100 transition-colors hover:border-primary"
+        data-paquete={p.id}
+      >
+        <div class="card-body">
+          <Heading class="card-title text-xl">{p.nombre}</Heading>
+          <p class="text-sm opacity-80">
+            <span class="font-semibold">Para quién: </span>
+            {p.paraQuien}
+          </p>
+          <ul class="list-disc space-y-1 ps-5 text-sm">
+            {p.incluye.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+          <p class="mt-2 text-2xl font-extrabold text-primary" data-paquete-precio>
+            {precioTexto(p)}
+          </p>
+          <p class="text-sm font-semibold text-accent" data-paquete-plazo>
+            {plazoTexto(p)}
+          </p>
+          <div class="card-actions mt-2">
+            <a class="btn btn-primary btn-block" href={paqueteContactoHref(p)} data-pick-via={p.id}>
+              Pedir el paquete<span class="sr-only"> {p.nombre}</span>
+            </a>
+          </div>
+        </div>
+      </article>
+    ))
+  }
+</div>

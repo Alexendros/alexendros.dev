@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import ServiceCard from '../../components/ServiceCard.astro';
 import DetailIsland from '../../components/DetailIsland.astro';
+import Paquetes from '../../components/Paquetes.astro';
 import NeedsConfigurator from '../../components/NeedsConfigurator.astro';
 import { serviceProducts, services } from '../../content/services';
 
@@ -18,34 +19,39 @@ const detailItems = services.map((s) => ({
 
 <Layout
   title="Servicios profesionales — Alexendros"
-  description="Revisión técnica para aparecer en buscadores, privacidad y accesibilidad, seguridad web, colaboración técnica y sitio profesional por módulos."
+  description="Paquetes cerrados de web, tienda online y automatización con IA, con precio de salida y plazo. Además, revisiones técnicas de buscadores, privacidad y seguridad."
   ogImage="/og/servicios.png"
   ogImageAlt="Servicios profesionales de Alexendros.dev"
 >
   <div class="mx-auto max-w-6xl px-4 py-16 md:py-24">
     <header>
       <h1 class="text-step-3 break-words font-bold max-w-3xl text-balance">
-        Catálogo de servicios profesionales en{' '}
-        <span class="text-primary">respuesta a necesidades reales</span>
+        Tres paquetes cerrados,{' '}
+        <span class="text-primary">precio y plazo a la vista</span>
       </h1>
       <div class="pagehead-rule mt-4 h-px bg-border" aria-hidden="true"></div>
       <p class="text-muted mt-3 max-w-2xl">
-        Revisiones técnicas y colaboración por fases: se define el alcance de cada encargo y se
-        entrega un informe o un trabajo acotado, con sus límites por escrito.
+        Web, tienda online o automatización con IA. Elige el paquete y el alcance exacto se confirma
+        por escrito antes de empezar.
       </p>
     </header>
-    <p class="mt-4 max-w-2xl text-sm text-muted" data-services-proposal-note>
-      El alcance, el calendario y las condiciones económicas se detallan en cada propuesta.
-    </p>
-    <div class="grid mt-8 gap-6 md:grid-cols-2" data-services-grid>
-      {
-        serviceProducts.map((product) => (
-          <div class="h-full">
-            <ServiceCard product={product} />
-          </div>
-        ))
-      }
-    </div>
+    <Paquetes headingLevel="h2" />
+    <section class="mt-16" aria-labelledby="revisiones-heading">
+      <h2 id="revisiones-heading" class="text-2xl font-bold">Revisiones técnicas y colaboración</h2>
+      <p class="mt-2 max-w-2xl text-sm text-muted" data-services-proposal-note>
+        Servicios a medida: el alcance, el calendario y las condiciones económicas se detallan en
+        cada propuesta.
+      </p>
+      <div class="grid mt-8 gap-6 md:grid-cols-2" data-services-grid>
+        {
+          serviceProducts.map((product) => (
+            <div class="h-full">
+              <ServiceCard product={product} />
+            </div>
+          ))
+        }
+      </div>
+    </section>
     <DetailIsland basePath="/servicios" items={detailItems} />
 
     <section class="mt-16" aria-labelledby="portal-heading">

@@ -33,13 +33,20 @@ export const contactOrigins = [
 ] as const;
 
 /** Identificadores de vía del formulario (página única). */
-export const contactViaIds = ['revisar', 'crear', 'colaborar', 'otra'] as const;
+export const contactViaIds = ['web', 'tienda', 'automatizacion', 'otra'] as const;
+
+/** Ids antiguos (enlaces externos o en caché) → paquete actual. */
+const LEGACY_VIA_IDS: Record<string, ContactViaId> = {
+  revisar: 'web',
+  crear: 'web',
+  colaborar: 'automatizacion'
+};
 export type ContactViaId = (typeof contactViaIds)[number];
 
 export const contactViaLabels: Record<ContactViaId, string> = {
-  revisar: 'Revisar lo que ya existe',
-  crear: 'Crear una web o una tienda',
-  colaborar: 'Sumar un programador al equipo',
+  web: 'Paquete Web',
+  tienda: 'Paquete Tienda online',
+  automatizacion: 'Paquete Automatización con IA',
   otra: 'Otra necesidad'
 };
 
@@ -84,7 +91,8 @@ function normalizeVias(v: unknown): ContactViaId[] {
   const out: ContactViaId[] = [];
   for (const item of raw) {
     if (typeof item !== 'string') continue;
-    const id = item.trim() as ContactViaId;
+    const trimmed = item.trim();
+    const id = (LEGACY_VIA_IDS[trimmed] ?? trimmed) as ContactViaId;
     if ((contactViaIds as readonly string[]).includes(id) && !out.includes(id)) out.push(id);
   }
   return out;

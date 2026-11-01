@@ -23,7 +23,7 @@ const FIELD_IDS: Record<string, string> = {
   email: 'contact-email',
   message: 'contact-message',
   consent: 'contact-consent',
-  vias: 'contact-via-revisar',
+  vias: 'contact-via-web',
   otraDetalle: 'contact-otra',
   sitio: 'contact-sitio'
 };

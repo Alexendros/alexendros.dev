@@ -7,7 +7,7 @@ async function fillContactForm(
   const name = opts.name ?? 'Test Cliente';
   const message = opts.message ?? 'Necesito información sobre el informe comercial.';
   const email = opts.email ?? 'test@example.com';
-  await page.locator('input[name="via"][value="revisar"]').check();
+  await page.locator('input[name="via"][value="web"]').check();
   await page.getByLabel(/^Mensaje( \*)?$/).fill(message);
   await page.getByLabel(/^Nombre( \*)?$/).fill(name);
   await page.getByLabel(/^Correo electrónico( \*)?$/).fill(email);
@@ -44,7 +44,7 @@ test('F04: contacto valida y envía', async ({ page }) => {
   await page.goto('/contacto');
   await expect(page.getByRole('heading', { name: 'Contacto', exact: true })).toBeVisible();
 
-  await page.locator('input[name="via"][value="revisar"]').check();
+  await page.locator('input[name="via"][value="web"]').check();
   await page.getByLabel(/^Mensaje( \*)?$/).fill('Necesito información sobre el informe comercial.');
   await page.getByLabel(/^Nombre( \*)?$/).fill('A');
   await page.getByLabel(/^Correo electrónico( \*)?$/).fill('test@example.com');
@@ -69,7 +69,7 @@ test('F04: sin correo no se envía', async ({ page }) => {
   });
 
   await page.goto('/contacto');
-  await page.locator('input[name="via"][value="revisar"]').check();
+  await page.locator('input[name="via"][value="web"]').check();
   await page.getByLabel(/^Mensaje( \*)?$/).fill('Necesito información sobre el informe comercial.');
   await page.getByLabel(/^Nombre( \*)?$/).fill('Test Cliente');
   await page.getByLabel(/Acepto/).check();
@@ -93,7 +93,7 @@ test('UI-01: hidratación no roba el foco', async ({ page }) => {
 
 test('UI-02: errores de envío con aria-invalid', async ({ page }) => {
   await page.goto('/contacto');
-  await page.locator('input[name="via"][value="revisar"]').check();
+  await page.locator('input[name="via"][value="web"]').check();
   await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
   const name = page.getByLabel(/^Nombre( \*)?$/);
   await expect(name).toHaveAttribute('aria-invalid', 'true');

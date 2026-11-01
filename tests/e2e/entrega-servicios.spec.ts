@@ -1,13 +1,23 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('F02 F03 F10 servicios y selector de necesidades', () => {
-  test('F02: /servicios muestra las cuatro fichas y la base sin importes', async ({ page }) => {
+  test('F02: /servicios muestra los tres paquetes y las cuatro fichas', async ({ page }) => {
     await page.goto('/servicios');
     await expect(
       page.getByRole('heading', {
-        name: 'Catálogo de servicios profesionales en respuesta a necesidades reales'
+        name: 'Tres paquetes cerrados, precio y plazo a la vista'
       })
     ).toBeVisible();
+    for (const id of ['web', 'tienda', 'automatizacion']) {
+      const card = page.locator(`[data-paquete="${id}"]`);
+      await expect(card).toBeVisible();
+      await expect(card.locator('[data-paquete-precio]')).toContainText(/desde .+ €/);
+      await expect(card.locator('[data-paquete-plazo]')).toContainText(/en .+ semanas/);
+      await expect(card.getByRole('link', { name: /Pedir el paquete/ })).toHaveAttribute(
+        'href',
+        new RegExp(`via=${id}`)
+      );
+    }
     for (const title of [
       'Revisión técnica para aparecer en buscadores',
       'Revisión técnica de privacidad, cookies y accesibilidad',
@@ -18,7 +28,10 @@ test.describe('F02 F03 F10 servicios y selector de necesidades', () => {
     }
     const body = await page.locator('main').innerText();
     expect(body).toContain('Sitio web profesional');
-    expect(body).not.toMatch(/€|\bEUR\b|\+\s*IVA\b/i);
+    // El € solo aparece en el precio de los paquetes; nada de IVA ni divisas.
+    expect(body).not.toMatch(/\bEUR\b|\+\s*IVA\b/i);
+    const sinPaquetes = body.replace(/desde [^\n]* €/g, '');
+    expect(sinPaquetes).not.toContain('€');
     await expect(page.locator('[data-services-proposal-note]')).toContainText(/propuesta/i);
   });
 
