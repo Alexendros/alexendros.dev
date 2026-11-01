@@ -14,7 +14,7 @@ async function fillContactForm(
   const name = opts.name ?? 'Test Cliente';
   const message = opts.message ?? 'Necesito información sobre el informe comercial.';
   const email = opts.email ?? 'test@example.com';
-  const via = opts.via ?? 'revisar';
+  const via = opts.via ?? 'web';
   await page.locator(`input[name="via"][value="${via}"]`).check();
   if (opts.otra) {
     await page.locator('input[name="via"][value="otra"]').check();
@@ -74,7 +74,7 @@ test('correo inválido', async ({ page }) => {
 test('envio simulado correcto', async ({ page }) => {
   await mockContact(page, async (route) => {
     const body = route.request().postDataJSON() as { vias?: string[]; sitio?: string };
-    expect(body.vias).toContain('revisar');
+    expect(body.vias).toContain('web');
     await route.fulfill({
       status: 200,
       contentType: 'application/json',

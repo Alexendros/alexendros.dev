@@ -55,45 +55,10 @@ export const homeStats = [
   }
 ] as const;
 
-export const homeVias = [
-  {
-    id: 'revisar',
-    badge: 'Revisión',
-    title: 'Revisar lo que ya existe',
-    short:
-      'Informe claro sobre la web actual, con los problemas ordenados por impacto y plan de mejoras.',
-    tags: ['Posicionamiento en buscadores', 'Cumplimiento normativo', 'Ciberseguridad'],
-    delivery: 'Entrega: informe por escrito',
-    formLabel: 'Revisar lo que ya existe',
-    formHint: 'Informe sobre la web actual'
-  },
-  {
-    id: 'crear',
-    badge: 'Construcción',
-    title: 'Crear una web o una tienda',
-    short:
-      'Páginas profesionales y tiendas con catálogo y pagos, diseñadas para entenderse a la primera.',
-    tags: ['Sitio web', 'Catálogo y pagos', 'Mensajería', 'Panel de contenidos'],
-    delivery: 'Entrega: sitio publicado y documentado',
-    formLabel: 'Crear una web o una tienda',
-    formHint: 'Sitio nuevo, con catálogo y pagos si hace falta'
-  },
-  {
-    id: 'colaborar',
-    badge: 'Colaboración',
-    title: 'Sumar un programador al equipo',
-    short: 'Trabajo por fases en herramientas internas, automatismos o integraciones ya en marcha.',
-    tags: ['Diseño y desarrollo', 'Por fases', 'Integración en equipos'],
-    delivery: 'Entrega: código y documentación',
-    formLabel: 'Sumar un programador al equipo',
-    formHint: 'Colaboración por fases'
-  }
-] as const;
-
 export const homeServiciosIntro = {
   eyebrow: '// 01',
-  title: 'Tres maneras de empezar un encargo',
-  lead: 'La situación actual decide por dónde empezar. Plazos y condiciones se fijan por escrito en la propuesta.'
+  title: 'Tres paquetes cerrados',
+  lead: 'Precio de salida y plazo a la vista. El alcance exacto se confirma por escrito antes de empezar.'
 } as const;
 
 export const homeReferenciasIntro = {

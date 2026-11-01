@@ -66,4 +66,25 @@ describe('check-public-pricing', () => {
     expect(result.status).toBe(1);
     expect(result.stderr).toContain('No existe .vercel/output/static');
   });
+
+  it('solo admite el precio de paquetes en su fichero de datos y en su hueco del HTML', () => {
+    const root = tree();
+    mkdirSync(join(root, 'src/content'), { recursive: true });
+    writeFileSync(join(root, 'src/content/paquetes.ts'), "export const t = 'desde 900 €';\n");
+    mkdirSync(join(root, '.vercel/output/static'), { recursive: true });
+    writeFileSync(
+      join(root, '.vercel/output/static/index.html'),
+      '<p class="x" data-paquete-precio>desde 900 €</p><p>otro desde 50 €</p>\n'
+    );
+    const result = run(root, '--require-build');
+    expect(result.status).toBe(1);
+    expect(result.stderr).not.toContain('paquetes.ts');
+    expect(result.stderr).toContain('index.html:1 símbolo de euro');
+
+    writeFileSync(
+      join(root, '.vercel/output/static/index.html'),
+      '<p class="x" data-paquete-precio>desde 900 €</p>\n'
+    );
+    expect(run(root, '--require-build').status).toBe(0);
+  });
 });

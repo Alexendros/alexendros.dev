@@ -59,8 +59,24 @@ const ALLOWLIST = [
     file: 'src/lib/tracking/capi.test.ts',
     rule: 'currency-code',
     reason: 'Contrato ISO 4217 de CAPI en una prueba; no se publica en el sitio.'
+  },
+  // Plan de captación 2026-11: los tres paquetes cerrados publican «desde X €».
+  // La cifra solo puede vivir en este fichero de datos y, en el HTML, dentro
+  // del elemento marcado con `data-paquete-precio` (ver PAQUETE_PRECIO_SLOT).
+  {
+    file: 'src/content/paquetes.ts',
+    rule: 'euro-symbol',
+    reason: 'Fichero único de precios de los paquetes cerrados (plan de captación).'
+  },
+  {
+    file: 'src/content/paquetes.ts',
+    rule: 'starting-amount',
+    reason: 'Fichero único de precios de los paquetes cerrados (plan de captación).'
   }
 ];
+
+/** Único hueco del HTML donde se admite el precio de un paquete cerrado. */
+const PAQUETE_PRECIO_SLOT = /(<[a-z]+\b[^>]*\bdata-paquete-precio\b[^>]*>)[^<]*</giu;
 
 export function scanPublicPricing(root, { requireBuild = false } = {}) {
   const entries = [...SOURCE_ENTRIES, BUILD_ENTRY];
@@ -78,7 +94,9 @@ export function scanPublicPricing(root, { requireBuild = false } = {}) {
     for (const file of walkTextFiles(absolute)) {
       scannedFiles += 1;
       const path = relative(root, file).replaceAll('\\', '/');
-      const lines = readFileSync(file, 'utf8').split('\n');
+      const raw = readFileSync(file, 'utf8');
+      const content = path.endsWith('.html') ? raw.replace(PAQUETE_PRECIO_SLOT, '$1<') : raw;
+      const lines = content.split('\n');
       lines.forEach((text, index) => {
         for (const pattern of PATTERNS) {
           if (!pattern.regex.test(text)) continue;

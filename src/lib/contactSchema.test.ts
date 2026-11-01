@@ -15,7 +15,7 @@ const validCorreo = {
   email: 'alex@example.com',
   reason: 'propuestaComercial' as const,
   message: 'Quiero un informe comercial para mi dominio.',
-  vias: ['revisar'] as const,
+  vias: ['web'] as const,
   consent: true as const
 };
 
@@ -149,7 +149,7 @@ describe('parseContactBody (formulario mínimo)', () => {
       channel: 'correo',
       email: 'alex@example.com',
       message: 'Quiero un informe comercial para mi dominio.',
-      vias: ['crear'],
+      vias: ['tienda'],
       consent: true
     });
     expect(parsed.success).toBe(true);

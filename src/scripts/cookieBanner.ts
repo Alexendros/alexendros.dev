@@ -80,8 +80,8 @@ export function initCookieBanner(): void {
       },
       guiOptions: {
         consentModal: {
-          layout: 'box inline',
-          position: 'bottom center',
+          layout: 'bar inline',
+          position: 'bottom',
           equalWeightButtons: true,
           flipButtons: false
         },
@@ -110,9 +110,7 @@ export function initCookieBanner(): void {
             consentModal: {
               title: 'Valoramos tu privacidad',
               description:
-                'Guardamos un dato técnico para recordar tu decisión. El resto (medición de visitas y publicidad) no se enciende hasta que tú lo permitas. ' +
-                '«Aceptar todas» activa analítica y publicidad. «Rechazar opcionales» deja solo lo técnico. «Configurar» abre el detalle por categoría. ' +
-                '<a href="/cookies/">Explicación completa en Cookies</a>.',
+                'Guardamos un dato técnico para recordar tu decisión. Medición y publicidad, solo si aceptas.',
               acceptAllBtn: 'Aceptar todas',
               acceptNecessaryBtn: 'Rechazar opcionales',
               showPreferencesBtn: 'Configurar'
