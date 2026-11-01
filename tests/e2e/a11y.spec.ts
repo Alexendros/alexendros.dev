@@ -16,7 +16,7 @@ for (const route of routes) {
   test(`a11y ${route} - 0 violaciones`, async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(route);
-    const results = await new AxeBuilder({ page }).analyze();
+    const results = await new AxeBuilder({ page: page as any }).analyze();
     expect(
       results.violations,
       `Violaciones en ${route}: ${JSON.stringify(results.violations, null, 2)}`

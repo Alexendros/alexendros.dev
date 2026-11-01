@@ -7,7 +7,7 @@ import AxeBuilder from '@axe-core/playwright';
  */
 
 async function axeZero(page: Page, label: string) {
-  const results = await new AxeBuilder({ page }).analyze();
+  const results = await new AxeBuilder({ page: page as any }).analyze();
   expect(results.violations, `${label}: ${JSON.stringify(results.violations, null, 2)}`).toEqual(
     []
   );
