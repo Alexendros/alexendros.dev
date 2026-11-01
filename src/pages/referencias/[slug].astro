@@ -30,7 +30,7 @@ const changedItems =
 >
   <div class="mx-auto max-w-3xl px-4 pt-12 pb-16">
     <div class="text-xs text-muted">
-      <Link href="/referencias" variant="nav">← Todas las referencias</Link>
+      <Link href="/referencias/" variant="nav">← Todas las referencias</Link>
     </div>
     <h1 class="mt-3 text-step-3 break-words font-bold text-balance">{project.title}</h1>
     <p class="mt-3 text-muted text-pretty">{project.summary}</p>
@@ -139,7 +139,7 @@ const changedItems =
           </div>
         </div>
         <Button
-          href={`/contacto?motivo=informacionCliente&origen=referencias&proyecto=${encodeURIComponent(project.slug)}`}
+          href={`/contacto/?motivo=informacionCliente&origen=referencias&proyecto=${encodeURIComponent(project.slug)}`}
           class="w-full"
         >
           {availabilityCtaLabels[project.availability]}

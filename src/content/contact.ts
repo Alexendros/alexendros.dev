@@ -67,7 +67,7 @@ export const contact = contactSchema.parse({
       {
         kind: 'form',
         id: 'informe-comercial',
-        title: 'Auditoría técnica SEO',
+        title: 'Revisión técnica para aparecer en buscadores',
         summary:
           'Revisión de indexación, estructura y rendimiento con incidencias priorizadas y métricas de referencia.',
         cta: 'Rellenar formulario',

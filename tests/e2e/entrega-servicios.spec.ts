@@ -9,10 +9,10 @@ test.describe('F02 F03 F10 servicios y selector de necesidades', () => {
       })
     ).toBeVisible();
     for (const title of [
-      'Auditoría técnica SEO',
+      'Revisión técnica para aparecer en buscadores',
       'Revisión técnica de privacidad, cookies y accesibilidad',
       'Revisión básica de seguridad web',
-      'Colaboración en proyectos de software'
+      'Colaboración en proyectos de programación'
     ]) {
       await expect(page.getByRole('heading', { name: title })).toBeVisible();
     }

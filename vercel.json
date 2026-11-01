@@ -15,107 +15,57 @@
     },
     {
       "source": "/metodologia",
-      "destination": "/#metodo",
+      "destination": "/metodo",
       "permanent": true
     },
     {
       "source": "/metodologia/",
-      "destination": "/#metodo",
+      "destination": "/metodo",
       "permanent": true
     },
     {
       "source": "/valores",
-      "destination": "/#metodo",
+      "destination": "/metodo",
       "permanent": true
     },
     {
       "source": "/valores/",
-      "destination": "/#metodo",
+      "destination": "/metodo",
       "permanent": true
     },
     {
       "source": "/como-trabajo",
-      "destination": "/#metodo",
+      "destination": "/metodo",
       "permanent": true
     },
     {
       "source": "/como-trabajo/",
-      "destination": "/#metodo",
+      "destination": "/metodo",
       "permanent": true
     },
     {
       "source": "/proceso-y-entrega",
-      "destination": "/#metodo",
+      "destination": "/metodo",
       "permanent": true
     },
     {
       "source": "/proceso-y-entrega/",
-      "destination": "/#metodo",
-      "permanent": true
-    },
-    {
-      "source": "/metodo",
-      "destination": "/#metodo",
-      "permanent": true
-    },
-    {
-      "source": "/metodo/",
-      "destination": "/#metodo",
+      "destination": "/metodo",
       "permanent": true
     },
     {
       "source": "/proyectos",
-      "destination": "/#referencias",
+      "destination": "/referencias",
       "permanent": true
     },
     {
       "source": "/proyectos/",
-      "destination": "/#referencias",
+      "destination": "/referencias",
       "permanent": true
     },
     {
       "source": "/proyectos/:path*",
       "destination": "/referencias/:path*",
-      "permanent": true
-    },
-    {
-      "source": "/referencias",
-      "destination": "/#referencias",
-      "permanent": true
-    },
-    {
-      "source": "/referencias/",
-      "destination": "/#referencias",
-      "permanent": true
-    },
-    {
-      "source": "/servicios",
-      "destination": "/#servicios",
-      "permanent": true
-    },
-    {
-      "source": "/servicios/",
-      "destination": "/#servicios",
-      "permanent": true
-    },
-    {
-      "source": "/contacto",
-      "destination": "/#contacto",
-      "permanent": true
-    },
-    {
-      "source": "/contacto/",
-      "destination": "/#contacto",
-      "permanent": true
-    },
-    {
-      "source": "/sobre-mi",
-      "destination": "/experiencia",
-      "permanent": true
-    },
-    {
-      "source": "/sobre-mi/",
-      "destination": "/experiencia",
       "permanent": true
     },
     {
@@ -140,7 +90,7 @@
     },
     {
       "source": "/servicios/produccion-sitios-web",
-      "destination": "/#servicios",
+      "destination": "/servicios",
       "permanent": true
     },
     {
@@ -150,22 +100,22 @@
     },
     {
       "source": "/servicios/consultoria-tecnologica",
-      "destination": "/#servicios",
+      "destination": "/servicios",
       "permanent": true
     },
     {
       "source": "/servicios/landing-10-dias",
-      "destination": "/#servicios",
+      "destination": "/servicios",
       "permanent": true
     },
     {
       "source": "/servicios/sesion-profesional",
-      "destination": "/#servicios",
+      "destination": "/servicios",
       "permanent": true
     },
     {
       "source": "/servicios/sesion-profesional/",
-      "destination": "/#servicios",
+      "destination": "/servicios",
       "permanent": true
     },
     {
@@ -180,12 +130,12 @@
     },
     {
       "source": "/servicios/web-para",
-      "destination": "/#servicios",
+      "destination": "/servicios",
       "permanent": true
     },
     {
       "source": "/servicios/web-para/:path*",
-      "destination": "/#servicios",
+      "destination": "/servicios",
       "permanent": true
     }
   ],
@@ -245,5 +195,6 @@
         }
       ]
     }
-  ]
+  ],
+  "trailingSlash": true
 }

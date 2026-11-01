@@ -5,8 +5,11 @@ export const homeHero = {
   command: 'nuevo-encargo',
   title: 'Auditoría, diseño y construcción de páginas web, tiendas y herramientas para negocios.',
   lead: 'Desde Valencia y en remoto. Cada encargo empieza con alcance, plazo y condiciones por escrito.',
-  primaryCta: { label: 'Solicitar propuesta', href: '/?origen=home#contacto' },
-  secondaryCta: { label: 'Ver servicios', href: '#servicios' },
+  primaryCta: {
+    label: 'Solicitar propuesta',
+    href: '/contacto/?origen=home&motivo=propuestaComercial'
+  },
+  secondaryCta: { label: 'Ver servicios', href: '/servicios/' },
   browserUrl: 'alexendros.dev/propuesta',
   checklist: [
     {
@@ -136,6 +139,6 @@ export const homeContactoIntro = {
 export const homeExperienciaTeaser = {
   title: 'Experiencia',
   body: 'Trayectoria, modalidad de colaboración y CV en una página aparte.',
-  href: '/experiencia',
+  href: '/experiencia/',
   cta: 'Ver experiencia'
 } as const;

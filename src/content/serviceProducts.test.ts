@@ -10,7 +10,7 @@ describe('fichas homogéneas de servicios', () => {
     for (const product of serviceProducts) {
       expect(productCardSchema.safeParse(product).success).toBe(true);
       expect(product.ctaLabel).toBe(SERVICE_PRODUCT_CTA);
-      expect(product.href).toBe(`/servicios/${product.slug}`);
+      expect(product.href).toBe(`/servicios/${product.slug}/`);
       expect(product.short.trim().length).toBeGreaterThan(0);
     }
   });

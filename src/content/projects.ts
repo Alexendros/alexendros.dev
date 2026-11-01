@@ -32,7 +32,7 @@ export const projectSchema = z.object({
    * propio = iniciativa propia / open source.
    */
   workKind: z.enum(['encargo', 'demostracion', 'propio']),
-  /** Etiqueta comercial: Portal de empresa · Tienda online · Herramienta automatizada · Website personal. */
+  /** Etiqueta comercial: Portal de empresa · Tienda en internet · Herramienta automatizada · Página web personal. */
   productType: z.enum(['portal', 'tienda', 'herramienta', 'personal']),
   coverAlt: z.string().min(1),
   testimonial: z
@@ -71,9 +71,9 @@ export const workKindLabels: Record<ProjectWorkKind, string> = {
 
 export const productTypeLabels: Record<ProjectProductType, string> = {
   portal: 'Portal de empresa',
-  tienda: 'Tienda online',
+  tienda: 'Tienda en internet',
   herramienta: 'Herramienta automatizada',
-  personal: 'Website personal'
+  personal: 'Página web personal'
 };
 
 export const projects: Project[] = [

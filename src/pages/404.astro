@@ -13,7 +13,11 @@ import Link from '../components/Link.astro';
     />
     <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
       <Button href="/">Volver al inicio</Button>
-      <Link href="/?origen=home#contacto" variant="inline" class="text-muted">Contacto</Link>
+      <Link
+        href="/contacto/?origen=404&motivo=propuestaComercial"
+        variant="inline"
+        class="text-muted">Contacto</Link
+      >
     </div>
   </div>
 </Layout>
