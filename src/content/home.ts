@@ -135,10 +135,3 @@ export const homeContactoIntro = {
   lead: 'Marcar por dónde empezar y contar qué necesita el proyecto. La respuesta llega en un día laborable.',
   badges: ['Valencia', 'Remoto', 'Respuesta en 1 día laborable']
 } as const;
-
-export const homeExperienciaTeaser = {
-  title: 'Experiencia',
-  body: 'Trayectoria, modalidad de colaboración y CV en una página aparte.',
-  href: '/experiencia/',
-  cta: 'Ver experiencia'
-} as const;

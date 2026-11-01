@@ -13,31 +13,33 @@ describe('redirecciones permanentes', () => {
 
   it('R08: aliases históricos saltan a la página o ficha en un salto', () => {
     const expected: Array<[string, string]> = [
-      ['/metodologia', '/metodo'],
-      ['/metodologia/', '/metodo'],
-      ['/valores', '/metodo'],
-      ['/valores/', '/metodo'],
-      ['/como-trabajo', '/metodo'],
-      ['/como-trabajo/', '/metodo'],
-      ['/proceso-y-entrega', '/metodo'],
-      ['/proceso-y-entrega/', '/metodo'],
-      ['/proyectos', '/referencias'],
-      ['/proyectos/', '/referencias'],
+      ['/metodologia', '/metodo/'],
+      ['/metodologia/', '/metodo/'],
+      ['/valores', '/metodo/'],
+      ['/valores/', '/metodo/'],
+      ['/como-trabajo', '/metodo/'],
+      ['/como-trabajo/', '/metodo/'],
+      ['/proceso-y-entrega', '/metodo/'],
+      ['/proceso-y-entrega/', '/metodo/'],
+      ['/proyectos', '/referencias/'],
+      ['/proyectos/', '/referencias/'],
       ['/proyectos/:path*', '/referencias/:path*'],
-      ['/servicios/produccion-sitios-web', '/servicios'],
-      ['/servicios/auditorias', '/servicios/informe-comercial'],
-      ['/servicios/consultoria-tecnologica', '/servicios'],
-      ['/servicios/landing-10-dias', '/servicios'],
-      ['/servicios/sesion-profesional', '/servicios'],
-      ['/servicios/sesion-profesional/', '/servicios'],
-      ['/servicios/auditoria-normativa-ciberseguridad', '/servicios/cumplimiento-normativo'],
-      ['/servicios/auditoria-normativa-ciberseguridad/', '/servicios/cumplimiento-normativo'],
-      ['/servicios/web-para', '/servicios'],
-      ['/servicios/web-para/:path*', '/servicios'],
+      ['/servicios/produccion-sitios-web', '/servicios/'],
+      ['/servicios/auditorias', '/servicios/informe-comercial/'],
+      ['/servicios/consultoria-tecnologica', '/servicios/'],
+      ['/servicios/landing-10-dias', '/servicios/'],
+      ['/servicios/sesion-profesional', '/servicios/'],
+      ['/servicios/sesion-profesional/', '/servicios/'],
+      ['/servicios/auditoria-normativa-ciberseguridad', '/servicios/cumplimiento-normativo/'],
+      ['/servicios/auditoria-normativa-ciberseguridad/', '/servicios/cumplimiento-normativo/'],
+      ['/servicios/web-para', '/servicios/'],
+      ['/servicios/web-para/:path*', '/servicios/'],
       ['/design-system', 'https://designsystem.alexendros.dev/'],
       ['/design-system/', 'https://designsystem.alexendros.dev/'],
-      ['/aviso-legal', '/identidad'],
-      ['/afiliados', '/']
+      ['/aviso-legal', '/identidad/'],
+      ['/afiliados', '/'],
+      ['/experiencia', '/sobre-mi/'],
+      ['/experiencia/', '/sobre-mi/']
     ];
 
     for (const [source, destination] of expected) {
@@ -62,12 +64,12 @@ describe('redirecciones permanentes', () => {
     }
   });
 
-  it('las páginas retiradas ya no existen; experiencia, referencias y servicios sí', () => {
+  it('las páginas retiradas ya no existen; experiencia retirada; referencias y servicios sí', () => {
     expect(existsSync(resolve(process.cwd(), 'src/pages/metodologia.astro'))).toBe(false);
     expect(existsSync(resolve(process.cwd(), 'src/pages/valores.astro'))).toBe(false);
     expect(existsSync(resolve(process.cwd(), 'src/pages/proceso-y-entrega.astro'))).toBe(false);
     expect(existsSync(resolve(process.cwd(), 'src/pages/proyectos'))).toBe(false);
-    expect(existsSync(resolve(process.cwd(), 'src/pages/experiencia.astro'))).toBe(true);
+    expect(existsSync(resolve(process.cwd(), 'src/pages/experiencia.astro'))).toBe(false);
     expect(existsSync(resolve(process.cwd(), 'src/pages/referencias/index.astro'))).toBe(true);
     expect(existsSync(resolve(process.cwd(), 'src/pages/servicios/index.astro'))).toBe(true);
     expect(existsSync(resolve(process.cwd(), 'src/pages/contacto.astro'))).toBe(true);

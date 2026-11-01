@@ -33,7 +33,7 @@ for (const scheme of ['light', 'dark'] as const) {
     await page.emulateMedia({ colorScheme: scheme, reducedMotion: 'reduce' });
     await page.goto(route);
     await page.locator(SECTION).scrollIntoViewIfNeeded();
-    const results = await new AxeBuilder({ page: page as any })
+    const results = await new AxeBuilder({ page })
       .include(SECTION)
       .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
       .analyze();
