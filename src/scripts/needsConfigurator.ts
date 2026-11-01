@@ -32,7 +32,7 @@ for (const root of roots) {
 
     const baseQuery = 'motivo=propuestaComercial&origen=servicios';
     cta.href = selected.length
-      ? `/contacto?${baseQuery}&modulos=${encodeURIComponent(serializePortalModuleIds(selected))}`
-      : `/contacto?${baseQuery}`;
+      ? `/contacto/?${baseQuery}&modulos=${encodeURIComponent(serializePortalModuleIds(selected))}`
+      : `/contacto/?${baseQuery}`;
   });
 }

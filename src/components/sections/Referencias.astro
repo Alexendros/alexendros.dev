@@ -47,7 +47,7 @@ const featured = projects.filter((p) => p.featured || true);
               : 'all';
         const badge =
           project.workKind === 'propio' && project.productType === 'personal'
-            ? 'Web personal'
+            ? 'Página web personal'
             : project.workKind === 'propio'
               ? 'Código abierto'
               : workKindLabels[project.workKind];
@@ -65,7 +65,7 @@ const featured = projects.filter((p) => p.featured || true);
               <h3 class="card-title text-base">
                 <a
                   class="link link-hover after:absolute after:inset-0"
-                  href={`/referencias/${project.slug}`}
+                  href={`/referencias/${project.slug}/`}
                   data-open-dialog={project.slug}
                   aria-haspopup="dialog"
                 >
@@ -89,7 +89,7 @@ const featured = projects.filter((p) => p.featured || true);
                   <li>{h}</li>
                 ))}
               </ul>
-              <a class="btn btn-primary" href={`/referencias/${project.slug}`} data-tpl-link>
+              <a class="btn btn-primary" href={`/referencias/${project.slug}/`} data-tpl-link>
                 Ver ficha completa
               </a>
               <button

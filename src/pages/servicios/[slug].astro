@@ -14,7 +14,7 @@ const { service } = Astro.props;
 const pageUrl = new URL(`/servicios/${service.slug}/`, site.url).href;
 const isSoftware = service.slug === 'software-a-medida';
 const relatedCase = isSoftware
-  ? { href: '/referencias/zedazo', label: 'Saber más sobre Zedazo' }
+  ? { href: '/referencias/zedazo/', label: 'Saber más sobre Zedazo' }
   : null;
 const jsonLd = [
   {
@@ -57,7 +57,7 @@ const jsonLd = [
   <div class="mx-auto max-w-3xl px-4 py-16 md:py-24">
     <article data-product-detail={service.slug}>
       <nav class="text-xs text-muted" aria-label="Miga de pan">
-        <Link href="/servicios" variant="nav">Servicios profesionales</Link> / {service.title}
+        <Link href="/servicios/" variant="nav">Servicios profesionales</Link> / {service.title}
       </nav>
       <h1 class="mt-2 text-step-3 break-words font-bold max-w-3xl text-balance">{service.title}</h1>
       <p class="mt-3 text-muted max-w-2xl">{service.short}</p>

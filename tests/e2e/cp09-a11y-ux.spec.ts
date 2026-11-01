@@ -124,7 +124,7 @@ test.describe('CP-09 contacto — foco, errores y axe', () => {
       timeout: 10_000
     });
 
-    const name = page.getByLabel(/^Nombre\*?$/);
+    const name = page.getByLabel(/^Nombre( \*)?$/);
     await expect(name).toBeVisible();
     await page.getByRole('button', { name: /Enviar|Solicitar propuesta/ }).click();
     await expect(name).toHaveAttribute('aria-invalid', 'true');
@@ -148,7 +148,7 @@ test.describe('CP-09 recorridos A–E (muestreo)', () => {
   test('A/B: servicios → ficha informe → Solicitar propuesta', async ({ page }) => {
     await page.goto('/servicios');
     await assertSingleH1AndMain(page);
-    await page.getByRole('link', { name: 'Auditoría técnica SEO' }).click();
+    await page.getByRole('link', { name: 'Revisión técnica para aparecer en buscadores' }).click();
     await expect(page).toHaveURL(/\/servicios\/informe-comercial/);
     await assertSingleH1AndMain(page);
     const cta = page.locator('#detail-servicios-informe-comercial').getByRole('link', {
@@ -178,7 +178,7 @@ test.describe('CP-09 recorridos A–E (muestreo)', () => {
       .getByRole('link', { name: 'Solicitar propuesta', exact: true })
       .first()
       .click();
-    await expect(page).toHaveURL(/origen=proceso#contacto/);
+    await expect(page).toHaveURL(/\/contacto\/\?origen=proceso/);
   });
 });
 

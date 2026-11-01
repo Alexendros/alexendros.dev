@@ -26,7 +26,7 @@ export const profile = {
     }
   ],
   trajectory:
-    'Webs para negocios locales, tiendas online y herramientas internas. Cuatro casos publicados con problema, intervención y resultado.',
+    'Webs para negocios locales, tiendas en internet y herramientas internas. Cuatro casos publicados con problema, intervención y resultado.',
   qualityTechnical:
     'Para equipos técnicos: objetivos Lighthouse ≥90 y pruebas automatizadas de accesibilidad y de contrato del formulario en la muestra evaluada.',
   proofs: [

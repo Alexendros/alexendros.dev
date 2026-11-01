@@ -10,7 +10,7 @@ describe('coherencia comercial vigente', () => {
       expect(card, service.slug).toBeDefined();
       expect(card?.title).toBe(service.title);
       expect(card?.short).toBe(service.short);
-      expect(card?.href).toBe(`/servicios/${service.slug}`);
+      expect(card?.href).toBe(`/servicios/${service.slug}/`);
       expect(service.commercial.engagement).toBe('proposal');
     }
   });

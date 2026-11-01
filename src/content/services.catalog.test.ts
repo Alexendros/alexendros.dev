@@ -124,7 +124,7 @@ describe('CAT catálogo de servicios', () => {
     expect(services.some((service) => service.slug === 'portal-inicio')).toBe(false);
     for (const service of services) {
       const card = serviceProducts.find((product) => product.slug === service.slug);
-      expect(card?.href).toBe(`/servicios/${service.slug}`);
+      expect(card?.href).toBe(`/servicios/${service.slug}/`);
       expect(card?.title).toBe(service.title);
       expect(card?.short).toBe(service.short);
     }

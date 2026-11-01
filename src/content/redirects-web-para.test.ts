@@ -14,7 +14,7 @@ describe('redirects web-para (vercel.json)', () => {
     );
     expect(hits.length).toBeGreaterThanOrEqual(1);
     for (const hit of hits) {
-      expect(hit.destination).toBe('/#servicios');
+      expect(hit.destination).toBe('/servicios/');
       expect(hit.permanent).toBe(true);
     }
   });
