@@ -7,7 +7,8 @@ import AxeBuilder from '@axe-core/playwright';
  */
 
 async function axeZero(page: Page, label: string) {
-  const results = await new AxeBuilder({ page: page as any }).analyze();
+  const results = await // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  new AxeBuilder({ page: page as any }).analyze();
   expect(results.violations, `${label}: ${JSON.stringify(results.violations, null, 2)}`).toEqual(
     []
   );
