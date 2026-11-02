@@ -15,6 +15,7 @@ const ROUTES = [
   '/referencias/alexendros-me',
   '/metodo',
   '/contacto?motivo=propuestaComercial',
+  '/experiencia',
   '/identidad',
   '/privacidad',
   '/cookies',
