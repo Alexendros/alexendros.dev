@@ -58,6 +58,10 @@ export type ContactDeps = {
   /** Solo con consentimiento de publicidad; el formulario de contacto no lo recoge. */
   sendLeadEvent?: (input: ContactLeadEvent) => Promise<void>;
   saveLead?: (input: ContactLeadInput) => Promise<void>;
+  /** Aviso por correo a operaciones@ si falla el guardado en Notion (asunto «FALLO NOTION»). */
+  sendCrmFailureMail?: (payload: ContactMailPayload) => Promise<void>;
+  /** Push opcional (p. ej. ntfy). Texto fijo sin datos personales. */
+  sendAlertWebhook?: (text: string) => Promise<void>;
   /** Almacén de idempotencia con estados y lease por propietario. */
   idempotencyStore?: ContactIdempotencyStore;
   createRequestId?: () => string;
@@ -126,6 +130,38 @@ function mailFields(data: ContactInput) {
     message,
     replyTo: data.email
   };
+}
+
+export const CRM_FAILURE_SUBJECT_PREFIX = 'FALLO NOTION';
+export const CRM_FAILURE_ALERT_TEXT = 'Nuevo contacto sin guardar en Notion, revisa el correo.';
+
+/**
+ * Si falla Notion el contacto no se pierde: correo «FALLO NOTION» con los datos
+ * y push opcional sin PII. Nunca lanza: la respuesta al cliente no cambia.
+ */
+async function notifyCrmFailure(
+  deps: ContactDeps,
+  payload: ContactMailPayload,
+  requestId: string
+): Promise<void> {
+  const tasks: Promise<void>[] = [];
+  if (deps.sendCrmFailureMail) {
+    tasks.push(
+      deps
+        .sendCrmFailureMail(payload)
+        .then(() => logEvent('info', 'contact_crm_failure_mail', requestId, true))
+        .catch(() => logEvent('error', 'contact_crm_failure_mail', requestId, false))
+    );
+  }
+  if (deps.sendAlertWebhook) {
+    tasks.push(
+      deps
+        .sendAlertWebhook(CRM_FAILURE_ALERT_TEXT)
+        .then(() => logEvent('info', 'contact_crm_failure_push', requestId, true))
+        .catch(() => logEvent('error', 'contact_crm_failure_push', requestId, false))
+    );
+  }
+  await Promise.all(tasks);
 }
 
 /**
@@ -364,6 +400,7 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
       });
     } catch {
       logEvent('error', 'contact_crm_error', requestId, false);
+      await notifyCrmFailure(deps, { ...fields, smtp }, requestId);
     }
   }
 

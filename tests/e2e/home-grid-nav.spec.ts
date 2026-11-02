@@ -30,7 +30,7 @@ test('F01: home de página única con hero y secciones', async ({ page }) => {
   }
   await expect(
     page.locator('#top').getByRole('link', { name: 'Solicitar propuesta' })
-  ).toHaveAttribute('href', /origen=home#contacto$/);
+  ).toHaveAttribute('href', /^\/contacto\/\?origen=home/);
   for (const id of ['servicios', 'referencias', 'metodo', 'contacto']) {
     await expect(page.locator(`#${id}`)).toHaveCount(1);
   }

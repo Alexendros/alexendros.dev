@@ -221,7 +221,7 @@ function initContactForm(form: HTMLFormElement): void {
 
   function updateMessageCount(): void {
     if (!messageField || !messageCount) return;
-    messageCount.textContent = `${messageField.value.length} / 600`;
+    messageCount.textContent = `${messageField.value.length} / ${messageField.maxLength > 0 ? messageField.maxLength : 1500}`;
   }
 
   function setSending(sending: boolean): void {

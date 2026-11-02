@@ -143,7 +143,7 @@ test.describe('CP-08 matriz UI — overflow y apilado', () => {
     expect(box!.width).toBeGreaterThan(40);
     expect(box!.height).toBeGreaterThanOrEqual(36);
     await sendBtn.click({ force: false });
-    await expect(page.getByLabel(/^Nombre\*?$/)).toBeVisible();
+    await expect(page.getByLabel(/^Nombre( \*)?$/)).toBeVisible();
   });
 
   test('servicios 320: selector y CTA Solicitar propuesta sin overflow', async ({ page }) => {

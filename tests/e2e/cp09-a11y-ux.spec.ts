@@ -124,7 +124,7 @@ test.describe('CP-09 contacto — foco, errores y axe', () => {
       timeout: 10_000
     });
 
-    const name = page.getByLabel(/^Nombre\*?$/);
+    const name = page.getByLabel(/^Nombre( \*)?$/);
     await expect(name).toBeVisible();
     await page.getByRole('button', { name: /Enviar|Solicitar propuesta/ }).click();
     await expect(name).toHaveAttribute('aria-invalid', 'true');
@@ -178,7 +178,7 @@ test.describe('CP-09 recorridos A–E (muestreo)', () => {
       .getByRole('link', { name: 'Solicitar propuesta', exact: true })
       .first()
       .click();
-    await expect(page).toHaveURL(/origen=proceso#contacto/);
+    await expect(page).toHaveURL(/\/contacto\/\?origen=proceso/);
   });
 });
 

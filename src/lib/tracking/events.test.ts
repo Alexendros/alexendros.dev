@@ -67,4 +67,62 @@ describe('tracking events', () => {
     expect(vercelCalls).toHaveLength(1);
     expect(vercelCalls[0]?.[0]).toBe('page_view');
   });
+
+  it('contact_form_success → generate_lead en GA4 solo con consentimiento', async () => {
+    const { window } = installDom();
+    const gtagCalls: unknown[][] = [];
+    (window as unknown as { gtag: unknown }).gtag = (...a: unknown[]) => gtagCalls.push(a);
+    const consent = await import('./consent');
+    const { track } = await import('./events');
+
+    track('contact_form_success');
+    expect(gtagCalls).toHaveLength(0);
+
+    consent.writeConsent(['necessary', 'analytics']);
+    track('contact_form_success');
+    expect(gtagCalls.some((c) => c[0] === 'event' && c[1] === 'generate_lead')).toBe(true);
+    track('form_submit');
+    expect(gtagCalls.filter((c) => c[1] === 'generate_lead')).toHaveLength(1);
+  });
+
+  it('contactChannelFromHref clasifica tel y WhatsApp', async () => {
+    const { contactChannelFromHref } = await import('./events');
+    expect(contactChannelFromHref('tel:+34600000000')).toBe('phone');
+    expect(contactChannelFromHref('https://wa.me/34600000000?text=hola')).toBe('whatsapp');
+    expect(contactChannelFromHref('https://api.whatsapp.com/send?phone=34600000000')).toBe(
+      'whatsapp'
+    );
+    expect(contactChannelFromHref('https://evil.example/wa.me')).toBeNull();
+    expect(contactChannelFromHref('/contacto')).toBeNull();
+    expect(contactChannelFromHref('mailto:a@b.c')).toBeNull();
+  });
+
+  it('listener delegado mide clics en tel/WhatsApp sin el número y respeta consentimiento', async () => {
+    const { window, vercelCalls } = installDom();
+    const handlers: Record<string, (e: unknown) => void> = {};
+    vi.stubGlobal('document', {
+      cookie: '',
+      addEventListener: (type: string, fn: (e: unknown) => void) => {
+        handlers[type] = fn;
+      }
+    } as unknown as Document);
+    (window as unknown as { location: unknown }).location = { pathname: '/servicios/' };
+    const consent = await import('./consent');
+    const { setupFunnelTracking } = await import('./events');
+    setupFunnelTracking();
+
+    const anchor = (href: string) => ({
+      closest: () => ({ getAttribute: () => href, textContent: 'x' })
+    });
+
+    handlers.click?.({ target: anchor('tel:+34600000000') });
+    expect(vercelCalls.filter((c) => c[0] === 'contact_click')).toHaveLength(0);
+
+    consent.writeConsent(['necessary', 'analytics']);
+    handlers.click?.({ target: anchor('tel:+34600000000') });
+    handlers.click?.({ target: anchor('https://wa.me/34600000000') });
+    const clicks = vercelCalls.filter((c) => c[0] === 'contact_click');
+    expect(clicks.map((c) => (c[1] as { channel: string }).channel)).toEqual(['phone', 'whatsapp']);
+    expect(JSON.stringify(clicks)).not.toContain('600000000');
+  });
 });

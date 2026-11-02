@@ -8,9 +8,9 @@ async function fillContactForm(
   const message = opts.message ?? 'Necesito información sobre el informe comercial.';
   const email = opts.email ?? 'test@example.com';
   await page.locator('input[name="via"][value="revisar"]').check();
-  await page.getByLabel(/^Mensaje$/).fill(message);
-  await page.getByLabel(/^Nombre$/).fill(name);
-  await page.getByLabel(/^Correo electrónico$/).fill(email);
+  await page.getByLabel(/^Mensaje( \*)?$/).fill(message);
+  await page.getByLabel(/^Nombre( \*)?$/).fill(name);
+  await page.getByLabel(/^Correo electrónico( \*)?$/).fill(email);
   await page.getByLabel(/Acepto/).check();
 }
 
@@ -45,14 +45,14 @@ test('F04: contacto valida y envía', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Contacto', exact: true })).toBeVisible();
 
   await page.locator('input[name="via"][value="revisar"]').check();
-  await page.getByLabel(/^Mensaje$/).fill('Necesito información sobre el informe comercial.');
-  await page.getByLabel(/^Nombre$/).fill('A');
-  await page.getByLabel(/^Correo electrónico$/).fill('test@example.com');
+  await page.getByLabel(/^Mensaje( \*)?$/).fill('Necesito información sobre el informe comercial.');
+  await page.getByLabel(/^Nombre( \*)?$/).fill('A');
+  await page.getByLabel(/^Correo electrónico( \*)?$/).fill('test@example.com');
   await page.getByLabel(/Acepto/).check();
   await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
   await expect(page.getByRole('alert')).toBeVisible();
 
-  await page.getByLabel(/^Nombre$/).fill('Test Cliente');
+  await page.getByLabel(/^Nombre( \*)?$/).fill('Test Cliente');
   await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
   await expect(page.getByRole('status')).toContainText(/Solicitud enviada/i, { timeout: 10000 });
 });
@@ -70,8 +70,8 @@ test('F04: sin correo no se envía', async ({ page }) => {
 
   await page.goto('/contacto');
   await page.locator('input[name="via"][value="revisar"]').check();
-  await page.getByLabel(/^Mensaje$/).fill('Necesito información sobre el informe comercial.');
-  await page.getByLabel(/^Nombre$/).fill('Test Cliente');
+  await page.getByLabel(/^Mensaje( \*)?$/).fill('Necesito información sobre el informe comercial.');
+  await page.getByLabel(/^Nombre( \*)?$/).fill('Test Cliente');
   await page.getByLabel(/Acepto/).check();
   await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
   await expect(page.getByRole('alert')).toBeVisible();
@@ -95,7 +95,7 @@ test('UI-02: errores de envío con aria-invalid', async ({ page }) => {
   await page.goto('/contacto');
   await page.locator('input[name="via"][value="revisar"]').check();
   await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
-  const name = page.getByLabel(/^Nombre$/);
+  const name = page.getByLabel(/^Nombre( \*)?$/);
   await expect(name).toHaveAttribute('aria-invalid', 'true');
   await expect(page.locator('#contact-name-error')).toBeVisible();
 });
@@ -112,7 +112,7 @@ test('UI-04: datos conservados tras 503', async ({ page }) => {
   await fillContactForm(page);
   await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
   await expect(page.getByRole('alert')).toContainText(/no disponible/i);
-  await expect(page.getByLabel(/^Mensaje$/)).toHaveValue(/informe comercial/i);
+  await expect(page.getByLabel(/^Mensaje( \*)?$/)).toHaveValue(/informe comercial/i);
 });
 
 test('UI-05: reintento conserva Idempotency-Key', async ({ page }) => {

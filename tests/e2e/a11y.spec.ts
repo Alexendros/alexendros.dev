@@ -5,7 +5,6 @@ const routes = [
   '/',
   '/servicios/informe-comercial',
   '/referencias/front-valencia',
-  '/experiencia',
   '/metodo',
   '/identidad',
   '/cookies',
