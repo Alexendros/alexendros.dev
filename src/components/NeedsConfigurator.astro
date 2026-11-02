@@ -3,7 +3,7 @@ import { portalBase, portalModules } from '../content/portalModules';
 ---
 
 <div data-needs-configurator class="rounded-lg border border-border bg-card p-6 md:p-8">
-  <h2 id="portal-heading" class="text-xl font-bold">Sitio web profesional por módulos</h2>
+  <h2 id="portal-heading" class="text-step-2 font-bold">Sitio web profesional por módulos</h2>
   <p class="mt-2 text-sm text-muted">
     Base: {portalBase.delivery}. Plazo orientativo: {portalBase.timeline}. Los módulos y sus
     dependencias se revisan antes de definir el calendario y las condiciones en la propuesta.
@@ -24,7 +24,7 @@ import { portalBase, portalModules } from '../content/portalModules';
               type="checkbox"
               value={module.id}
               data-module={module.id}
-              class="focus-ring mt-1"
+              class="checkbox checkbox-primary mt-0.5 h-6 w-6"
               aria-describedby="needs-summary"
             />
             <span>

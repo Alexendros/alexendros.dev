@@ -2,6 +2,12 @@
 @import 'tailwindcss';
 @plugin "daisyui" {
   themes: false;
+  exclude:
+    avatar, breadcrumbs, btm-nav, carousel, chat, countdown, diff, divider, dock, drawer, dropdown,
+    file-input, filter, indicator, kbd, list, loading, mask, mockup-browser, mockup-code,
+    mockup-phone, mockup-window, modal, pagination, progress, radial-progress, radio, range, rating,
+    select, skeleton, stack, stat, status, swap, tab, table, timeline, toast, toggle, tooltip,
+    alert, join;
 }
 @import './theme.css';
 @layer reset, design-references, theme, base, components, utilities;
@@ -77,11 +83,12 @@
     --leading-tight: 1.08;
     --leading-body: 1.6;
     --tracking-eyebrow: 0.14em;
+    --measure: 66ch;
     --header-h: 4.5rem;
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   }
   @media (prefers-color-scheme: dark) {
-    :root:not([data-theme='light']) {
+    :root:not([data-theme='alexlight']) {
       color-scheme: dark;
       --bg: #0a1224;
       --bg-subtle: #0e1830;
@@ -96,7 +103,7 @@
       --danger: #f97066;
     }
   }
-  :root[data-theme='dark'] {
+  :root[data-theme='alexdark'] {
     color-scheme: dark;
 
     --bg: #0a1224;
@@ -111,6 +118,10 @@
     --card: #101c38;
     --danger: #f97066;
   }
+  :root[data-theme='alexlight'] {
+    color-scheme: light;
+  }
+
   /* stylelint-enable custom-property-pattern */
   /* stylelint-enable declaration-property-value-disallowed-list */
 }
@@ -123,6 +134,28 @@
   body {
     font-family: var(--font-mono);
     line-height: var(--leading-body);
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p,
+  li,
+  dd {
+    text-wrap: pretty;
+  }
+
+  main p,
+  main li,
+  main dd {
+    max-inline-size: var(--measure);
+  }
+
+  .tnum {
+    font-variant-numeric: tabular-nums;
   }
 
   :focus:not(:focus-visible) {
@@ -141,7 +174,7 @@
 
   .eyebrow {
     font-family: var(--font-mono);
-    font-size: 0.8125rem;
+    font-size: var(--step--1);
     letter-spacing: var(--tracking-eyebrow);
     opacity: 0.7;
   }
@@ -152,6 +185,24 @@
 
   .js .js-only {
     display: inline-flex;
+  }
+
+  #site-header .menu a,
+  footer .link,
+  details > summary {
+    display: flex;
+    align-items: center;
+    min-block-size: 2.75rem;
+  }
+
+  .project-details > summary::after {
+    content: '+';
+    margin-inline-start: auto;
+    font-weight: 700;
+  }
+
+  .project-details[open] > summary::after {
+    content: '-';
   }
 
   .btn:focus-visible,
@@ -172,6 +223,22 @@
     width: 1px;
     height: 1px;
     overflow: hidden;
+  }
+
+  .input:user-invalid,
+  .textarea:user-invalid,
+  .checkbox:user-invalid {
+    outline: 2px solid var(--color-error);
+    outline-offset: 1px;
+  }
+
+  dialog[data-detail-island]::backdrop {
+    background: var(--scrim);
+  }
+
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 700px;
   }
 
   .sr-only {
@@ -258,6 +325,14 @@ html {
   scroll-padding-top: var(--header-h);
 }
 
+:target {
+  scroll-margin-top: calc(var(--header-h) + 1rem);
+}
+
+main:focus {
+  outline: none;
+}
+
 /* Fuera de capas para ganar a daisyUI (components). Sin JS el botón de tema
    no funciona y se oculta; foco en primary en menú y logo. */
 html:not(.js) .js-only {
@@ -270,6 +345,12 @@ html:not(.js) .js-only {
   outline-offset: 2px;
 }
 
+[data-ref-filters] .btn[aria-pressed='true'] {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary);
+  color: var(--color-primary-content);
+}
+
 /* Tablas legales (cookies): scroll horizontal dentro del bloque, nunca de
    la página (reflow WCAG 1.4.10). */
 .table-wrap {
@@ -278,11 +359,24 @@ html:not(.js) .js-only {
   overflow-x: auto;
 }
 
+@media (forced-colors: active) {
+  .card,
+  .badge,
+  .btn,
+  .input,
+  .textarea,
+  .checkbox,
+  dialog,
+  details {
+    border: 1px solid CanvasText;
+  }
+}
+
 .table-wrap table {
   width: 100%;
   min-width: 40rem;
   border-collapse: collapse;
-  font-size: 0.875rem;
+  font-size: var(--step--1);
   line-height: 1.5;
 }
 

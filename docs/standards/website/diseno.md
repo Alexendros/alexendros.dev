@@ -8,15 +8,15 @@
 
 ## 1. Principios
 
-1. **Fuente única de verdad.** Todo color vive en `src/styles/global.css` (capa `@layer tokens`). `tailwind.config.mjs` solo referencia `var()`/`color-mix()`; los guardrails los validan `scripts/check-contrast.mjs` (fuente única) y Stylelint (`pnpm lint:css`, sin literales fuera de la capa de tokens).
-2. **Tres capas.** Primitivos (`--blue-*`, `--ink-*`, `--paper-*`, `--line`, `--ok/--warn/--err`) → semánticos (`--bg`, `--fg`, `--fg-muted`, `--brand`, `--brand-hover`, `--brand-fg`, `--border`, `--card`, `--danger`, `--bg-subtle`, `--scrim`, `--focus-ring`) → componentes (clases Tailwind `bg-bg`, `bg-subtle`, `bg-scrim`, `text-fg`, `bg-primary`, `text-ink`, `text-muted`, `border-border`, `bg-card`, `text-danger`…). **Los componentes nunca consumen primitivos directamente.** `--scrim` es el overlay de dialog/CMP (mismo valor que `--cc-overlay-bg`).
-3. **Reglas duras.** Sin `!important` (Stylelint lo prohíbe), sin `transition: all`, sin colores literales en CSS fuera de `@layer tokens`, sin valores mágicos donde exista un token (`--space-*`, `--step-*`, `--radius-*`, `--dur-*`, `--ease-*`).
-4. **Tema claro por defecto, oscuro opcional.** El tema oscuro se publica solo si `pnpm check:contrast` valida todos los pares en ambos temas (28/28 PASS). Sin toggle de UI: `prefers-color-scheme` + `data-theme`.
+1. **Fuente única de verdad.** Los temas viven en `src/styles/theme.css` (`@plugin "daisyui/theme"` para `alexlight`/`alexdark`) y los alias semánticos en `src/styles/global.css` (`@theme` y `@layer theme`). Stylelint (`pnpm lint:css`) y `scripts/check-contrast.mjs` validan que no haya literales de color fuera de esas capas.
+2. **Tres capas.** Primitivos (`--blue-*`, `--ink-*`, `--paper-*`, `--line`, `--ok/--warn/--err`) → semánticos (`--bg`, `--fg`, `--fg-muted`, `--brand`, `--brand-hover`, `--brand-fg`, `--border`, `--card`, `--danger`, `--bg-subtle`, `--scrim`, `--focus-ring`) → componentes (clases Tailwind `bg-bg`, `bg-subtle`, `bg-scrim`, `text-fg`, `bg-primary`, `text-ink`, `text-muted`, `border-border`, `bg-card`, `text-danger`…). **Los componentes nunca consumen primitivos directamente.** `--scrim` es el overlay de dialog/CMP. Los temas de daisyUI aportan `--color-base-*`, `--color-primary`, etc.
+3. **Reglas duras.** Sin `!important` (Stylelint lo prohíbe; única excepción el bloque `@media print`), sin `transition: all`, sin colores literales fuera de `theme.css`/`@layer theme`, sin `font-size` literal donde exista `--step-*`. El espaciado usa utilidades de Tailwind y los tokens de daisyUI; no hay una escala `--space-*` propia.
+4. **Tema claro por defecto, oscuro opcional.** El tema oscuro se publica solo si `pnpm check:contrast` valida todos los pares en ambos temas. El selector de cabecera cicla sistema → `alexlight` → `alexdark`, persiste en `localStorage` y `theme-init.js` aplica el tema antes del paint para evitar parpadeo.
 5. **Accesibilidad medible.** Pares de contraste WCAG AA en ambos temas (≥4.5:1 texto, ≥3:1 indicadores de foco), objetivo táctil ≥44px, foco visible siempre (`.focus-ring`), reduced-motion respetado en toda animación (media query + `.force-reduced-motion` para demos).
 
 ## 2. Tokens
 
-Definidos en `src/styles/global.css` (`@layer tokens`). Tipografía fluida `--step--1…--step-4` (clamp), espaciado 4px `--space-1…--space-24`, radios `--radius-sm/md/lg`, sombras `--shadow-1/2`, layout `--container` (72rem) / `--container-narrow` (56rem) / `--gutter` / `--header-h`, motion `--ease-out/--ease-in-out`, `--dur-fast/base/slow/reveal`, `--stagger`. Tailwind mapea `text-step--1…4` → `var(--step-*)`; los H1 de página y el hero usan `text-step-4` + `text-balance` (no `text-4xl`/`text-5xl`). La prosa legal sigue en `.legal-prose` con `--step-2`/`--step-1`. La tabla de valores y ratios de contraste está en `/design-system`.
+Definidos en `src/styles/theme.css` (temas daisyUI `alexlight`/`alexdark`) y `src/styles/global.css` (`@theme`/`@layer theme`). Tipografía fluida `--step--1…--step-4` (clamp), medida de prosa `--measure` (66ch), layout `--header-h`, motion `--ease-out`. Tailwind mapea `text-step--1…4` → `var(--step-*)`; los H1 de página y el hero usan `text-step-3` + `text-balance`. La prosa legal sigue en `.legal-prose`. La tabla de valores y ratios de contraste está en `/design-system`.
 
 ## 3. Componentes
 
@@ -63,14 +63,14 @@ Retirados: la composición de secciones vive en cada página con `Container`, `E
 
 ### SkipLink
 
-Extraído de Layout: primer foco de la página, salta a `#contenido`, visible solo con teclado (`focus-visible`), z-index máximo. No reordenar en Layout.
+Extraído de Layout: primer foco de la página, salta a `#main`, visible solo con teclado (`focus-visible`), z-index máximo. No reordenar en Layout.
 
 ### H1 de la home (taxonomía de servicios)
 
-- **Uso:** solo el H1 de la home (`Hero.astro`). Titular fijo de posicionamiento en tercera persona; lista semántica de cuatro servicios; sin rotación.
-- **CTAs:** primario «Solicitar propuesta» (`/contacto?motivo=propuestaComercial&origen=home`) y secundario «Catálogo de servicios» (`/servicios?origen=home`) en el hero; cabecera «Contacto» (`/contacto?motivo=propuestaComercial`). Sin banner sticky. En `/metodo` el cierre en página usa «Solicitar propuesta» (`origen=proceso`).
+- **Uso:** solo el H1 de la home (`Hero.astro`). Titular fijo de posicionamiento en tercera persona; sin rotación.
+- **CTAs:** primario «Solicitar propuesta» (`/contacto/?origen=home&motivo=propuestaComercial`) y secundario «Ver servicios» (`/servicios/`) en el hero; cabecera «Contacto» (`/contacto/?motivo=propuestaComercial`). Sin banner sticky. En `/metodo` el cierre en página usa «Solicitar propuesta» (`origen=proceso`).
 - **DetailIsland:** soft-nav con `<dialog>` + `pushState` (ADR 0022). Sin View Transitions (ADR 0004). Scrim y sombra vía `--scrim` / `--shadow-2` en CSS del dialog.
-- **Motion:** la entrada escalonada del hero (`data-hero-item`) sigue las reglas generales de reveal; con `prefers-reduced-motion` no hay animación.
+- **Motion:** la entrada escalonada del hero (`.rise-*`) sigue las reglas generales de reveal; con `prefers-reduced-motion` no hay animación.
 - **Don't:** no reintroducir ventana rotatoria en el producto; no añadir librerías de motion; no animar con propiedades distintas de `transform`/`opacity`.
 
 ### Tarjetas enlazables (ServiceCard / ProjectCard) — patrón card-link
@@ -90,5 +90,5 @@ Documentado en Fase 1 (commit `a86528d`) y validado como excepción en la audito
 ## 5. Verificación
 
 - `pnpm check:contrast` — pares WCAG AA en ambos temas + guardrails de fuente única.
-- `pnpm lint:css` — Stylelint: sin literales de color fuera de `@layer tokens`, sin `!important`, sin `transition: all`.
+- `pnpm lint:css` — Stylelint: sin literales de color fuera de `theme.css`/`@layer theme`, sin `!important` (salvo impresión), sin `transition: all`.
 - Axe (e2e) — 0 violaciones en las rutas cubiertas.

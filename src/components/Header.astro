@@ -1,5 +1,6 @@
 ---
 import { site } from '../content/site';
+import Icon from './ui/Icon.astro';
 
 const contactHref = '/contacto/?motivo=propuestaComercial';
 ---
@@ -12,13 +13,13 @@ const contactHref = '/contacto/?motivo=propuestaComercial';
     <div class="relative lg:hidden">
       <button
         type="button"
-        class="btn btn-ghost btn-square"
+        class="btn btn-ghost btn-square h-11 w-11"
         data-menu-button
         aria-label="Abrir menú"
         aria-expanded="false"
         aria-controls="mobile-nav"
       >
-        <span aria-hidden="true">☰</span>
+        <Icon name="menu" />
       </button>
       <ul
         id="mobile-nav"
@@ -32,13 +33,10 @@ const contactHref = '/contacto/?motivo=propuestaComercial';
             </li>
           ))
         }
-        <li class="mt-2">
-          <a class="btn btn-primary" href={contactHref}>Contacto</a>
-        </li>
       </ul>
     </div>
-    <a class="btn btn-ghost text-lg font-extrabold tracking-tight" href="/#top">
-      Alexendros<span class="text-sm font-normal opacity-60">.dev</span>
+    <a class="btn btn-ghost text-step-0 font-extrabold tracking-tight sm:text-step-1" href="/#top">
+      Alexendros<span class="hidden text-sm font-normal opacity-60 sm:inline">.dev</span>
     </a>
   </div>
   <nav class="navbar-center hidden lg:flex" aria-label="Principal">
@@ -57,13 +55,14 @@ const contactHref = '/contacto/?motivo=propuestaComercial';
     <input type="checkbox" class="theme-controller hidden" value="alexdark" data-theme-input />
     <button
       type="button"
-      class="btn btn-ghost btn-circle js-only"
+      class="btn btn-ghost btn-circle js-only h-11 w-11"
       data-theme-toggle
       aria-label="Tema: sistema. Pulsar para cambiar"
     >
-      <span aria-hidden="true">◐</span>
+      <Icon name="theme" />
     </button>
-    <a class="btn btn-primary hidden sm:inline-flex" href={contactHref}>Contacto</a>
+    <a class="btn btn-primary btn-sm min-h-11 px-3 sm:btn-md sm:px-4" href={contactHref}>Contacto</a
+    >
   </div>
 </header>
 

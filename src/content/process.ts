@@ -1,3 +1,5 @@
+import { commitments } from './commitments';
+
 export type ProcessStep = {
   id: string;
   title: string;
@@ -23,7 +25,7 @@ export const processPage = {
     {
       id: 'propuesta',
       title: 'Propuesta',
-      description: 'Llega en un día laborable con alcance, plazo y condiciones.',
+      description: `Llega en ${commitments.responseTime} con alcance, plazo y condiciones.`,
       receive: 'Propuesta por escrito.'
     },
     {
@@ -47,7 +49,7 @@ export const processPage = {
   ] satisfies ProcessStep[],
   close: {
     heading: 'Solicitar propuesta',
-    body: 'La respuesta llega en un día laborable.',
+    body: `La respuesta llega en ${commitments.responseTime}.`,
     href: '/contacto/?origen=proceso&motivo=propuestaComercial'
   }
 } as const;

@@ -84,7 +84,7 @@ const jsonLd = [
 
       <div class="mt-10 space-y-8">
         <section data-product-section="audience">
-          <h2 class="text-2xl font-bold">{isSoftware ? 'Para quién' : 'Para quién es'}</h2>
+          <h2 class="text-step-2 font-bold">{isSoftware ? 'Para quién' : 'Para quién es'}</h2>
           <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
             {service.audience.map((item) => <li>{item}</li>)}
           </ul>
@@ -93,7 +93,7 @@ const jsonLd = [
         {
           !isSoftware && (
             <section data-product-section="problems">
-              <h2 class="text-2xl font-bold">Qué problema aborda</h2>
+              <h2 class="text-step-2 font-bold">Qué problema aborda</h2>
               <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
                 {service.problems.map((item) => (
                   <li>{item}</li>
@@ -106,7 +106,7 @@ const jsonLd = [
         {
           !isSoftware && (
             <section data-product-section="scope">
-              <h2 class="text-2xl font-bold">Qué incluye</h2>
+              <h2 class="text-step-2 font-bold">Qué incluye</h2>
               <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
                 {service.scope.map((item) => (
                   <li>{item}</li>
@@ -120,7 +120,7 @@ const jsonLd = [
           isSoftware ? (
             <>
               <section data-product-section="process">
-                <h2 class="text-2xl font-bold">Cómo se hace</h2>
+                <h2 class="text-step-2 font-bold">Cómo se hace</h2>
                 <ol class="mt-2 list-decimal pl-5 text-sm text-muted space-y-1">
                   {service.process.map((item) => (
                     <li>{item}</li>
@@ -128,7 +128,7 @@ const jsonLd = [
                 </ol>
               </section>
               <section data-product-section="deliverables">
-                <h2 class="text-2xl font-bold">Qué se entrega</h2>
+                <h2 class="text-step-2 font-bold">Qué se entrega</h2>
                 <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
                   {service.deliverables.map((item) => (
                     <li>{item}</li>
@@ -139,7 +139,7 @@ const jsonLd = [
           ) : (
             <>
               <section data-product-section="deliverables">
-                <h2 class="text-2xl font-bold">Qué se entrega</h2>
+                <h2 class="text-step-2 font-bold">Qué se entrega</h2>
                 <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
                   {service.deliverables.map((item) => (
                     <li>{item}</li>
@@ -147,7 +147,7 @@ const jsonLd = [
                 </ul>
               </section>
               <section data-product-section="process">
-                <h2 class="text-2xl font-bold">Cómo se desarrolla</h2>
+                <h2 class="text-step-2 font-bold">Cómo se desarrolla</h2>
                 <ol class="mt-2 list-decimal pl-5 text-sm text-muted space-y-1">
                   {service.process.map((item) => (
                     <li>{item}</li>
@@ -159,21 +159,21 @@ const jsonLd = [
         }
 
         <section data-product-section="exclusions">
-          <h2 class="text-2xl font-bold">Qué no incluye</h2>
+          <h2 class="text-step-2 font-bold">Qué no incluye</h2>
           <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
             {service.commercial.exclusions.map((item) => <li>{item}</li>)}
           </ul>
         </section>
 
         <section data-product-section="requirements">
-          <h2 class="text-2xl font-bold">Requisitos del cliente</h2>
+          <h2 class="text-step-2 font-bold">Requisitos del cliente</h2>
           <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
             {service.requirements.map((item) => <li>{item}</li>)}
           </ul>
         </section>
 
         <section data-product-section="next-step">
-          <h2 class="text-2xl font-bold">Siguiente paso</h2>
+          <h2 class="text-step-2 font-bold">Siguiente paso</h2>
           <p class="mt-2 text-sm text-muted max-w-2xl">
             La solicitud se envía desde el formulario con el contexto de este servicio. La respuesta
             llega por el canal indicado.

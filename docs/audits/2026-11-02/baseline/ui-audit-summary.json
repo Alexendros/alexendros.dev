@@ -1,0 +1,12 @@
+{
+  "generatedAt": "2026-11-02T19:54:35.351Z",
+  "routes": 128,
+  "axeViolations": 0,
+  "maxCls": 0,
+  "horizontalOverflow": 0,
+  "smallTargets": 0,
+  "duplicateLinkNames": 0,
+  "brokenImages": 0,
+  "imagesWithoutAlt": 0,
+  "imagesWithoutDimensions": 0
+}

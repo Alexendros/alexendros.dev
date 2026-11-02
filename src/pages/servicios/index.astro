@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import ServiceCard from '../../components/ServiceCard.astro';
 import DetailIsland from '../../components/DetailIsland.astro';
 import NeedsConfigurator from '../../components/NeedsConfigurator.astro';
+import Faq from '../../components/sections/Faq.astro';
 import { serviceProducts, services } from '../../content/services';
 
 const detailItems = services.map((s) => ({
@@ -24,7 +25,7 @@ const detailItems = services.map((s) => ({
 >
   <div class="mx-auto max-w-6xl px-4 py-16 md:py-24">
     <header>
-      <h1 class="text-step-3 break-words font-bold max-w-3xl text-balance">
+      <h1 class="text-step-3 break-words font-bold max-w-5xl text-balance">
         Catálogo de servicios profesionales en{' '}
         <span class="text-primary">respuesta a necesidades reales</span>
       </h1>
@@ -62,6 +63,10 @@ const detailItems = services.map((s) => ({
           indicando los módulos de interés.
         </p>
       </noscript>
+    </section>
+
+    <section class="mt-16">
+      <Faq heading="Preguntas frecuentes" />
     </section>
   </div>
 </Layout>

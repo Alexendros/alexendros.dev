@@ -10,7 +10,10 @@ const { kicker, title, description } = Astro.props;
 <div>
   {kicker ? <p class="eyebrow">{kicker}</p> : null}
   <h1
-    class:list={[kicker ? 'mt-2' : null, 'break-words text-3xl font-bold text-balance max-w-3xl']}
+    class:list={[
+      kicker ? 'mt-2' : null,
+      'break-words text-step-3 font-bold text-balance max-w-3xl'
+    ]}
   >
     {title}
   </h1>

@@ -48,3 +48,6 @@ PLAN.md
 extraccion-website-alexendrosdev.txt
 tasks/
 mise.local.toml
+
+# Artefactos de auditoría local
+audit-out/

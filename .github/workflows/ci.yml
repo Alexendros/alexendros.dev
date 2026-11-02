@@ -67,6 +67,8 @@ jobs:
 
       - run: pnpm run check:contrast
 
+      - run: pnpm run check:leaks
+
   test:
     name: test
     if: github.event_name != 'schedule'
@@ -164,7 +166,7 @@ jobs:
       - run: npx playwright install --with-deps chromium
 
       - name: Playwright críticos (home, contacto, consent, fichas, SEO, proceso)
-        run: pnpm exec playwright test tests/e2e/critical.spec.ts tests/e2e/products-structure.spec.ts tests/e2e/consent.spec.ts tests/e2e/seo-routes.spec.ts tests/e2e/seo-edge-prod.spec.ts tests/e2e/process-page.spec.ts tests/e2e/cp09-a11y-ux.spec.ts tests/e2e/skip-link.spec.ts tests/e2e/revision-ruido.spec.ts tests/e2e/hero-home.spec.ts tests/e2e/detail-island.spec.ts
+        run: pnpm exec playwright test tests/e2e/critical.spec.ts tests/e2e/products-structure.spec.ts tests/e2e/consent.spec.ts tests/e2e/seo-routes.spec.ts tests/e2e/seo-edge-prod.spec.ts tests/e2e/process-page.spec.ts tests/e2e/cp09-a11y-ux.spec.ts tests/e2e/skip-link.spec.ts tests/e2e/revision-ruido.spec.ts tests/e2e/hero-home.spec.ts tests/e2e/detail-island.spec.ts tests/e2e/home-grid-nav.spec.ts tests/e2e/chrome.spec.ts tests/e2e/referencias.spec.ts tests/e2e/theme.spec.ts tests/e2e/header-align.spec.ts
         env:
           CI: true
 

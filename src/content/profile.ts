@@ -1,13 +1,12 @@
 export const profile = {
   name: 'Alejandro Domingo Agustí',
   alternateName: 'Alexendros',
-  jobTitle: 'Revisión técnica, sitios web y software',
+  jobTitle: 'Revisión técnica, sitios web y herramientas a medida',
   headline: 'Alejandro Domingo Agustí · Alexendros',
   role: 'La persona detrás de Alexendros. Diseño y desarrollo web para profesionales y pequeños negocios.',
   pageTitle: 'Sobre mí — Alejandro · Alexendros',
   pageDescription:
     'Alejandro Domingo Agustí: diseño y desarrollo web en Valencia para profesionales y pequeños negocios. Trato directo y alcance acordado por escrito.',
-  title: 'Webs claras y útiles para que el público entienda la propuesta y pueda contactar.',
   summary:
     'Webs que explican bien la oferta y generan pocas fricciones. El mismo responsable cubre el proceso completo: del primer mensaje a la publicación.',
   metaLine: 'Valencia · En remoto con clientes de toda España · Español e inglés',

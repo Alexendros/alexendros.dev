@@ -83,6 +83,7 @@ for (const scheme of SCHEMES)
               return (
                 r.width > 0 &&
                 r.height > 0 &&
+                !e.classList.contains('sr-only') &&
                 cs.visibility !== 'hidden' &&
                 cs.display !== 'inline' &&
                 (r.width < 24 || r.height < 24)

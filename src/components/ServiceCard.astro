@@ -1,5 +1,6 @@
 ---
 import type { ProductCard } from '../content/services';
+import Icon from './ui/Icon.astro';
 
 interface Props {
   product: ProductCard;
@@ -15,7 +16,7 @@ const Heading = headingLevel;
   data-product-card={product.slug}
 >
   <Heading
-    class="font-bold text-lg leading-tight mt-1 group-hover:text-primary transition-colors"
+    class="font-bold text-step-1 leading-tight mt-1 group-hover:text-primary transition-colors"
     data-product-card-title
   >
     <a href={product.href} class="rounded after:absolute after:inset-0">
@@ -31,7 +32,8 @@ const Heading = headingLevel;
     {product.ctaLabel}
     <span
       class="inline-block transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:transform-none"
-      >→</span
     >
+      <Icon name="arrow-right" size={16} />
+    </span>
   </div>
 </article>

@@ -1,6 +1,6 @@
 ---
 import { processPage } from '../../content/process';
-import Faq from './Faq.astro';
+import Icon from '../ui/Icon.astro';
 ---
 
 <section
@@ -9,20 +9,25 @@ import Faq from './Faq.astro';
   aria-labelledby="metodo-heading"
 >
   <p class="eyebrow">{processPage.eyebrow}</p>
-  <h2 id="metodo-heading" class="text-3xl font-extrabold tracking-tight">{processPage.title}</h2>
-  <div class="mt-10 grid gap-12 lg:grid-cols-2">
-    <ul class="steps steps-vertical lg:steps-horizontal w-full" id="steps">
-      {
-        processPage.steps.map((step, i) => (
-          <li class="step" data-content={String(i + 1)}>
-            <div class="py-2 text-left">
-              <h3 class="font-bold">{step.title}</h3>
-              <p class="text-sm opacity-70">{step.description}</p>
-            </div>
-          </li>
-        ))
-      }
-    </ul>
-    <Faq />
-  </div>
+  <h2 id="metodo-heading" class="max-w-2xl text-balance text-step-2 font-extrabold tracking-tight">
+    {processPage.title}
+  </h2>
+  <ul class="steps steps-vertical mt-10 w-full lg:steps-horizontal" id="steps">
+    {
+      processPage.steps.map((step, i) => (
+        <li class="step" data-content={String(i + 1)}>
+          <div class="py-2 text-left">
+            <h3 class="text-step-1 font-bold">{step.title}</h3>
+            <p class="text-sm opacity-70">{step.description}</p>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+  <p class="mt-8">
+    <a class="btn btn-outline" href="/metodo/">
+      Ver el método completo
+      <Icon name="arrow-right" size={16} />
+    </a>
+  </p>
 </section>

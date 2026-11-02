@@ -136,6 +136,7 @@ function initContactForm(form: HTMLFormElement): void {
   const messageCount = form.querySelector<HTMLElement>('[data-message-count]');
   const otraCheckbox = form.querySelector<HTMLInputElement>('#contact-via-otra');
   const otraField = form.querySelector<HTMLInputElement>('#contact-otra');
+  const otraWrap = form.querySelector<HTMLElement>('[data-otra-wrap]');
   if (!success || !submit || !emailWrapper || !errorSummary || !errorCount || !errorList) {
     delete form.dataset.contactInitialized;
     return;
@@ -149,7 +150,6 @@ function initContactForm(form: HTMLFormElement): void {
   let turnstileWidgetId: string | null = null;
 
   document.documentElement.dataset.contactHydrated = 'true';
-  document.getElementById('contact-nojs')?.setAttribute('hidden', '');
 
   const params = new URLSearchParams(window.location.search);
   const initialReasonInput = form.elements.namedItem('reason');
@@ -439,8 +439,17 @@ function initContactForm(form: HTMLFormElement): void {
   messageField?.addEventListener('input', updateMessageCount);
   updateMessageCount();
 
+  function setOtra(open: boolean): void {
+    if (otraWrap) otraWrap.hidden = !open;
+    otraCheckbox?.setAttribute('aria-expanded', String(open));
+    if (!open && otraField) otraField.value = '';
+  }
+
+  setOtra(Boolean(otraCheckbox?.checked));
   otraCheckbox?.addEventListener('change', () => {
-    if (otraCheckbox.checked) otraField?.focus();
+    const open = Boolean(otraCheckbox.checked);
+    setOtra(open);
+    if (open) otraField?.focus();
   });
 
   if (turnstileContainer) {
