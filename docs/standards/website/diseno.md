@@ -8,12 +8,13 @@
 
 ## 1. Principios
 
-1. **Fuente única.** Los temas DaisyUI `alexlight`/`alexdark` viven en `src/styles/theme.css`; los primitivos, alias semánticos y patrones propios viven en `src/styles/global.css` (`@theme`, `@layer theme` y `@layer components`).
-2. **Tres capas.** Primitivos (`--blue-*`, `--ink-*`, `--paper-*`, `--line`, `--err`) → semánticos (`--bg`, `--fg`, `--fg-muted`, `--brand`, `--brand-hover`, `--brand-fg`, `--border`, `--card`, `--danger`, `--bg-subtle`, `--scrim`, `--focus-ring`, `--shadow-*`) → componentes. Los componentes nunca consumen primitivos directamente.
+1. **Fuente única.** Los temas DaisyUI `alexlight`/`alexdark` viven en `src/styles/theme.css`; los primitivos, alias semánticos y patrones compartidos viven en `src/styles/global.css` (`@theme`, `@layer theme` y `@layer components`).
+2. **Tres capas.** Primitivos (`--blue-*`, `--ink-*`, `--paper-*`, `--line`, `--err`) → semánticos (`--bg`, `--fg`, `--fg-muted`, `--brand`, `--brand-hover`, `--brand-fg`, `--border-color`, `--card`, `--danger`, `--bg-subtle`, `--scrim`, `--focus-ring`, `--shadow-*`) → componentes. Los componentes nunca consumen primitivos directamente. `--border` es exclusivamente el grosor de DaisyUI; `--color-border` referencia `--border-color` para conservar las utilidades Tailwind.
 3. **Reglas duras.** Sin `!important` fuera de la excepción de impresión, `transition: all`, colores literales fuera de las capas autorizadas, sombras Tailwind prohibidas por `check:classes` ni `font-size` literal donde exista `--step-*`.
 4. **Temas coherentes.** El selector cicla sistema → `alexlight` → `alexdark`, persiste en `localStorage` y `theme-init.js` evita el parpadeo. Las variantes oscuras por media query y `data-theme` deben contener los mismos valores; `check:contrast` las compara.
 5. **Accesibilidad medible.** Contraste ≥4.5:1 para texto y ≥3:1 para foco e indicadores no textuales necesarios, objetivos táctiles ≥44px en acciones de contenido y reduced motion en todo movimiento.
-6. **Movimiento acotado.** Solo `transform`/`opacity`; hover de cards únicamente con `(hover: hover)` y `prefers-reduced-motion: no-preference`. Las sombras y bordes cambian sin animación.
+6. **Movimiento acotado.** Solo `transform`/`opacity`; hover de cards únicamente con `(hover: hover)` y `prefers-reduced-motion: no-preference`. Las sombras y bordes cambian sin animación. Con reduced motion, `html` usa `scroll-behavior: auto`. Las duraciones propias usan `--duration-fast` (180ms) y `--duration-normal` (200ms) con `--ease-out`.
+7. **Frontera global/módulo.** `global.css` contiene tokens y patrones con varios consumidores. Las reglas específicas viven en `Component.module.css` y se importan como `import styles from './Component.module.css'`, usando `styles.clase` o `styles['clase-kebab']`. Los tests usan IDs/`data-*`, nunca los nombres hash generados. No se usan `@apply` ni estilos inline.
 
 ## 2. Tokens
 
@@ -31,6 +32,7 @@
 - `--shadow-2`: énfasis hover/foco, sin transición de sombra.
 - `--surface-header`: fallback opaco de la cabecera.
 - `--surface-header-glass`: superficie translúcida activada solo con soporte de `backdrop-filter`.
+- `--surface-sunken`: fondo de base y filas internas del configurador, mezcla de `bg` y `card`.
 - `--gradient-section`: gradiente estático de hero y cierre de contacto, derivado de `bg`, `bg-subtle` y `card`.
 - `--scrim`: overlay de dialog/CMP.
 
@@ -45,7 +47,7 @@
 - **API:** `href?` renderiza `<a>` o `<button>`; `variant: 'primary'|'secondary'|'ghost'`; `size: 'sm'|'md'|'lg'`; `type?`, `disabled?`, `loading?` y atributos nativos.
 - **Variantes:** primary usa `bg-primary text-ink` y hover `bg-primaryHover`; secondary usa borde y texto brand; ghost usa texto brand.
 - **Tamaños:** `md`/`lg` con mínimo 44px. `sm` solo en contextos densos; la cabecera conserva 44px aunque use densidad visual `btn-sm`.
-- **Estados:** primary tiene `--shadow-1` y hover `--shadow-2`; disabled conserva semántica nativa/`aria-disabled`; loading usa `aria-busy` y deshabilita el botón.
+- **Estados:** primary tiene `--shadow-1` y hover `--shadow-2`; disabled conserva semántica nativa/`aria-disabled`; loading usa `aria-busy`, deshabilita el botón y muestra `styles.spinner` desde `Button.module.css`, con animación solo si el movimiento está permitido.
 - **Uso:** no anidar interactivos ni duplicar manualmente una variante cuando se puede usar `Button.astro`.
 
 ### Link
@@ -56,13 +58,15 @@
 
 ### Badges y eyebrows
 
-- Badges de DaisyUI, no un componente propio. Categoría: `badge-outline badge-accent badge-sm`; características/tipología: `badge-outline badge-sm` con `text-muted`.
+- Badges de DaisyUI, no un componente propio. Categoría de home: `badge-accent badge-sm`; atributos de home: `badge-ghost badge-sm` con `text-muted`; tipología de referencias: `badge-outline badge-sm` neutro.
 - No usar badges como enlaces ni `badge-soft` claro mientras el gate mantenga sus avisos de contraste.
 - `.eyebrow` es una clase CSS mono con `--tracking-eyebrow`; no existe un componente `Eyebrow.astro`.
 
-### Composición
+### Composición y encabezados
 
-`Section`, `SectionHeader`, `Container`, `Stack` y `Grid` no son componentes vigentes del portal. Las páginas componen contenedores y rejillas con utilidades Tailwind. No reintroducir wrappers sin consumidores reales.
+`SectionHeader.astro` encapsula eyebrow + H2 + descripción opcional para Servicios, Referencias, Método y Contacto de home. Recibe `id`, `eyebrow`, `title` y `description?`; sus reglas específicas se importan desde `SectionHeader.module.css`. Cada sección conserva `aria-labelledby`.
+
+`PageHead` permanece separado porque usa H1. `Section`, `Container`, `Stack` y `Grid` no son componentes vigentes; no reintroducir wrappers sin consumidores reales.
 
 ### SkipLink
 
@@ -71,8 +75,8 @@ Primer foco de la página, salta a `#main`, visible con teclado y por encima de 
 ### Hero y cierre de contacto
 
 - H1 y copy fijos, sin rotación; CTAs y URLs definidos en el contenido.
-- `.terminal-prompt` presenta `~/alexendros $ nuevo-encargo` como firma visual mono, con borde, superficie y `--shadow-1`.
-- `.hero-surface` y `.contact-cta-panel` comparten `--gradient-section`.
+- El prompt presenta `~/alexendros $ nuevo-encargo` como firma visual mono, con borde, superficie y `--shadow-1`; su regla se importa desde `Hero.module.css`.
+- Hero y ContactCta comparten `--gradient-section` desde sus respectivos módulos CSS.
 - La entrada `.rise-*` usa `transform`/`opacity` y desaparece con reduced motion.
 - Sin View Transitions ni librerías de motion.
 
@@ -90,7 +94,11 @@ La home usa DaisyUI `steps` con `step-primary` como tratamiento visual de una se
 
 ### Cabecera
 
-`site-header` parte de `--surface-header`; con soporte activa `--surface-header-glass` y `backdrop-filter: blur(12px)`. No cambia altura, navegación, CTA, selector de tema ni stacking del CMP. El menú móvil usa `.surface-raised`.
+`#site-header` parte de `--surface-header`; `Header.module.css` activa `--surface-header-glass` y `backdrop-filter: blur(12px)` solo con soporte. No cambia altura, navegación, CTA, selector de tema ni stacking del CMP. El menú móvil usa `.surface-raised`.
+
+### Configurador de módulos
+
+`NeedsConfigurator.astro` separa base estática, módulos opcionales y resumen. Las zonas usan `NeedsConfigurator.module.css`, `--surface-sunken` y `--primary-ghost`; desde `lg` los módulos forman dos columnas sin alterar el orden. Los labels conservan toda la superficie clicable y los hooks `data-needs-*`, live region, serialización y URLs no cambian.
 
 ### DetailIsland
 

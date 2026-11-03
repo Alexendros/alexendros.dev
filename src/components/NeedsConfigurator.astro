@@ -1,50 +1,55 @@
 ---
 import { portalBase, portalModules } from '../content/portalModules';
+import styles from './NeedsConfigurator.module.css';
 ---
 
-<div data-needs-configurator class="rounded-lg border border-border bg-card p-6 md:p-8">
+<div data-needs-configurator class:list={['surface-raised', styles.configurator]}>
   <h2 id="portal-heading" class="text-step-2 font-bold">Sitio web profesional por módulos</h2>
   <p class="mt-2 text-sm text-muted">
     Base: {portalBase.delivery}. Plazo orientativo: {portalBase.timeline}. Los módulos y sus
     dependencias se revisan antes de definir el calendario y las condiciones en la propuesta.
   </p>
 
-  <ul class="mt-6 space-y-3" data-needs-list>
-    <li class="text-sm">
-      <strong>{portalBase.title}</strong>
-      <span class="block text-muted">{portalBase.short}</span>
-      <span class="block text-muted">{portalBase.scope}</span>
-    </li>
-    {
-      portalModules.map((module) => (
-        <li class="border-t border-border pt-3 text-sm">
-          <label class="flex cursor-pointer items-start gap-3" for={`mod-${module.id}`}>
-            <input
-              id={`mod-${module.id}`}
-              type="checkbox"
-              value={module.id}
-              data-module={module.id}
-              class="checkbox checkbox-primary mt-0.5 h-6 w-6"
-              aria-describedby="needs-summary"
-            />
-            <span>
-              <strong>{module.title}</strong>
-              <span class="block text-muted">{module.short}</span>
-              <span class="block text-muted">{module.scope}</span>
-              <span class="block text-muted">{module.timeline}</span>
-              {module.dependencies.map((dependency) => (
-                <span class="block text-xs text-muted">Requisito: {dependency}</span>
-              ))}
-            </span>
-          </label>
-        </li>
-      ))
-    }
-  </ul>
+  <section class={styles.base} data-portal-base aria-labelledby="portal-base-title">
+    <h3 id="portal-base-title" class={styles['zone-title']}>{portalBase.title}</h3>
+    <p class="mt-1 text-sm text-muted">{portalBase.short}</p>
+    <p class="mt-1 text-sm text-muted">{portalBase.scope}</p>
+  </section>
+
+  <section class={styles.options} data-portal-options aria-labelledby="portal-options-title">
+    <h3 id="portal-options-title" class={styles['zone-title']}>Módulos opcionales</h3>
+    <ul class={styles['module-list']} data-needs-list>
+      {
+        portalModules.map((module) => (
+          <li class="text-sm">
+            <label class={styles.module} for={`mod-${module.id}`}>
+              <input
+                id={`mod-${module.id}`}
+                type="checkbox"
+                value={module.id}
+                data-module={module.id}
+                class="checkbox checkbox-primary mt-0.5 h-6 w-6"
+                aria-describedby="needs-summary"
+              />
+              <span class={styles['module-content']}>
+                <strong>{module.title}</strong>
+                <span class="block text-muted">{module.short}</span>
+                <span class="block text-muted">{module.scope}</span>
+                <span class="block text-muted">{module.timeline}</span>
+                {module.dependencies.map((dependency) => (
+                  <span class="block text-xs text-muted">Requisito: {dependency}</span>
+                ))}
+              </span>
+            </label>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
 
   <div
     id="needs-summary"
-    class="mt-6 border-t border-border pt-4 text-sm"
+    class={styles.summary}
     aria-live="polite"
     aria-atomic="true"
     data-selected-modules

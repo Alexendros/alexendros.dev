@@ -1,5 +1,7 @@
 ---
 import { homeContactoIntro } from '../../content/home';
+import styles from './ContactCta.module.css';
+import SectionHeader from '../SectionHeader.astro';
 ---
 
 <section
@@ -7,12 +9,24 @@ import { homeContactoIntro } from '../../content/home';
   class="mx-auto max-w-6xl scroll-mt-nav px-4 py-20"
   aria-labelledby="contacto-heading"
 >
-  <div class="contact-cta-panel surface-raised rounded-2xl px-6 py-10 sm:px-10 sm:py-12">
-    <p class="eyebrow">{homeContactoIntro.eyebrow}</p>
-    <h2 id="contacto-heading" class="max-w-2xl text-balance text-step-2 font-bold tracking-tight">
-      {homeContactoIntro.title}
-    </h2>
-    <p class="mt-3 max-w-2xl text-muted">{homeContactoIntro.lead}</p>
+  <div
+    class:list={[
+      'surface-raised',
+      'rounded-2xl',
+      'px-6',
+      'py-10',
+      'sm:px-10',
+      'sm:py-12',
+      styles.panel
+    ]}
+    data-contact-panel
+  >
+    <SectionHeader
+      id="contacto-heading"
+      eyebrow={homeContactoIntro.eyebrow}
+      title={homeContactoIntro.title}
+      description={homeContactoIntro.lead}
+    />
     <div class="mt-8">
       <a class="btn btn-primary btn-lg" href="/contacto/?origen=home&motivo=propuestaComercial">
         Solicitar propuesta

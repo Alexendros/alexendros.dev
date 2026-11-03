@@ -284,4 +284,4 @@ Además:
 
 La especificación y la opción A están aprobadas. El siguiente paso es redactar el plan técnico para revisión, descomponerlo después en tareas verificables y ejecutarlo solo tras esa revisión.
 
-El plan UI/CSS anterior se ha archivado con autorización en `docs/audits/2026-11-02/PLAN.md` y `docs/audits/2026-11-02/TODO.md`. El plan técnico vigente se encuentra en `tasks/plan.md`, pendiente de revisión antes de generar tareas.
+El plan UI/CSS anterior se archivó con autorización en `docs/audits/2026-11-02/PLAN.md` y `docs/audits/2026-11-02/TODO.md`. El plan de esta iniciativa, ya ejecutada, se conserva en `docs/audits/2026-11-03/PLAN-DAISYUI.md`.

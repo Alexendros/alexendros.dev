@@ -10,7 +10,7 @@ import { site } from '../content/site';
     </p>
   </aside>
   <nav aria-label="Navegación">
-    <h2 class="footer-title">Navegación</h2>
+    <h2 class="footer-title font-semibold text-fg opacity-100">Navegación</h2>
     {
       site.nav.map((item) => (
         <a class="link link-hover" href={item.href}>
@@ -27,7 +27,7 @@ import { site } from '../content/site';
     }
   </nav>
   <nav aria-label="Legal">
-    <h2 class="footer-title">Legal</h2>
+    <h2 class="footer-title font-semibold text-fg opacity-100">Legal</h2>
     {
       site.footerNav.map((item) => (
         <a class="link link-hover" href={item.href}>
@@ -37,7 +37,7 @@ import { site } from '../content/site';
     }
   </nav>
   <nav aria-label="Enlaces">
-    <h2 class="footer-title">Enlaces</h2>
+    <h2 class="footer-title font-semibold text-fg opacity-100">Enlaces</h2>
     <a class="link link-hover" href={site.social.github} rel="noopener">GitHub</a>
     <a class="link link-hover" href={site.social.linkedin} rel="noopener">LinkedIn</a>
     <a class="link link-hover" href={site.social.email}>Correo</a>

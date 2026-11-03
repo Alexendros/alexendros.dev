@@ -4,7 +4,7 @@
 - Rama: `cursor/evolucion-visual-daisyui`.
 - Base: `5ba7885542565ae65ea43cdba5cbedf2da523f23`.
 - Alcance verificado: working tree local de esa rama, sin commit ni deployment.
-- Spec: `SPEC-DAISYUI.md`. Plan: `tasks/plan.md`.
+- Spec: `SPEC-DAISYUI.md`. Plan archivado: `PLAN-DAISYUI.md`.
 
 ## Resultado implementado
 

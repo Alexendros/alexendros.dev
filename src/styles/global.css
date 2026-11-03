@@ -48,7 +48,7 @@
   --color-primarySoft: color-mix(in srgb, var(--brand) 40%, transparent);
   --color-primaryGhost: var(--primary-ghost);
   --color-muted: var(--fg-muted);
-  --color-border: var(--border);
+  --color-border: var(--border-color);
   --color-border-strong: var(--border-strong);
   --color-card: var(--card);
   --color-ink: var(--brand-fg);
@@ -94,7 +94,7 @@
     --brand: var(--blue-900);
     --brand-hover: var(--blue-700);
     --brand-fg: var(--paper-0);
-    --border: var(--line);
+    --border-color: var(--line);
     --border-strong: #7d90b8;
     --card: var(--paper-0);
     --danger: var(--err);
@@ -109,6 +109,7 @@
       0 16px 40px color-mix(in srgb, var(--blue-950) 9%, transparent);
     --surface-header: var(--card);
     --surface-header-glass: color-mix(in srgb, var(--card) 88%, transparent);
+    --surface-sunken: color-mix(in srgb, var(--bg) 65%, var(--card));
     --gradient-section:
       radial-gradient(
         ellipse at 12% 0%,
@@ -127,6 +128,8 @@
     --tracking-eyebrow: 0.14em;
     --measure: 66ch;
     --header-h: 4.5rem;
+    --duration-fast: 180ms;
+    --duration-normal: 200ms;
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   }
   @media (prefers-color-scheme: dark) {
@@ -139,7 +142,7 @@
       --brand: #8fb4ff;
       --brand-hover: #a9c6ff;
       --brand-fg: #0a1224;
-      --border: #2a3a5f;
+      --border-color: #2a3a5f;
       --border-strong: #647aa8;
       --card: #101c38;
       --danger: #f97066;
@@ -161,7 +164,7 @@
     --brand: #8fb4ff;
     --brand-hover: #a9c6ff;
     --brand-fg: #0a1224;
-    --border: #2a3a5f;
+    --border-color: #2a3a5f;
     --border-strong: #647aa8;
     --card: #101c38;
     --danger: #f97066;
@@ -183,6 +186,12 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
 
   body {
@@ -219,27 +228,8 @@
 }
 
 @layer components {
-  .hero-surface,
-  .contact-cta-panel {
-    background-image: var(--gradient-section);
-  }
-
-  .terminal-prompt {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0.5rem 0.75rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-field);
-    background: var(--card);
-    box-shadow: var(--shadow-1);
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
-    line-height: 1.4;
-  }
-
   .surface-raised {
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-color);
     background-color: var(--card);
     box-shadow: var(--shadow-1);
   }
@@ -262,15 +252,19 @@
 
   @media (hover: hover) and (prefers-reduced-motion: no-preference) {
     .card-lift {
-      transition: transform 180ms var(--ease-out);
+      transition: transform var(--duration-fast) var(--ease-out);
     }
 
     .card-lift:hover {
       transform: translateY(-2px);
     }
 
+    .card-lift:active {
+      transform: translateY(0);
+    }
+
     .card-lift .card-img {
-      transition: transform 300ms var(--ease-out);
+      transition: transform var(--duration-normal) var(--ease-out);
     }
 
     .card-lift:hover .card-img {
@@ -280,17 +274,6 @@
 
   .navbar {
     padding-top: env(safe-area-inset-top, 0);
-  }
-
-  .site-header {
-    background-color: var(--surface-header);
-  }
-
-  @supports (backdrop-filter: blur(12px)) {
-    .site-header {
-      background-color: var(--surface-header-glass);
-      backdrop-filter: blur(12px);
-    }
   }
 
   .btn-primary {

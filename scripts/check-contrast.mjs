@@ -24,7 +24,7 @@ const SEMANTIC = [
   'brand',
   'brand-hover',
   'brand-fg',
-  'border',
+  'border-color',
   'border-strong',
   'card',
   'danger',

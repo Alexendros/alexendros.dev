@@ -1,13 +1,14 @@
 ---
 import { site } from '../content/site';
 import Icon from './ui/Icon.astro';
+import styles from './Header.module.css';
 
 const contactHref = '/contacto/?motivo=propuestaComercial';
 ---
 
 <header
   id="site-header"
-  class="navbar site-header sticky top-0 z-50 border-b border-border px-3 lg:px-8"
+  class:list={['navbar sticky top-0 z-50 border-b border-border px-3 lg:px-8', styles.header]}
 >
   <div class="navbar-start">
     <div class="relative lg:hidden">

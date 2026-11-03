@@ -1,11 +1,16 @@
 ---
 import { homeHero } from '../../content/home';
 import Commitments from '../Commitments.astro';
+import styles from './Hero.module.css';
 ---
 
-<section id="top" class="hero hero-surface scroll-mt-nav">
+<section id="top" class:list={['hero', 'scroll-mt-nav', styles.surface]}>
   <div class="hero-content w-full min-w-0 max-w-6xl flex-col items-start gap-6 px-4 py-14 lg:py-20">
-    <p class="terminal-prompt rise rise-1" aria-hidden="true">
+    <p
+      class:list={['rise', 'rise-1', styles['terminal-prompt']]}
+      data-terminal-prompt
+      aria-hidden="true"
+    >
       <span class="text-primary">{homeHero.prompt}</span>
       {' '}
       <span class="opacity-70">{homeHero.command}</span>
