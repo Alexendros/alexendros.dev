@@ -67,7 +67,11 @@ jobs:
 
       - run: pnpm run check:contrast
 
-      - run: pnpm run check:leaks
+      - name: Instalar poppler-utils (pdftotext para check-leaks)
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+
+      - name: Restos de desarrollo (fuentes y public/)
+        run: bash scripts/audit/check-leaks.sh src public
 
   test:
     name: test
@@ -108,6 +112,9 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
+
+      - name: Instalar poppler-utils (pdftotext para check-leaks)
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
 
       - run: pnpm build
 

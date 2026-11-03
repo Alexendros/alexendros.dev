@@ -1,5 +1,7 @@
 /** Ciclo sistema → claro → oscuro; sincroniza theme-controller y localStorage. */
 
+import { THEME_BG_LIGHT, THEME_BG_DARK } from '../lib/themeColors';
+
 type ThemeMode = 'system' | 'alexlight' | 'alexdark';
 
 const LABELS: Record<ThemeMode, string> = {
@@ -19,10 +21,10 @@ function readStored(): ThemeMode {
 }
 
 function applyThemeColor(mode: ThemeMode) {
-  const color = mode === 'alexdark' ? '#0a1224' : mode === 'alexlight' ? '#f6f8fc' : null;
+  const color = mode === 'alexdark' ? THEME_BG_DARK : mode === 'alexlight' ? THEME_BG_LIGHT : null;
   const metas = document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]');
   metas.forEach((meta, index) => {
-    meta.content = color ?? (index === 0 ? '#f6f8fc' : '#0a1224');
+    meta.content = color ?? (index === 0 ? THEME_BG_LIGHT : THEME_BG_DARK);
   });
 }
 

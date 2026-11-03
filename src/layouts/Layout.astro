@@ -7,6 +7,7 @@ import Footer from '../components/Footer.astro';
 import SkipLink from '../components/SkipLink.astro';
 import { site } from '../content/site';
 import { profile } from '../content/profile';
+import { THEME_BG_LIGHT, THEME_BG_DARK } from '../lib/themeColors';
 
 interface Props {
   title?: string;
@@ -14,6 +15,7 @@ interface Props {
   ogImage?: string;
   ogImageAlt?: string;
   robots?: string;
+  canonical?: string;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 const {
@@ -22,12 +24,13 @@ const {
   ogImage = '/og/default.png',
   ogImageAlt,
   robots,
+  canonical: canonicalPath,
   jsonLd
 } = Astro.props;
 const resolvedOgAlt = ogImageAlt ?? title;
 const extraJsonLd = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 const pathname = Astro.url.pathname;
-const canonical = new URL(pathname, site.url).href;
+const canonical = new URL(canonicalPath ?? pathname, site.url).href;
 const ogImageUrl = new URL(ogImage, site.url).href;
 const graph = {
   '@context': 'https://schema.org',
@@ -101,8 +104,8 @@ const graph = {
     <meta name="twitter:image" content={ogImageUrl} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta name="theme-color" content="#f6f8fc" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0a1224" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content={THEME_BG_LIGHT} media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content={THEME_BG_DARK} media="(prefers-color-scheme: dark)" />
     <meta property="og:image:alt" content={resolvedOgAlt} />
     <Fragment set:html={'<script src="/theme-init.js"></script>'} />
     <script type="application/ld+json" set:html={JSON.stringify(graph)} />

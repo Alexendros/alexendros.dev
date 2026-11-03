@@ -421,6 +421,36 @@
       "context": "El árbol .ai/skills era un canon de skills consumido por el editor, con su propio workflow (skills-canon) filtrado por rutas a .ai/skills/**. No lo consumía el sitio, ni el CI canónico, ni los estándares vivos en docs/standards/, y tampoco figuraba en los checks obligatorios del ruleset main-required-checks. Mantenerlo duplicaba gobernanza documental y añadía un pipeline que solo corría al tocar esa carpeta.",
       "decision": "Retirar del repositorio y del disco la carpeta .ai/ completa (22 ficheros versionados: README, nueve skills en tres áreas, dos esquemas y el script check-redundancy), eliminar .github/workflows/skills-canon.yml y limpiar la entrada .ai/skills/.phase/ de .gitignore. No se sustituye por otra herramienta: la gobernanza técnica vive en AGENTS.md, docs/standards/ y docs/audits/{decisions,events}.json.",
       "consequences": "Menos superficie de CI (un workflow y su validación con ajv-cli desaparecen) y una sola fuente de verdad documental. Los checks obligatorios (build, quality, test, e2e-critical, smoke, sca, secrets, pr-mergeable, csp, axe y ci-gate) no cambian. Los informes de fase .phase dejan de tener ubicación versionada o ignorada."
+    },
+    {
+      "id": "0029",
+      "sequence": 29,
+      "timestamp": "2026-11-03T16:31:32Z",
+      "active": true,
+      "title": "/sobre-mi/ noindex con canonical a /experiencia/",
+      "summary": "La página /sobre-mi/ duplica /experiencia/; queda accesible pero fuera del índice: noindex, canonical a /experiencia/ y excluida del sitemap.",
+      "recordType": "decision",
+      "status": "aceptada",
+      "supersedes": [],
+      "supersededBy": null,
+      "context": "Auditoría 2026-11-03 (F-06): /sobre-mi/ y /experiencia/ sirven el mismo contenido de profile, generando un duplicado de indexación. La página viva es /experiencia/.",
+      "decision": "/sobre-mi/ mantiene la URL (sin enlace en el pie) pero se marca noindex, canonical a https://alexendros.dev/experiencia/ y se filtra del sitemap en astro.config.",
+      "consequences": "Layout gana el prop canonical opcional. El test e2e seo-routes verifica noindex, canonical y ausencia en sitemap de /sobre-mi/."
+    },
+    {
+      "id": "0030",
+      "sequence": 30,
+      "timestamp": "2026-11-03T16:31:32Z",
+      "active": true,
+      "title": "CSS por debajo del presupuesto: se mantiene la división actual",
+      "summary": "El CSS total comprime a 22,6 KB gzip (presupuesto 23,6 KB); los dos Layout.* no comparten reglas, así que unificarlos no reduciría tamaño.",
+      "recordType": "decision",
+      "status": "aceptada",
+      "supersedes": [],
+      "supersededBy": null,
+      "context": "Auditoría 2026-11-03 (F-08): se propone unificar el CSS. Medido con pnpm preview + audit:css: gzip total 23102 bytes. Layout.teixN1nf.css es el CMP (cookie-consent) y Layout.ybSSrTO-.css es el resto con la fuente embebida; sin solapamiento.",
+      "decision": "No se unifica: la unión no baja el peso (contenidos disjuntos) y ya se cumple ≤ 23,6 KB gzip. Se mantiene la división actual.",
+      "consequences": "Sin cambios de CSS. El presupuesto se revisa en la próxima auditoría si crece."
     }
   ]
 }
