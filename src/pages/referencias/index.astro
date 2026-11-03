@@ -2,7 +2,12 @@
 import Layout from '../../layouts/Layout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import DetailIsland from '../../components/DetailIsland.astro';
-import { availabilityCtaLabels, productTypeLabels, projects } from '../../content/projects';
+import {
+  availabilityCtaLabels,
+  productTypeLabels,
+  projectFilters,
+  projects
+} from '../../content/projects';
 
 const detailItems = projects.map((p) => ({
   slug: p.slug,
@@ -29,11 +34,33 @@ const detailItems = projects.map((p) => ({
       </h1>
       <div class="pagehead-rule mt-4 h-px bg-border" aria-hidden="true"></div>
     </header>
-    <div class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+    <div
+      class="mt-8 flex flex-wrap gap-2"
+      role="group"
+      aria-label="Filtrar referencias por tipo"
+      data-ref-filters
+    >
       {
-        projects.map((p, i) => (
-          <div>
-            <ProjectCard project={p} priority={i === 0} />
+        projectFilters.map((filter, index) => (
+          <button
+            type="button"
+            class:list={['btn', index === 0 && 'btn-active']}
+            data-filter={filter.id}
+            aria-pressed={index === 0 ? 'true' : 'false'}
+          >
+            {filter.label}
+          </button>
+        ))
+      }
+    </div>
+    <p class="sr-only" aria-live="polite" data-ref-live></p>
+
+    <div class="mt-8 grid gap-6 md:grid-cols-2" data-ref-grid>
+      {
+        projects.map((project, index) => (
+          <div class="h-full" data-kind={project.workKind === 'encargo' ? 'encargo' : 'propio'}>
+            <ProjectCard project={project} priority={index === 0} />
           </div>
         ))
       }
@@ -41,3 +68,8 @@ const detailItems = projects.map((p) => ({
     <DetailIsland basePath="/referencias" items={detailItems} />
   </div>
 </Layout>
+
+<script>
+  import { initReferenceFilter } from '../../scripts/referenceFilter';
+  initReferenceFilter();
+</script>

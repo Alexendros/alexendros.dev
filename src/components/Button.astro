@@ -5,13 +5,14 @@
 // - size: sm (36px, solo contextos densos como el banner), md/lg
 //   (objetivo táctil ≥ 44×44px). Los tamaños usan min-h-*: el ancho
 //   depende del contenido, nunca menor que el objetivo táctil.
-// - loading (solo <button>): spinner CSS (.btn-spinner en global.css)
-//   y aria-busy; el botón queda deshabilitado mientras carga.
+// - loading (solo <button>): spinner desde Button.module.css y aria-busy;
+//   el botón queda deshabilitado mientras carga.
 // - disabled: en <button> usa el atributo; en <a> usa aria-disabled y
 //   sale del orden de tabulación.
 // Admite atributos nativos del elemento que renderice (target, rel,
 // data-*, aria-*) vía rest spread.
 import type { HTMLAttributes } from 'astro/types';
+import styles from './Button.module.css';
 
 interface Props extends HTMLAttributes<'a'> {
   href?: string;
@@ -34,7 +35,7 @@ const {
 const sizes = {
   sm: 'min-h-9 px-4 py-1.5 text-sm',
   md: 'min-h-11 px-6 py-3',
-  lg: 'min-h-11 px-8 py-3.5 text-lg'
+  lg: 'min-h-11 px-8 py-3.5 text-step-1'
 };
 const variants = {
   primary: 'bg-primary text-ink hover:bg-primaryHover',
@@ -73,7 +74,7 @@ const classes = [
     >
       {loading && (
         <>
-          <span class="btn-spinner" aria-hidden="true" />
+          <span class={styles.spinner} aria-hidden="true" />
           <span class="sr-only">Cargando…</span>
         </>
       )}

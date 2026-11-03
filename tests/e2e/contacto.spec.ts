@@ -131,10 +131,17 @@ test.describe('sin JavaScript', () => {
   test('aviso con correo; sin POST JSON', async ({ page }) => {
     await page.goto('/contacto');
     await expect(page.getByRole('heading', { name: 'Contacto', exact: true })).toBeVisible();
-    const nojs = page.locator('[data-contact-nojs]');
-    await expect(nojs).toBeVisible();
+    await expect(page.locator('[data-contact-nojs]')).toHaveCount(1);
+    await expect(page.locator('[data-contact-nojs]')).toBeVisible();
+    const nojs = page.locator('noscript');
+    await expect(nojs).toHaveCount(1);
     await expect(nojs.getByRole('link', { name: /contratacion@alexendros\.dev/i })).toBeVisible();
-    await expect(page.locator('noscript')).toHaveCount(1);
+    await expect(
+      page
+        .locator('[data-contact-nojs]')
+        .getByText(/El formulario interactivo necesita JavaScript/i)
+    ).toBeVisible();
+    await expect(page.locator('[data-contact-fallback]')).toBeHidden();
     await expect(page.locator('form[action*="api/contact"]')).toHaveCount(0);
   });
 });

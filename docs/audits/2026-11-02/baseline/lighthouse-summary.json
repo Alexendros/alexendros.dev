@@ -1,0 +1,47 @@
+[
+  {
+    "url": "http://127.0.0.1:4321/",
+    "performance": 100,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "seo": 100,
+    "cls": 0,
+    "lcpMs": 1728
+  },
+  {
+    "url": "http://127.0.0.1:4321/servicios/informe-comercial/",
+    "performance": 100,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "seo": 100,
+    "cls": 0,
+    "lcpMs": 1503
+  },
+  {
+    "url": "http://127.0.0.1:4321/referencias/front-valencia/",
+    "performance": 100,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "seo": 100,
+    "cls": 0,
+    "lcpMs": 1656
+  },
+  {
+    "url": "http://127.0.0.1:4321/experiencia/",
+    "performance": 100,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "seo": 100,
+    "cls": 0,
+    "lcpMs": 1503
+  },
+  {
+    "url": "http://127.0.0.1:4321/privacidad/",
+    "performance": 100,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "seo": 100,
+    "cls": 0,
+    "lcpMs": 1505
+  }
+]

@@ -36,6 +36,11 @@ check(
 await p.keyboard.press('Escape');
 check('Esc cierra', (await p.locator('dialog[open]').count()) === 0);
 check('foco vuelve al disparador', await trigger.evaluate((el) => el === document.activeElement));
+await p
+  .waitForFunction(() => location.pathname.replace(/\/$/, '') === '/referencias', null, {
+    timeout: 3000
+  })
+  .catch(() => {});
 check(
   'URL vuelve a /referencias',
   new URL(p.url()).pathname.replace(/\/$/, '') === '/referencias',

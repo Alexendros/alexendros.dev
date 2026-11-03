@@ -76,6 +76,12 @@ export const productTypeLabels: Record<ProjectProductType, string> = {
   personal: 'Página web personal'
 };
 
+export const projectFilters = [
+  { id: 'all', label: 'Todos' },
+  { id: 'encargo', label: 'Encargos' },
+  { id: 'propio', label: 'Proyectos propios' }
+] as const;
+
 export const projects: Project[] = [
   {
     slug: 'front-valencia',
@@ -100,12 +106,10 @@ export const projects: Project[] = [
       'Publicación y documentación'
     ],
     technologies: [
-      'Astro + React',
-      'Tailwind CSS',
-      'Payload CMS 3 + PostgreSQL',
-      'pnpm + Turborepo',
-      'TypeScript estricto',
-      'Vercel (web) + Railway (CMS)'
+      'Panel de edición propio',
+      'Carta digital bilingüe',
+      'Integración de reservas',
+      'Publicación acompañada de documentación'
     ],
     highlights: [
       'Carta bilingüe con alérgenos',
@@ -130,30 +134,29 @@ export const projects: Project[] = [
     slug: 'graficas-nasve',
     title: 'Gráficas Nasve',
     short:
-      'Tienda online para un taller familiar que quería vender sus productos sin depender de terceros.',
+      'Tienda en internet para un taller familiar que quería vender sus productos sin depender de terceros.',
     summary:
-      'Catálogo online con precios claros e integración con proveedor de pagos, pensado para sustituir presupuestos solo por email y teléfono.',
+      'Catálogo en internet con precios claros e integración con proveedor de pagos, pensado para sustituir presupuestos solo por correo y teléfono.',
     role: 'Diseño del proceso de venta y desarrollo',
     context:
       'Las ventas dependían de llamadas y correos. Los presupuestos tardaban y se perdían pedidos.',
     challenge:
-      'Calcular precios con muchas combinaciones, validar archivos del cliente y cobrar online de forma fiable.',
+      'Calcular precios con muchas combinaciones, validar archivos del cliente y cobrar por internet de forma fiable.',
     solution:
-      'Catálogo con precios en tiempo real, validación de archivos y pago online. Paneles claros para seguir pedidos.',
+      'Catálogo con precios en tiempo real, validación de archivos y pago por internet. Paneles claros para seguir pedidos.',
     responsibilities: [
       'Diseño del flujo de compra',
       'Motor de precios',
       'Catálogo usable',
-      'Pagos online',
+      'Pagos por internet',
       'Paneles de pedidos',
       'Pruebas antes de publicar'
     ],
     technologies: [
-      'Next.js',
-      'TypeScript',
-      'PostgreSQL + Prisma',
-      'Pasarela de pago con aviso de pedido',
-      'Zod'
+      'Catálogo con precios calculados al momento',
+      'Validación de archivos del cliente',
+      'Pago con aviso de pedido',
+      'Paneles de pedidos'
     ],
     highlights: [
       'Precios calculados al momento',
@@ -177,7 +180,7 @@ export const projects: Project[] = [
     productType: 'tienda',
     cover: coverNasve,
     coverAlt:
-      'Tienda online de Gráficas Nasve: catálogo de productos con precios calculados al momento y pago online.'
+      'Tienda en internet de Gráficas Nasve: catálogo de productos con precios calculados al momento y pago por internet.'
   },
   {
     slug: 'zedazo',
@@ -190,7 +193,7 @@ export const projects: Project[] = [
     context:
       'Migrar contactos entre Google, iCloud y Outlook generaba duplicados, formatos rotos y mucho trabajo manual.',
     challenge:
-      'Leer distintos formatos de agenda, unificar teléfonos y exportar listados limpios sin instalar software pesado.',
+      'Leer distintos formatos de agenda, unificar teléfonos y exportar listados limpios sin instalar programas pesados.',
     solution:
       'Una herramienta ligera que limpia, deduplica y exporta contactos en formatos útiles, con documentación clara.',
     responsibilities: [
@@ -200,9 +203,10 @@ export const projects: Project[] = [
       'Pruebas y documentación'
     ],
     technologies: [
-      'CLI en Rust (clap, phonenumber, serde)',
-      'Binario estático ~3 MB',
-      'Open source bajo licencia MIT'
+      'Aplicación de escritorio ligera',
+      'Limpieza y unificación de contactos',
+      'Exportación a formatos útiles',
+      'Código abierto con licencia MIT'
     ],
     highlights: [
       'Instalación sencilla',
@@ -210,7 +214,11 @@ export const projects: Project[] = [
       'Deduplicación configurable',
       'Código abierto'
     ],
-    results: ['Binario de ~3 MB, sin instalación pesada', 'Licencia MIT', 'Código público'],
+    results: [
+      'Programa ligero de unos 3 MB, sin instalación pesada',
+      'Licencia MIT',
+      'Código público'
+    ],
     links: { github: 'https://github.com/Soluciones-Alexendros/zedazo' },
     published: '2024-01-10',
     featured: false,
@@ -234,7 +242,7 @@ export const projects: Project[] = [
     challenge:
       'Priorizar la lectura, el teclado y la privacidad, manteniendo la web ligera y fácil de mantener.',
     solution:
-      'Web centrada en el contenido, tipografía legible, sin trackers de publicidad y con un flujo editorial sencillo.',
+      'Web centrada en el contenido, tipografía legible, sin rastreo publicitario y con un flujo editorial sencillo.',
     responsibilities: [
       'Arquitectura del sitio',
       'Sistema visual',
@@ -242,24 +250,29 @@ export const projects: Project[] = [
       'Privacidad',
       'Publicación'
     ],
-    technologies: ['Next.js', 'TypeScript', 'Tailwind', 'MDX', 'Zod'],
+    technologies: [
+      'Sitio estático rápido',
+      'Lectura cómoda en cualquier pantalla',
+      'Contenido versionado',
+      'Privacidad sin rastreadores publicitarios'
+    ],
     highlights: [
       'Lectura cómoda',
       'Buen contraste',
-      'Sin trackers de publicidad',
-      'Contenido en Git'
+      'Sin rastreo publicitario',
+      'Historial de cambios'
     ],
     results: [
       'Lectura clara y contraste cuidado',
-      'Sin trackers de publicidad',
-      'Contenido versionado en Git'
+      'Sin rastreo publicitario',
+      'Historial de cambios'
     ],
     links: {
       prod: 'https://alexendros.me',
       github: 'https://github.com/Soluciones-Alexendros/website-alexendrosme'
     },
     published: '2024-01-15',
-    featured: true,
+    featured: false,
     availability: 'no',
     workKind: 'propio',
     productType: 'personal',

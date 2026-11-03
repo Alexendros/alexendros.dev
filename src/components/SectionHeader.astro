@@ -1,0 +1,18 @@
+---
+import styles from './SectionHeader.module.css';
+
+interface Props {
+  id: string;
+  eyebrow: string;
+  title: string;
+  description?: string;
+}
+
+const { id, eyebrow, title, description } = Astro.props;
+---
+
+<div class={styles.header} data-section-header>
+  <p class="eyebrow">{eyebrow}</p>
+  <h2 id={id} class={styles.title}>{title}</h2>
+  {description ? <p class={styles.description}>{description}</p> : null}
+</div>

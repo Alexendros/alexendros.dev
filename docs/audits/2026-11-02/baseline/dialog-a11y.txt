@@ -1,0 +1,14 @@
+┌─────────┬────────────────────────────────────────┬──────┬─────────────────────────────────────────────────────┐
+│ (index) │ name                                   │ ok   │ extra                                               │
+├─────────┼────────────────────────────────────────┼──────┼─────────────────────────────────────────────────────┤
+│ 0       │ 'abre <dialog open>'                   │ true │ ''                                                  │
+│ 1       │ 'foco dentro del dialog'               │ true │ ''                                                  │
+│ 2       │ 'dialog con nombre accesible'          │ true │ ''                                                  │
+│ 3       │ 'URL cambia a la ficha'                │ true │ 'http://127.0.0.1:4321/referencias/front-valencia/' │
+│ 4       │ 'scroll de fondo bloqueado'            │ true │ ''                                                  │
+│ 5       │ 'Tab no escapa del dialog'             │ true │ ''                                                  │
+│ 6       │ 'Esc cierra'                           │ true │ ''                                                  │
+│ 7       │ 'foco vuelve al disparador'            │ true │ ''                                                  │
+│ 8       │ 'URL vuelve a /referencias'            │ true │ 'http://127.0.0.1:4321/referencias'                 │
+│ 9       │ 'Atrás del navegador cierra el dialog' │ true │ ''                                                  │
+└─────────┴────────────────────────────────────────┴──────┴─────────────────────────────────────────────────────┘

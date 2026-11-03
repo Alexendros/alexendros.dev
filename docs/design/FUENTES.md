@@ -2,6 +2,8 @@
 
 Fecha: 2026-10-31.
 
+> Documento histórico sobre el mock de origen. No describe el sistema vigente; para tipografía, glass y componentes actuales consulta `docs/standards/website/diseno.md`.
+
 ## Mock v4
 
 | Campo              | Valor                                                              |

@@ -17,7 +17,10 @@ export const site = {
     { label: 'Cookies', href: '/cookies/' },
     { label: 'Accesibilidad', href: '/accesibilidad/' }
   ],
-  footerExtraNav: [{ label: 'Contacto', href: '/contacto/?motivo=propuestaComercial' }],
+  footerExtraNav: [
+    { label: 'Experiencia', href: '/experiencia/' },
+    { label: 'Contacto', href: '/contacto/?motivo=propuestaComercial' }
+  ],
   social: {
     github: 'https://github.com/alexendros',
     linkedin: 'https://linkedin.com/in/alexendros',

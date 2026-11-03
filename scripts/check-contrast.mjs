@@ -24,7 +24,7 @@ const SEMANTIC = [
   'brand',
   'brand-hover',
   'brand-fg',
-  'border',
+  'border-color',
   'border-strong',
   'card',
   'danger',
@@ -43,6 +43,8 @@ const PAIRS = [
   ['brand-fg/brand-hover (CTAs en hover)', 'brand-fg', 'brand-hover', 4.5],
   ['brand/card (acento como texto en tarjetas)', 'brand', 'card', 4.5],
   ['fg/bg-subtle (texto sobre fondo sutil)', 'fg', 'bg-subtle', 4.5],
+  ['fg-muted/bg-subtle (secundario sobre gradiente)', 'fg-muted', 'bg-subtle', 4.5],
+  ['brand/bg-subtle (acento sobre gradiente)', 'brand', 'bg-subtle', 4.5],
   ['fg/primary-ghost (texto sobre superficie ghost)', 'fg', 'primary-ghost', 4.5],
   ['border-strong/card (frontera de inputs)', 'border-strong', 'card', 3.0],
   ['border-strong/bg (frontera de inputs)', 'border-strong', 'bg', 3.0]
@@ -177,6 +179,17 @@ function validateDaisyTheme(label, props) {
     );
   }
 
+  // Marcadores y conectores de steps sobre la superficie del proceso.
+  for (const base of ['base-100', 'base-200']) {
+    if (!resolved.primary || !resolved[base]) continue;
+    const r = ratio(toRgb(resolved.primary), toRgb(resolved[base]));
+    const ok = r >= 3.0;
+    if (!ok) failed += 1;
+    console.log(
+      `${ok ? 'PASS' : 'FAIL'}  ${label} steps primary/${base}: ${r.toFixed(2)}:1 (mínimo 3:1)`
+    );
+  }
+
   // text-accent y badge-accent sobre bases.
   for (const base of ['base-100', 'base-200']) {
     if (!resolved.accent || !resolved[base]) continue;
@@ -252,13 +265,9 @@ if (oklchInGlobal > 0) {
   console.log('PASS  global.css sin literales oklch (paleta hex en @layer theme)');
 }
 
-const layout = readFileSync(join(root, 'src/layouts/Layout.astro'), 'utf8');
-const themeLight = layout.match(
-  /theme-color[^>]*content="(#[0-9a-fA-F]{3,8})"[^>]*prefers-color-scheme:\s*light/
-);
-const themeDark = layout.match(
-  /theme-color[^>]*content="(#[0-9a-fA-F]{3,8})"[^>]*prefers-color-scheme:\s*dark/
-);
+const themeColors = readFileSync(join(root, 'src/lib/themeColors.ts'), 'utf8');
+const themeLight = themeColors.match(/THEME_BG_LIGHT\s*=\s*'(#[0-9a-fA-F]{3,8})'/);
+const themeDark = themeColors.match(/THEME_BG_DARK\s*=\s*'(#[0-9a-fA-F]{3,8})'/);
 const paper50 = css.match(/--paper-50:\s*(#[0-9a-fA-F]{3,8})/);
 const darkBg = css.match(
   /@media\s*\(prefers-color-scheme:\s*dark\)[\s\S]*?--bg:\s*(#[0-9a-fA-F]{3,8})/

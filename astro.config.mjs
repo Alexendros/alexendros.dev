@@ -8,7 +8,7 @@ export default defineConfig({
   site: 'https://alexendros.dev',
   integrations: [
     sitemap({
-      filter: (page) => !page.includes('/design-system')
+      filter: (page) => !page.includes('/design-system') && !page.includes('/sobre-mi')
     })
   ],
   // Astro 5 elimina output: 'hybrid'. static conserva el opt-in por ruta

@@ -2,93 +2,120 @@
 
 ### Propósito de este documento
 
-- **Objetivos:** Contrato de uso del design system: principios, tokens, componentes y reglas de accesibilidad. Complementa la vitrina viva en `/design-system` (no indexable) y la decisión 0011 en `docs/audits/decisions.json`.
-- **Estructura:** Principios → tokens → componentes (API, variantes, do/don't, a11y) → excepciones de color fijo.
-- **Contenido a integrar según contexto:** Documenta componentes y tokens de este repo. No copies patrones de landing/SaaS ni añadas colores fuera de `src/styles/global.css`.
+- **Objetivo:** contrato vigente de tokens, tipografía, componentes y accesibilidad del portal.
+- **Fuentes de verdad:** `src/styles/theme.css`, `src/styles/global.css` y los componentes de `src/components/`.
+- **Alcance:** documenta el sistema real. La ruta local `/design-system` redirige a `designsystem.alexendros.dev`; no es una vitrina local de componentes.
 
 ## 1. Principios
 
-1. **Fuente única de verdad.** Todo color vive en `src/styles/global.css` (capa `@layer tokens`). `tailwind.config.mjs` solo referencia `var()`/`color-mix()`; los guardrails los validan `scripts/check-contrast.mjs` (fuente única) y Stylelint (`pnpm lint:css`, sin literales fuera de la capa de tokens).
-2. **Tres capas.** Primitivos (`--blue-*`, `--ink-*`, `--paper-*`, `--line`, `--ok/--warn/--err`) → semánticos (`--bg`, `--fg`, `--fg-muted`, `--brand`, `--brand-hover`, `--brand-fg`, `--border`, `--card`, `--danger`, `--bg-subtle`, `--scrim`, `--focus-ring`) → componentes (clases Tailwind `bg-bg`, `bg-subtle`, `bg-scrim`, `text-fg`, `bg-primary`, `text-ink`, `text-muted`, `border-border`, `bg-card`, `text-danger`…). **Los componentes nunca consumen primitivos directamente.** `--scrim` es el overlay de dialog/CMP (mismo valor que `--cc-overlay-bg`).
-3. **Reglas duras.** Sin `!important` (Stylelint lo prohíbe), sin `transition: all`, sin colores literales en CSS fuera de `@layer tokens`, sin valores mágicos donde exista un token (`--space-*`, `--step-*`, `--radius-*`, `--dur-*`, `--ease-*`).
-4. **Tema claro por defecto, oscuro opcional.** El tema oscuro se publica solo si `pnpm check:contrast` valida todos los pares en ambos temas (28/28 PASS). Sin toggle de UI: `prefers-color-scheme` + `data-theme`.
-5. **Accesibilidad medible.** Pares de contraste WCAG AA en ambos temas (≥4.5:1 texto, ≥3:1 indicadores de foco), objetivo táctil ≥44px, foco visible siempre (`.focus-ring`), reduced-motion respetado en toda animación (media query + `.force-reduced-motion` para demos).
+1. **Fuente única.** Los temas DaisyUI `alexlight`/`alexdark` viven en `src/styles/theme.css`; los primitivos, alias semánticos y patrones compartidos viven en `src/styles/global.css` (`@theme`, `@layer theme` y `@layer components`).
+2. **Tres capas.** Primitivos (`--blue-*`, `--ink-*`, `--paper-*`, `--line`, `--err`) → semánticos (`--bg`, `--fg`, `--fg-muted`, `--brand`, `--brand-hover`, `--brand-fg`, `--border-color`, `--card`, `--danger`, `--bg-subtle`, `--scrim`, `--focus-ring`, `--shadow-*`) → componentes. Los componentes nunca consumen primitivos directamente. `--border` es exclusivamente el grosor de DaisyUI; `--color-border` referencia `--border-color` para conservar las utilidades Tailwind.
+3. **Reglas duras.** Sin `!important` fuera de la excepción de impresión, `transition: all`, colores literales fuera de las capas autorizadas, sombras Tailwind prohibidas por `check:classes` ni `font-size` literal donde exista `--step-*`.
+4. **Temas coherentes.** El selector cicla sistema → `alexlight` → `alexdark`, persiste en `localStorage` y `theme-init.js` evita el parpadeo. Las variantes oscuras por media query y `data-theme` deben contener los mismos valores; `check:contrast` las compara.
+5. **Accesibilidad medible.** Contraste ≥4.5:1 para texto y ≥3:1 para foco e indicadores no textuales necesarios, objetivos táctiles ≥44px en acciones de contenido y reduced motion en todo movimiento.
+6. **Movimiento acotado.** Solo `transform`/`opacity`; hover de cards únicamente con `(hover: hover)` y `prefers-reduced-motion: no-preference`. Las sombras y bordes cambian sin animación. Con reduced motion, `html` usa `scroll-behavior: auto`. Las duraciones propias usan `--duration-fast` (180ms) y `--duration-normal` (200ms) con `--ease-out`.
+7. **Frontera global/módulo.** `global.css` contiene tokens y patrones con varios consumidores. Las reglas específicas viven en `Component.module.css` y se importan como `import styles from './Component.module.css'`, usando `styles.clase` o `styles['clase-kebab']`. Los tests usan IDs/`data-*`, nunca los nombres hash generados. No se usan `@apply` ni estilos inline.
 
 ## 2. Tokens
 
-Definidos en `src/styles/global.css` (`@layer tokens`). Tipografía fluida `--step--1…--step-4` (clamp), espaciado 4px `--space-1…--space-24`, radios `--radius-sm/md/lg`, sombras `--shadow-1/2`, layout `--container` (72rem) / `--container-narrow` (56rem) / `--gutter` / `--header-h`, motion `--ease-out/--ease-in-out`, `--dur-fast/base/slow/reveal`, `--stagger`. Tailwind mapea `text-step--1…4` → `var(--step-*)`; los H1 de página y el hero usan `text-step-4` + `text-balance` (no `text-4xl`/`text-5xl`). La prosa legal sigue en `.legal-prose` con `--step-2`/`--step-1`. La tabla de valores y ratios de contraste está en `/design-system`.
+### Tipografía
 
-## 3. Componentes
+- **Source Sans 3 Variable** (`--font-sans`, también referenciada por `--font-display`): cuerpo, titulares y controles. Se autoaloja con `@fontsource-variable/source-sans-3`; el archivo latin variable tiene preload en `Layout.astro`.
+- **JetBrains Mono Variable** (`--font-mono`): prompt, código, eyebrows y metadatos seleccionados. Se autoaloja con `@fontsource-variable/jetbrains-mono`, sin preload prioritario.
+- **Escala:** `--step--1…--step-4` fluida mediante `clamp`; Tailwind la expone como `text-step--1…4`. H1 de página y hero usan `text-step-3`, `text-balance` y peso 700 como máximo.
+- **Lectura:** `--leading-body`, `--leading-tight`, `--tracking-eyebrow` y `--measure` (66ch). La prosa legal usa `.legal-prose`.
+- **Licencias:** ambas familias usan SIL OFL 1.1; se conservan los avisos distribuidos por Fontsource. No se cargan Google Fonts.
 
-Todos en `src/components/`. Clases utilidad de Tailwind permitidas; valores de color y espaciado siempre vía tokens.
+### Superficie, elevación y color
+
+- `--shadow-1`: elevación base de compromisos, cards, menú, prompt y botón primario.
+- `--shadow-2`: énfasis hover/foco, sin transición de sombra.
+- `--surface-header`: fallback opaco de la cabecera.
+- `--surface-header-glass`: superficie translúcida activada solo con soporte de `backdrop-filter`.
+- `--surface-sunken`: fondo de base y filas internas del configurador, mezcla de `bg` y `card`.
+- `--gradient-section`: gradiente estático de hero y cierre de contacto, derivado de `bg`, `bg-subtle` y `card`.
+- `--scrim`: overlay de dialog/CMP.
+
+## 3. Componentes y patrones
 
 ### Foco
 
-Un solo sistema: la clase `.focus-ring` (outline 2px `--brand` con offset 2px + anillo `--focus-ring`, ≥3:1 en ambos temas) aplicada a todo interactivo — Button, Link, navegación móvil, componentes Astro (`ContactForm`, `NeedsConfigurator`) y barra CTA. No usar utilidades sueltas `focus-visible:outline*` ni depender del outline por defecto del navegador. El foco de hidratación y el mapa campo→control del formulario de contacto se tratan en el paquete de idempotencia/foco de contacto, no aquí.
+`.focus-ring:focus-visible` aplica outline 2px, offset 2px y anillo `--focus-ring`. Los controles DaisyUI cubiertos por las reglas `.btn`, `.link`, `.checkbox` y menú comparten el mismo color y geometría. No crear sistemas de foco por componente ni depender del outline predeterminado.
 
 ### Button
 
-- **API:** `href?` (con href renderiza `<a>`, sin él `<button>`), `variant: 'primary'|'secondary'|'ghost'` (default `primary`), `size: 'sm'|'md'|'lg'` (default `md`), `type?`, `disabled?`, `loading?` (solo `<button>`), rest spread de atributos nativos (`target`, `rel`, `data-*`, `aria-*`).
-- **Variantes:** primary = `bg-brand` + texto `--brand-fg` (clases `bg-primary text-ink`, hover `bg-primaryHover`); secondary = borde `--border` + texto `--brand` sobre transparente; ghost = solo texto `--brand`.
-- **Tamaños:** `md`/`lg` con `min-h-11` (44px, objetivo táctil). `sm` con `min-h-9` (36px) **solo para contextos densos** (cabecera, banner fijo); no usar `sm` para acciones primarias de contenido.
-- **Estados:** hover (cambio de fondo/borde), `disabled` (en `<a>`: `aria-disabled` + `tabindex="-1"`; en `<button>`: atributo), `loading` (spinner `.btn-spinner`, `aria-busy`, botón deshabilitado mientras carga).
-- **Do:** usar siempre para acciones (CTAs, envíos, "ver más"). **Don't:** no replicar sus clases a mano; no anidar otro botón/interactivo dentro.
+- **API:** `href?` renderiza `<a>` o `<button>`; `variant: 'primary'|'secondary'|'ghost'`; `size: 'sm'|'md'|'lg'`; `type?`, `disabled?`, `loading?` y atributos nativos.
+- **Variantes:** primary usa `bg-primary text-ink` y hover `bg-primaryHover`; secondary usa borde y texto brand; ghost usa texto brand.
+- **Tamaños:** `md`/`lg` con mínimo 44px. `sm` solo en contextos densos; la cabecera conserva 44px aunque use densidad visual `btn-sm`.
+- **Estados:** primary tiene `--shadow-1` y hover `--shadow-2`; disabled conserva semántica nativa/`aria-disabled`; loading usa `aria-busy`, deshabilita el botón y muestra `styles.spinner` desde `Button.module.css`, con animación solo si el movimiento está permitido.
+- **Uso:** no anidar interactivos ni duplicar manualmente una variante cuando se puede usar `Button.astro`.
 
 ### Link
 
-- **API:** `href`, `variant: 'inline'|'nav'|'arrow'` (default `inline`), `current?` → `aria-current="page"` + color brand, rest spread nativo.
-- **Variantes:** `inline` (subrayado, cuerpo de texto y legales), `nav` (cabecera/pie, hover brand), `arrow` (nav + `→` en `<span class="link-arrow" aria-hidden="true">`, ancla preparada para la animación de Fase 3).
-- **Do:** enlaces de navegación y de texto siempre con Link. **Don't:** no usar Button para navegar sin acción (usar Link); no quitar el subrayado a enlaces en párrafos.
+- **API:** `href`, `variant: 'inline'|'nav'|'arrow'`, `current?` y atributos nativos.
+- `current` emite `aria-current="page"`; `arrow` añade icono oculto al nombre accesible.
+- Los enlaces en prosa mantienen subrayado. El foco usa `.focus-ring`.
 
-### Badge
+### Badges y eyebrows
 
-- **API:** slot de texto, `class?`.
-- **Estructura:** punto `.badge-dot` (pulso suave, pausado con reduced-motion) + texto mono en caja con borde.
-- **Uso:** estados de disponibilidad/estado ("Disponible para nuevos proyectos"). No usar como etiqueta de precio ni como link.
+- Badges de DaisyUI, no un componente propio. Categoría de home: `badge-accent badge-sm`; atributos de home: `badge-ghost badge-sm` con `text-muted`; tipología de referencias: `badge-outline badge-sm` neutro.
+- No usar badges como enlaces ni `badge-soft` claro mientras el gate mantenga sus avisos de contraste.
+- `.eyebrow` es una clase CSS mono con `--tracking-eyebrow`; no existe un componente `Eyebrow.astro`.
 
-### Eyebrow
+### Composición y encabezados
 
-- **API:** slot de texto, `as?: 'p'|'span'|'div'` (default `p`), rest spread nativo (`id`, `data-*`, `aria-*`).
-- **Patrón:** kicker en mayúsculas mono, `tracking` de `--tracking-eyebrow`, color `--fg-muted`. Unifica `FIG. 0X`, kickers de portada (PageHead) y el del hero.
+`SectionHeader.astro` encapsula eyebrow + H2 + descripción opcional para Servicios, Referencias, Método y Contacto de home. Recibe `id`, `eyebrow`, `title` y `description?`; sus reglas específicas se importan desde `SectionHeader.module.css`. Cada sección conserva `aria-labelledby`.
 
-### Section / SectionHeader
-
-Retirados: la composición de secciones vive en cada página con `Container`, `Eyebrow` y utilidades de espaciado. No reintroducir sin un consumidor real en la vitrina o en una página.
-
-### Container / Stack / Grid
-
-- **Container:** `size?: 'default'|'narrow'` (`--container` 72rem / `--container-narrow` 56rem), gutter `--gutter`. Sin padding vertical (lo da la página).
-- **Stack:** columna con `gap: var(--space-*)` (`gap` default `'4'`, claves `1…24`).
-- **Grid:** rejilla con gap de token; las columnas van en `class` con clases responsive (`sm:grid-cols-2 lg:grid-cols-4`).
+`PageHead` permanece separado porque usa H1. `Section`, `Container`, `Stack` y `Grid` no son componentes vigentes; no reintroducir wrappers sin consumidores reales.
 
 ### SkipLink
 
-Extraído de Layout: primer foco de la página, salta a `#contenido`, visible solo con teclado (`focus-visible`), z-index máximo. No reordenar en Layout.
+Primer foco de la página, salta a `#main`, visible con teclado y por encima de la cabecera. No reordenar en `Layout.astro`.
 
-### H1 de la home (taxonomía de servicios)
+### Hero y cierre de contacto
 
-- **Uso:** solo el H1 de la home (`Hero.astro`). Titular fijo de posicionamiento en tercera persona; lista semántica de cuatro servicios; sin rotación.
-- **CTAs:** primario «Solicitar propuesta» (`/contacto?motivo=propuestaComercial&origen=home`) y secundario «Catálogo de servicios» (`/servicios?origen=home`) en el hero; cabecera «Contacto» (`/contacto?motivo=propuestaComercial`). Sin banner sticky. En `/metodo` el cierre en página usa «Solicitar propuesta» (`origen=proceso`).
-- **DetailIsland:** soft-nav con `<dialog>` + `pushState` (ADR 0022). Sin View Transitions (ADR 0004). Scrim y sombra vía `--scrim` / `--shadow-2` en CSS del dialog.
-- **Motion:** la entrada escalonada del hero (`data-hero-item`) sigue las reglas generales de reveal; con `prefers-reduced-motion` no hay animación.
-- **Don't:** no reintroducir ventana rotatoria en el producto; no añadir librerías de motion; no animar con propiedades distintas de `transform`/`opacity`.
+- H1 y copy fijos, sin rotación; CTAs y URLs definidos en el contenido.
+- El prompt presenta `~/alexendros $ nuevo-encargo` como firma visual mono, con borde, superficie y `--shadow-1`; su regla se importa desde `Hero.module.css`.
+- Hero y ContactCta comparten `--gradient-section` desde sus respectivos módulos CSS.
+- La entrada `.rise-*` usa `transform`/`opacity` y desaparece con reduced motion.
+- Sin View Transitions ni librerías de motion.
 
-### Tarjetas enlazables (ServiceCard / ProjectCard) — patrón card-link
+### Cards y elevación
 
-- **Estructura:** el `<article>` no es enlace; el enlace vive en el título y se estira sobre toda la tarjeta con `::after { position:absolute; inset:0 }`. El nombre accesible es el título del servicio/caso (nunca "Ver qué incluye →" repetido: ese texto es `aria-hidden`). El foco se muestra con `focus-within:outline` (estilo + ancho + color: Tailwind `outline-2` solo fija ancho y sin `outline` no se pinta nada).
-- **Contrato:** dentro de una card-link **no puede haber otros elementos interactivos** (el `::after` los taparía) y el texto de la tarjeta **no es seleccionable con ratón** (el pseudo-elemento captura el mousedown). Si una tarjeta necesita un segundo enlace o texto seleccionable, no uses este patrón: enlaces explícitos por elemento.
-- **A11y:** las páginas de detalle (`/servicios/x`) mantienen `aria-current="page"` en el item de sección del header ("Servicios"): marca la sección activa, no la página exacta. Es deliberado.
+- `.surface-raised`: borde, `--card` y `--shadow-1` para bloques informativos, compromisos, menú, proceso y CTA. Los bloques no interactivos no simulan hover clickable.
+- `.card-lift`: elevación para `ServiceCard`/`ProjectCard`, cuyas cards sí son enlazables. Hover eleva 2px; el foco refuerza borde y sombra. Las imágenes de referencia pueden escalar a 1.02 solo bajo las mismas condiciones de hover/motion.
+- **Card-link:** el `<article>` no es un enlace; el enlace del título se estira con `::after`. El nombre accesible es el título y el CTA visual es `aria-hidden`.
+- Dentro de card-link no puede haber otro interactivo. Si hace falta un segundo enlace o texto seleccionable, usar enlaces explícitos en vez de este patrón.
+- Las imágenes mantienen dimensiones, `srcset`, lazy/eager y prioridad LCP según posición.
 
-## 4. Excepciones de color fijo (deliberadas)
+### Proceso
 
-| Elemento             | Valor                 | Motivo                                                                                                               |
-| -------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `theme-color` (meta) | `#f6f8fc` / `#0a1224` | `<meta>` no admite `var()`; equivalentes de `--paper-50`/`--bg` claro y `--bg` oscuro; validados en `check:contrast` |
+La home usa DaisyUI `steps` con `step-primary` como tratamiento visual de una secuencia estática. No se añade `aria-current`, progreso completado ni interacción ficticia. La lista conserva orden, vertical en móvil, horizontal desde `lg` y contenido sin JavaScript. `/metodo` mantiene su composición editorial propia.
 
-Documentado en Fase 1 (commit `a86528d`) y validado como excepción en la auditoría; no introducir nuevas excepciones sin justificarlo aquí.
+### Cabecera
+
+`#site-header` parte de `--surface-header`; `Header.module.css` activa `--surface-header-glass` y `backdrop-filter: blur(12px)` solo con soporte. No cambia altura, navegación, CTA, selector de tema ni stacking del CMP. El menú móvil usa `.surface-raised`.
+
+### Configurador de módulos
+
+`NeedsConfigurator.astro` separa base estática, módulos opcionales y resumen. Las zonas usan `NeedsConfigurator.module.css`, `--surface-sunken` y `--primary-ghost`; desde `lg` los módulos forman dos columnas sin alterar el orden. Los labels conservan toda la superficie clicable y los hooks `data-needs-*`, live region, serialización y URLs no cambian.
+
+### DetailIsland
+
+Soft-nav con `<dialog>` + `pushState`; sin JavaScript los enlaces abren las páginas de detalle. Conserva foco, cierre, URL y scrim `--scrim`. No usar View Transitions.
+
+## 4. Excepciones de color fijo
+
+| Elemento             | Valor                 | Motivo                                                                                                      |
+| -------------------- | --------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `theme-color` (meta) | `#f6f8fc` / `#0a1224` | `<meta>` no admite `var()`; equivalentes a los tokens de fondo claro/oscuro, validados por `check:contrast` |
+
+No introducir nuevas excepciones sin justificarlas aquí.
 
 ## 5. Verificación
 
-- `pnpm check:contrast` — pares WCAG AA en ambos temas + guardrails de fuente única.
-- `pnpm lint:css` — Stylelint: sin literales de color fuera de `@layer tokens`, sin `!important`, sin `transition: all`.
-- Axe (e2e) — 0 violaciones en las rutas cubiertas.
+- `pnpm check:contrast`: pares WCAG en claro/oscuro, consistencia de variantes y guardrails de fuente única.
+- `pnpm lint:css` + `pnpm check:classes`: prohibiciones de color, movimiento, sombras y markup.
+- `tests/e2e/visual-system.spec.ts`: fuentes, preload, tokens, hero, cards, reduced motion, glass, foco, proceso y CTA.
+- `tests/e2e/ui-matrix.spec.ts` y axe: reflow, objetivos, CMP y accesibilidad automática.
+- `pnpm audit:css` y LHCI sobre el build final: consumo de tokens, regresiones CSS y rendimiento.

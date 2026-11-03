@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import PageHead from '../components/PageHead.astro';
-import Link from '../components/Link.astro';
 import ContactForm from '../components/ContactForm.astro';
 import { contact } from '../content/contact';
 import { normalizeProjectSlug, normalizeServiceSlug } from '../content/contactContext';
@@ -47,10 +46,9 @@ const initialModules = serializePortalModuleIds(normalizePortalModuleIds(params.
         initialModules={initialModules}
       />
     </div>
-
-    <p class="mt-8 text-sm text-muted">
-      Los datos se usan solo para responder a esta petición. Consulta la{' '}
-      <Link href="/privacidad/" variant="inline">política de privacidad</Link> antes de enviar.
-    </p>
   </div>
 </Layout>
+
+<script>
+  import '../scripts/contactFallback';
+</script>

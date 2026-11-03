@@ -95,14 +95,14 @@ export const services: Service[] = [
     ],
     problems: [
       'La web no aparece o pierde posiciones en buscadores',
-      'Falta criterio sobre qué corregir primero en SEO técnico',
+      'Falta criterio sobre qué corregir primero en posicionamiento técnico',
       'Hacen falta métricas claras antes de invertir en mejoras'
     ],
     requirements: [
       'Acceso al dominio y a la versión pública del sitio; datos de medición solo si están disponibles y son necesarios.'
     ],
     scope: [
-      'SEO técnico: indexación, estructura, metadatos y contenido de cada página',
+      'Posicionamiento técnico: indexación, estructura, metadatos y contenido de cada página',
       'Rendimiento y uso en móvil ligados al posicionamiento',
       'Claridad del camino a contacto desde resultados de búsqueda',
       'Plan priorizado de ajustes con métricas de referencia',
@@ -114,22 +114,22 @@ export const services: Service[] = [
     ],
     process: [
       'Encargo y acceso al dominio',
-      'Análisis SEO técnico y de señales comerciales',
+      'Análisis de posicionamiento técnico y de señales comerciales',
       'Redacción del informe y del plan',
       'Entrega y ronda de aclaraciones'
     ],
     technicalDetails: [
-      'Revisión de indexación, CWV orientados a SEO, metadatos, enlazado interno y contenido indexable.'
+      'Revisión de indexación, velocidad de carga orientada a posicionamiento, metadatos, enlazado interno y contenido indexable.'
     ],
     commercial: {
       engagement: 'proposal',
       timeline: '5 días laborables',
       delivery:
-        'Informe técnico SEO, métricas de partida y plan priorizado de ajustes (sin implementación)',
+        'Informe técnico de posicionamiento, métricas de partida y plan priorizado de ajustes (sin implementación)',
       guarantee: 'Una ronda de aclaraciones en 10 días naturales',
       exclusions: [
         'No incluye implementación de las mejoras',
-        'No incluye campañas de publicidad ni link building',
+        'No incluye campañas de publicidad ni compra de enlaces',
         'No garantiza posiciones en buscadores'
       ]
     },
@@ -283,7 +283,7 @@ export const services: Service[] = [
       'Fases siguientes solo con acuerdo por escrito'
     ],
     technicalDetails: [
-      'Stack según el problema y las convenciones del equipo (web, CLI u otra superficie acordada).',
+      'Tecnología según el problema y las convenciones del equipo (web, CLI u otra superficie acordada).',
       'Caso de referencia: Zedazo (herramienta de contactos de código abierto).'
     ],
     commercial: {

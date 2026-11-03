@@ -1,0 +1,4 @@
+CSS por página (gzip):
+DetailIsland.BoolQACs.css raw=40 gzip=86
+Layout.818-bLpV.css raw=90988 gzip=18279
+Layout.teixN1nf.css raw=31941 gzip=5328

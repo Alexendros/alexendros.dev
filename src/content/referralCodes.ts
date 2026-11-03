@@ -1,6 +1,5 @@
 /**
  * Lista cerrada de códigos de referido que pueden fijar cookie.
- * Pendiente de Alejandro: sustituir o ampliar estos valores con la lista real.
  * Hasta entonces solo los códigos aquí listados ponen cookie; el resto redirige
  * a /?origen=referido#contacto sin cookie.
  */

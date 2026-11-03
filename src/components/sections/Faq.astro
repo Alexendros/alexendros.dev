@@ -1,9 +1,16 @@
 ---
 import { homeFaq } from '../../content/home';
+
+interface Props {
+  heading?: string;
+  id?: string;
+}
+
+const { heading = 'Preguntas frecuentes', id = 'faq' } = Astro.props;
 ---
 
-<div id="faq" class="scroll-mt-nav">
-  <h3 class="mb-4 text-xl font-bold">Preguntas frecuentes</h3>
+<div id={id} class="scroll-mt-nav">
+  <h2 class="mb-4 text-step-2 font-bold">{heading}</h2>
   <div class="flex w-full flex-col gap-2">
     {
       homeFaq.map((item, i) => (
@@ -12,8 +19,8 @@ import { homeFaq } from '../../content/home';
           name="faq"
           open={i === 0}
         >
-          <summary class="collapse-title font-semibold min-h-12">{item.q}</summary>
-          <div class="collapse-content text-sm opacity-80">
+          <summary class="collapse-title min-h-12 font-semibold">{item.q}</summary>
+          <div class="collapse-content text-sm text-muted">
             <p>{item.a}</p>
           </div>
         </details>

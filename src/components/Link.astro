@@ -2,11 +2,12 @@
 // Enlace con variantes del design system:
 // - inline: subrayado (cuerpo de texto, notas legales).
 // - nav: sin subrayado, hover en brand (cabecera, pie).
-// - arrow: nav + "→" en .link-arrow (aria-hidden), listo para la
+// - arrow: nav + flecha en .link-arrow (aria-hidden), lista para la
 //   animación de Fase 3.
 // `current` marca el enlace activo con aria-current="page". Admite los
 // atributos nativos de <a> (target, rel, data-*, aria-*...).
 import type { HTMLAttributes } from 'astro/types';
+import Icon from './ui/Icon.astro';
 
 interface Props extends HTMLAttributes<'a'> {
   href: string;
@@ -35,8 +36,8 @@ const variants = {
   <slot />
   {
     variant === 'arrow' && (
-      <span class="link-arrow" aria-hidden="true">
-        &nbsp;→
+      <span class="link-arrow inline-flex items-center gap-1" aria-hidden="true">
+        <Icon name="arrow-right" size={16} />
       </span>
     )
   }

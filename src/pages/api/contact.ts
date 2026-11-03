@@ -4,10 +4,13 @@ import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import {
   buildContactEmailHtml,
+  CRM_FAILURE_SUBJECT_PREFIX,
   handleContactPost,
   methodNotAllowed,
-  type ContactDeps
+  type ContactDeps,
+  type ContactMailPayload
 } from '../../lib/contactHandler';
+import { sendAlertWebhook } from '../../lib/alertWebhook';
 import { verifyTurnstileToken } from '../../lib/turnstile';
 import { createRedisContactIdempotencyStore } from '../../lib/contactIdempotency';
 import { createNotionLeadsStore } from '../../lib/notionLeads';
@@ -92,29 +95,38 @@ function createProductionDeps(): ContactDeps {
         consentMarketing: false
       });
     },
-    sendMail: async ({ name, email, subject, message, replyTo, smtp }) => {
-      const { html, text, mailSubject } = buildContactEmailHtml({
-        name,
-        email,
-        subject,
-        message
-      });
-      const transporter = nodemailer.createTransport({
-        host: smtp.host,
-        port: smtp.port,
-        secure: smtp.port === 465,
-        auth: { user: smtp.user, pass: smtp.pass }
-      });
-      await transporter.sendMail({
-        from: MAIL_FROM,
-        to: MAIL_TO,
-        ...(replyTo ? { replyTo } : {}),
-        subject: mailSubject,
-        html,
-        text
-      });
-    }
+    sendCrmFailureMail: async (payload) => sendContactMail(payload, CRM_FAILURE_SUBJECT_PREFIX),
+    sendAlertWebhook: async (text) => {
+      await sendAlertWebhook(import.meta.env.ALERT_WEBHOOK_URL, text);
+    },
+    sendMail: async (payload) => sendContactMail(payload)
   };
+}
+
+async function sendContactMail(
+  { name, email, subject, message, replyTo, smtp }: ContactMailPayload,
+  subjectPrefix?: string
+): Promise<void> {
+  const { html, text, mailSubject } = buildContactEmailHtml({
+    name,
+    email,
+    subject,
+    message
+  });
+  const transporter = nodemailer.createTransport({
+    host: smtp.host,
+    port: smtp.port,
+    secure: smtp.port === 465,
+    auth: { user: smtp.user, pass: smtp.pass }
+  });
+  await transporter.sendMail({
+    from: MAIL_FROM,
+    to: MAIL_TO,
+    ...(replyTo ? { replyTo } : {}),
+    subject: subjectPrefix ? `${subjectPrefix} ${mailSubject}` : mailSubject,
+    html,
+    text
+  });
 }
 
 export const POST: APIRoute = async ({ request }) =>
