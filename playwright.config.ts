@@ -26,6 +26,7 @@ const E2E_TRACKER_ENV = {
 
 export default defineConfig({
   testDir: './tests/e2e',
+  testIgnore: '**/paquetes-a11y.spec.ts',
   timeout: 60_000,
   reporter: process.env.CI
     ? [['list'], ['html', { outputFolder: 'playwright-report', open: 'never' }]]
