@@ -252,13 +252,9 @@ if (oklchInGlobal > 0) {
   console.log('PASS  global.css sin literales oklch (paleta hex en @layer theme)');
 }
 
-const layout = readFileSync(join(root, 'src/layouts/Layout.astro'), 'utf8');
-const themeLight = layout.match(
-  /theme-color[^>]*content="(#[0-9a-fA-F]{3,8})"[^>]*prefers-color-scheme:\s*light/
-);
-const themeDark = layout.match(
-  /theme-color[^>]*content="(#[0-9a-fA-F]{3,8})"[^>]*prefers-color-scheme:\s*dark/
-);
+const themeColors = readFileSync(join(root, 'src/lib/themeColors.ts'), 'utf8');
+const themeLight = themeColors.match(/THEME_BG_LIGHT\s*=\s*'(#[0-9a-fA-F]{3,8})'/);
+const themeDark = themeColors.match(/THEME_BG_DARK\s*=\s*'(#[0-9a-fA-F]{3,8})'/);
 const paper50 = css.match(/--paper-50:\s*(#[0-9a-fA-F]{3,8})/);
 const darkBg = css.match(
   /@media\s*\(prefers-color-scheme:\s*dark\)[\s\S]*?--bg:\s*(#[0-9a-fA-F]{3,8})/

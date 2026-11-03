@@ -109,6 +109,9 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - name: Instalar poppler-utils (pdftotext para check-leaks)
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+
       - run: pnpm build
 
       - run: pnpm check:links

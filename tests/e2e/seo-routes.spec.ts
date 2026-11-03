@@ -18,7 +18,6 @@ const SITEMAP_PUBLIC_PATHS = [
   '/servicios/cumplimiento-normativo/',
   '/servicios/ciberseguridad/',
   '/servicios/software-a-medida/',
-  '/sobre-mi/',
   '/articulos/presupuesto-web/',
   '/articulos/web-o-app-a-medida/'
 ];
@@ -30,7 +29,7 @@ const SITEMAP_RETIRED_PATHS = [
   '/proceso-y-entrega/'
 ];
 
-const NOINDEX_PATH = '/design-system';
+const NOINDEX_PATHS = ['/design-system', '/sobre-mi'];
 
 /**
  * Normaliza un href a una ruta interna rastreable. Descarta enlaces externos,
@@ -129,7 +128,9 @@ test('ROUTE-02: el sitemap anuncia las páginas públicas y excluye /design-syst
   for (const retiredPath of SITEMAP_RETIRED_PATHS) {
     expect(paths, `el sitemap no debe incluir ${retiredPath}`).not.toContain(retiredPath);
   }
-  expect(paths.filter((path) => path.startsWith(NOINDEX_PATH))).toEqual([]);
+  for (const noindexPath of NOINDEX_PATHS) {
+    expect(paths.filter((path) => path.startsWith(noindexPath))).toEqual([]);
+  }
 
   const missing: string[] = [];
   for (const path of paths) {
@@ -138,10 +139,12 @@ test('ROUTE-02: el sitemap anuncia las páginas públicas y excluye /design-syst
   }
   expect(missing, 'toda entrada del sitemap debe resolverse').toEqual([]);
 
-  // /design-system existe como vitrina interna, pero no debe ser indexable.
-  const designSystem = await page.goto(NOINDEX_PATH);
-  expect(designSystem?.status(), `${NOINDEX_PATH} debe existir (noindex, no 404)`).toBe(200);
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
+  // Páginas no indexables: existen (no 404) y marcan noindex.
+  for (const noindexPath of NOINDEX_PATHS) {
+    const response = await page.goto(noindexPath);
+    expect(response?.status(), `${noindexPath} debe existir (noindex, no 404)`).toBe(200);
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
+  }
 });
 
 test('ROUTE-02b: /metodo emite canonical alineado con el HTML construido', async ({ page }) => {
@@ -151,6 +154,16 @@ test('ROUTE-02b: /metodo emite canonical alineado con el HTML construido', async
   const href = await canonical.getAttribute('href');
   expect(href).toBeTruthy();
   expect(href!).toMatch(/^https:\/\/alexendros\.dev\/metodo\/?$/);
+});
+
+test('ROUTE-02c: /sobre-mi es noindex y canonical a /experiencia', async ({ page }) => {
+  await page.goto('/sobre-mi');
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
+  const canonical = page.locator('link[rel="canonical"]');
+  await expect(canonical).toHaveAttribute('href', /experiencia\/?$/);
+  const href = await canonical.getAttribute('href');
+  expect(href).toBeTruthy();
+  expect(href!).toMatch(/^https:\/\/alexendros\.dev\/experiencia\/?$/);
 });
 
 test('ROUTE-03: un slug inexistente en /servicios responde 404 real, no un 200 de fallback', async ({

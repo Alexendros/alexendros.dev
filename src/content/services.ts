@@ -119,7 +119,7 @@ export const services: Service[] = [
       'Entrega y ronda de aclaraciones'
     ],
     technicalDetails: [
-      'Revisión de indexación, CWV orientados a posicionamiento, metadatos, enlazado interno y contenido indexable.'
+      'Revisión de indexación, velocidad de carga orientada a posicionamiento, metadatos, enlazado interno y contenido indexable.'
     ],
     commercial: {
       engagement: 'proposal',
@@ -129,7 +129,7 @@ export const services: Service[] = [
       guarantee: 'Una ronda de aclaraciones en 10 días naturales',
       exclusions: [
         'No incluye implementación de las mejoras',
-        'No incluye campañas de publicidad ni link building',
+        'No incluye campañas de publicidad ni compra de enlaces',
         'No garantiza posiciones en buscadores'
       ]
     },

@@ -60,9 +60,7 @@ const lines = [
   ...work,
   '',
   'Modalidad de colaboración',
-  ...trust.map((t) => `• ${t}`),
-  '',
-  '(Hueco anotado: voz en primera persona y bloque del libro — pendiente de Alejandro.)'
+  ...trust.map((t) => `• ${t}`)
 ];
 
 function escapePdf(text) {

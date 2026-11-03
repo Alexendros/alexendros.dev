@@ -136,7 +136,7 @@ export const projects: Project[] = [
     short:
       'Tienda en internet para un taller familiar que quería vender sus productos sin depender de terceros.',
     summary:
-      'Catálogo en internet con precios claros e integración con proveedor de pagos, pensado para sustituir presupuestos solo por email y teléfono.',
+      'Catálogo en internet con precios claros e integración con proveedor de pagos, pensado para sustituir presupuestos solo por correo y teléfono.',
     role: 'Diseño del proceso de venta y desarrollo',
     context:
       'Las ventas dependían de llamadas y correos. Los presupuestos tardaban y se perdían pedidos.',
@@ -214,7 +214,11 @@ export const projects: Project[] = [
       'Deduplicación configurable',
       'Código abierto'
     ],
-    results: ['Binario de ~3 MB, sin instalación pesada', 'Licencia MIT', 'Código público'],
+    results: [
+      'Programa ligero de unos 3 MB, sin instalación pesada',
+      'Licencia MIT',
+      'Código público'
+    ],
     links: { github: 'https://github.com/Soluciones-Alexendros/zedazo' },
     published: '2024-01-10',
     featured: false,
@@ -238,7 +242,7 @@ export const projects: Project[] = [
     challenge:
       'Priorizar la lectura, el teclado y la privacidad, manteniendo la web ligera y fácil de mantener.',
     solution:
-      'Web centrada en el contenido, tipografía legible, sin trackers de publicidad y con un flujo editorial sencillo.',
+      'Web centrada en el contenido, tipografía legible, sin rastreo publicitario y con un flujo editorial sencillo.',
     responsibilities: [
       'Arquitectura del sitio',
       'Sistema visual',
@@ -255,13 +259,13 @@ export const projects: Project[] = [
     highlights: [
       'Lectura cómoda',
       'Buen contraste',
-      'Sin trackers de publicidad',
-      'Contenido en Git'
+      'Sin rastreo publicitario',
+      'Historial de cambios'
     ],
     results: [
       'Lectura clara y contraste cuidado',
-      'Sin trackers de publicidad',
-      'Contenido versionado en Git'
+      'Sin rastreo publicitario',
+      'Historial de cambios'
     ],
     links: {
       prod: 'https://alexendros.me',
