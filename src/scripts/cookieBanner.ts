@@ -1,7 +1,7 @@
 // El build ESM solo expone exports nombrados; los tipos usan `export =` y
 // sugieren un default que no existe en runtime. No convertir a default import.
 import * as CookieConsent from 'vanilla-cookieconsent';
-import 'vanilla-cookieconsent/dist/cookieconsent.css';
+import './cookieBanner.css';
 import {
   CONSENT_CATEGORIES,
   CONSENT_COOKIE,
@@ -80,8 +80,8 @@ export function initCookieBanner(): void {
       },
       guiOptions: {
         consentModal: {
-          layout: 'box inline',
-          position: 'bottom center',
+          layout: 'bar inline',
+          position: 'bottom',
           equalWeightButtons: true,
           flipButtons: false
         },

@@ -33,10 +33,33 @@ export const contactOrigins = [
 ] as const;
 
 /** Identificadores de vía del formulario (página única). */
-export const contactViaIds = ['revisar', 'crear', 'colaborar', 'otra'] as const;
+export const contactViaIds = [
+  'web',
+  'tienda',
+  'asistente',
+  'revisar',
+  'crear',
+  'colaborar',
+  'otra'
+] as const;
 export type ContactViaId = (typeof contactViaIds)[number];
 
+/** Ids retirados (enlaces externos o en caché) → id actual. */
+export const LEGACY_VIA_IDS: Readonly<Record<string, ContactViaId>> = {
+  automatizacion: 'asistente'
+};
+
+/** Traduce un id antiguo al actual; devuelve `null` si no es una vía válida. */
+export function resolveViaId(value: string): ContactViaId | null {
+  const trimmed = value.trim();
+  const id = LEGACY_VIA_IDS[trimmed] ?? trimmed;
+  return (contactViaIds as readonly string[]).includes(id) ? (id as ContactViaId) : null;
+}
+
 export const contactViaLabels: Record<ContactViaId, string> = {
+  web: 'Paquete Web',
+  tienda: 'Paquete Tienda online',
+  asistente: 'Paquete Asistente IA para tu negocio',
   revisar: 'Revisar lo que ya existe',
   crear: 'Crear una web o una tienda',
   colaborar: 'Sumar un programador al equipo',
@@ -84,8 +107,8 @@ function normalizeVias(v: unknown): ContactViaId[] {
   const out: ContactViaId[] = [];
   for (const item of raw) {
     if (typeof item !== 'string') continue;
-    const id = item.trim() as ContactViaId;
-    if ((contactViaIds as readonly string[]).includes(id) && !out.includes(id)) out.push(id);
+    const id = resolveViaId(item);
+    if (id && !out.includes(id)) out.push(id);
   }
   return out;
 }

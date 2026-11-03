@@ -2,6 +2,8 @@
 import Layout from '../../layouts/Layout.astro';
 import ServiceCard from '../../components/ServiceCard.astro';
 import DetailIsland from '../../components/DetailIsland.astro';
+import Paquetes from '../../components/Paquetes.astro';
+import { paquetesPublicados } from '../../content/paquetes';
 import NeedsConfigurator from '../../components/NeedsConfigurator.astro';
 import Faq from '../../components/sections/Faq.astro';
 import { serviceProducts, services } from '../../content/services';
@@ -35,6 +37,7 @@ const detailItems = services.map((s) => ({
         entrega un informe o un trabajo acotado, con sus límites por escrito.
       </p>
     </header>
+    {paquetesPublicados && <Paquetes headingLevel="h2" />}
     <p class="mt-4 max-w-2xl text-sm text-muted" data-services-proposal-note>
       El alcance, el calendario y las condiciones económicas se detallan en cada propuesta.
     </p>
