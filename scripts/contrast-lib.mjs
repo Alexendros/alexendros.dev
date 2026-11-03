@@ -125,31 +125,30 @@ export function toRgb(resolved, backdrop) {
   return resolved && resolved.mixBase ? mix(resolved.mixBase, backdrop, resolved.alpha) : resolved;
 }
 
-// Extrae los tokens de una hoja: tema claro (:root) y, si el bloque
-// @tema-oscuro existe y sus dos variantes coinciden, tema oscuro.
+// Extrae tema claro (:root) y las dos variantes alexdark, que deben coincidir.
 export function extractThemes(css) {
   const rootBlock = extractBlock(css, /:root\s*\{/);
   if (!rootBlock) throw new Error('No se encontró el bloque :root');
   const light = parseDeclarations(rootBlock);
 
-  const darkSectionMatch = css.match(/\/\*\s*@tema-oscuro:inicio[\s\S]*?@tema-oscuro:fin\s*\*\//);
+  const mediaBlock = extractBlock(css, /@media\s*\(prefers-color-scheme:\s*dark\)\s*\{/);
+  const dataBlock = extractBlock(css, /:root\[data-theme='alexdark'\]\s*\{/);
+  const darkPartial = Boolean(mediaBlock) !== Boolean(dataBlock);
   let dark = null;
   let darkConsistent = false;
-  let darkPartial = false;
-  if (darkSectionMatch) {
-    const section = darkSectionMatch[0];
-    const mediaBlock = extractBlock(section, /@media\s*\(prefers-color-scheme:\s*dark\)\s*\{/);
-    const dataBlock = extractBlock(section, /:root\[data-theme='dark'\]\s*\{/);
-    darkPartial = Boolean(mediaBlock) !== Boolean(dataBlock);
-    if (mediaBlock && dataBlock) {
-      const mediaProps = parseDeclarations(mediaBlock);
-      const dataProps = parseDeclarations(dataBlock);
-      // Comparación insensible al orden de declaraciones.
-      const sorted = (o) =>
-        Object.fromEntries(Object.entries(o).sort(([a], [b]) => a.localeCompare(b)));
-      darkConsistent = JSON.stringify(sorted(mediaProps)) === JSON.stringify(sorted(dataProps));
-      dark = { ...light, ...mediaProps };
-    }
+
+  if (mediaBlock && dataBlock) {
+    const mediaProps = parseDeclarations(mediaBlock);
+    const dataProps = parseDeclarations(dataBlock);
+    // Comparación insensible al orden de declaraciones.
+    const sorted = (o) =>
+      Object.fromEntries(
+        Object.entries(o)
+          .map(([key, value]) => [key, value.replace(/\s+/g, ' ').trim()])
+          .sort(([a], [b]) => a.localeCompare(b))
+      );
+    darkConsistent = JSON.stringify(sorted(mediaProps)) === JSON.stringify(sorted(dataProps));
+    dark = { ...light, ...mediaProps };
   }
   return { light, dark, darkConsistent, darkPartial };
 }

@@ -3,19 +3,19 @@ import { homeHero } from '../../content/home';
 import Commitments from '../Commitments.astro';
 ---
 
-<section id="top" class="hero scroll-mt-nav">
+<section id="top" class="hero hero-surface scroll-mt-nav">
   <div class="hero-content w-full min-w-0 max-w-6xl flex-col items-start gap-6 px-4 py-14 lg:py-20">
-    <p class="rise rise-1 text-sm" aria-hidden="true">
+    <p class="terminal-prompt rise rise-1" aria-hidden="true">
       <span class="text-primary">{homeHero.prompt}</span>
       {' '}
       <span class="opacity-70">{homeHero.command}</span>
     </p>
     <h1
-      class="rise rise-2 max-w-4xl text-balance text-step-3 font-extrabold leading-tight tracking-tight"
+      class="rise rise-2 max-w-4xl text-balance text-step-3 font-bold leading-tight tracking-tight"
     >
       {homeHero.title}
     </h1>
-    <p class="rise rise-3 max-w-2xl text-step-0 opacity-80">{homeHero.lead}</p>
+    <p class="rise rise-3 max-w-2xl text-step-0 text-muted">{homeHero.lead}</p>
     <div class="rise rise-4 flex flex-wrap gap-3">
       <a class="btn btn-primary btn-lg" href={homeHero.primaryCta.href}>
         {homeHero.primaryCta.label}

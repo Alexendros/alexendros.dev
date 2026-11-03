@@ -7,7 +7,7 @@ const contactHref = '/contacto/?motivo=propuestaComercial';
 
 <header
   id="site-header"
-  class="navbar sticky top-0 z-50 border-b border-base-300 bg-base-100 px-3 lg:px-8"
+  class="navbar site-header sticky top-0 z-50 border-b border-border px-3 lg:px-8"
 >
   <div class="navbar-start">
     <div class="relative lg:hidden">
@@ -24,7 +24,7 @@ const contactHref = '/contacto/?motivo=propuestaComercial';
       <ul
         id="mobile-nav"
         hidden
-        class="menu absolute left-0 z-10 mt-3 w-64 rounded-box border border-base-300 bg-base-100 p-2 shadow"
+        class="menu surface-raised absolute left-0 z-10 mt-3 w-64 rounded-xl p-2"
       >
         {
           site.nav.map((item) => (
@@ -35,7 +35,7 @@ const contactHref = '/contacto/?motivo=propuestaComercial';
         }
       </ul>
     </div>
-    <a class="btn btn-ghost text-step-0 font-extrabold tracking-tight sm:text-step-1" href="/#top">
+    <a class="btn btn-ghost text-step-0 font-bold tracking-tight sm:text-step-1" href="/#top">
       Alexendros<span class="hidden text-sm font-normal opacity-60 sm:inline">.dev</span>
     </a>
   </div>

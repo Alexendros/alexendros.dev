@@ -57,7 +57,7 @@ const vias = [
   >
     La solicitud
   </h2>
-  <p class="text-sm opacity-70">Los campos con * son obligatorios.</p>
+  <p class="text-sm text-muted">Los campos con * son obligatorios.</p>
 
   <div class="honeypot" aria-hidden="true" inert>
     <label for="contact-website">Sitio web</label>
@@ -71,14 +71,14 @@ const vias = [
   <input type="hidden" name="modules" value={initialModules} />
   <input type="hidden" name="channel" value="correo" />
 
-  <p class="text-sm opacity-70" data-contact-modules hidden={!moduleLabels}>
+  <p class="text-sm text-muted" data-contact-modules hidden={!moduleLabels}>
     Módulos indicados:{' '}
     <strong class="opacity-100" data-contact-module-labels>{moduleLabels}</strong>
   </p>
 
   <fieldset class="fieldset min-w-0" id="contact-ways" data-contact-ways>
     <legend class="fieldset-legend">Por dónde empezar</legend>
-    <p class="label mb-1 whitespace-normal">Se puede marcar una o varias opciones.</p>
+    <p class="label mb-1 whitespace-normal text-muted">Se puede marcar una o varias opciones.</p>
     <div class="grid gap-2">
       {
         vias.map((via) => (
@@ -95,7 +95,7 @@ const vias = [
             />
             <span>
               <span class="block font-medium">{via.label}</span>
-              <span class="text-sm opacity-70">{via.hint}</span>
+              <span class="text-sm text-muted">{via.hint}</span>
             </span>
           </label>
         ))
@@ -151,7 +151,7 @@ const vias = [
 
   <fieldset class="fieldset min-w-0">
     <label class="fieldset-legend" for="contact-sitio">
-      Sitio web actual <span class="opacity-60">(opcional)</span>
+      Sitio web actual <span class="text-muted">(opcional)</span>
     </label>
     <input
       id="contact-sitio"
@@ -185,7 +185,7 @@ const vias = [
       hidden
     >
     </p>
-    <p class="label mt-1 justify-between whitespace-normal" id="contact-message-hint">
+    <p class="label mt-1 justify-between whitespace-normal text-muted" id="contact-message-hint">
       <span>Qué se necesita, para cuándo y enlaces de referencia.</span>
       <span
         aria-live="polite"
@@ -230,7 +230,7 @@ const vias = [
     Servicio temporalmente no disponible. Contacto:{' '}
     <a href="mailto:contratacion@alexendros.dev" class="link">contratacion@alexendros.dev</a>.
   </p>
-  <p role="status" class="text-sm opacity-70" data-contact-status="processing" hidden>
+  <p role="status" class="text-sm text-muted" data-contact-status="processing" hidden>
     La petición se está procesando. Esperar unos segundos antes de reintentar; no se confirma aún la
     recepción.
   </p>
@@ -249,7 +249,7 @@ const vias = [
     de reintentar o escribe a{' '}
     <a href="mailto:contratacion@alexendros.dev" class="link">contratacion@alexendros.dev</a>.
   </p>
-  <p role="status" class="text-sm opacity-70" data-contact-status="loading" hidden>
+  <p role="status" class="text-sm text-muted" data-contact-status="loading" hidden>
     Enviando la solicitud…
   </p>
 
