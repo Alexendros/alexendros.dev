@@ -23,4 +23,17 @@ describe('themeColors sincronizado con los tokens de global.css', () => {
     expect(darkBg).toContain('#0a1224');
     expect(THEME_BG_DARK.toLowerCase()).toBe('#0a1224');
   });
+
+  it('theme-init.js (script previo a la pintura) usa los mismos colores', () => {
+    // public/theme-init.js no puede importar TS: es una copia que debe seguir
+    // sincronizada con themeColors.ts.
+    const init = readFileSync(resolve(process.cwd(), 'public/theme-init.js'), 'utf8');
+    const used = [...init.matchAll(/'(#[0-9a-fA-F]{6})'/g)].map((m) => m[1].toLowerCase());
+    expect(used).toEqual(
+      expect.arrayContaining([THEME_BG_DARK.toLowerCase(), THEME_BG_LIGHT.toLowerCase()])
+    );
+    expect([...new Set(used)].sort()).toEqual(
+      [THEME_BG_DARK.toLowerCase(), THEME_BG_LIGHT.toLowerCase()].sort()
+    );
+  });
 });
