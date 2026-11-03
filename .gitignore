@@ -17,6 +17,7 @@ dist/
 # Pruebas y cobertura
 coverage/
 playwright-report/
+playwright-report-packages/
 test-results/
 .playwright-mcp/
 blob-report/
