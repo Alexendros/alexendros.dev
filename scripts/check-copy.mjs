@@ -125,6 +125,11 @@ function pushCopyHit(file, rule, text, hits) {
   hits.push({ file: relative(ROOT, file), rule, snippet: text.trim().slice(0, 80) });
 }
 
+/** Nombres comerciales decididos con 2ª persona: literal exacto, solo en su archivo. */
+const SECOND_PERSON_EXCEPTIONS = new Map([
+  ['src/content/paquetes.ts', new Set(['Asistente IA para tu negocio'])]
+]);
+
 /** Gate D3 + segunda persona sobre literales de contenido (.ts, no test). */
 function checkTsPolicy(file, source, hits) {
   if (/\.test\.ts$/.test(file)) return;
@@ -140,7 +145,8 @@ function checkTsPolicy(file, source, hits) {
         break;
       }
     }
-    if (SECOND_PERSON_RE.test(lit)) pushCopyHit(file, '2ª persona', lit, hits);
+    if (SECOND_PERSON_RE.test(lit) && !SECOND_PERSON_EXCEPTIONS.get(rel)?.has(lit))
+      pushCopyHit(file, '2ª persona', lit, hits);
   }
 }
 

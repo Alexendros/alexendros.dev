@@ -1,5 +1,6 @@
 ---
 import { homeVias } from '../content/home';
+import { paquetesPublicados, paquetesVisibles } from '../content/paquetes';
 import { portalModuleDisplayNames, type ContactInput } from '../lib/contactSchema';
 import { site } from '../content/site';
 
@@ -26,11 +27,9 @@ const {
 } = Astro.props;
 const moduleLabels = initialModules ? portalModuleDisplayNames(initialModules) : '';
 const vias = [
-  ...homeVias.map((v) => ({
-    id: v.id,
-    label: v.formLabel,
-    hint: v.formHint
-  })),
+  ...(paquetesPublicados
+    ? paquetesVisibles().map((p) => ({ id: p.id, label: p.nombre, hint: p.paraQuien }))
+    : homeVias.map((v) => ({ id: v.id, label: v.formLabel, hint: v.formHint }))),
   {
     id: 'otra' as const,
     label: 'Otra necesidad',
