@@ -20,7 +20,7 @@ const { heading = 'Preguntas frecuentes', id = 'faq' } = Astro.props;
           open={i === 0}
         >
           <summary class="collapse-title min-h-12 font-semibold">{item.q}</summary>
-          <div class="collapse-content text-sm opacity-80">
+          <div class="collapse-content text-sm text-muted">
             <p>{item.a}</p>
           </div>
         </details>

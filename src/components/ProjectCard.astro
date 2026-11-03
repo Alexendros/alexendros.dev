@@ -15,30 +15,32 @@ const Heading = headingLevel;
 ---
 
 <article
-  class="card-lift group relative border border-border rounded-lg overflow-hidden hover:border-primarySoft bg-card flex flex-col h-full has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-primary has-[:focus-visible]:outline-offset-2"
+  class="card-lift group relative border border-border rounded-xl overflow-hidden bg-card flex flex-col h-full has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-primary has-[:focus-visible]:outline-offset-2"
 >
   <Image
     src={project.cover}
     alt={project.coverAlt}
     widths={[400, 800]}
     sizes="(max-width: 768px) 100vw, 400px"
-    class="card-cover card-img w-full aspect-[16/10] object-cover border-b border-border"
+    class="card-img w-full aspect-[16/10] object-cover border-b border-border"
     loading={priority ? 'eager' : 'lazy'}
     fetchpriority={priority ? 'high' : 'auto'}
     decoding="async"
-    onload="this.classList.add('is-loaded')"
   />
   <div class="p-6 flex-1 flex flex-col">
     <Heading
-      class="font-bold text-step-1 leading-tight mt-1 group-hover:text-primary transition-colors"
+      class="mt-1 text-step-1 font-semibold leading-tight group-hover:text-primary transition-colors"
     >
       <a href={`/referencias/${project.slug}/`} class="rounded after:absolute after:inset-0">
         {project.title}
       </a>
     </Heading>
-    <p class="mt-2 text-xs font-mono text-muted text-pretty break-words">
+    <span
+      class="badge badge-outline badge-sm mt-3 self-start font-mono font-normal text-muted"
+      data-project-type
+    >
       {productTypeLabels[project.productType]}
-    </p>
+    </span>
     <p class="mt-2 text-step--1 text-muted">{project.short}</p>
     {
       project.metrics && project.metrics.length > 0 && (

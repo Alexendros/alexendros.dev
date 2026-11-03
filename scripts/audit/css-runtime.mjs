@@ -90,7 +90,7 @@ for (const scheme of ['light', 'dark']) {
       const tokenSet = new Set();
       for (const name of names) {
         const value = root.getPropertyValue(name).trim();
-        if (!/^(#|rgb|hsl|oklch|oklab|lab|lch|color\()/.test(value)) continue;
+        if (!/^(#|rgb|hsl|oklch|oklab|lab|lch|color\(|color-mix\()/.test(value)) continue;
         probe.style.color = '';
         probe.style.color = value;
         if (probe.style.color) tokenSet.add(getComputedStyle(probe).color);
