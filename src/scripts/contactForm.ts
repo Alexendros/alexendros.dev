@@ -8,10 +8,12 @@ import {
   formatContactFieldErrors,
   parseContactBody,
   portalModuleDisplayNames,
+  resolveViaId,
   type ContactInput,
   type ContactViaId,
   type FieldError
 } from '../lib/contactSchema';
+import { paquetesPublicados } from '../content/paquetes';
 
 const SUBMIT_TIMEOUT_MS = 25_000;
 const TURNSTILE_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
@@ -23,7 +25,7 @@ const FIELD_IDS: Record<string, string> = {
   email: 'contact-email',
   message: 'contact-message',
   consent: 'contact-consent',
-  vias: 'contact-via-revisar',
+  vias: paquetesPublicados ? 'contact-via-web' : 'contact-via-revisar',
   otraDetalle: 'contact-otra',
   sitio: 'contact-sitio'
 };
@@ -190,9 +192,8 @@ function initContactForm(form: HTMLFormElement): void {
   updateModuleLabels(modules);
 
   const viaParam = params.get('via');
-  if (viaParam && (contactViaIds as readonly string[]).includes(viaParam)) {
-    markVia(viaParam as ContactViaId);
-  }
+  const viaId = viaParam ? resolveViaId(viaParam) : null;
+  if (viaId) markVia(viaId);
 
   function formValue(name: string): string {
     const field = form.elements.namedItem(name);

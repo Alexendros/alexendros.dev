@@ -1,0 +1,80 @@
+/* stylelint-disable custom-property-pattern -- tokens heredados de global.css (--color-primaryHover, --step--1) */
+
+/* Aviso de cookies (vanilla-cookieconsent) con el sistema visual del sitio.
+   El CSS del proveedor entra en @layer components para que estas reglas, en la
+   misma capa y después, lo sobrescriban sin salir del orden de capas de global.css. */
+@import 'vanilla-cookieconsent/dist/cookieconsent.css' layer(components);
+
+@layer components {
+  #cc-main {
+    --cc-font-family: var(--font-sans);
+    --cc-modal-border-radius: var(--radius-box);
+    --cc-btn-border-radius: var(--radius-field);
+    --cc-bg: var(--color-card);
+    --cc-primary-color: var(--color-fg);
+    --cc-secondary-color: var(--color-muted);
+    --cc-btn-primary-bg: var(--color-primary);
+    --cc-btn-primary-color: var(--color-ink);
+    --cc-btn-primary-border-color: var(--color-primary);
+    --cc-btn-primary-hover-bg: var(--color-primaryHover);
+    --cc-btn-primary-hover-color: var(--color-ink);
+    --cc-btn-primary-hover-border-color: var(--color-primaryHover);
+    --cc-btn-secondary-bg: var(--color-subtle);
+    --cc-btn-secondary-color: var(--color-fg);
+    --cc-btn-secondary-border-color: var(--color-border);
+    --cc-btn-secondary-hover-bg: var(--color-subtle);
+    --cc-btn-secondary-hover-color: var(--color-fg);
+    --cc-btn-secondary-hover-border-color: var(--color-border-strong);
+    --cc-separator-border-color: var(--color-border);
+    --cc-link-color: var(--color-primary);
+  }
+
+  /* Móvil: barra compacta (máx. 20 % de la altura) con los tres botones en una
+     fila y «Configurar» como enlace. Clases del proveedor (no kebab-case). Su CSS
+     móvil usa !important, así que solo aquí hace falta !important para ganarle. */
+  /* stylelint-disable selector-class-pattern, declaration-no-important, no-descending-specificity */
+  @media (width < 40rem) {
+    #cc-main .cm--bar {
+      max-height: 20vh;
+      overflow-y: auto;
+    }
+
+    #cc-main .cm--bar .cm__title {
+      font-size: var(--step-0);
+      padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 3) 0 !important;
+    }
+
+    #cc-main .cm--bar .cm__desc {
+      font-size: var(--step--1);
+      max-height: none;
+      padding: calc(var(--spacing) * 0.5) calc(var(--spacing) * 3) 0 !important;
+    }
+
+    #cc-main .cm--bar .cm__btns {
+      flex-flow: row wrap !important;
+      gap: calc(var(--spacing) * 1.5);
+      padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 3) !important;
+      border-top: 0 !important;
+    }
+
+    #cc-main .cm--bar .cm__btn-group {
+      display: contents !important;
+    }
+
+    #cc-main .cm--bar .cm__btn {
+      flex: 1 1 0 !important;
+      margin: 0 !important;
+      min-height: 2.5rem;
+      padding: calc(var(--spacing) * 2);
+      font-size: var(--step--1);
+    }
+
+    #cc-main .cm--bar .cm__btn[data-role='show'] {
+      flex-basis: 100% !important;
+      background: transparent;
+      border-color: transparent;
+      text-decoration: underline;
+    }
+  }
+  /* stylelint-enable selector-class-pattern, declaration-no-important, no-descending-specificity */
+}

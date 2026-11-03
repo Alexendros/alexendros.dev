@@ -5,7 +5,8 @@ import {
   formatContactFieldErrors,
   isHoneypotFilled,
   parseContactBody,
-  portalModuleDisplayNames
+  portalModuleDisplayNames,
+  resolveViaId
 } from './contactSchema';
 
 const validCorreo = {
@@ -225,5 +226,27 @@ describe('escapeHtml', () => {
     expect(escapeHtml(`<script>"x"&'y'</script>`)).toBe(
       '&lt;script&gt;&quot;x&quot;&amp;&#39;y&#39;&lt;/script&gt;'
     );
+  });
+});
+
+describe('vías de paquetes', () => {
+  it('acepta los ids de paquete web, tienda y asistente', () => {
+    const parsed = parseContactBody({ ...validCorreo, vias: ['web', 'tienda', 'asistente'] });
+    expect(parsed.success).toBe(true);
+    if (!parsed.success) return;
+    expect(parsed.data.vias).toEqual(['web', 'tienda', 'asistente']);
+  });
+
+  it('traduce el id retirado automatizacion a asistente sin duplicar', () => {
+    const parsed = parseContactBody({ ...validCorreo, vias: ['automatizacion', 'asistente'] });
+    expect(parsed.success).toBe(true);
+    if (!parsed.success) return;
+    expect(parsed.data.vias).toEqual(['asistente']);
+    expect(resolveViaId(' automatizacion ')).toBe('asistente');
+  });
+
+  it('rechaza ids desconocidos', () => {
+    expect(resolveViaId('whatsapp')).toBeNull();
+    expect(parseContactBody({ ...validCorreo, vias: ['whatsapp'] }).success).toBe(false);
   });
 });
