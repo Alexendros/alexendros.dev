@@ -2,6 +2,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { extname, join, relative } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+const PAQUETES_FILE = 'src/content/paquetes.ts';
 const SOURCE_ENTRIES = ['src', 'public', 'README.md', 'docs/standards'];
 const BUILD_ENTRY = '.vercel/output/static';
 const TEXT_EXTENSIONS = new Set([
@@ -59,11 +60,36 @@ const ALLOWLIST = [
     file: 'src/lib/tracking/capi.test.ts',
     rule: 'currency-code',
     reason: 'Contrato ISO 4217 de CAPI en una prueba; no se publica en el sitio.'
+  },
+  // Paquetes cerrados (plan de captación 2026-11): las cifras solo viven en este
+  // fichero de datos. En el HTML solo se admiten dentro de los huecos marcados
+  // (PAQUETE_SLOTS) y solo si `paquetesPublicados` vale `true`.
+  { file: PAQUETES_FILE, rule: 'euro-symbol', reason: 'Fichero único de precios de los paquetes.' },
+  { file: PAQUETES_FILE, rule: 'tax', reason: 'Fichero único de precios de los paquetes.' },
+  {
+    file: PAQUETES_FILE,
+    rule: 'starting-amount',
+    // Solo esta frase exacta (suscripción de terceros), no cualquier «desde N».
+    line: "'Después, 180 € al año. Suscripción Grok Bot a nombre del cliente: desde 300 $/año + impuestos (o 30 $/mes).'",
+    reason: 'Precio de la suscripción Grok Bot en la letra pequeña del asistente.'
   }
 ];
 
+/** Huecos del HTML donde se admite precio o letra pequeña de un paquete publicado. */
+const PAQUETE_SLOTS = /(<[a-z]+\b[^>]*\bdata-paquete-(?:precio|letra)\b[^>]*>)[^<]*</giu;
+
+/** Lee la bandera `paquetesPublicados` del fichero de datos (ausente = no publicados). */
+export function paquetesPublicados(root) {
+  const file = join(root, PAQUETES_FILE);
+  if (!existsSync(file)) return false;
+  return /export const paquetesPublicados(?::\s*boolean)?\s*=\s*true\b/u.test(
+    readFileSync(file, 'utf8')
+  );
+}
+
 export function scanPublicPricing(root, { requireBuild = false } = {}) {
   const entries = [...SOURCE_ENTRIES, BUILD_ENTRY];
+  const publicados = paquetesPublicados(root);
   const findings = [];
   let scannedFiles = 0;
 
@@ -78,11 +104,15 @@ export function scanPublicPricing(root, { requireBuild = false } = {}) {
     for (const file of walkTextFiles(absolute)) {
       scannedFiles += 1;
       const path = relative(root, file).replaceAll('\\', '/');
-      const lines = readFileSync(file, 'utf8').split('\n');
+      const raw = readFileSync(file, 'utf8');
+      // Con los paquetes publicados se vacían sus huecos marcados; si no, cualquier cifra cuenta.
+      const content =
+        publicados && path.endsWith('.html') ? raw.replace(PAQUETE_SLOTS, '$1<') : raw;
+      const lines = content.split('\n');
       lines.forEach((text, index) => {
         for (const pattern of PATTERNS) {
           if (!pattern.regex.test(text)) continue;
-          if (isAllowlisted(path, pattern.id)) continue;
+          if (isAllowlisted(path, pattern.id, text)) continue;
           findings.push(`${path}:${index + 1} ${pattern.label}: ${text.trim()}`);
         }
       });
@@ -108,8 +138,13 @@ function walkTextFiles(entry) {
   return files;
 }
 
-function isAllowlisted(file, rule) {
-  return ALLOWLIST.some((entry) => entry.file === file && entry.rule === rule);
+function isAllowlisted(file, rule, text) {
+  return ALLOWLIST.some(
+    (entry) =>
+      entry.file === file &&
+      entry.rule === rule &&
+      (entry.line === undefined || entry.line === text.trim().replace(/,$/u, ''))
+  );
 }
 
 function isDirectRun() {

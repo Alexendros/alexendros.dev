@@ -66,4 +66,63 @@ describe('check-public-pricing', () => {
     expect(result.status).toBe(1);
     expect(result.stderr).toContain('No existe .vercel/output/static');
   });
+
+  it('con paquetes ocultos, cualquier precio en el HTML es un hallazgo', () => {
+    const root = tree();
+    mkdirSync(join(root, 'src/content'), { recursive: true });
+    writeFileSync(
+      join(root, 'src/content/paquetes.ts'),
+      "export const paquetesPublicados: boolean = false;\nconst t = '349 € + IVA';\n"
+    );
+    mkdirSync(join(root, '.vercel/output/static'), { recursive: true });
+    writeFileSync(
+      join(root, '.vercel/output/static/index.html'),
+      '<p data-paquete-precio>349 € + IVA</p>\n'
+    );
+
+    const result = run(root, '--require-build');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('index.html:1 símbolo de euro');
+    expect(result.stderr).not.toContain('src/content/paquetes.ts');
+  });
+
+  it('con paquetes publicados, solo admite cifras en sus huecos marcados', () => {
+    const root = tree();
+    mkdirSync(join(root, 'src/content'), { recursive: true });
+    writeFileSync(
+      join(root, 'src/content/paquetes.ts'),
+      'export const paquetesPublicados: boolean = true;\n'
+    );
+    mkdirSync(join(root, '.vercel/output/static'), { recursive: true });
+    writeFileSync(
+      join(root, '.vercel/output/static/index.html'),
+      '<p data-paquete-precio>349 € + IVA</p>\n<p data-paquete-letra>Después, 120 € al año.</p>\n<p>Oferta 99 €</p>\n'
+    );
+
+    const result = run(root, '--require-build');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('index.html:3 símbolo de euro');
+    expect(result.stderr).not.toContain('index.html:1');
+    expect(result.stderr).not.toContain('index.html:2');
+  });
+
+  it('la excepción «desde N» de paquetes.ts solo cubre la frase exacta de Grok Bot', () => {
+    const root = tree();
+    mkdirSync(join(root, 'src/content'), { recursive: true });
+    writeFileSync(
+      join(root, 'src/content/paquetes.ts'),
+      [
+        'export const paquetesPublicados: boolean = false;',
+        "      'Después, 180 € al año. Suscripción Grok Bot a nombre del cliente: desde 300 $/año + impuestos (o 30 $/mes).',",
+        "const otra = 'desde 99 al mes';"
+      ].join('\n') + '\n'
+    );
+    writeFileSync(join(root, 'src/otro.ts'), "const t = 'desde 300 $/año';\n");
+
+    const result = run(root);
+    expect(result.status).toBe(1);
+    expect(result.stderr).not.toContain('paquetes.ts:2');
+    expect(result.stderr).toContain('src/content/paquetes.ts:3 importe inicial');
+    expect(result.stderr).toContain('src/otro.ts:1 importe inicial');
+  });
 });

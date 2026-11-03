@@ -2,6 +2,8 @@
 import { homeServiciosIntro, homeVias } from '../../content/home';
 import Icon from '../ui/Icon.astro';
 import SectionHeader from '../SectionHeader.astro';
+import Paquetes from '../Paquetes.astro';
+import { paquetesPublicados } from '../../content/paquetes';
 ---
 
 <section
@@ -15,26 +17,30 @@ import SectionHeader from '../SectionHeader.astro';
     title={homeServiciosIntro.title}
     description={homeServiciosIntro.lead}
   />
-  <div class="mt-10 grid gap-6 md:grid-cols-3">
-    {
-      homeVias.map((via) => (
-        <article class="card surface-raised rounded-xl">
-          <div class="card-body gap-4">
-            <div>
-              <span class="badge badge-accent badge-sm font-medium">{via.badge}</span>
+  {
+    paquetesPublicados ? (
+      <Paquetes />
+    ) : (
+      <div class="mt-10 grid gap-6 md:grid-cols-3">
+        {homeVias.map((via) => (
+          <article class="card surface-raised rounded-xl">
+            <div class="card-body gap-4">
+              <div>
+                <span class="badge badge-accent badge-sm font-medium">{via.badge}</span>
+              </div>
+              <h3 class="card-title text-step-1 leading-tight">{via.title}</h3>
+              <p class="text-muted">{via.short}</p>
+              <div class="card-actions mt-auto flex flex-wrap justify-start gap-2">
+                {via.tags.map((tag) => (
+                  <span class="badge badge-ghost badge-sm text-muted">{tag}</span>
+                ))}
+              </div>
             </div>
-            <h3 class="card-title text-step-1 leading-tight">{via.title}</h3>
-            <p class="text-muted">{via.short}</p>
-            <div class="card-actions mt-auto flex flex-wrap justify-start gap-2">
-              {via.tags.map((tag) => (
-                <span class="badge badge-ghost badge-sm text-muted">{tag}</span>
-              ))}
-            </div>
-          </div>
-        </article>
-      ))
-    }
-  </div>
+          </article>
+        ))}
+      </div>
+    )
+  }
   <p class="mt-8">
     <a class="btn btn-outline" href="/servicios/">
       Ver el catálogo de servicios
