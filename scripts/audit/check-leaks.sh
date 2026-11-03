@@ -11,16 +11,17 @@ if [ "${#targets[@]}" -eq 0 ]; then
   fi
 fi
 
-pattern='Pendiente de|\bTODO\b|\bFIXME\b|lorem ipsum|scripts/build-|\[object Object\]|>undefined<|>NaN<'
+# Restos de desarrollo, en dos grupos:
+# - marcadores: se buscan sin -i. Con -i, «\bTODO\b» casa con «método» y «todo»
+#   en grep según el locale (en C, «é» no es carácter de palabra) y tumba el
+#   deploy de Vercel por copy legítimo.
+# - prosa: se busca con -i porque el resto suele aparecer en minúscula.
+marker_pattern='\bTODO\b|\bFIXME\b|scripts/build-|\[object Object\]|>undefined<|>NaN<'
+prose_pattern='Pendiente de|lorem ipsum'
 
-# La búsqueda -i hace que «todo» (palabra común en el copy) case con \bTODO\b.
-# Estas líneas legítimas quedan registradas como excepción, también en el texto
-# extraído de los PDF.
-exceptions=(
-  'Todo editable desde un panel propio'
-  'edita todo desde un panel propio'
-  'todo es válido'
-)
+# Líneas legítimas que casarían con los patrones. Se aplican también al texto
+# extraído de los PDF. Añadir aquí solo lo justificado, no para tapar fugas.
+exceptions=()
 
 if command -v rg >/dev/null 2>&1; then
   searcher=rg
@@ -47,23 +48,41 @@ filter_exceptions() {
 # solo se extrae con pdftotext.
 search_text() {
   local target="$1"
+  local markers prose
   if [ "$searcher" = rg ]; then
-    rg -n -i \
+    markers=$(rg -n \
       --glob '!node_modules/**' \
       --glob '!*.map' \
       --glob '!*.png' \
       --glob '!*.webp' \
       --glob '!*.pdf' \
-      -e "$pattern" "$target" 2>/dev/null || true
+      -e "$marker_pattern" "$target" 2>/dev/null || true)
+    prose=$(rg -n -i \
+      --glob '!node_modules/**' \
+      --glob '!*.map' \
+      --glob '!*.png' \
+      --glob '!*.webp' \
+      --glob '!*.pdf' \
+      -e "$prose_pattern" "$target" 2>/dev/null || true)
   else
-    grep -rniE \
+    markers=$(grep -rnE \
       --exclude-dir=node_modules \
       --exclude='*.map' \
       --exclude='*.png' \
       --exclude='*.webp' \
       --exclude='*.pdf' \
-      -e "$pattern" "$target" 2>/dev/null || true
+      -e "$marker_pattern" "$target" 2>/dev/null || true)
+    prose=$(grep -rniE \
+      --exclude-dir=node_modules \
+      --exclude='*.map' \
+      --exclude='*.png' \
+      --exclude='*.webp' \
+      --exclude='*.pdf' \
+      -e "$prose_pattern" "$target" 2>/dev/null || true)
   fi
+  [ -n "$markers" ] && printf '%s\n' "$markers"
+  [ -n "$prose" ] && printf '%s\n' "$prose"
+  return 0
 }
 
 status=0
@@ -90,10 +109,11 @@ for target in "${targets[@]}"; do
       fi
       break
     fi
-    pdf_hits=$(filter_exceptions "$(pdftotext "$f" - | grep -inE -e "$pattern" || true)")
-    if [ -n "$pdf_hits" ]; then
-      found="${found:+$found$'\n'}$pdf_hits"
-    fi
+    pdf_hits=$(filter_exceptions "$(pdftotext "$f" - | grep -nE -e "$marker_pattern" || true)")
+    pdf_prose=$(filter_exceptions "$(pdftotext "$f" - | grep -niE -e "$prose_pattern" || true)")
+    for chunk in "$pdf_hits" "$pdf_prose"; do
+      [ -n "$chunk" ] && found="${found:+$found$'\n'}$chunk"
+    done
   done < <(find "$target" -type f -name '*.pdf' -print0 2>/dev/null || true)
 
   if [ -n "$found" ]; then
