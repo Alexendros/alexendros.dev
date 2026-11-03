@@ -1,4 +1,5 @@
-/** Textos de la página única (mock v4). Si un módulo de datos tiene copia más nueva, manda ese módulo. */
+/** Textos de portada y del selector de necesidades. */
+import { commitments } from './commitments';
 
 export const homeHero = {
   prompt: '~/alexendros $',
@@ -9,51 +10,8 @@ export const homeHero = {
     label: 'Solicitar propuesta',
     href: '/contacto/?origen=home&motivo=propuestaComercial'
   },
-  secondaryCta: { label: 'Ver servicios', href: '/servicios/' },
-  browserUrl: 'alexendros.dev/propuesta',
-  checklist: [
-    {
-      title: 'Alcance',
-      detail: 'Por escrito antes de empezar',
-      status: 'Acordado'
-    },
-    {
-      title: 'Plazo',
-      detail: 'Calendario con revisiones',
-      status: 'Acordado'
-    },
-    {
-      title: 'Condiciones',
-      detail: 'Sin letra pequeña',
-      status: 'Acordado'
-    }
-  ],
-  responseLabel: 'Respuesta a la solicitud',
-  responseValue: '1 día laborable'
+  secondaryCta: { label: 'Ver servicios', href: '/servicios/' }
 } as const;
-
-export const homeStats = [
-  {
-    title: 'Antes de empezar',
-    value: 'Por escrito',
-    desc: 'Alcance, plazo y condiciones'
-  },
-  {
-    title: 'Propuesta',
-    value: '1 día',
-    desc: 'Laborable desde la solicitud'
-  },
-  {
-    title: 'Durante el desarrollo',
-    value: '2–3 revisiones',
-    desc: 'Acordadas en el calendario'
-  },
-  {
-    title: 'Al entregar',
-    value: 'Documentado',
-    desc: 'Con guía de mantenimiento'
-  }
-] as const;
 
 export const homeVias = [
   {
@@ -93,23 +51,18 @@ export const homeVias = [
 export const homeServiciosIntro = {
   eyebrow: '// 01',
   title: 'Tres maneras de empezar un encargo',
-  lead: 'La situación actual decide por dónde empezar. Plazos y condiciones se fijan por escrito en la propuesta.'
+  lead: 'La situación actual decide por dónde empezar. El detalle de cada vía está en el catálogo de servicios.'
 } as const;
 
 export const homeReferenciasIntro = {
   eyebrow: '// 02',
-  title: 'Proyectos realizados',
-  filters: [
-    { id: 'all', label: 'Todos' },
-    { id: 'encargo', label: 'Encargos' },
-    { id: 'propio', label: 'Proyectos propios' }
-  ]
+  title: 'Proyectos realizados'
 } as const;
 
 export const homeFaq = [
   {
     q: '¿Cuándo llega la propuesta?',
-    a: 'En un día laborable desde la solicitud, con alcance, plazo y condiciones por escrito.'
+    a: `En ${commitments.responseTime} desde la solicitud, con alcance, plazo y condiciones por escrito.`
   },
   {
     q: '¿Hace falta tener ya una web para empezar?',
@@ -117,7 +70,7 @@ export const homeFaq = [
   },
   {
     q: '¿Qué ocurre tras enviar la solicitud?',
-    a: 'Llega una confirmación por correo y, en un día laborable, la propuesta con alcance, plazo y condiciones.'
+    a: `Llega una confirmación por correo y, en ${commitments.responseTime}, la propuesta con alcance, plazo y condiciones.`
   },
   {
     q: '¿Qué pasa si el alcance cambia a mitad del proyecto?',
@@ -132,13 +85,6 @@ export const homeFaq = [
 export const homeContactoIntro = {
   eyebrow: '// 04',
   title: 'Contacto',
-  lead: 'Marcar por dónde empezar y contar qué necesita el proyecto. La respuesta llega en un día laborable.',
-  badges: ['Valencia', 'Remoto', 'Respuesta en 1 día laborable']
-} as const;
-
-export const homeExperienciaTeaser = {
-  title: 'Experiencia',
-  body: 'Trayectoria, modalidad de colaboración y CV en una página aparte.',
-  href: '/experiencia/',
-  cta: 'Ver experiencia'
+  lead: 'Se indica por dónde empezar y qué necesita el proyecto. La propuesta llega por escrito.',
+  badges: ['Valencia', 'Remoto', 'Propuesta por escrito']
 } as const;

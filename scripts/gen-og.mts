@@ -108,7 +108,7 @@ await writeOg(
 await writeOg(
   'proyectos.png',
   'REFERENCIAS',
-  'Proyectos realizados por encargo',
+  'Proyectos realizados',
   'Webs, catálogos y herramientas'
 );
 await writeOg(
@@ -117,11 +117,12 @@ await writeOg(
   'Contacto y solicitud de propuesta',
   'Respuesta en un día laborable'
 );
+await writeOg('metodo.png', 'METODOLOGÍA', 'Cómo se trabaja', 'Alcance y plazo por escrito');
 await writeOg(
-  'proceso-y-entrega.png',
-  'METODOLOGÍA',
-  'Metodología clara e integral',
-  'Alcance y plazo por escrito'
+  'experiencia.png',
+  'EXPERIENCIA',
+  'Experiencia y trayectoria',
+  'Revisión técnica, sitios web y herramientas'
 );
 for (const s of services) {
   await writeOg(`servicios/${s.slug}.png`, 'SERVICIO', s.ogTitle, s.short);

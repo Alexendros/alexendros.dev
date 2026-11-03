@@ -4,9 +4,7 @@ import Hero from '../components/sections/Hero.astro';
 import Servicios from '../components/sections/Servicios.astro';
 import Referencias from '../components/sections/Referencias.astro';
 import Metodo from '../components/sections/Metodo.astro';
-import Contacto from '../components/sections/Contacto.astro';
-
-const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY as string | undefined;
+import ContactCta from '../components/sections/ContactCta.astro';
 ---
 
 <Layout ogImage="/og/home.png" ogImageAlt="Alexendros.dev — auditoría, diseño y construcción">
@@ -14,5 +12,5 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY as string | u
   <Servicios />
   <Referencias />
   <Metodo />
-  <Contacto turnstileSiteKey={turnstileSiteKey} />
+  <ContactCta />
 </Layout>

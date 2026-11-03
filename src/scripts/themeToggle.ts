@@ -18,6 +18,14 @@ function readStored(): ThemeMode {
   return 'system';
 }
 
+function applyThemeColor(mode: ThemeMode) {
+  const color = mode === 'alexdark' ? '#0a1224' : mode === 'alexlight' ? '#f6f8fc' : null;
+  const metas = document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]');
+  metas.forEach((meta, index) => {
+    meta.content = color ?? (index === 0 ? '#f6f8fc' : '#0a1224');
+  });
+}
+
 function applyMode(mode: ThemeMode, input: HTMLInputElement, button: HTMLButtonElement) {
   const root = document.documentElement;
   if (mode === 'system') {
@@ -46,6 +54,7 @@ function applyMode(mode: ThemeMode, input: HTMLInputElement, button: HTMLButtonE
     input.checked = true;
   }
   button.setAttribute('aria-label', LABELS[mode]);
+  applyThemeColor(mode);
 }
 
 export function initThemeToggle(): void {

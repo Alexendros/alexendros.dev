@@ -42,7 +42,7 @@ const vias = [
 <p
   role="status"
   tabindex="-1"
-  class="focus-ring alert alert-success mb-4 rounded-box focus:outline-none"
+  class="focus-ring mb-4 rounded-box border border-success bg-base-100 p-4 text-success focus:outline-none"
   data-contact-success
   data-success-message={successMessage}
   hidden
@@ -53,13 +53,13 @@ const vias = [
   <h2
     id="contact-form-heading"
     tabindex="-1"
-    class="focus-ring text-base font-bold focus:outline-none"
+    class="focus-ring text-step-0 font-bold focus:outline-none"
   >
     La solicitud
   </h2>
   <p class="text-sm opacity-70">Los campos con * son obligatorios.</p>
 
-  <div class="honeypot" aria-hidden="true">
+  <div class="honeypot" aria-hidden="true" inert>
     <label for="contact-website">Sitio web</label>
     <input id="contact-website" name="website" tabindex="-1" autocomplete="off" />
   </div>
@@ -78,7 +78,7 @@ const vias = [
 
   <fieldset class="fieldset min-w-0" id="contact-ways" data-contact-ways>
     <legend class="fieldset-legend">Por dónde empezar</legend>
-    <p class="label mb-1 whitespace-normal">Marcar una o varias opciones</p>
+    <p class="label mb-1 whitespace-normal">Se puede marcar una o varias opciones.</p>
     <div class="grid gap-2">
       {
         vias.map((via) => (
@@ -88,8 +88,10 @@ const vias = [
               name="via"
               value={via.id}
               id={via.id === 'otra' ? 'contact-via-otra' : `contact-via-${via.id}`}
-              class="checkbox checkbox-primary mt-0.5"
+              class="checkbox checkbox-primary mt-0.5 h-6 w-6"
               data-via={via.id}
+              aria-controls={via.id === 'otra' ? 'contact-otra-wrap' : undefined}
+              aria-expanded={via.id === 'otra' ? 'false' : undefined}
             />
             <span>
               <span class="block font-medium">{via.label}</span>
@@ -99,7 +101,7 @@ const vias = [
         ))
       }
     </div>
-    <div class="mt-2" data-otra-wrap>
+    <div class="mt-2" id="contact-otra-wrap" data-otra-wrap hidden>
       <label class="sr-only" for="contact-otra">Describir la otra necesidad</label>
       <input
         id="contact-otra"
@@ -199,7 +201,7 @@ const vias = [
       id="contact-consent"
       type="checkbox"
       name="consent"
-      class="checkbox checkbox-primary checkbox-sm mt-0.5"
+      class="checkbox checkbox-primary checkbox-sm mt-0.5 h-6 w-6"
       required
     />
     <span>
@@ -256,21 +258,23 @@ const vias = [
   </button>
 </form>
 
-<p
-  id="contact-nojs"
-  data-contact-nojs
-  class="mt-6 rounded-box border border-base-300 bg-base-100 p-4 text-sm"
->
-  El formulario interactivo necesita JavaScript. Mientras tanto puedes escribir a{' '}
-  <a href={site.social.email} class="link">contratacion@alexendros.dev</a>
-  {' '}indicando el motivo del encargo.
-</p>
 <noscript>
-  <p class="mt-6 rounded-box border border-base-300 bg-base-100 p-4 text-sm">
-    Sin JavaScript puedes escribir a{' '}
+  <p data-contact-nojs class="mt-6 rounded-box border border-base-300 bg-base-100 p-4 text-sm">
+    El formulario interactivo necesita JavaScript. Mientras tanto puedes escribir a{' '}
     <a href={site.social.email} class="link">contratacion@alexendros.dev</a>.
   </p>
 </noscript>
+
+<p
+  data-contact-fallback
+  hidden
+  class="mt-6 rounded-box border border-base-300 bg-base-100 p-4 text-sm"
+>
+  El formulario interactivo necesita JavaScript y no se ha cargado. Mientras tanto puedes escribir a{
+    ' '
+  }
+  <a href={site.social.email} class="link">contratacion@alexendros.dev</a>.
+</p>
 
 <script>
   import '../scripts/contactForm';

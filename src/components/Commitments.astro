@@ -1,0 +1,35 @@
+---
+import { commitments } from '../content/commitments';
+
+interface Props {
+  heading?: string;
+  class?: string;
+  showHeading?: boolean;
+}
+
+const {
+  heading = 'Compromisos antes de empezar',
+  class: className = '',
+  showHeading = false
+} = Astro.props;
+---
+
+<div class:list={['w-full', className]}>
+  {
+    showHeading ? (
+      <h2 class="mb-4 text-step-1 font-bold">{heading}</h2>
+    ) : (
+      <h2 class="sr-only">{heading}</h2>
+    )
+  }
+  <ul class="grid list-none gap-3 p-0 sm:grid-cols-3">
+    {
+      commitments.items.map((item) => (
+        <li class="rounded-lg border border-base-300 bg-base-100 p-4">
+          <p class="font-bold">{item.title}</p>
+          <p class="mt-1 text-sm opacity-70">{item.detail}</p>
+        </li>
+      ))
+    }
+  </ul>
+</div>

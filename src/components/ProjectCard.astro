@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import { productTypeLabels, type Project } from '../content/projects';
+import Icon from './ui/Icon.astro';
 
 interface Props {
   project: Project;
@@ -29,7 +30,7 @@ const Heading = headingLevel;
   />
   <div class="p-6 flex-1 flex flex-col">
     <Heading
-      class="font-bold text-lg leading-tight mt-1 group-hover:text-primary transition-colors"
+      class="font-bold text-step-1 leading-tight mt-1 group-hover:text-primary transition-colors"
     >
       <a href={`/referencias/${project.slug}/`} class="rounded after:absolute after:inset-0">
         {project.title}
@@ -54,8 +55,9 @@ const Heading = headingLevel;
       Conocer más
       <span
         class="inline-block transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:transform-none"
-        >→</span
       >
+        <Icon name="arrow-right" size={16} />
+      </span>
     </div>
   </div>
 </article>

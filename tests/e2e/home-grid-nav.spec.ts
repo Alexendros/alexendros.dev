@@ -13,7 +13,7 @@ test('F02: home sin scroll horizontal a 320, 390 y 768px', async ({ page }) => {
   }
 });
 
-test('F01: home de página única con hero y secciones', async ({ page }) => {
+test('F01: home delgada con hero, secciones y CTA sin formulario', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1, name: homeHero.title })).toBeVisible();
   const banner = page.getByRole('banner');
@@ -34,4 +34,7 @@ test('F01: home de página única con hero y secciones', async ({ page }) => {
   for (const id of ['servicios', 'referencias', 'metodo', 'contacto']) {
     await expect(page.locator(`#${id}`)).toHaveCount(1);
   }
+  await expect(page.locator('main form')).toHaveCount(0);
+  await expect(page.locator('#referencias img')).toHaveCount(2);
+  await expect(page.getByRole('heading', { name: 'Preguntas frecuentes' })).toHaveCount(0);
 });
