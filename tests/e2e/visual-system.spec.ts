@@ -29,7 +29,7 @@ test('tipografía: solo Source Sans latin variable tiene preload prioritario', a
 test('hero: firma terminal, gradiente y compromisos elevados', async ({ page }) => {
   await page.goto('/');
 
-  await expect(page.locator('#top .terminal-prompt')).toHaveCount(1);
+  await expect(page.locator('#top [data-terminal-prompt]')).toHaveCount(1);
   const heroBackground = await page
     .locator('#top')
     .evaluate((el) => getComputedStyle(el).backgroundImage);
@@ -71,6 +71,9 @@ test('cards enlazables: reduced motion elimina la elevación por movimiento', as
   expect(await card.evaluate((el) => getComputedStyle(el).transitionProperty)).not.toContain(
     'transform'
   );
+  expect(await page.locator('html').evaluate((el) => getComputedStyle(el).scrollBehavior)).toBe(
+    'auto'
+  );
 });
 
 test('referencias: tipología visible y zoom sutil condicionado por movimiento', async ({
@@ -96,7 +99,6 @@ test('cabecera: glass con superficie semántica y foco con anillo', async ({ pag
   await page.goto('/');
 
   const header = page.locator('#site-header');
-  await expect(header).toHaveClass(/site-header/);
   const styles = await header.evaluate((el) => {
     const computed = getComputedStyle(el);
     return { backdrop: computed.backdropFilter, background: computed.backgroundColor };
@@ -110,10 +112,102 @@ test('cabecera: glass con superficie semántica y foco con anillo', async ({ pag
   expect(await summary.evaluate((el) => getComputedStyle(el).boxShadow)).not.toBe('none');
 });
 
+test('configurador: base estática, cuatro opcionales y resumen diferenciado', async ({ page }) => {
+  await page.goto('/servicios/');
+
+  const base = page.locator('[data-portal-base]');
+  const options = page.locator('[data-portal-options]');
+  const summary = page.locator('[data-selected-modules]');
+  await expect(base).toBeVisible();
+  await expect(base.locator('input')).toHaveCount(0);
+  await expect(options.locator('input[data-module]')).toHaveCount(4);
+  await expect(summary).toBeVisible();
+
+  const backgrounds = await page.evaluate(() => {
+    const readStyles = (selector: string) => {
+      const element = document.querySelector(selector);
+      if (!element) throw new Error(`Falta ${selector}`);
+      return getComputedStyle(element);
+    };
+    const baseStyles = readStyles('[data-portal-base]');
+    const summaryStyles = readStyles('[data-selected-modules]');
+    return {
+      base: baseStyles.backgroundColor,
+      summary: summaryStyles.backgroundColor,
+      summaryBorder: summaryStyles.borderTopColor
+    };
+  });
+  expect(backgrounds.base).not.toBe('rgba(0, 0, 0, 0)');
+  expect(backgrounds.summary).not.toBe('rgba(0, 0, 0, 0)');
+  expect(backgrounds.summaryBorder).not.toBe('rgba(0, 0, 0, 0)');
+});
+
+test('badges: categoría sólida y atributos neutrales', async ({ page }) => {
+  await page.goto('/');
+
+  const card = page.locator('#servicios .card').first();
+  const category = card.locator('.badge-accent');
+  const attribute = card.locator('.card-actions .badge').first();
+  await expect(category).toHaveClass(/badge-accent/);
+  await expect(category).not.toHaveClass(/badge-outline/);
+  await expect(attribute).toHaveClass(/badge-ghost/);
+  await expect(attribute).toHaveClass(/badge-sm/);
+});
+
+test('home: cuatro encabezados compartidos conservan su relación accesible', async ({ page }) => {
+  await page.goto('/');
+
+  const headers = page.locator('[data-section-header]');
+  await expect(headers).toHaveCount(4);
+  for (const id of ['servicios', 'referencias', 'metodo', 'contacto']) {
+    const section = page.locator(`#${id}`);
+    const headingId = await section.getAttribute('aria-labelledby');
+    expect(headingId).toBe(`${id}-heading`);
+    await expect(section.locator(`[data-section-header] h2#${headingId}`)).toBeVisible();
+  }
+});
+
+for (const theme of ['alexlight', 'alexdark'] as const) {
+  test(`color de borde separado del grosor DaisyUI en ${theme}`, async ({ page }) => {
+    await page.addInitScript((selectedTheme) => {
+      localStorage.setItem('theme', selectedTheme);
+    }, theme);
+    await page.goto('/servicios/');
+
+    const result = await page
+      .locator('[data-product-card]')
+      .first()
+      .evaluate((el) => {
+        const root = getComputedStyle(document.documentElement);
+        const probe = document.createElement('span');
+        probe.style.color = 'var(--border-color)';
+        document.body.append(probe);
+        const expected = getComputedStyle(probe).color;
+        probe.remove();
+        return {
+          widthToken: root.getPropertyValue('--border').trim(),
+          colorToken: root.getPropertyValue('--border-color').trim(),
+          expected,
+          actual: getComputedStyle(el).borderColor
+        };
+      });
+
+    expect(result.widthToken).toBe('1px');
+    expect(result.colorToken).not.toBe('');
+    expect(result.colorToken).not.toBe('1px');
+    expect(result.actual).toBe(result.expected);
+
+    const configuratorBorder = await page
+      .locator('[data-needs-configurator]')
+      .evaluate((el) => getComputedStyle(el).borderColor);
+    expect(configuratorBorder).toBe(result.expected);
+  });
+}
+
 test('cierre de contacto: superficie propia y formulario con la sans elegida', async ({ page }) => {
   await page.goto('/');
 
-  const panel = page.locator('#contacto .contact-cta-panel');
+  const panel = page.locator('#contacto [data-contact-panel]');
   await expect(panel).toBeVisible();
   const background = await panel.evaluate((el) => getComputedStyle(el).backgroundImage);
   expect(background).toContain('radial-gradient');

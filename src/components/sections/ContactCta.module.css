@@ -1,0 +1,5 @@
+@layer components {
+  .panel {
+    background-image: var(--gradient-section);
+  }
+}

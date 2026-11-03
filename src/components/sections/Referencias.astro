@@ -3,6 +3,7 @@ import { projects } from '../../content/projects';
 import { homeReferenciasIntro } from '../../content/home';
 import ProjectCard from '../ProjectCard.astro';
 import Icon from '../ui/Icon.astro';
+import SectionHeader from '../SectionHeader.astro';
 
 const featured = projects.filter((project) => project.featured).slice(0, 2);
 ---
@@ -12,10 +13,11 @@ const featured = projects.filter((project) => project.featured).slice(0, 2);
   class="mx-auto max-w-6xl scroll-mt-nav px-4 py-20"
   aria-labelledby="referencias-heading"
 >
-  <p class="eyebrow">{homeReferenciasIntro.eyebrow}</p>
-  <h2 id="referencias-heading" class="max-w-2xl text-balance text-step-2 font-bold tracking-tight">
-    {homeReferenciasIntro.title}
-  </h2>
+  <SectionHeader
+    id="referencias-heading"
+    eyebrow={homeReferenciasIntro.eyebrow}
+    title={homeReferenciasIntro.title}
+  />
 
   <div class="mt-8 grid gap-6 sm:grid-cols-2">
     {
