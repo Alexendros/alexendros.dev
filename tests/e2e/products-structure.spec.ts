@@ -3,6 +3,7 @@ import { products } from '../../src/content/services';
 import { site } from '../../src/content/site';
 
 const sectionsDefault = [
+  'next-step',
   'commercial',
   'audience',
   'problems',
@@ -11,18 +12,17 @@ const sectionsDefault = [
   'process',
   'exclusions',
   'requirements',
-  'next-step',
   'technical'
 ] as const;
 
 const sectionsSoftware = [
+  'next-step',
   'commercial',
   'audience',
   'process',
   'deliverables',
   'exclusions',
   'requirements',
-  'next-step',
   'technical'
 ] as const;
 

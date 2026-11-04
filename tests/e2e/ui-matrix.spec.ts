@@ -151,7 +151,7 @@ test.describe('CP-08 matriz UI — overflow y apilado', () => {
     await page.goto('/servicios');
     await expect(page.locator('[data-needs-configurator]')).toBeVisible({ timeout: 10_000 });
     await assertNoOverflow(page, '/servicios@320');
-    const ask = page.getByRole('link', { name: 'Solicitar propuesta' });
+    const ask = page.locator('[data-needs-cta]');
     await expect(ask).toBeVisible();
     await ask.click({ force: false });
     await expect(page).toHaveURL(/\/contacto/);
