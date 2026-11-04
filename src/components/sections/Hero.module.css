@@ -14,6 +14,7 @@
     line-height: 1.05;
     letter-spacing: -0.02em;
     max-inline-size: 18ch;
+    overflow-wrap: anywhere;
   }
 
   .lead {
