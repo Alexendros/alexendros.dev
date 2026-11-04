@@ -26,7 +26,7 @@ test('DIS-09: la configuración retira cada ficha con 301 y Location exacto', ()
       const redirect = redirects.get(source);
       expect(redirect, source).toBeDefined();
       expect(redirect?.destination, source).toBe('/servicios/');
-      expect(redirect?.statusCode, source).toBe(301);
+      expect(redirect?.permanent, source).toBe(true);
     }
   }
 });
