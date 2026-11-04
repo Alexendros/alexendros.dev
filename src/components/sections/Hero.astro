@@ -4,7 +4,7 @@ import styles from './Hero.module.css';
 ---
 
 <section id="top" class:list={['hero', 'scroll-mt-nav', styles.surface]}>
-  <div class="hero-content w-full min-w-0 max-w-6xl flex-col items-start gap-6 px-4 py-14 lg:py-20">
+  <div class="hero-content w-full min-w-0 max-w-6xl flex-col items-start gap-6 px-4">
     <p
       class:list={['rise', 'rise-1', styles['terminal-prompt']]}
       data-terminal-prompt
@@ -14,12 +14,10 @@ import styles from './Hero.module.css';
       {' '}
       <span class="opacity-70">{homeHero.command}</span>
     </p>
-    <h1
-      class="rise rise-2 max-w-4xl text-balance text-step-3 font-bold leading-tight tracking-tight"
-    >
+    <h1 class:list={['rise', 'rise-2', 'text-balance', 'font-bold', styles.title]}>
       {homeHero.title}
     </h1>
-    <p class="rise rise-3 max-w-2xl text-step-0 text-muted">{homeHero.lead}</p>
+    <p class:list={['rise', 'rise-3', 'max-w-2xl', styles.lead]}>{homeHero.lead}</p>
     <div class:list={['rise rise-4 flex flex-wrap gap-3', styles.actions]}>
       <a class="btn btn-primary btn-lg" href={homeHero.primaryCta.href}>
         {homeHero.primaryCta.label}
