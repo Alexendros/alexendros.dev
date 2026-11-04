@@ -54,6 +54,7 @@
   --color-card: var(--card);
   --color-ink: var(--brand-fg);
   --color-danger: var(--danger);
+  --color-link: var(--link);
   --font-sans: 'Source Sans 3 Variable', ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-sans);
   --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
@@ -75,29 +76,30 @@
   /* stylelint-disable declaration-property-value-disallowed-list -- únicos hex */
   /* stylelint-disable custom-property-pattern -- step negativo */
   :root {
-    --blue-950: #081f47;
-    --blue-900: #0f3778;
-    --blue-700: #1b56b8;
-    --blue-100: #e6eefb;
-    --ink-900: #0b1220;
-    --ink-500: #5b6885;
-    --paper-0: #fff;
-    --paper-50: #f6f8fc;
-    --line: #d9e0ee;
-    --err: #b42318;
-    --bg: var(--paper-50);
-    --bg-subtle: var(--blue-100);
-    --fg: var(--ink-900);
-    --fg-muted: var(--ink-500);
-    --brand: var(--blue-900);
-    --brand-hover: var(--blue-700);
-    --brand-fg: var(--paper-0);
-    --border-color: var(--line);
-    --border-strong: #7d90b8;
-    --card: var(--paper-0);
-    --danger: var(--err);
-    --focus-ring: 0 0 0 3px color-mix(in srgb, var(--brand) 55%, transparent);
-    --primary-ghost: color-mix(in srgb, var(--brand) 8%, transparent);
+    --blue-950: var(--ds-atlaps-blueprint-deep);
+    --blue-900: var(--ds-atlaps-blueprint-deep);
+    --blue-700: var(--ds-atlaps-blueprint-mid);
+    --blue-100: var(--ds-atlaps-paper-grid);
+    --ink-900: var(--ds-atlaps-ink-graphite);
+    --ink-500: var(--ds-atlaps-ink-pencil);
+    --paper-0: var(--ds-atlaps-paper-bone);
+    --paper-50: var(--ds-atlaps-paper-bone);
+    --line: var(--ds-atlaps-paper-grid);
+    --err: var(--ds-atlaps-danger);
+    --bg: var(--ds-atlaps-paper-bone);
+    --bg-subtle: var(--ds-atlaps-paper-bone);
+    --fg: var(--ds-atlaps-ink-graphite);
+    --fg-muted: var(--ds-atlaps-ink-pencil);
+    --brand: var(--ds-atlaps-blueprint-deep);
+    --brand-hover: var(--ds-atlaps-blueprint-mid);
+    --brand-fg: var(--ds-atlaps-paper-bone);
+    --border-color: var(--ds-atlaps-paper-grid);
+    --border-strong: var(--ds-atlaps-ink-pencil);
+    --card: var(--ds-atlaps-paper-bone);
+    --danger: var(--ds-atlaps-danger);
+    --link: var(--ds-atlaps-blueprint-mid);
+    --focus-ring: 0 0 0 3px var(--brand);
+    --primary-ghost: color-mix(in srgb, var(--brand) 3%, transparent);
     --scrim: color-mix(in oklab, var(--blue-950) 55%, transparent);
     --shadow-1:
       0 1px 2px color-mix(in srgb, var(--blue-950) 5%, transparent),
@@ -133,17 +135,18 @@
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme='alexlight']) {
       color-scheme: dark;
-      --bg: #0a1224;
-      --bg-subtle: #0e1830;
-      --fg: #eef2fb;
-      --fg-muted: #9aa7c7;
-      --brand: #8fb4ff;
-      --brand-hover: #a9c6ff;
-      --brand-fg: #0a1224;
-      --border-color: #2a3a5f;
-      --border-strong: #647aa8;
-      --card: #101c38;
-      --danger: #f97066;
+      --bg: var(--ds-atlaps-blueprint-deep);
+      --bg-subtle: var(--ds-atlaps-blueprint-deep);
+      --fg: var(--ds-atlaps-paper-bone);
+      --fg-muted: var(--ds-atlaps-paper-grid);
+      --brand: var(--ds-atlaps-amber-glow);
+      --brand-hover: var(--ds-atlaps-paper-grid);
+      --brand-fg: var(--ds-atlaps-blueprint-deep);
+      --border-color: var(--ds-atlaps-border-dark);
+      --border-strong: var(--ds-atlaps-paper-grid);
+      --card: var(--ds-atlaps-blueprint-deep);
+      --danger: var(--ds-atlaps-danger-dark);
+      --link: var(--ds-atlaps-link-dark);
       --shadow-1:
         0 1px 2px color-mix(in srgb, var(--blue-950) 24%, transparent),
         0 8px 24px color-mix(in srgb, var(--blue-950) 18%, transparent);
@@ -155,17 +158,18 @@
   :root[data-theme='alexdark'] {
     color-scheme: dark;
 
-    --bg: #0a1224;
-    --bg-subtle: #0e1830;
-    --fg: #eef2fb;
-    --fg-muted: #9aa7c7;
-    --brand: #8fb4ff;
-    --brand-hover: #a9c6ff;
-    --brand-fg: #0a1224;
-    --border-color: #2a3a5f;
-    --border-strong: #647aa8;
-    --card: #101c38;
-    --danger: #f97066;
+    --bg: var(--ds-atlaps-blueprint-deep);
+    --bg-subtle: var(--ds-atlaps-blueprint-deep);
+    --fg: var(--ds-atlaps-paper-bone);
+    --fg-muted: var(--ds-atlaps-paper-grid);
+    --brand: var(--ds-atlaps-amber-glow);
+    --brand-hover: var(--ds-atlaps-paper-grid);
+    --brand-fg: var(--ds-atlaps-blueprint-deep);
+    --border-color: var(--ds-atlaps-border-dark);
+    --border-strong: var(--ds-atlaps-paper-grid);
+    --card: var(--ds-atlaps-blueprint-deep);
+    --danger: var(--ds-atlaps-danger-dark);
+    --link: var(--ds-atlaps-link-dark);
     --shadow-1:
       0 1px 2px color-mix(in srgb, var(--blue-950) 24%, transparent),
       0 8px 24px color-mix(in srgb, var(--blue-950) 18%, transparent);
@@ -471,6 +475,24 @@ html:not(.js) .js-only {
   border-color: var(--color-primary);
   background-color: var(--color-primary);
   color: var(--color-primary-content);
+}
+
+/* Enlaces y estados: la tinta de éxito queda separada del acento verde. */
+@layer components {
+  .link {
+    color: var(--link);
+    text-decoration-line: underline;
+  }
+}
+
+@layer utilities {
+  .text-success {
+    color: var(--fg);
+  }
+
+  .link.link-hover {
+    text-decoration-line: underline;
+  }
 }
 
 /* Tablas legales (cookies): scroll horizontal dentro del bloque, nunca de

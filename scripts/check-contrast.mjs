@@ -1,6 +1,6 @@
 // Valida el contraste WCAG de los tokens de producto (global.css) y de los
 // temas daisyUI alexlight/alexdark (theme.css). Uso: pnpm check:contrast.
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
@@ -16,6 +16,8 @@ import {
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const css = readFileSync(join(root, 'src/styles/global.css'), 'utf8');
 const themeCss = readFileSync(join(root, 'src/styles/theme.css'), 'utf8');
+const atlapsCss = readFileSync(join(root, 'src/styles/design-references.css'), 'utf8');
+const atlaps = parseDeclarations(atlapsCss);
 
 const SEMANTIC = [
   'bg',
@@ -29,6 +31,7 @@ const SEMANTIC = [
   'border-strong',
   'card',
   'danger',
+  'link',
   'primary-ghost'
 ];
 
@@ -41,6 +44,9 @@ const PAIRS = [
   ['fg-muted/card (secundario en tarjetas)', 'fg-muted', 'card', 4.5],
   ['danger/card (errores en tarjetas)', 'danger', 'card', 4.5],
   ['danger/bg (errores sobre fondo)', 'danger', 'bg', 4.5],
+  ['link/bg (enlaces)', 'link', 'bg', 4.5],
+  ['link/card (enlaces en tarjetas)', 'link', 'card', 4.5],
+  ['link/bg-subtle (enlaces sobre fondo sutil)', 'link', 'bg-subtle', 4.5],
   ['brand-fg/brand-hover (CTAs en hover)', 'brand-fg', 'brand-hover', 4.5],
   ['brand/card (acento como texto en tarjetas)', 'brand', 'card', 4.5],
   ['fg/bg-subtle (texto sobre fondo sutil)', 'fg', 'bg-subtle', 4.5],
@@ -108,12 +114,12 @@ function validateTheme(label, props) {
 
   if (resolved.brand) {
     const ringRaw = props['focus-ring'] ?? '';
-    const ringMatch = ringRaw.match(
-      /color-mix\(in srgb, var\([^)]+\)\s+[\d.]+%\s*,\s*transparent\)/
-    );
+    const ringMatch =
+      ringRaw.match(/color-mix\(in srgb, var\([^)]+\)\s+[\d.]+%\s*,\s*transparent\)/) ??
+      ringRaw.match(/var\(\s*--[\w-]+\s*\)/);
     if (!ringMatch) {
       failed += 1;
-      console.log(`FAIL  ${label}: --focus-ring sin color-mix reconocible`);
+      console.log(`FAIL  ${label}: --focus-ring sin referencia cromática reconocible`);
     } else {
       const ring = resolveValue(ringMatch[0], props);
       const ringRgb = toRgb(ring, bg);
@@ -150,27 +156,30 @@ function validateDaisyTheme(label, props) {
   }
 
   const contentPairs = [
-    ['primary', 'primary-content'],
-    ['secondary', 'secondary-content'],
-    ['accent', 'accent-content'],
-    ['neutral', 'neutral-content'],
-    ['info', 'info-content'],
-    ['success', 'success-content'],
-    ['warning', 'warning-content'],
-    ['error', 'error-content']
+    ['primary', 'primary-content', 4.5],
+    ['secondary', 'secondary-content', 4.5],
+    ['accent', 'accent-content', 4.5],
+    ['neutral', 'neutral-content', 4.5],
+    // La OT limita información y éxito a texto grande/componentes.
+    ['info', 'info-content', 3],
+    ['success', 'success-content', 3],
+    ['warning', 'warning-content', 4.5],
+    ['error', 'error-content', 4.5]
   ];
 
-  for (const [bgRole, fgRole] of contentPairs) {
+  for (const [bgRole, fgRole, minimum] of contentPairs) {
     if (!resolved[bgRole] || !resolved[fgRole]) continue;
     const r = ratio(toRgb(resolved[fgRole]), toRgb(resolved[bgRole]));
-    const ok = r >= 4.5;
+    const ok = r >= minimum;
     if (!ok) failed += 1;
     console.log(
-      `${ok ? 'PASS' : 'FAIL'}  ${label} ${fgRole}/${bgRole}: ${r.toFixed(2)}:1 (mínimo 4.5:1)`
+      `${ok ? 'PASS' : 'FAIL'}  ${label} ${fgRole}/${bgRole}: ${r.toFixed(2)}:1 (mínimo ${minimum}:1)`
     );
   }
 
-  for (const base of ['base-100', 'base-200', 'base-300']) {
+  // base-300 es borde/separación, no una superficie de lectura. Su par
+  // no textual está cubierto por border-dark/blueprint-deep en Atlaps.
+  for (const base of ['base-100', 'base-200']) {
     if (!resolved['base-content'] || !resolved[base]) continue;
     const r = ratio(toRgb(resolved['base-content']), toRgb(resolved[base]));
     const ok = r >= 4.5;
@@ -191,14 +200,14 @@ function validateDaisyTheme(label, props) {
     );
   }
 
-  // text-accent y badge-accent sobre bases.
+  // El texto de acento permitido usa primary; text-accent queda prohibido abajo.
   for (const base of ['base-100', 'base-200']) {
-    if (!resolved.accent || !resolved[base]) continue;
-    const r = ratio(toRgb(resolved.accent), toRgb(resolved[base]));
+    if (!resolved.primary || !resolved[base]) continue;
+    const r = ratio(toRgb(resolved.primary), toRgb(resolved[base]));
     const ok = r >= 4.5;
     if (!ok) failed += 1;
     console.log(
-      `${ok ? 'PASS' : 'FAIL'}  ${label} text-accent/${base}: ${r.toFixed(2)}:1 (mínimo 4.5:1)`
+      `${ok ? 'PASS' : 'FAIL'}  ${label} text-primary/${base}: ${r.toFixed(2)}:1 (mínimo 4.5:1)`
     );
   }
 
@@ -229,7 +238,7 @@ function validateDaisyTheme(label, props) {
 }
 
 const { light, dark, darkConsistent, darkPartial } = extractThemes(css);
-validateTheme('claro', light);
+validateTheme('claro', { ...atlaps, ...light });
 if (darkPartial) {
   failed += 1;
   console.log(
@@ -240,7 +249,7 @@ if (darkPartial) {
     failed += 1;
     console.log('FAIL  tema oscuro: las variantes @media y data-theme no coinciden');
   }
-  validateTheme('oscuro', dark);
+  validateTheme('oscuro', { ...atlaps, ...dark });
 } else {
   console.log('INFO  tema oscuro de producto no publicado (sin bloque @tema-oscuro)');
 }
@@ -252,47 +261,62 @@ for (const name of ['alexlight', 'alexdark']) {
     console.log(`FAIL  falta tema daisyUI ${name} en theme.css`);
     continue;
   }
-  validateDaisyTheme(name, daisyThemes[name]);
+  validateDaisyTheme(name, { ...atlaps, ...daisyThemes[name] });
 }
 
-/* Literales oklch: solo en theme.css. */
+function sourceFiles(directory) {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(directory, entry.name);
+    return entry.isDirectory() ? sourceFiles(path) : [path];
+  });
+}
+const textAccentUsage = sourceFiles(join(root, 'src')).filter(
+  (file) => /\.(?:astro|css|ts)$/.test(file) && readFileSync(file, 'utf8').includes('text-accent')
+);
+if (textAccentUsage.length > 0) {
+  failed += 1;
+  console.log(`FAIL  text-accent prohibido por contraste: ${textAccentUsage.join(', ')}`);
+} else {
+  console.log('PASS  text-accent sin consumidores; el acento ámbar no se usa como texto');
+}
+
+const literalsInDaisy = themeCss.match(/#[0-9a-fA-F]{3,8}\b|oklch\(/g) ?? [];
+if (literalsInDaisy.length > 0) {
+  failed += 1;
+  console.log(`FAIL  theme.css contiene ${literalsInDaisy.length} colores literales`);
+} else {
+  console.log('PASS  theme.css deriva todos sus colores de --ds-atlaps-*');
+}
+
+/* Ningún color literal fuera de design-references.css. */
 const oklchInGlobal = (css.match(/oklch\(/g) ?? []).length;
 if (oklchInGlobal > 0) {
   failed += 1;
   console.log(
-    `FAIL  global.css contiene ${oklchInGlobal} literal(es) oklch (deben vivir en theme.css)`
+    `FAIL  global.css contiene ${oklchInGlobal} literal(es) oklch (deben vivir en design-references.css)`
   );
 } else {
-  console.log('PASS  global.css sin literales oklch (paleta hex en @layer theme)');
+  console.log('PASS  global.css sin literales oklch (paleta única en design-references.css)');
 }
 
-const themeColors = readFileSync(join(root, 'src/lib/themeColors.ts'), 'utf8');
-const themeLight = themeColors.match(/THEME_BG_LIGHT\s*=\s*'(#[0-9a-fA-F]{3,8})'/);
-const themeDark = themeColors.match(/THEME_BG_DARK\s*=\s*'(#[0-9a-fA-F]{3,8})'/);
-const paper50 = css.match(/--paper-50:\s*(#[0-9a-fA-F]{3,8})/);
-const darkBg = css.match(
-  /@media\s*\(prefers-color-scheme:\s*dark\)[\s\S]*?--bg:\s*(#[0-9a-fA-F]{3,8})/
-);
-if (!themeLight || !themeDark || !paper50 || !darkBg) {
+const themeColorFiles = [
+  'src/lib/themeColors.ts',
+  'src/layouts/Layout.astro',
+  'src/scripts/themeToggle.ts',
+  'public/theme-init.js'
+];
+const colorLiterals = themeColorFiles.flatMap((file) => {
+  const matches = readFileSync(join(root, file), 'utf8').match(/#[0-9a-fA-F]{3,8}\b/g) ?? [];
+  return matches.map((value) => `${file}: ${value}`);
+});
+if (colorLiterals.length > 0) {
   failed += 1;
-  console.log('FAIL  no se pudieron leer theme-color o tokens --paper-50/--bg oscuro');
-} else if (
-  themeLight[1].toLowerCase() !== paper50[1].toLowerCase() ||
-  themeDark[1].toLowerCase() !== darkBg[1].toLowerCase()
-) {
-  failed += 1;
-  console.log(
-    `FAIL  theme-color (${themeLight[1]}/${themeDark[1]}) ≠ tokens (${paper50[1]}/${darkBg[1]})`
-  );
+  console.log(`FAIL  theme-color con literales fuera de Atlaps: ${colorLiterals.join(', ')}`);
 } else {
-  console.log(
-    `PASS  theme-color alineado a tokens (${themeLight[1]} claro / ${themeDark[1]} oscuro)`
-  );
+  console.log('PASS  theme-color deriva de --ds-atlaps-paper-bone / --ds-atlaps-blueprint-deep');
 }
 
 // Referencia Atlaps de T2: comprueba todos los pares aprobados y sus usos.
-const atlapsCss = readFileSync(join(root, 'src/styles/design-references.css'), 'utf8');
-const atlaps = parseDeclarations(atlapsCss);
 const atlapsNames = [
   'blueprint-deep',
   'blueprint-mid',

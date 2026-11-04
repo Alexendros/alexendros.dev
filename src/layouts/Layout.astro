@@ -7,6 +7,12 @@ import SkipLink from '../components/SkipLink.astro';
 import { site } from '../content/site';
 import { profile } from '../content/profile';
 import { THEME_BG_LIGHT, THEME_BG_DARK } from '../lib/themeColors';
+import paletteCss from '../styles/design-references.css?raw';
+function paletteColor(property: string): string {
+  const value = paletteCss.match(new RegExp(`${property}:\\s*([^;]+);`))?.[1];
+  if (!value) throw new Error(`Falta ${property} en la paleta Atlaps`);
+  return value;
+}
 
 interface Props {
   title?: string;
@@ -103,8 +109,16 @@ const graph = {
     <meta name="twitter:image" content={ogImageUrl} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta name="theme-color" content={THEME_BG_LIGHT} media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content={THEME_BG_DARK} media="(prefers-color-scheme: dark)" />
+    <meta
+      name="theme-color"
+      content={paletteColor(THEME_BG_LIGHT)}
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content={paletteColor(THEME_BG_DARK)}
+      media="(prefers-color-scheme: dark)"
+    />
     <meta property="og:image:alt" content={resolvedOgAlt} />
     <Fragment set:html={'<script src="/theme-init.js"></script>'} />
     <script type="application/ld+json" set:html={JSON.stringify(graph)} />
