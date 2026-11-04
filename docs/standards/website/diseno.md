@@ -64,6 +64,8 @@
 
 ### Composición y encabezados
 
+Énfasis ámbar: el ámbar no se usa como color de texto sobre el fondo (no alcanza AA en oscuro con la rejilla). Se aplica `--fg` con subrayado decorativo (`text-decoration-color: var(--color-accent)`, grosor y offset en el módulo de la página), como en el titular de `/servicios/` y los números de paso de `/metodo/`.
+
 `SectionHeader.astro` encapsula eyebrow + H2 + descripción opcional para Servicios, Referencias, Método y Contacto de home. Recibe `id`, `eyebrow`, `title` y `description?`; sus reglas específicas se importan desde `SectionHeader.module.css`. Cada sección conserva `aria-labelledby`.
 
 `PageHead` permanece separado porque usa H1. `Section`, `Container`, `Stack` y `Grid` no son componentes vigentes; no reintroducir wrappers sin consumidores reales.

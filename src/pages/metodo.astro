@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Button from '../components/Button.astro';
 import Commitments from '../components/Commitments.astro';
 import { processPage } from '../content/process';
+import styles from './metodo.module.css';
 
 const { seo, hero, steps, close } = processPage;
 ---
@@ -26,7 +27,10 @@ const { seo, hero, steps, close } = processPage;
         {
           steps.map((step, i) => (
             <li class="min-w-0 border-t-2 border-primary pt-5">
-              <span class="steps-num tnum block font-mono text-sm text-primary" aria-hidden="true">
+              <span
+                class:list={['steps-num tnum block font-mono text-sm', styles['step-number']]}
+                aria-hidden="true"
+              >
                 {String(i + 1).padStart(2, '0')}
               </span>
               <h2 class="mt-2 text-step-1 font-bold">{step.title}</h2>

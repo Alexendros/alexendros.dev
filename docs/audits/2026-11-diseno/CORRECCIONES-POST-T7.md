@@ -21,17 +21,18 @@
 
 Peor caso, línea mayor al 40 % (`scripts/contrast-lib.mjs` y barrido de las 20 rutas en 1280 px, claro y oscuro):
 
-| Texto                    | Claro sobre línea | Oscuro sobre línea |
-| ------------------------ | ----------------: | -----------------: |
-| `--fg`                   |         13,69 : 1 |           8,23 : 1 |
-| `--fg-muted`             |          4,53 : 1 |           7,05 : 1 |
-| `--link`                 |          7,31 : 1 |           4,66 : 1 |
-| `--brand` (text-primary) |         12,08 : 1 |           3,92 : 1 |
-| `--danger`               |          4,88 : 1 |           4,72 : 1 |
+| Texto        | Claro sobre línea | Oscuro sobre línea |
+| ------------ | ----------------: | -----------------: |
+| `--fg`       |         13,69 : 1 |           8,23 : 1 |
+| `--fg-muted` |          4,53 : 1 |           7,05 : 1 |
+| `--link`     |          7,31 : 1 |           4,66 : 1 |
+| `--danger`   |          4,88 : 1 |           4,72 : 1 |
+
+`--brand` (ámbar) no se usa como color de texto sobre la rejilla: el énfasis pasa a `--fg` con subrayado decorativo ámbar (ver más abajo). Dentro de tarjetas y en hover sí conserva su valor.
 
 - **Claro:** todo el texto que queda sobre la rejilla cumple AA (mínimo 4,53 : 1, `--fg-muted`).
 - **Oscuro:** con la decisión del 4 de noviembre, `--link` y `--danger` suben de luminosidad solo en tema oscuro (`--ds-atlaps-link-dark` a `oklch(78% 0.1157 249.29)` y `--ds-atlaps-danger-dark` a `oklch(84% 0.155 17.61)`, mismo tono): 7,28 : 1 y 7,37 : 1 sobre fondo plano, 4,66 : 1 y 4,72 : 1 sobre la línea mayor. Las líneas y el tema claro no cambian. `--fg` (8,23) y `--fg-muted` (7,05) ya cumplían.
-- **Pendiente (fuera de la decisión):** el ámbar `text-primary` de «respuesta a necesidades reales» (`/servicios/`) sigue en 3,92 : 1 sobre la línea (6,12 : 1 plano). Para AA sobre la rejilla, `--ds-atlaps-amber-glow` tendría que subir a L 79 % (`oklch(79% 0.1386 63.1)`: 7,26 : 1 plano y 4,65 : 1 sobre línea), lo que cambia el acento/CTA del tema oscuro; sin autorización no se toca.
+- **Énfasis ámbar sin ámbar como texto:** «respuesta a necesidades reales» (`/servicios/`) y los números de paso de `/metodo/` dejan `text-primary` y pasan a `--fg` con subrayado decorativo ámbar (`text-decoration-color: var(--color-accent)`, grosor 0,08em y offset 0,16em) en sus módulos CSS (`src/pages/servicios/index.module.css` y `src/pages/metodo.module.css`). No queda `text-primary` como texto sobre la rejilla en ninguna de las 20 rutas; el resto de usos vive dentro de tarjetas o en hover. Barrido final: **0 fallos en ambos temas**.
 - Los dos pares nuevos (`link/grid-major` y `danger/grid-major`) están en `scripts/check-contrast.mjs` (30 pares por tema) y la referencia Atlaps de `link-dark`/`danger-dark` sube a 7.
 
 ## 2. Bytes (control local `scripts/check-css-margin.mjs`)
@@ -39,14 +40,15 @@ Peor caso, línea mayor al 40 % (`scripts/contrast-lib.mjs` y barrido de las 20 
 Medición LHCI móvil (`resource-summary` de hojas de estilo) con las 20 rutas del
 build; todas dentro de 25.100 B:
 
-| Ruta                                                                              |  Bytes | Margen |
-| --------------------------------------------------------------------------------- | -----: | -----: |
-| `/servicios/software-a-medida/`                                                   | 23.215 | +1.885 |
-| `/`                                                                               | 22.428 | +2.672 |
-| `/servicios/`, fichas de referencia, `/metodo/`, `/sobre-mi/`, artículos, `/404/` | 22.150 | +2.950 |
-| `/contacto/`                                                                      | 21.898 | +3.202 |
-| `/referencias/`                                                                   | 21.851 | +3.249 |
-| `/experiencia/`, legales, `/accesibilidad/`, `/design-system/`                    | 21.494 | +3.606 |
+| Ruta                                                           |  Bytes | Margen |
+| -------------------------------------------------------------- | -----: | -----: |
+| `/servicios/software-a-medida/`                                | 23.215 | +1.885 |
+| `/`                                                            | 22.428 | +2.672 |
+| `/servicios/` y `/metodo/` (con el énfasis en módulo)          | 22.654 | +2.446 |
+| Fichas de referencia, `/sobre-mi/`, artículos, `/404/`         | 22.150 | +2.950 |
+| `/contacto/`                                                   | 21.898 | +3.202 |
+| `/referencias/`                                                | 21.851 | +3.249 |
+| `/experiencia/`, legales, `/accesibilidad/`, `/design-system/` | 21.494 | +3.606 |
 
 Antes del cambio, con el control de 3 rutas: portada 25.087 → 22.449; contacto
 24.355 → 21.679; software-a-medida 25.672 → 22.996. El traslado de la rejilla al
@@ -96,6 +98,7 @@ Cobertura: `tests/e2e/retirada-fichas.spec.ts` con una prueba por dirección (6)
 | `pnpm test`                                                          | 198/198                                                                                     |
 | `pnpm build` (`astro check` incluido)                                | OK                                                                                          |
 | `e2e-critical` (22 specs del job)                                    | 175/175                                                                                     |
+| Barrido de contraste 20 rutas × 2 temas (texto sobre la rejilla)     | 0 fallos                                                                                    |
 | `tests/e2e/a11y.spec.ts` (axe, 20 rutas × 2 temas)                   | 40/40, 0 violaciones                                                                        |
 | `pnpm check:contrast`                                                | OK (30 pares por tema, con los dos de la rejilla; `badge-soft` bajo AA, aviso ya existente) |
 | `pnpm check:copy`, `check:classes`, `check:records`, `audit:cookies` | OK                                                                                          |

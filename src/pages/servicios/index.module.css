@@ -1,0 +1,12 @@
+@layer components {
+  /* Énfasis del titular: color de texto normal y subrayado decorativo ámbar.
+     El ámbar no se usa como color de texto sobre la rejilla del fondo (no
+     alcanza AA en oscuro); el subrayado es decoración y no exige contraste. */
+  .accent {
+    color: var(--fg);
+    text-decoration-line: underline;
+    text-decoration-color: var(--color-accent);
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.16em;
+  }
+}
