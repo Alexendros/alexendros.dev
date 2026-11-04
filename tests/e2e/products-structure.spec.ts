@@ -4,7 +4,6 @@ import { site } from '../../src/content/site';
 
 const sectionsDefault = [
   'next-step',
-  'commercial',
   'audience',
   'problems',
   'scope',
@@ -17,7 +16,6 @@ const sectionsDefault = [
 
 const sectionsSoftware = [
   'next-step',
-  'commercial',
   'audience',
   'process',
   'deliverables',
@@ -75,7 +73,7 @@ test.describe('DET estructura común de fichas', () => {
       );
 
       // DET-03: condiciones en orden canónico
-      await expect(detail.locator('[data-product-section="commercial"] dt')).toHaveText([
+      await expect(detail.locator('[data-next-step-facts] dt')).toHaveText([
         'Plazo',
         'Entrega',
         'Garantía'
@@ -118,7 +116,7 @@ test.describe('DET estructura común de fichas', () => {
     });
   }
 
-  test('índice: cuatro tarjetas con data-product-card y un solo enlace', async ({ page }) => {
+  test('índice: una tarjeta con data-product-card y un solo enlace', async ({ page }) => {
     await page.goto('/servicios');
     for (const product of products) {
       const card = page.locator(`[data-product-card="${product.slug}"]`);
@@ -127,6 +125,7 @@ test.describe('DET estructura común de fichas', () => {
     }
     await expect(page.locator('[data-services-proposal-note]')).toContainText(/propuesta/i);
     await expect(page.locator('[data-product-card="portal-inicio"]')).toHaveCount(0);
+    await expect(page.locator('[data-product-card]')).toHaveCount(1);
     await expect(page.getByText('Preparando el configurador')).toHaveCount(0);
   });
 });
