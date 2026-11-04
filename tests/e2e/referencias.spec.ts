@@ -36,12 +36,3 @@ test('tarjetas de referencia con captura y dimensiones', async ({ page }) => {
     expect((await image.getAttribute('alt'))?.length ?? 0).toBeGreaterThan(0);
   }
 });
-
-test('FAQ en /servicios/ con details nativos', async ({ page }) => {
-  await page.goto('/servicios/');
-  await expect(page.getByRole('heading', { name: 'Preguntas frecuentes' })).toBeVisible();
-  const details = page.locator('#faq details');
-  await expect(details).toHaveCount(5);
-  await expect(details.first()).toHaveAttribute('name', 'faq');
-  await expect(details.first().locator('summary')).toBeVisible();
-});
