@@ -39,16 +39,16 @@ build; todas dentro de 25.100 B:
 
 | Ruta                                                                              |  Bytes | Margen |
 | --------------------------------------------------------------------------------- | -----: | -----: |
-| `/servicios/software-a-medida/`                                                   | 23.188 | +1.912 |
-| `/`                                                                               | 22.401 | +2.699 |
-| `/servicios/`, fichas de referencia, `/metodo/`, `/sobre-mi/`, artículos, `/404/` | 22.123 | +2.977 |
-| `/contacto/`                                                                      | 21.871 | +3.229 |
-| `/referencias/`                                                                   | 21.824 | +3.276 |
-| `/experiencia/`, legales, `/accesibilidad/`, `/design-system/`                    | 21.467 | +3.633 |
+| `/servicios/software-a-medida/`                                                   | 23.218 | +1.882 |
+| `/`                                                                               | 22.431 | +2.669 |
+| `/servicios/`, fichas de referencia, `/metodo/`, `/sobre-mi/`, artículos, `/404/` | 22.153 | +2.947 |
+| `/contacto/`                                                                      | 21.901 | +3.199 |
+| `/referencias/`                                                                   | 21.854 | +3.246 |
+| `/experiencia/`, legales, `/accesibilidad/`, `/design-system/`                    | 21.497 | +3.603 |
 
 Antes del cambio, con el control de 3 rutas: portada 25.087 → 22.449; contacto
 24.355 → 21.679; software-a-medida 25.672 → 22.996. El traslado de la rejilla al
-`body` deja la portada en 22.401 B y sube software-a-medida a 23.188 B (+192 por
+`body` deja la portada en 22.431 B y sube software-a-medida a 23.218 B (+222 por
 la regla global), dentro del límite.
 
 Recorte de reglas sin uso (con evidencia):
@@ -97,7 +97,7 @@ Cobertura: `tests/e2e/retirada-fichas.spec.ts` con una prueba por dirección (6)
 | `tests/e2e/a11y.spec.ts` (axe, 20 rutas × 2 temas)                   | 40/40, 0 violaciones                                                                        |
 | `pnpm check:contrast`                                                | OK (28 pares; `badge-soft` sigue bajo AA, aviso ya existente)                               |
 | `pnpm check:copy`, `check:classes`, `check:records`, `audit:cookies` | OK                                                                                          |
-| `node scripts/check-css-margin.mjs`                                  | 20 rutas dentro de 25.100 B (máximo 23.188)                                                 |
+| `node scripts/check-css-margin.mjs`                                  | 20 rutas dentro de 25.100 B (máximo 23.218)                                                 |
 | `tests/e2e/visual-system.spec.ts`                                    | 33/37; los 4 fallos (cabecera glass, configurador, borde claro/oscuro) ya estaban en `main` |
 | `seo-edge-prod` (301 + 308 de plataforma)                            | Las 6 direcciones aceptadas; anota `pendiente-despliegue` hasta el deploy                   |
 

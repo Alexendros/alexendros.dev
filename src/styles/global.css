@@ -97,8 +97,8 @@
        --border-color, que ya cambia con el tema; los alfalfa se limitan a
        que el texto secundario siga en AA sobre la línea mayor (claro
        4,53:1, oscuro 7,95:1). */
-    --grid-line: oklch(from var(--border-color) l c h / 0.3);
-    --grid-major: oklch(from var(--border-color) l c h / 0.4);
+    --grid-line: color-mix(in srgb, var(--border-color) 30%, transparent);
+    --grid-major: color-mix(in srgb, var(--border-color) 40%, transparent);
     --card: var(--ds-atlaps-paper-bone);
     --danger: var(--ds-atlaps-danger);
     --link: var(--ds-atlaps-blueprint-mid);
