@@ -1,7 +1,57 @@
 /* stylelint-disable custom-property-pattern -- la escala del sistema incluye --step--1 */
 @layer components {
   .surface {
+    --hero-title-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.75rem);
+    --hero-padding-block: clamp(4rem, 8vw, 8rem);
+    --section-gap: clamp(5rem, 10vw, 9rem);
+    --bp-line: oklch(from var(--ds-atlaps-blueprint-mid) l c h / 0.05);
+    --bp-major: oklch(from var(--ds-atlaps-blueprint-mid) l c h / 0.1);
+
     background-image: var(--gradient-section);
+    padding-block: var(--hero-padding-block);
+    position: relative;
+    isolation: isolate;
+  }
+
+  .surface::before {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(var(--bp-major) 1px, transparent 1px) 0 0 / 7.5rem,
+      linear-gradient(90deg, var(--bp-major) 1px, transparent 1px) 0 0 / 7.5rem;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .surface {
+      --bp-line: oklch(from var(--ds-atlaps-paper-bone) l c h / 0.04);
+      --bp-major: oklch(from var(--ds-atlaps-paper-bone) l c h / 0.08);
+    }
+  }
+
+  /* stylelint-disable-next-line selector-pseudo-class-no-unknown */
+  :global([data-theme='alexdark']) .surface {
+    --bp-line: oklch(from var(--ds-atlaps-paper-bone) l c h / 0.04);
+    --bp-major: oklch(from var(--ds-atlaps-paper-bone) l c h / 0.08);
+  }
+
+  @media (prefers-contrast: more), (forced-colors: active) {
+    .surface::before {
+      background-image: none;
+    }
+  }
+
+  .title {
+    font-size: var(--hero-title-size);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    max-inline-size: 18ch;
+    overflow-wrap: anywhere;
+  }
+
+  .lead {
+    font-size: var(--step-1);
+    max-inline-size: 52ch;
+    color: var(--fg-muted);
   }
 
   .terminal-prompt {
@@ -29,3 +79,4 @@
     max-inline-size: 100%;
   }
 }
+/* stylelint-enable custom-property-pattern */

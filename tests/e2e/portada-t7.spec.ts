@@ -10,7 +10,6 @@ test('DIS-04: la portada no muestra el bloque de compromisos', async ({ page }) 
 
 for (const width of [390, 1280]) {
   test(`DIS-07: titular dentro del clamp a ${width} px`, async ({ page }) => {
-    test.fail(true, 'DIS-07: clamp del titular pendiente');
     await page.setViewportSize({ width, height: 844 });
     await page.goto('/');
     const fontSize = await page
@@ -25,7 +24,6 @@ for (const theme of ['alexlight', 'alexdark'] as const) {
   test(`DIS-08: rejilla blueprint en ${theme} y retirada con contraste forzado`, async ({
     page
   }) => {
-    test.fail(true, 'DIS-08: rejilla blueprint pendiente');
     await page.addInitScript((selectedTheme) => {
       localStorage.setItem('theme', selectedTheme);
     }, theme);
