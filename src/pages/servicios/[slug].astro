@@ -68,7 +68,7 @@ const jsonLd = [
         El alcance y las condiciones económicas se detallan en la propuesta individual.
       </p>
 
-      <section class="mt-8" data-product-section="next-step">
+      <section class="mt-8" data-product-section="next-step" data-next-step>
         <h2 class="text-step-2 font-bold">Siguiente paso</h2>
         <p class="mt-2 text-sm text-muted max-w-2xl">
           La solicitud se envía desde el formulario con el contexto de este servicio. La respuesta
@@ -92,13 +92,12 @@ const jsonLd = [
             )
           }
         </div>
+        <ServiceBadges
+          timeline={service.commercial.timeline}
+          delivery={service.commercial.delivery}
+          guarantee={service.commercial.guarantee}
+        />
       </section>
-
-      <ServiceBadges
-        timeline={service.commercial.timeline}
-        delivery={service.commercial.delivery}
-        guarantee={service.commercial.guarantee}
-      />
 
       <div class="mt-10 space-y-8">
         <section data-product-section="audience">
