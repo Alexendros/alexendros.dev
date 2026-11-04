@@ -9,6 +9,9 @@ describe('extractThemes', () => {
 
     expect(darkPartial).toBe(false);
     expect(darkConsistent).toBe(true);
-    expect(dark).toMatchObject({ bg: '#0a1224', card: '#101c38' });
+    expect(dark).toMatchObject({
+      bg: 'var(--ds-atlaps-blueprint-deep)',
+      card: 'var(--ds-atlaps-blueprint-deep)'
+    });
   });
 });

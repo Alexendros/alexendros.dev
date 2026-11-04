@@ -3,37 +3,32 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { THEME_BG_LIGHT, THEME_BG_DARK } from './themeColors';
 
-const css = readFileSync(resolve(process.cwd(), 'src/styles/global.css'), 'utf8');
+const palette = readFileSync(resolve(process.cwd(), 'src/styles/design-references.css'), 'utf8');
 
-function hexTokenValue(name: string): string | null {
-  const re = new RegExp(`${name}:\\s*([#][0-9a-fA-F]{6})`);
-  return re.exec(css)?.[1]?.toLowerCase() ?? null;
-}
-
-describe('themeColors sincronizado con los tokens de global.css', () => {
-  it('claro coincide con --paper-50', () => {
-    expect(hexTokenValue('--paper-50')).toBe('#f6f8fc');
-    expect(THEME_BG_LIGHT.toLowerCase()).toBe(hexTokenValue('--paper-50'));
+describe('theme-color derivado de la paleta Atlaps', () => {
+  it('usa las propiedades de fondo aprobadas', () => {
+    expect(THEME_BG_LIGHT).toBe('--ds-atlaps-paper-bone');
+    expect(THEME_BG_DARK).toBe('--ds-atlaps-blueprint-deep');
+    expect(palette).toContain(`${THEME_BG_LIGHT}:`);
+    expect(palette).toContain(`${THEME_BG_DARK}:`);
   });
 
-  it('oscuro coincide con --bg del tema oscuro', () => {
-    // --bg es var(--paper-50) en claro y un hex literal en oscuro.
-    const darkBg = [...css.matchAll(/--bg:\s*(#[0-9a-fA-F]{6})/g)].map((m) => m[1].toLowerCase());
-    expect(darkBg.length).toBeGreaterThan(0);
-    expect(darkBg).toContain('#0a1224');
-    expect(THEME_BG_DARK.toLowerCase()).toBe('#0a1224');
+  it('no duplica literales cromáticos en la sincronización', () => {
+    for (const file of [
+      'src/lib/themeColors.ts',
+      'src/layouts/Layout.astro',
+      'src/scripts/themeToggle.ts',
+      'public/theme-init.js'
+    ]) {
+      const source = readFileSync(resolve(process.cwd(), file), 'utf8');
+      expect(source.match(/#[0-9a-fA-F]{3,8}\b/g), file).toBeNull();
+    }
   });
 
-  it('theme-init.js (script previo a la pintura) usa los mismos colores', () => {
-    // public/theme-init.js no puede importar TS: es una copia que debe seguir
-    // sincronizada con themeColors.ts.
-    const init = readFileSync(resolve(process.cwd(), 'public/theme-init.js'), 'utf8');
-    const used = [...init.matchAll(/'(#[0-9a-fA-F]{6})'/g)].map((m) => m[1].toLowerCase());
-    expect(used).toEqual(
-      expect.arrayContaining([THEME_BG_DARK.toLowerCase(), THEME_BG_LIGHT.toLowerCase()])
-    );
-    expect([...new Set(used)].sort()).toEqual(
-      [THEME_BG_DARK.toLowerCase(), THEME_BG_LIGHT.toLowerCase()].sort()
-    );
+  it('Layout extrae los valores de la paleta en el build', () => {
+    const layout = readFileSync(resolve(process.cwd(), 'src/layouts/Layout.astro'), 'utf8');
+    expect(layout).toContain('paletteColor(THEME_BG_LIGHT)');
+    expect(layout).toContain('paletteColor(THEME_BG_DARK)');
+    expect(layout).toContain('design-references.css?raw');
   });
 });
