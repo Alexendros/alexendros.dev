@@ -4,6 +4,7 @@ import AxeBuilder from '@axe-core/playwright';
 for (const theme of ['alexlight', 'alexdark'] as const) {
   for (const route of ['/', '/servicios/', '/contacto/'] as const) {
     test(`paquetes ${route} ${theme}: contenido y axe`, async ({ page }) => {
+      test.fail(route === '/servicios/', 'DIS-05: contenido retirado con paquetes activados');
       await page.addInitScript((selectedTheme) => {
         localStorage.setItem('theme', selectedTheme);
       }, theme);
@@ -17,6 +18,13 @@ for (const theme of ['alexlight', 'alexdark'] as const) {
       } else {
         await expect(page.locator('[data-paquete]')).toHaveCount(3);
         await expect(page.locator('[data-pick-via]')).toHaveCount(3);
+        if (route === '/servicios/') {
+          await expect(page.locator('[data-product-card]')).toHaveCount(1);
+          await expect(page.locator('[data-product-card="software-a-medida"]')).toHaveCount(1);
+          await expect(page.locator('[data-detail-island]')).toHaveCount(0);
+          await expect(page.locator('[data-needs-configurator]')).toHaveCount(0);
+          await expect(page.locator('#faq')).toHaveCount(0);
+        }
       }
 
       const results = await new AxeBuilder({ page })
