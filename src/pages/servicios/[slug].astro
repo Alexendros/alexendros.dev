@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Button from '../../components/Button.astro';
+import ServiceBadges from '../../components/ServiceBadges.astro';
 import Link from '../../components/Link.astro';
 import { services } from '../../content/services';
 import { site } from '../../content/site';
@@ -67,20 +68,11 @@ const jsonLd = [
         El alcance y las condiciones económicas se detallan en la propuesta individual.
       </p>
 
-      <dl class="mt-8 grid gap-4 sm:grid-cols-2 text-sm" data-product-section="commercial">
-        <div class="border border-border rounded-lg p-4 bg-card">
-          <dt class="text-muted">Plazo</dt>
-          <dd class="font-medium mt-1">{service.commercial.timeline}</dd>
-        </div>
-        <div class="border border-border rounded-lg p-4 bg-card">
-          <dt class="text-muted">Entrega</dt>
-          <dd class="font-medium mt-1">{service.commercial.delivery}</dd>
-        </div>
-        <div class="border border-border rounded-lg p-4 bg-card sm:col-span-2">
-          <dt class="text-muted">Garantía</dt>
-          <dd class="font-medium mt-1">{service.commercial.guarantee}</dd>
-        </div>
-      </dl>
+      <ServiceBadges
+        timeline={service.commercial.timeline}
+        delivery={service.commercial.delivery}
+        guarantee={service.commercial.guarantee}
+      />
 
       <div class="mt-10 space-y-8">
         <section data-product-section="audience">

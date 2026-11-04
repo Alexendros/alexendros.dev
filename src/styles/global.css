@@ -55,6 +55,7 @@
   --color-ink: var(--brand-fg);
   --color-danger: var(--danger);
   --color-link: var(--link);
+  --color-focus: var(--focus-color);
   --font-sans: 'Source Sans 3 Variable', ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-sans);
   --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
@@ -77,15 +78,8 @@
   /* stylelint-disable custom-property-pattern -- step negativo */
   :root {
     --blue-950: var(--ds-atlaps-blueprint-deep);
-    --blue-900: var(--ds-atlaps-blueprint-deep);
-    --blue-700: var(--ds-atlaps-blueprint-mid);
-    --blue-100: var(--ds-atlaps-paper-grid);
     --ink-900: var(--ds-atlaps-ink-graphite);
-    --ink-500: var(--ds-atlaps-ink-pencil);
     --paper-0: var(--ds-atlaps-paper-bone);
-    --paper-50: var(--ds-atlaps-paper-bone);
-    --line: var(--ds-atlaps-paper-grid);
-    --err: var(--ds-atlaps-danger);
     --bg: var(--ds-atlaps-paper-bone);
     --bg-subtle: var(--ds-atlaps-paper-bone);
     --fg: var(--ds-atlaps-ink-graphite);
@@ -98,15 +92,19 @@
     --card: var(--ds-atlaps-paper-bone);
     --danger: var(--ds-atlaps-danger);
     --link: var(--ds-atlaps-blueprint-mid);
-    --focus-ring: 0 0 0 3px var(--brand);
+    --focus-color: var(--ds-atlaps-blueprint-mid);
+    --focus-ring: 0 0 0 3px var(--focus-color);
+    --badge-bg: var(--ds-atlaps-paper-grid);
+    --badge-fg: var(--ds-atlaps-ink-graphite);
     --primary-ghost: color-mix(in srgb, var(--brand) 3%, transparent);
     --scrim: color-mix(in oklab, var(--blue-950) 55%, transparent);
     --shadow-1:
-      0 1px 2px color-mix(in srgb, var(--blue-950) 5%, transparent),
-      0 8px 24px color-mix(in srgb, var(--blue-950) 4%, transparent);
+      0 0 0 1px var(--ds-atlaps-paper-grid),
+      0 1px 0 0 color-mix(in srgb, var(--ds-atlaps-blueprint-mid) 8%, transparent);
     --shadow-2:
-      0 2px 4px color-mix(in srgb, var(--blue-950) 7%, transparent),
-      0 16px 40px color-mix(in srgb, var(--blue-950) 9%, transparent);
+      0 0 0 1px var(--ds-atlaps-paper-grid),
+      0 2px 0 0 color-mix(in srgb, var(--ds-atlaps-blueprint-mid) 12%, transparent),
+      0 4px 0 0 color-mix(in srgb, var(--ds-atlaps-blueprint-mid) 4%, transparent);
     --surface-header: var(--card);
     --surface-header-glass: color-mix(in srgb, var(--card) 88%, transparent);
     --surface-sunken: color-mix(in srgb, var(--bg) 65%, var(--card));
@@ -147,12 +145,16 @@
       --card: var(--ds-atlaps-blueprint-deep);
       --danger: var(--ds-atlaps-danger-dark);
       --link: var(--ds-atlaps-link-dark);
+      --focus-color: var(--ds-atlaps-amber-glow);
+      --badge-bg: var(--ds-atlaps-blueprint-mid);
+      --badge-fg: var(--ds-atlaps-paper-bone);
       --shadow-1:
-        0 1px 2px color-mix(in srgb, var(--blue-950) 24%, transparent),
-        0 8px 24px color-mix(in srgb, var(--blue-950) 18%, transparent);
+        0 0 0 1px var(--ds-atlaps-border-dark),
+        0 1px 0 0 color-mix(in srgb, var(--ds-atlaps-blueprint-mid) 24%, transparent);
       --shadow-2:
-        0 2px 4px color-mix(in srgb, var(--blue-950) 30%, transparent),
-        0 16px 40px color-mix(in srgb, var(--blue-950) 26%, transparent);
+        0 0 0 1px var(--ds-atlaps-border-dark),
+        0 2px 0 0 color-mix(in srgb, var(--ds-atlaps-blueprint-mid) 30%, transparent),
+        0 4px 0 0 color-mix(in srgb, var(--ds-atlaps-blueprint-mid) 12%, transparent);
     }
   }
   :root[data-theme='alexdark'] {
@@ -170,12 +172,16 @@
     --card: var(--ds-atlaps-blueprint-deep);
     --danger: var(--ds-atlaps-danger-dark);
     --link: var(--ds-atlaps-link-dark);
+    --focus-color: var(--ds-atlaps-amber-glow);
+    --badge-bg: var(--ds-atlaps-blueprint-mid);
+    --badge-fg: var(--ds-atlaps-paper-bone);
     --shadow-1:
-      0 1px 2px color-mix(in srgb, var(--blue-950) 24%, transparent),
-      0 8px 24px color-mix(in srgb, var(--blue-950) 18%, transparent);
+      0 0 0 1px var(--ds-atlaps-border-dark),
+      0 1px 0 0 color-mix(in srgb, var(--ds-atlaps-blueprint-mid) 24%, transparent);
     --shadow-2:
-      0 2px 4px color-mix(in srgb, var(--blue-950) 30%, transparent),
-      0 16px 40px color-mix(in srgb, var(--blue-950) 26%, transparent);
+      0 0 0 1px var(--ds-atlaps-border-dark),
+      0 2px 0 0 color-mix(in srgb, var(--ds-atlaps-blueprint-mid) 30%, transparent),
+      0 4px 0 0 color-mix(in srgb, var(--ds-atlaps-blueprint-mid) 12%, transparent);
   }
   :root[data-theme='alexlight'] {
     color-scheme: light;
@@ -289,7 +295,7 @@
   }
 
   .focus-ring:focus-visible {
-    outline: 2px solid var(--color-primary, var(--brand));
+    outline: 2px solid var(--focus-color);
     outline-offset: 2px;
     box-shadow: var(--focus-ring);
   }
@@ -338,7 +344,7 @@
   .collapse-title:focus-visible,
   a[data-open-dialog]:focus-visible,
   .card:has(:focus-visible) {
-    outline: 2px solid var(--color-primary, var(--brand));
+    outline: 2px solid var(--focus-color);
     outline-offset: 2px;
   }
 
@@ -360,11 +366,6 @@
 
   dialog[data-detail-island]::backdrop {
     background: var(--scrim);
-  }
-
-  .cv-auto {
-    content-visibility: auto;
-    contain-intrinsic-size: auto 700px;
   }
 
   .sr-only {
@@ -467,7 +468,7 @@ html:not(.js) .js-only {
 
 .menu li > a:focus-visible,
 #site-header a.btn:focus-visible {
-  outline: 2px solid var(--color-primary, var(--brand));
+  outline: 2px solid var(--focus-color);
   outline-offset: 2px;
 }
 
@@ -492,6 +493,13 @@ html:not(.js) .js-only {
 
   .link.link-hover {
     text-decoration-line: underline;
+  }
+
+  .input:focus-visible,
+  .textarea:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+    box-shadow: var(--focus-ring);
   }
 }
 
