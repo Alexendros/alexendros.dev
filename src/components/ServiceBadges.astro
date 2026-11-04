@@ -15,9 +15,9 @@ const { timeline, delivery, guarantee } = Astro.props;
     <dt>Plazo</dt>
     <dd>{timeline}</dd>
   </div>
-  <div class="border border-border rounded-lg p-4 bg-card sm:col-span-2">
-    <dt class="text-muted">Entrega</dt>
-    <dd class="font-medium mt-1">{delivery}</dd>
+  <div class={styles.delivery}>
+    <dt>Entrega</dt>
+    <dd>{delivery}</dd>
   </div>
   <div class={styles.badge} data-service-badge>
     <dt>Garantía</dt>

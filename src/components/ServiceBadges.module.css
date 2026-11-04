@@ -28,6 +28,22 @@
     margin: 0;
   }
 
+  .delivery {
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-field);
+    background-color: var(--card);
+  }
+
+  .delivery dt {
+    color: var(--fg-muted);
+  }
+
+  .delivery dd {
+    margin-top: 0.25rem;
+    font-weight: 500;
+  }
+
   @media (width >= 640px) {
     .group {
       grid-template-columns: repeat(2, minmax(0, 1fr));

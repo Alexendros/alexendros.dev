@@ -1,6 +1,5 @@
 @layer components {
   .configurator {
-    min-inline-size: 0;
     padding: 1.5rem;
     border-radius: var(--radius-box);
   }
@@ -51,7 +50,6 @@
   }
 
   .summary {
-    min-inline-size: 0;
     margin-top: 1.5rem;
     padding: 1rem 1.25rem;
     border: 1px solid var(--border-color);
@@ -60,14 +58,8 @@
     background-color: var(--primary-ghost);
   }
 
-  .actions {
-    min-inline-size: 0;
-  }
-
   .action {
     max-inline-size: 100%;
-    text-align: center;
-    white-space: normal;
     overflow-wrap: anywhere;
   }
 
