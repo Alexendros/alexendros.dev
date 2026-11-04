@@ -21,7 +21,7 @@ import styles from './Hero.module.css';
       {homeHero.title}
     </h1>
     <p class="rise rise-3 max-w-2xl text-step-0 text-muted">{homeHero.lead}</p>
-    <div class="rise rise-4 flex flex-wrap gap-3">
+    <div class:list={['rise rise-4 flex flex-wrap gap-3', styles.actions]}>
       <a class="btn btn-primary btn-lg" href={homeHero.primaryCta.href}>
         {homeHero.primaryCta.label}
       </a>

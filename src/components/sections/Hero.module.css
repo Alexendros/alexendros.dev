@@ -6,7 +6,10 @@
 
   .terminal-prompt {
     display: inline-flex;
+    flex-wrap: wrap;
     align-items: center;
+    max-inline-size: 100%;
+    overflow-wrap: anywhere;
     gap: 0.375rem;
     padding: 0.5rem 0.75rem;
     border: 1px solid var(--border-color);
@@ -16,5 +19,13 @@
     font-family: var(--font-mono);
     font-size: var(--step--1);
     line-height: 1.4;
+  }
+
+  .actions {
+    min-inline-size: 0;
+  }
+
+  .actions > a {
+    max-inline-size: 100%;
   }
 }

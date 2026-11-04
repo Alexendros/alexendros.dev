@@ -58,6 +58,11 @@
     background-color: var(--primary-ghost);
   }
 
+  .action {
+    max-inline-size: 100%;
+    overflow-wrap: anywhere;
+  }
+
   @media (width >= 768px) {
     .configurator {
       padding: 2rem;

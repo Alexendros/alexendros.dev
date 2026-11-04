@@ -141,7 +141,6 @@ for (const route of routes.filter(
 }
 
 test('A11Y-01: portada con texto al 200 % sin desbordamiento', async ({ page }) => {
-  test.fail(); // A11Y-01 se cierra en T6.
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
   await page.evaluate(() => {
@@ -151,7 +150,6 @@ test('A11Y-01: portada con texto al 200 % sin desbordamiento', async ({ page }) 
 });
 
 test('A11Y-02: /design-system/ con texto al 200 % sin desbordamiento', async ({ page }) => {
-  test.fail(); // A11Y-02 se cierra en T6.
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/design-system/');
   await page.evaluate(() => {
@@ -161,7 +159,6 @@ test('A11Y-02: /design-system/ con texto al 200 % sin desbordamiento', async ({ 
 });
 
 test('A11Y-03: /servicios/ con texto al 200 % sin desbordamiento', async ({ page }) => {
-  test.fail(); // A11Y-03 se cierra en T6.
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/servicios/');
   await page.evaluate(() => {
