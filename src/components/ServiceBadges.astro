@@ -10,16 +10,16 @@ interface Props {
 const { timeline, delivery, guarantee } = Astro.props;
 ---
 
-<dl class={styles.group} data-product-section="commercial" data-service-badges>
-  <div class={styles.badge} data-service-badge>
+<dl class={styles.group} data-next-step-facts>
+  <div class={styles.pair}>
     <dt>Plazo</dt>
     <dd>{timeline}</dd>
   </div>
-  <div class={styles.delivery}>
+  <div class={styles.pair}>
     <dt>Entrega</dt>
     <dd>{delivery}</dd>
   </div>
-  <div class={styles.badge} data-service-badge>
+  <div class={styles.pair}>
     <dt>Garantía</dt>
     <dd>{guarantee}</dd>
   </div>
