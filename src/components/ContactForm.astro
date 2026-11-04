@@ -91,7 +91,7 @@ const vias = [
               name="via"
               value={via.id}
               id={via.id === 'otra' ? 'contact-via-otra' : `contact-via-${via.id}`}
-              class="checkbox checkbox-primary mt-0.5 h-6 w-6"
+              class="checkbox checkbox-primary mt-0.5 min-h-11 min-w-11"
               data-via={via.id}
               aria-controls={via.id === 'otra' ? 'contact-otra-wrap' : undefined}
               aria-expanded={via.id === 'otra' ? 'false' : undefined}
@@ -204,7 +204,7 @@ const vias = [
       id="contact-consent"
       type="checkbox"
       name="consent"
-      class="checkbox checkbox-primary checkbox-sm mt-0.5 h-6 w-6"
+      class="checkbox checkbox-primary checkbox-sm mt-0.5 min-h-11 min-w-11"
       required
     />
     <span>
