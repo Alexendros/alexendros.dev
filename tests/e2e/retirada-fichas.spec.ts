@@ -5,9 +5,7 @@ import path from 'node:path';
 const retiredPaths = [
   '/servicios/informe-comercial',
   '/servicios/cumplimiento-normativo',
-  '/servicios/ciberseguridad',
-  '/servicios/auditorias',
-  '/servicios/auditoria-normativa-ciberseguridad'
+  '/servicios/ciberseguridad'
 ];
 const retiredSlugs = ['informe-comercial', 'cumplimiento-normativo', 'ciberseguridad'];
 
