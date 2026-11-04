@@ -1,7 +1,6 @@
 import { expect, test } from '@playwright/test';
 
 test('DIS-04: la portada no muestra el bloque de compromisos', async ({ page }) => {
-  test.fail(true, 'DIS-04: compromisos de portada pendientes');
   await page.goto('/');
   await expect(page.locator('main .commitment-item')).toHaveCount(0);
   await expect(

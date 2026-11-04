@@ -5,7 +5,6 @@ const retiredSlugs = ['informe-comercial', 'cumplimiento-normativo', 'cibersegur
 test('DIS-05: /servicios/ solo contiene paquetes opcionales, Colaboración y su acción', async ({
   page
 }) => {
-  test.fail(true, 'DIS-05: /servicios/ aún conserva DetailIsland, configurador y FAQ');
   await page.goto('/servicios/');
   await expect(page.locator('[data-paquete]')).toHaveCount(0);
   await expect(page.locator('[data-product-card]')).toHaveCount(1);
