@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import {
   extractThemes,
   extractDaisyThemes,
+  parseDeclarations,
   resolveValue,
   toRgb,
   ratio,
@@ -286,6 +287,73 @@ if (!themeLight || !themeDark || !paper50 || !darkBg) {
 } else {
   console.log(
     `PASS  theme-color alineado a tokens (${themeLight[1]} claro / ${themeDark[1]} oscuro)`
+  );
+}
+
+// Referencia Atlaps de T2: comprueba todos los pares aprobados y sus usos.
+const atlapsCss = readFileSync(join(root, 'src/styles/design-references.css'), 'utf8');
+const atlaps = parseDeclarations(atlapsCss);
+const atlapsNames = [
+  'blueprint-deep',
+  'blueprint-mid',
+  'blueprint-soft',
+  'paper-bone',
+  'paper-grid',
+  'amber-signal',
+  'amber-glow',
+  'ink-graphite',
+  'ink-pencil',
+  'success',
+  'danger',
+  'border-dark',
+  'danger-dark',
+  'link-dark'
+];
+for (const name of atlapsNames) {
+  if (!(`ds-atlaps-${name}` in atlaps)) {
+    failed += 1;
+    console.log(`FAIL  falta --ds-atlaps-${name}`);
+  }
+}
+
+const ATLAPS_PAIRS = [
+  ['claro', 'texto', 'ink-graphite', 'paper-bone', 14.56, 4.5],
+  ['claro', 'texto secundario', 'ink-pencil', 'paper-bone', 4.82, 4.5],
+  ['claro', 'texto sobre fondo sutil', 'ink-graphite', 'paper-grid', 12.48, 4.5],
+  ['claro', 'secundario sobre sutil (solo grande/UI)', 'ink-pencil', 'paper-grid', 4.13, 3],
+  ['claro', 'texto de botón principal', 'paper-bone', 'blueprint-deep', 12.84, 4.5],
+  ['claro', 'botón hover', 'paper-bone', 'blueprint-mid', 7.77, 4.5],
+  ['claro', 'enlaces', 'blueprint-mid', 'paper-bone', 7.77, 4.5],
+  ['claro', 'ámbar como texto (prohibido)', 'amber-signal', 'paper-bone', 2.91, null],
+  ['claro', 'texto sobre ámbar', 'ink-graphite', 'amber-signal', 5.0, 4.5],
+  ['claro', 'error', 'danger', 'paper-bone', 5.19, 4.5],
+  ['claro', 'éxito (solo grande/UI)', 'success', 'paper-bone', 3.58, 3],
+  ['claro', 'información (solo grande/UI)', 'blueprint-soft', 'paper-bone', 3.96, 3],
+  ['claro', 'borde de campo', 'ink-pencil', 'paper-bone', 4.82, 3],
+  ['oscuro', 'texto', 'paper-bone', 'blueprint-deep', 12.84, 4.5],
+  ['oscuro', 'texto secundario', 'paper-grid', 'blueprint-deep', 11.01, 4.5],
+  ['oscuro', 'acento/CTA', 'amber-glow', 'blueprint-deep', 6.12, 4.5],
+  ['oscuro', 'texto de botón ámbar', 'blueprint-deep', 'amber-glow', 6.12, 4.5],
+  ['oscuro', 'enlace azul original (solo grande/UI)', 'blueprint-soft', 'blueprint-deep', 3.24, 3],
+  ['oscuro', 'ámbar señal (solo grande/UI)', 'amber-signal', 'blueprint-deep', 4.41, 3],
+  ['oscuro', 'borde original (prohibido)', 'blueprint-mid', 'blueprint-deep', 1.65, null],
+  ['oscuro', 'texto sobre superficie mid', 'paper-bone', 'blueprint-mid', 7.77, 4.5],
+  ['oscuro', 'error original (prohibido)', 'danger', 'blueprint-deep', 2.48, null],
+  ['oscuro', 'borde ajustado', 'border-dark', 'blueprint-deep', 3.08, 3],
+  ['oscuro', 'error ajustado', 'danger-dark', 'blueprint-deep', 4.57, 4.5],
+  ['oscuro', 'enlace ajustado', 'link-dark', 'blueprint-deep', 4.57, 4.5]
+];
+
+for (const [theme, use, fgName, bgName, expected, minimum] of ATLAPS_PAIRS) {
+  const fgRaw = atlaps[`ds-atlaps-${fgName}`];
+  const bgRaw = atlaps[`ds-atlaps-${bgName}`];
+  if (!fgRaw || !bgRaw) continue;
+  const measured = ratio(resolveValue(fgRaw, atlaps), resolveValue(bgRaw, atlaps));
+  const referenceMatches = measured.toFixed(2) === expected.toFixed(2);
+  const usable = minimum === null || measured >= minimum;
+  if (!referenceMatches || !usable) failed += 1;
+  console.log(
+    `${referenceMatches && usable ? 'PASS' : 'FAIL'}  Atlaps ${theme} ${use}: ${measured.toFixed(2)}:1 (referencia ${expected.toFixed(2)}:1)`
   );
 }
 
