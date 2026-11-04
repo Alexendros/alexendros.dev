@@ -4,7 +4,6 @@ import AxeBuilder from '@axe-core/playwright';
 for (const theme of ['alexlight', 'alexdark'] as const) {
   for (const route of ['/', '/servicios/', '/contacto/'] as const) {
     test(`paquetes ${route} ${theme}: contenido y axe`, async ({ page }) => {
-      test.fail(route === '/servicios/', 'DIS-05: contenido retirado con paquetes activados');
       await page.addInitScript((selectedTheme) => {
         localStorage.setItem('theme', selectedTheme);
       }, theme);
