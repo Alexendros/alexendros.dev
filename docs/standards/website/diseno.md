@@ -76,7 +76,7 @@ Primer foco de la página, salta a `#main`, visible con teclado y por encima de 
 
 - H1 y copy fijos, sin rotación; CTAs y URLs definidos en el contenido.
 - El prompt presenta `~/alexendros $ nuevo-encargo` como firma visual mono, con borde, superficie y `--shadow-1`; su regla se importa desde `Hero.module.css`.
-- El hero usa fondo plano (`--bg`) y una rejilla de dos capas en su `::before` (celda fina de 22 px y mayor de 120 px) con líneas de `--border-color`, desvanecida arriba y abajo con `mask-image`. El trazo cambia con el tema del sitio por tokens, sin `prefers-color-scheme` propio en el módulo; se retira con `prefers-contrast: more` y `forced-colors: active`. ContactCta conserva `--gradient-section` desde su módulo.
+- El fondo de todas las páginas es una rejilla de dos capas en `body::before` (`global.css`, `@layer base`): celda fina de 22 px y mayor de 120 px, fija tras el contenido (`position: fixed`, `inset: 0`, `z-index: -1`, `pointer-events: none`), con líneas de `--border-color` al 30 % y 40 % y sin `mask`. El trazo cambia con el tema del sitio por tokens (`--grid-line`/`--grid-major`), sin `prefers-color-scheme` propio; se retira con `prefers-contrast: more`, `forced-colors: active` y al imprimir. El hero no tiene fondo propio; cabecera, tarjetas, cierre de contacto (que conserva `--gradient-section`) y pie mantienen su superficie. `body` no lleva `bg-base-200`: el color de página lo pinta `:root`.
 - La entrada `.rise-*` usa `transform`/`opacity` y desaparece con reduced motion.
 - Sin View Transitions ni librerías de motion.
 

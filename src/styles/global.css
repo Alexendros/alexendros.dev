@@ -92,6 +92,13 @@
     --brand-fg: var(--ds-atlaps-paper-bone);
     --border-color: var(--ds-atlaps-paper-grid);
     --border-strong: var(--ds-atlaps-ink-pencil);
+
+    /* Rejilla del plano (fondo de todo el body). El trazo sale de
+       --border-color, que ya cambia con el tema; los alfalfa se limitan a
+       que el texto secundario siga en AA sobre la línea mayor (claro
+       4,53:1, oscuro 7,95:1). */
+    --grid-line: oklch(from var(--border-color) l c h / 0.3);
+    --grid-major: oklch(from var(--border-color) l c h / 0.4);
     --card: var(--ds-atlaps-paper-bone);
     --danger: var(--ds-atlaps-danger);
     --link: var(--ds-atlaps-blueprint-mid);
@@ -208,6 +215,33 @@
   body {
     font-family: var(--font-sans);
     line-height: var(--leading-body);
+  }
+
+  /* Fondo del plano en todas las páginas: dos capas (celda fina de 22 px y
+     mayor de 120 px) fijas tras el contenido. Las secciones con superficie
+     propia (cabecera, tarjetas, cierre de contacto, pie) la tapan. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(var(--grid-major) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-major) 1px, transparent 1px);
+    background-size:
+      1.375rem 1.375rem,
+      1.375rem 1.375rem,
+      7.5rem 7.5rem,
+      7.5rem 7.5rem;
+  }
+
+  @media (prefers-contrast: more), (forced-colors: active) {
+    body::before {
+      background: none;
+    }
   }
 
   h1,
@@ -433,7 +467,8 @@
     .navbar,
     .footer,
     [data-theme-toggle],
-    .js-only {
+    .js-only,
+    body::before {
       display: none !important;
     }
 

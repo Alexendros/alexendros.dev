@@ -4,46 +4,9 @@
     --hero-title-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.75rem);
     --hero-padding-block: clamp(4rem, 8vw, 8rem);
 
-    /* Rejilla histórica (Blueprint Lab, 1991232): celda fina de 22 px y
-       mayor de 120 px. El trazo sale de --border-color, que ya cambia con el
-       tema del sitio (claro, oscuro y sistema) sin prefers-color-scheme
-       propio: pergamino sobre --bg claro y claro sobre el azul plano oscuro.
-       Alfas limitados para que el subtítulo (--fg-muted) siga en AA sobre
-       la línea mayor: claro 4,53:1 y oscuro 7,95:1. */
-    --bp-line: oklch(from var(--border-color) l c h / 0.3);
-    --bp-major: oklch(from var(--border-color) l c h / 0.4);
-
-    background-color: var(--bg);
+    /* Sin fondo propio: la rejilla del plano vive en body::before
+       (global.css) y se ve a través del hero. */
     padding-block: var(--hero-padding-block);
-    position: relative;
-    isolation: isolate;
-  }
-
-  .surface::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background-image:
-      linear-gradient(var(--bp-line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--bp-line) 1px, transparent 1px),
-      linear-gradient(var(--bp-major) 1px, transparent 1px),
-      linear-gradient(90deg, var(--bp-major) 1px, transparent 1px);
-    background-size:
-      1.375rem 1.375rem,
-      1.375rem 1.375rem,
-      7.5rem 7.5rem,
-      7.5rem 7.5rem;
-
-    /* Desvanecido arriba y abajo: la rejilla no acaba en línea dura. */
-    mask-image: linear-gradient(to bottom, transparent 0, #000 12%, #000 88%, transparent 100%);
-  }
-
-  @media (prefers-contrast: more), (forced-colors: active) {
-    .surface::before {
-      background: none;
-    }
   }
 
   .title {

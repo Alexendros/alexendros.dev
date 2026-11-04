@@ -3,35 +3,53 @@
 - OT: `alexendrosdev-diseno-v2`, correcciones tras T7.5/T7.6.
 - Rama: `fix/diseno-post-t7`, desde `origin/main` = `ccb9d240` (T7.5 fusionada).
 - Fecha: 4 de noviembre de 2026, Europe/Madrid.
-- Alcance: rejilla del hero, presupuesto CSS, redirecciones 301 y objetivos táctiles de 44 px. Sin cambios en CSP ni en `/design-system/`.
+- Alcance: rejilla del plano en el fondo del cuerpo, presupuesto CSS (20 rutas),
+  redirecciones 301 y objetivos táctiles de 44 px. Sin cambios en CSP ni en
+  `/design-system/`.
 
-## 1. Rejilla del hero (solo portada)
+## 1. Rejilla del plano en el fondo del cuerpo
 
-`src/components/sections/Hero.module.css`:
+`src/styles/global.css` (una sola regla, `@layer base`) y hero transparente:
 
-- Dos capas: celda fina de **22 px** y mayor de **120 px** (la histórica de `1991232`), sobre fondo plano `--bg` (el hero deja de usar `--gradient-section`; ContactCta la conserva).
-- Líneas con `--border-color` al 30 % (fina) y 40 % (mayor): el trazo cambia con el tema del sitio por tokens (claro, oscuro y sistema). **No hay `@media (prefers-color-scheme)` en el módulo.**
-- `mask-image` de 0 → 12 % → 88 % → 100 %: la rejilla se desvanece arriba y abajo y no acaba en línea dura.
-- Se retira con `prefers-contrast: more` y `forced-colors: active`.
+- `body::before` con `position: fixed; inset: 0; z-index: -1; pointer-events: none` y las dos capas históricas de `1991232`: celda fina de **22 px** y mayor de **120 px**. Sin `mask` (la rejilla es el fondo de toda la página); tampoco viñeteado.
+- Líneas de `--border-color` al 30 % (fina) y 40 % (mayor), declaradas como `--grid-line` / `--grid-major` en `:root`. El trazo cambia con el tema del sitio por tokens (claro, oscuro y sistema). **No hay `@media (prefers-color-scheme)` en el módulo ni en la regla.**
+- Se retira con `prefers-contrast: more`, `forced-colors: active` y al imprimir.
+- Para que la rejilla no quede tapada, `body` deja de llevar `bg-base-200`: el color de página lo pinta `:root` (daisyUI, `base-100` = `base-200`, mismo valor en ambos temas). `Header` (surface y glass), `surface-raised`/cards, `ContactCta` (`--gradient-section`), `Footer` (`bg-base-100`) y el prompt del hero conservan su superficie.
+- `Hero.module.css` pierde fondo y rejilla: el hero queda transparente sobre el fondo del cuerpo.
 
-Contraste del texto del hero sobre la línea mayor (`scripts/contrast-lib.mjs`):
+### Contraste del texto que queda sobre la rejilla
 
-| Tema   | Titular (`--fg`) | Subtítulo (`--fg-muted`) | Mínimo AA |
-| ------ | ---------------: | -----------------------: | --------: |
-| Claro  |        13,69 : 1 |                 4,53 : 1 |   4,5 : 1 |
-| Oscuro |         9,27 : 1 |                 7,95 : 1 |   4,5 : 1 |
+Peor caso, línea mayor al 40 % (`scripts/contrast-lib.mjs` y barrido de las 20 rutas en 1280 px, claro y oscuro):
 
-El alfa mayor queda limitado por el subtítulo: con la rejilla anterior (blueprint-mid al 10 %) el subtítulo bajaba a 4,14 : 1 y no cumplía AA en claro.
+| Texto                    | Claro sobre línea | Oscuro sobre línea |
+| ------------------------ | ----------------: | -----------------: |
+| `--fg`                   |         13,69 : 1 |           8,23 : 1 |
+| `--fg-muted`             |          4,53 : 1 |           7,05 : 1 |
+| `--link`                 |          7,31 : 1 |           2,93 : 1 |
+| `--brand` (text-primary) |         12,08 : 1 |           3,92 : 1 |
+| `--danger`               |          4,88 : 1 |           2,93 : 1 |
+
+- **Claro:** todo el texto que queda sobre la rejilla cumple AA (mínimo 4,53 : 1, `--fg-muted`).
+- **Oscuro:** `--fg` y `--fg-muted` cumplen; `--link`, `--brand` y `--danger` bajan al cruzar la línea (planos: 4,57, 6,12 y 4,57 : 1). La causa es el enlace oscuro: su 4,57 : 1 plano no deja margen, y con alfa 0,08 ya baja a 4,22 : 1. Afecta a tres textos: «respuesta a necesidades reales» (`/servicios/`), «política de privacidad» (`/contacto/`) y «Ver referencias» (`/experiencia/`, `/design-system/`). axe no lo detecta (la rejilla es un pseudo-elemento, no un `background-color`). Opciones: (1) aceptarlo como decoración de 1 px, (2) subir `--link`/`--danger` en oscuro (p. ej. `--ds-atlaps-paper-grid`, 10 : 1 plano), o (3) líneas oscuras en oscuro. **Pendiente de decisión.**
 
 ## 2. Bytes (control local `scripts/check-css-margin.mjs`)
 
-Medición LHCI móvil (3 pasadas por URL, `resource-summary` de hojas de estilo):
+Medición LHCI móvil (`resource-summary` de hojas de estilo) con las 20 rutas del
+build; todas dentro de 25.100 B:
 
-| Página                          |  Antes | Después | Límite | Margen |
-| ------------------------------- | -----: | ------: | -----: | -----: |
-| `/`                             | 25.087 |  22.449 | 25.100 | +2.651 |
-| `/contacto/`                    | 24.355 |  21.679 | 25.100 | +3.421 |
-| `/servicios/software-a-medida/` | 25.672 |  22.996 | 25.100 | +2.104 |
+| Ruta                                                                              |  Bytes | Margen |
+| --------------------------------------------------------------------------------- | -----: | -----: |
+| `/servicios/software-a-medida/`                                                   | 23.188 | +1.912 |
+| `/`                                                                               | 22.401 | +2.699 |
+| `/servicios/`, fichas de referencia, `/metodo/`, `/sobre-mi/`, artículos, `/404/` | 22.123 | +2.977 |
+| `/contacto/`                                                                      | 21.871 | +3.229 |
+| `/referencias/`                                                                   | 21.824 | +3.276 |
+| `/experiencia/`, legales, `/accesibilidad/`, `/design-system/`                    | 21.467 | +3.633 |
+
+Antes del cambio, con el control de 3 rutas: portada 25.087 → 22.449; contacto
+24.355 → 21.679; software-a-medida 25.672 → 22.996. El traslado de la rejilla al
+`body` deja la portada en 22.401 B y sube software-a-medida a 23.188 B (+192 por
+la regla global), dentro del límite.
 
 Recorte de reglas sin uso (con evidencia):
 
@@ -75,16 +93,19 @@ Cobertura: `tests/e2e/retirada-fichas.spec.ts` con una prueba por dirección (6)
 | `pnpm lint` / `pnpm lint:css` / `pnpm format:check`                  | OK                                                                                          |
 | `pnpm test`                                                          | 198/198                                                                                     |
 | `pnpm build` (`astro check` incluido)                                | OK                                                                                          |
-| `e2e-critical` (22 specs del job)                                    | 173/173                                                                                     |
+| `e2e-critical` (22 specs del job)                                    | 175/175                                                                                     |
 | `tests/e2e/a11y.spec.ts` (axe, 20 rutas × 2 temas)                   | 40/40, 0 violaciones                                                                        |
 | `pnpm check:contrast`                                                | OK (28 pares; `badge-soft` sigue bajo AA, aviso ya existente)                               |
 | `pnpm check:copy`, `check:classes`, `check:records`, `audit:cookies` | OK                                                                                          |
-| `node scripts/check-css-margin.mjs`                                  | Las tres rutas dentro de 25.100 B                                                           |
+| `node scripts/check-css-margin.mjs`                                  | 20 rutas dentro de 25.100 B (máximo 23.188)                                                 |
 | `tests/e2e/visual-system.spec.ts`                                    | 33/37; los 4 fallos (cabecera glass, configurador, borde claro/oscuro) ya estaban en `main` |
 | `seo-edge-prod` (301 + 308 de plataforma)                            | Las 6 direcciones aceptadas; anota `pendiente-despliegue` hasta el deploy                   |
 
 ## 6. Capturas
 
-`audit-out/cierre-04-11/` (artefacto local, no versionado): hero en claro y oscuro a 390 y 1280 px (`hero-alex{light,dark}-{mobile,desktop}.png`) y las de antes en `antes/`.
+`audit-out/cierre-04-11/` (artefacto local, no versionado):
+
+- `rejilla-global/`: portada, `/servicios/` y `/servicios/software-a-medida/` × claro/oscuro × 390/1280, más versión de página completa a 1280.
+- `hero-alex{light,dark}-{mobile,desktop}.png`: estado anterior (rejilla solo en el hero) y `antes/`.
 
 `/design-system/` y la CSP no se han tocado: quedan para Ingeniero.

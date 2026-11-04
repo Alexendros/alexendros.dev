@@ -123,7 +123,9 @@ const graph = {
     <Fragment set:html={'<script src="/theme-init.js"></script>'} />
     <script type="application/ld+json" set:html={JSON.stringify(graph)} />
   </head>
-  <body class="bg-base-200 text-base-content antialiased min-h-screen flex flex-col">
+  <!-- Sin fondo propio en body: la rejilla vive en body::before (global.css)
+       y el color de página lo pinta :root (daisyUI, base-100 = base-200). -->
+  <body class="text-base-content antialiased min-h-screen flex flex-col">
     <SkipLink />
     <Header />
     <main id="main" class="flex-1" tabindex="-1">

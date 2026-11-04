@@ -26,19 +26,26 @@ test('tipografía: solo Source Sans latin variable tiene preload prioritario', a
   );
 });
 
-test('hero: firma terminal, fondo plano y rejilla con desvanecido', async ({ page }) => {
+test('hero: firma terminal, hero transparente y rejilla en el fondo del cuerpo', async ({
+  page
+}) => {
   await page.goto('/');
 
   await expect(page.locator('#top [data-terminal-prompt]')).toHaveCount(1);
-  const hero = page.locator('#top');
-  const heroBackground = await hero.evaluate((el) => getComputedStyle(el).backgroundImage);
-  const gridMask = await hero.evaluate((el) => getComputedStyle(el, '::before').maskImage);
+  const heroBackground = await page
+    .locator('#top')
+    .evaluate((el) => getComputedStyle(el).backgroundImage);
+  const grid = await page.evaluate(() => {
+    const style = getComputedStyle(document.body, '::before');
+    return { image: style.backgroundImage, mask: style.maskImage };
+  });
   const processSurface = page.locator('#metodo .surface-raised');
   await expect(processSurface).toBeVisible();
   const processShadow = await processSurface.evaluate((el) => getComputedStyle(el).boxShadow);
 
   expect(heroBackground).toBe('none');
-  expect(gridMask).not.toBe('none');
+  expect(grid.image).toContain('linear-gradient');
+  expect(grid.mask).toBe('none');
   expect(processShadow).not.toBe('none');
 });
 
