@@ -242,3 +242,72 @@ test('pie: foco visible alcanzable con teclado', async ({ page }) => {
   }
   throw new Error('El foco no alcanzó el pie después de 100 tabulaciones');
 });
+
+test('C-1: botón principal con radio Atlaps de 4 px', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('.btn-primary').first()).toHaveCSS('border-radius', '4px');
+});
+
+test('C-2: campo con anillo de foco visible', async ({ page }) => {
+  await page.goto('/contacto/');
+  const field = page.getByLabel(/^Nombre( \*)?$/);
+  await field.focus();
+  const shadow = await field.evaluate((element) => getComputedStyle(element).boxShadow);
+  expect(shadow).not.toBe('none');
+});
+
+test('C-3: plazo y garantía presentados como insignias', async ({ page }) => {
+  await page.goto('/servicios/informe-comercial/');
+  await expect(page.locator('[data-service-badges]')).toHaveCount(1);
+  await expect(page.locator('[data-service-badge]')).toHaveCount(2);
+  await expect(page.locator('[data-product-section="commercial"] dt')).toHaveText([
+    'Plazo',
+    'Entrega',
+    'Garantía'
+  ]);
+});
+
+test('C-4: sombra de tarjeta sin desenfoque', async ({ page }) => {
+  await page.goto('/');
+  const card = page.locator('.surface-raised').first();
+  const shadow = await card.evaluate((element) => getComputedStyle(element).boxShadow);
+  expect(shadow).not.toBe('none');
+  expect(shadow).not.toContain('24px');
+  expect(shadow).not.toContain('40px');
+});
+
+test('C-5: foco único en cabecera y formulario', async ({ page }) => {
+  await page.goto('/contacto/');
+  const expected = await page.evaluate(() =>
+    getComputedStyle(document.documentElement).getPropertyValue('--focus-color').trim()
+  );
+  expect(expected).not.toBe('');
+  const header = page.locator('#site-header a[href^="/contacto"]');
+  await header.focus();
+  const headerColor = await header.evaluate((element) => getComputedStyle(element).outlineColor);
+  const field = page.getByLabel(/^Nombre( \*)?$/);
+  await field.focus();
+  const fieldColor = await field.evaluate((element) => getComputedStyle(element).outlineColor);
+  expect(fieldColor).toBe(headerColor);
+});
+
+test('C-6: confirmación de contacto como toast accesible', async ({ page }) => {
+  await page.route('**/api/contact', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ ok: true, status: 'accepted', requestId: 'e2e', replay: false })
+    });
+  });
+  await page.goto('/contacto/');
+  await page.locator('input[name="via"][value="revisar"]').check();
+  await page.getByLabel(/^Nombre( \*)?$/).fill('Test Cliente');
+  await page.getByLabel(/^Correo electrónico( \*)?$/).fill('test@example.invalid');
+  await page.getByLabel(/^Mensaje( \*)?$/).fill('Necesito información sobre el informe comercial.');
+  await page.getByLabel(/Acepto/).check();
+  await page.getByRole('button', { name: 'Solicitar propuesta', exact: true }).click();
+  const toast = page.locator('[data-contact-success]');
+  await expect(toast).toBeVisible();
+  await expect(toast).toHaveAttribute('role', 'status');
+  await expect(toast).toHaveCSS('border-left-width', '3px');
+});

@@ -1,0 +1,6 @@
+@layer utilities {
+  .toast {
+    border-left-width: 3px;
+    box-shadow: var(--shadow-1);
+  }
+}

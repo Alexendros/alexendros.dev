@@ -1,0 +1,57 @@
+/* stylelint-disable custom-property-pattern -- escala tipográfica existente */
+@layer components {
+  .group {
+    display: grid;
+    gap: 1rem;
+    margin-top: 2rem;
+    font-size: var(--step--1);
+  }
+
+  .badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content;
+    max-width: 100%;
+    padding: 0.375rem 0.75rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 9999px;
+    background-color: var(--badge-bg);
+    color: var(--badge-fg);
+  }
+
+  .badge dt {
+    font-weight: 600;
+  }
+
+  .badge dd {
+    margin: 0;
+  }
+
+  .delivery {
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-field);
+    background-color: var(--card);
+  }
+
+  .delivery dt {
+    color: var(--fg-muted);
+  }
+
+  .delivery dd {
+    margin-top: 0.25rem;
+    font-weight: 500;
+  }
+
+  @media (width >= 640px) {
+    .group {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .delivery {
+      grid-column: span 2;
+    }
+  }
+}
+/* stylelint-enable custom-property-pattern */
