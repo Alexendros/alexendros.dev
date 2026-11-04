@@ -24,7 +24,6 @@ for (const theme of ['alexlight', 'alexdark'] as const) {
   test(`DIS-08: rejilla blueprint en ${theme} y retirada con contraste forzado`, async ({
     page
   }) => {
-    test.fail(true, 'DIS-08: rejilla blueprint pendiente');
     await page.addInitScript((selectedTheme) => {
       localStorage.setItem('theme', selectedTheme);
     }, theme);
