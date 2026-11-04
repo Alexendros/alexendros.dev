@@ -10,6 +10,7 @@
     alert, join;
 }
 @import './theme.css';
+@import './design-references.css';
 
 /* Solo latin: suficiente para el contenido del portal y evita CSS/subconjuntos sin uso. */
 @font-face {
@@ -65,9 +66,6 @@
   --height-header: var(--header-h);
 }
 /* stylelint-enable custom-property-pattern */
-@layer design-references {
-  /* reservado */
-}
 @layer reset {
   body {
     margin: 0;
