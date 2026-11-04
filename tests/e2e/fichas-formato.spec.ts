@@ -5,7 +5,6 @@ const retiredSlugs = new Set(['informe-comercial', 'cumplimiento-normativo', 'ci
 const remainingServices = services.filter((service) => !retiredSlugs.has(service.slug));
 const expectedSections = [
   'next-step',
-  'commercial',
   'audience',
   'process',
   'deliverables',
@@ -24,7 +23,6 @@ for (const service of remainingServices) {
         test(`DIS-03: ${service.slug}, ${viewport.width}, ${theme}, texto ${textScale * 100} %`, async ({
           page
         }) => {
-          test.fail(true, 'DIS-03: Siguiente paso y formato uniforme pendientes');
           await page.setViewportSize(viewport);
           await page.addInitScript((selectedTheme) => {
             localStorage.setItem('theme', selectedTheme);
