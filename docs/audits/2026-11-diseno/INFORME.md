@@ -326,3 +326,123 @@ No se han retirado ni añadido tests de producto. Los artefactos temporales de a
 | A11Y-03 | **Cerrado en T6** | Configurador, acciones y resumen con ancho mínimo/máximo y ruptura de texto; a 390 px con texto al 200 % no hay desbordamiento. Su prueba ya no lleva `test.fail()`.                                                                                                                                                                         |
 
 La comprobación específica de estas cinco acciones pasa 5/5 y la estructura de las fichas 6/6. Las tres pruebas de texto al 200 % pasan 3/3 y `diseno-interaccion.spec.ts` completa 61/61. No se añadieron textos comerciales ni precios.
+
+## 13. T7 · línea base, inventario y hallazgos
+
+- OT: `alexendrosdev-diseno-v2`, tarea T7.0; solo auditoría, pruebas y controles, sin cambios de producto.
+- Base: `origin/main` = `03a504855e16ac591c8d119368201e5834938230`.
+- Fecha de medición: 4 de noviembre de 2026, Europe/Madrid.
+- Fuentes F1–F8 abiertas y leídas. `/workspace/preview-review/grid.css` no existe; para T7.5 queda como referencia el literal del prompt, tal como autoriza F4.
+- B0.8 quedó corregido por el Arquitecto: dos usos iniciales de `<Commitments>` y uno tras T7.2. El margen de `software-a-medida` quedó registrado como fallo conocido `KF-V10-SAM`; hasta T7.3 solo bloquea si supera 25.598 B.
+
+### 13.1 Integridad de fuentes
+
+| Fuente                             | Bytes | SHA-256                                                            | Resultado                     |
+| ---------------------------------- | ----: | ------------------------------------------------------------------ | ----------------------------- |
+| Prompt OT T7 actualizado           | 47901 | `1f5bc24a639dab6fcf190f21828f7d27b8b10b6c43f9172c293be6d2305a11c1` | Coincide                      |
+| F1, bloque de código               | 19165 | `d89523880f3dc923869b66c3153778d9bb5d3b9f124773927328e05c63dcd9da` | Coincide                      |
+| rcp-v1.2.2, INICIO y FIN incluidos | 15907 | `05f60b8d14b37290d3a765518e32e53bd8228b0925dace67a44da209cc57d283` | Coincide en F1 y en el prompt |
+| F2, bloque de código               | 39759 | `fa31d3a997f14b12456171bc6847ff3b12c65ac3d426419f394e13b161511a32` | Coincide                      |
+
+Todos los bloques se copiaron con LF, sin valla ni salto final, conforme a S5.
+
+### 13.2 Línea base B0
+
+| ID    | Valor medido                                                                        | Comando / procedimiento                                                                                    |
+| ----- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| B0.1  | `true`                                                                              | `gh api repos/Alexendros/alexendros.dev/commits/main -q .commit.verification.verified`                     |
+| B0.2  | 1; paquetes ocultos                                                                 | `grep -c "export const paquetesPublicados: boolean = false" src/content/paquetes.ts`                       |
+| B0.3  | Portada 25.015 B; contacto 24.275 B; software-a-medida e informe-comercial 25.598 B | LHCI móvil, 3 pasadas por URL; máximo por página                                                           |
+| B0.4  | Máximo 22.888 B gzip en `/servicios/`                                               | Suma gzip de las hojas enlazadas por cada HTML construido; `pnpm audit:css` como control de ejecución      |
+| B0.5  | 1                                                                                   | `gh label list -L 200 -R Alexendros/alexendros.dev --json name -q '.[].name' \| grep -cx policy-exception` |
+| B0.6  | Vitest 198/198; Playwright 267/267; axe 46/46; estructura 6/6; `test.fail()` 0      | `pnpm exec playwright test --reporter=json`; `pnpm test`; búsqueda en `tests`                              |
+| B0.7  | Portada 0,99; contacto 1,00; software-a-medida 1,00; CLS 0 en las tres              | LHCI móvil, 3 pasadas; LCP 1812–1880 ms en portada y 1503–1655 ms en contacto                              |
+| B0.8  | 2 usos (`Hero.astro:32`, `metodo.astro:44`); 3 compromisos                          | `git grep -n '<Commitments' -- src`; `grep -c "id: '" src/content/commitments.ts`                          |
+| B0.9  | 4 tarjetas; DetailIsland presente; configurador 1; FAQ 1; paquetes 0                | Conteo de elementos en `.vercel/output/static/servicios/index.html` y DOM de preview                       |
+| B0.10 | 0                                                                                   | `git grep -n 'bp-line\|bp-major' -- src` no devuelve coincidencias                                         |
+| B0.11 | `pnpm@9.15.9`; `.nvmrc` = 24; Node v24.22.2                                         | `node -p "require('./package.json').packageManager"`; `cat .nvmrc`; `node --version`                       |
+
+### 13.3 Inventario A1–A8
+
+| Alcance | Ubicación actual                                                                                                       | Cambio previsto                                                                       |
+| ------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| A1      | `src/components/sections/Hero.astro:3,32`; `src/content/commitments.ts`; `src/pages/metodo.astro:44`                   | Retirar el uso de portada en T7.2; conservar componente, datos y uso en `/metodo`     |
+| A2      | `src/pages/servicios/index.astro:3-79`                                                                                 | Reducir el índice en T7.2 a paquetes condicionados, Colaboración y acción             |
+| A2b     | `src/content/services.ts:70-320`; `vercel.json:92-122`; sitemap y JSON-LD generados                                    | Retirar tres fichas y sus referencias con 301 en T7.1                                 |
+| A3      | `src/pages/servicios/[slug].astro:52-173`; `tests/e2e/products-structure.spec.ts`                                      | Mantener una secuencia común, verificada por `fichas-formato.spec.ts`                 |
+| A4      | `src/pages/servicios/[slug].astro:71-102`; `src/components/ServiceBadges.astro:15-29`; `ServiceBadges.module.css:3-51` | Rehacer «Siguiente paso» y los tres datos en T7.3                                     |
+| A5      | `src/components/sections/Hero.astro:7-32`; `Hero.module.css:3-31`; CSS de tema y botones existente                     | Afinar jerarquía, ritmo y acciones en T7.4                                            |
+| A6      | `src/components/sections/Hero.astro:7`; `Hero.module.css:3-5`; sin `bp-line`/`bp-major`                                | Añadir la rejilla solo al pseudo-elemento del hero en T7.5                            |
+| A7      | `lighthouserc.json`; hojas servidas en portada, contacto y software-a-medida                                           | Control local `scripts/check-css-margin.mjs`; recorte de reglas sin uso en T7.3       |
+| A8      | `ContactForm.astro:90-95,205-208`; `NeedsConfigurator.astro:28-33,74-82`; `Header.astro:25`; `Footer.astro:41-43`      | Objetivos de 44 px en T7.6; el enlace del configurador solo se prueba mientras exista |
+
+### 13.4 Hallazgos nuevos
+
+| ID      | Página                                                            | Gravedad | Criterio                                     | Archivo:línea                                                                                                     | Evidencia                                                                                                                                                    | Cómo arreglarlo                                                                                                                                                    | Tarea       |
+| ------- | ----------------------------------------------------------------- | -------- | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------- |
+| DIS-03  | `/servicios/software-a-medida/`                                   | alta     | D5; WCAG 1.3.1                               | `src/pages/servicios/[slug].astro:71-102`; `ServiceBadges.astro:15-29`; `ServiceBadges.module.css:3-51`           | Separación acción/lista 0 px; clases `badge/delivery/badge`; radios 9999/4/9999 px y padding calculado 0 en claro y oscuro. Entrega no comparte presentación | Integrar introducción, botón y `dl` uniforme; tres pares con la misma clase, sin pastillas, en la matriz de 390/1280, dos temas y texto al 200 %                   | T7.3        |
+| A11Y-04 | Contacto, servicios, cabecera y pie                               | media    | WCAG 2.2, 2.5.5; objetivo reforzado de la OT | `ContactForm.astro:90-95,205-208`; `NeedsConfigurator.astro:28-33,74-82`; `Header.astro:25`; `Footer.astro:41-43` | Casillas 24×24 px; enlace sin módulos 24 px de alto; logo 40 px de alto; GitHub 42 px y Correo 41 px de ancho                                                | Ampliar el área interactiva a 44×44 px sin alterar el resto del aspecto                                                                                            | T7.6        |
+| DIS-04  | `/`                                                               | media    | D2; Nielsen 8                                | `src/components/sections/Hero.astro:32`                                                                           | Tres `.commitment-item` en portada                                                                                                                           | Retirar solo este uso; conservar `Commitments.astro`, sus datos y `/metodo`                                                                                        | T7.2        |
+| DIS-05  | `/servicios/`                                                     | alta     | D2, D3; Nielsen 8                            | `src/pages/servicios/index.astro:20-79`                                                                           | Cuatro tarjetas, DetailIsland, un configurador y una FAQ; el contenido actual supera la oferta vigente                                                       | Dejar paquetes condicionados, la tarjeta de Colaboración y la acción existente; probar también con paquetes activados                                              | T7.2        |
+| DIS-06  | `/servicios/informe-comercial/` y `/servicios/software-a-medida/` | alta     | D6; presupuesto V10                          | Hojas CSS servidas; `ServiceBadges.module.css` en la ficha                                                        | Ambas miden 25.598 B: margen 2 B sobre 25.600 y 498 B por encima del control de 25.100                                                                       | Retirar informe-comercial en T7.1. `KF-V10-SAM` permite software-a-medida hasta 25.598 B solo antes de T7.3; después quitar reglas sin uso con evidencia por regla | T7.1 y T7.3 |
+| DIS-07  | `/`                                                               | media    | D5                                           | `src/components/sections/Hero.astro:17-20`; `Hero.module.css`                                                     | H1 calculado 28,835 px a 390 (esperado 36) y 42,56 px a 1280 (esperado 58,88)                                                                                | Aplicar el clamp y la jerarquía de T7.4 sin sacar el CTA de la primera pantalla                                                                                    | T7.4        |
+| DIS-08  | `/`                                                               | media    | D1, D5                                       | `src/components/sections/Hero.astro:7`; `Hero.module.css`                                                         | `background-image: none` en `::before` del hero, en claro y oscuro                                                                                           | Añadir rejilla con variables Atlaps y desactivarla en contraste alto/colores forzados                                                                              | T7.5        |
+| DIS-09  | Las tres fichas de revisiones                                     | alta     | D2; retirada DA-1                            | `src/content/services.ts`; `vercel.json`; sitemap y HTML construido                                               | Las rutas responden 200 en preview, no existen sus reglas 301 y los slugs siguen en sitemap, JSON-LD y enlaces                                               | Borrar datos y referencias; añadir 301 de un salto a `/servicios/` con y sin barra, incluidos los alias existentes                                                 | T7.1        |
+
+Todos los hallazgos anteriores están abiertos al cerrar T7.0. No se han redactado textos comerciales nuevos.
+
+### 13.5 V10 y bytes por regla
+
+| Página                          | Rendimiento | CLS | V10 hojas de estilo | Margen hasta 25.600 | Control T7                             |
+| ------------------------------- | ----------: | --: | ------------------: | ------------------: | -------------------------------------- |
+| `/`                             |        0,99 |   0 |            25.015 B |               585 B | Cumple ≤25.100 B                       |
+| `/contacto/`                    |        1,00 |   0 |            24.275 B |             1.325 B | Cumple ≤25.100 B                       |
+| `/servicios/software-a-medida/` |        1,00 |   0 |            25.598 B |                 2 B | `KF-V10-SAM`; máximo temporal 25.598 B |
+| `/servicios/informe-comercial/` |        1,00 |   0 |            25.598 B |                 2 B | Se retira en T7.1                      |
+
+La tabla completa por regla quedó generada como artefacto local no versionado en `/tmp/t7-css-rules-base.json` y `/tmp/t7-css-rules-base.md` (C9). Separa los bytes existentes en main de los nuevos: todos son de main y la columna nueva es 0. Las reglas de mayor peso y las específicas del alcance son:
+
+| Página                          | Regla                                | Bytes existentes | Bytes nuevos |
+| ------------------------------- | ------------------------------------ | ---------------: | -----------: |
+| `/`                             | `:root` (cookie banner)              |            1.955 |            0 |
+| `/`                             | `.cc--darkmode`                      |            1.692 |            0 |
+| `/`                             | `*,:before,:after,::backdrop`        |            1.612 |            0 |
+| `/`                             | `:root,:host`                        |            1.456 |            0 |
+| `/`                             | `.btn`                               |            1.375 |            0 |
+| `/`                             | `._terminal-prompt_zhl31_7`          |              349 |            0 |
+| `/`                             | `._surface_zhl31_3`                  |               60 |            0 |
+| `/`                             | `._actions_zhl31_24`                 |               38 |            0 |
+| `/contacto/`                    | `:root` (cookie banner)              |            1.955 |            0 |
+| `/contacto/`                    | `.cc--darkmode`                      |            1.692 |            0 |
+| `/contacto/`                    | `*,:before,:after,::backdrop`        |            1.612 |            0 |
+| `/contacto/`                    | `:root,:host`                        |            1.456 |            0 |
+| `/contacto/`                    | `.btn`                               |            1.375 |            0 |
+| `/servicios/software-a-medida/` | `:root` (cookie banner)              |            1.955 |            0 |
+| `/servicios/software-a-medida/` | `.cc--darkmode`                      |            1.692 |            0 |
+| `/servicios/software-a-medida/` | `*,:before,:after,::backdrop`        |            1.612 |            0 |
+| `/servicios/software-a-medida/` | `:root,:host`                        |            1.456 |            0 |
+| `/servicios/software-a-medida/` | `.btn`                               |            1.375 |            0 |
+| `/servicios/software-a-medida/` | `._badge_11vmg_10`                   |              230 |            0 |
+| `/servicios/software-a-medida/` | `._delivery_11vmg_31`                |              134 |            0 |
+| `/servicios/software-a-medida/` | `._group_11vmg_3`                    |          80 + 63 |            0 |
+| `/servicios/software-a-medida/` | `._delivery_11vmg_31 dd`             |               58 |            0 |
+| `/servicios/software-a-medida/` | `._delivery_11vmg_31 dt`             |               46 |            0 |
+| `/servicios/software-a-medida/` | `._delivery_11vmg_31` en media query |               40 |            0 |
+| `/servicios/software-a-medida/` | `._badge_11vmg_10 dt`                |               37 |            0 |
+| `/servicios/software-a-medida/` | `._badge_11vmg_10 dd`                |               30 |            0 |
+
+Hojas servidas sin comprimir: portada 95.093 + 33.708 + 826 B; contacto 95.093 + 33.708 + 84 B; software-a-medida 337 + 95.093 + 33.708 + 752 B. La cifra V10 es la medida por LHCI en `resource-summary`, no la suma sin comprimir.
+
+### 13.6 Cobertura roja añadida
+
+| Prueba                                           | Archivo                                | Fallo asociado                                    |
+| ------------------------------------------------ | -------------------------------------- | ------------------------------------------------- |
+| Formato completo de ficha en 8 combinaciones     | `tests/e2e/fichas-formato.spec.ts`     | DIS-03                                            |
+| Compromisos, clamp y rejilla de portada          | `tests/e2e/portada-t7.spec.ts`         | DIS-04, DIS-07, DIS-08                            |
+| Oferta y solapes de `/servicios/`                | `tests/e2e/servicios-oferta.spec.ts`   | DIS-05; la ausencia de solapes ya pasa en la base |
+| Casillas, enlace opcional, logo, GitHub y Correo | `tests/e2e/objetivos-tactiles.spec.ts` | A11Y-04                                           |
+| Redirecciones y ausencia en artefactos           | `tests/e2e/retirada-fichas.spec.ts`    | DIS-09                                            |
+| Oferta con paquetes temporales y axe             | `tests/e2e/paquetes-a11y.spec.ts`      | DIS-05                                            |
+| Margen CSS con excepción temporal                | `scripts/check-css-margin.mjs`         | KF-V10-SAM                                        |
+
+Las cinco specs nuevas se añaden a `e2e-critical`; la ejecución con paquetes sigue usando `with-packages.mjs` y restaura `paquetesPublicados=false`. La secuencia de secciones propuesta para las fichas restantes es `next-step`, `commercial`, `audience`, `process`, `deliverables`, `exclusions`, `requirements`, `technical`; queda pendiente de confirmación del Arquitecto al terminar T7.0.

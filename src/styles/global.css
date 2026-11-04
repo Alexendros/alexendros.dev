@@ -1,5 +1,6 @@
 /* Tokens de producto + marco daisyUI. Temas: theme.css. */
 @import 'tailwindcss';
+@source not "../../tests";
 @plugin "daisyui" {
   themes: false;
   exclude:
