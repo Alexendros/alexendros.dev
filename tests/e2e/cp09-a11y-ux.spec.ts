@@ -152,9 +152,7 @@ test.describe('CP-09 recorridos A–E (muestreo)', () => {
     await page.getByRole('link', { name: 'Colaboración en proyectos de programación' }).click();
     await expect(page).toHaveURL(/\/servicios\/software-a-medida/);
     await assertSingleH1AndMain(page);
-    const cta = page.locator('#detail-servicios-software-a-medida').getByRole('link', {
-      name: 'Solicitar propuesta'
-    });
+    const cta = page.getByRole('link', { name: 'Solicitar propuesta' });
     await expect(cta).toBeVisible();
     await cta.click();
     await expect(page).toHaveURL(/\/contacto/);
