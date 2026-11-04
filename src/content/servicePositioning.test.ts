@@ -2,9 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { services } from './services';
 
 const EXPECTED_TITLES = {
-  'informe-comercial': 'Revisión técnica para aparecer en buscadores',
-  'cumplimiento-normativo': 'Revisión técnica de privacidad, cookies y accesibilidad',
-  ciberseguridad: 'Revisión básica de seguridad web',
   'software-a-medida': 'Colaboración en proyectos de programación'
 } as const;
 

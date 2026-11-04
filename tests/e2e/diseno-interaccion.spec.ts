@@ -18,20 +18,12 @@ const routes = [
   '/referencias/graficas-nasve/',
   '/referencias/zedazo/',
   '/servicios/',
-  '/servicios/ciberseguridad/',
-  '/servicios/cumplimiento-normativo/',
-  '/servicios/informe-comercial/',
   '/servicios/software-a-medida/',
   '/sobre-mi/',
   '/404/'
 ] as const;
 
-const serviceSlugs = [
-  'ciberseguridad',
-  'cumplimiento-normativo',
-  'informe-comercial',
-  'software-a-medida'
-] as const;
+const serviceSlugs = ['software-a-medida'] as const;
 
 async function expectNoHorizontalOverflow(page: Page, label: string) {
   const overflow = await page.evaluate(() => {
@@ -252,7 +244,7 @@ test('C-2: campo con anillo de foco visible', async ({ page }) => {
 });
 
 test('C-3: plazo y garantía presentados como insignias', async ({ page }) => {
-  await page.goto('/servicios/informe-comercial/');
+  await page.goto('/servicios/software-a-medida/');
   await expect(page.locator('[data-service-badges]')).toHaveCount(1);
   await expect(page.locator('[data-service-badge]')).toHaveCount(2);
   await expect(page.locator('[data-product-section="commercial"] dt')).toHaveText([

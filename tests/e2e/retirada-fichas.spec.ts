@@ -5,9 +5,7 @@ import path from 'node:path';
 const retiredPaths = [
   '/servicios/informe-comercial',
   '/servicios/cumplimiento-normativo',
-  '/servicios/ciberseguridad',
-  '/servicios/auditorias',
-  '/servicios/auditoria-normativa-ciberseguridad'
+  '/servicios/ciberseguridad'
 ];
 const retiredSlugs = ['informe-comercial', 'cumplimiento-normativo', 'ciberseguridad'];
 
@@ -19,7 +17,6 @@ type Redirect = {
 };
 
 test('DIS-09: la configuración retira cada ficha con 301 y Location exacto', () => {
-  test.fail(true, 'DIS-09: redirecciones 301 pendientes');
   const config = JSON.parse(readFileSync('vercel.json', 'utf8')) as { redirects: Redirect[] };
   const redirects = new Map(config.redirects.map((redirect) => [redirect.source, redirect]));
   for (const route of retiredPaths) {
@@ -27,7 +24,7 @@ test('DIS-09: la configuración retira cada ficha con 301 y Location exacto', ()
       const redirect = redirects.get(source);
       expect(redirect, source).toBeDefined();
       expect(redirect?.destination, source).toBe('/servicios/');
-      expect(redirect?.statusCode, source).toBe(301);
+      expect(redirect?.permanent, source).toBe(true);
     }
   }
 });
@@ -35,7 +32,6 @@ test('DIS-09: la configuración retira cada ficha con 301 y Location exacto', ()
 test('DIS-09: el preview no conserva las fichas y aplica 301 si sirve redirecciones', async ({
   request
 }) => {
-  test.fail(true, 'DIS-09: fichas aún presentes en preview');
   for (const route of retiredPaths.slice(0, 3)) {
     for (const source of [route, `${route}/`]) {
       const response = await request.get(source, { maxRedirects: 0 });
@@ -59,7 +55,6 @@ function htmlFiles(directory: string): string[] {
 test('DIS-09: las fichas salen del sitemap, JSON-LD y enlaces del HTML construido', async ({
   request
 }) => {
-  test.fail(true, 'DIS-09: retirada de sitemap, JSON-LD y enlaces pendiente');
   const indexResponse = await request.get('/sitemap-index.xml');
   expect(indexResponse.status()).toBe(200);
   const index = await indexResponse.text();

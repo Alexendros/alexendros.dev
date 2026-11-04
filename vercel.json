@@ -95,7 +95,7 @@
     },
     {
       "source": "/servicios/auditorias",
-      "destination": "/servicios/informe-comercial",
+      "destination": "/servicios/",
       "permanent": true
     },
     {
@@ -120,12 +120,12 @@
     },
     {
       "source": "/servicios/auditoria-normativa-ciberseguridad",
-      "destination": "/servicios/cumplimiento-normativo",
+      "destination": "/servicios/",
       "permanent": true
     },
     {
       "source": "/servicios/auditoria-normativa-ciberseguridad/",
-      "destination": "/servicios/cumplimiento-normativo",
+      "destination": "/servicios/",
       "permanent": true
     },
     {
@@ -136,6 +136,36 @@
     {
       "source": "/servicios/web-para/:path*",
       "destination": "/servicios",
+      "permanent": true
+    },
+    {
+      "source": "/servicios/informe-comercial",
+      "destination": "/servicios/",
+      "permanent": true
+    },
+    {
+      "source": "/servicios/informe-comercial/",
+      "destination": "/servicios/",
+      "permanent": true
+    },
+    {
+      "source": "/servicios/cumplimiento-normativo",
+      "destination": "/servicios/",
+      "permanent": true
+    },
+    {
+      "source": "/servicios/cumplimiento-normativo/",
+      "destination": "/servicios/",
+      "permanent": true
+    },
+    {
+      "source": "/servicios/ciberseguridad",
+      "destination": "/servicios/",
+      "permanent": true
+    },
+    {
+      "source": "/servicios/ciberseguridad/",
+      "destination": "/servicios/",
       "permanent": true
     }
   ],

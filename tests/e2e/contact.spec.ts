@@ -175,9 +175,9 @@ test('CFG-05: params hostiles no inventan condiciones ni XSS', async ({ page }) 
 
 test('CFG-06: servicio y proyecto allowlisted; desconocidos se descartan', async ({ page }) => {
   await page.goto(
-    '/contacto?servicio=informe-comercial&proyecto=front-valencia&precio=999&servicio=evil'
+    '/contacto?servicio=software-a-medida&proyecto=front-valencia&precio=999&servicio=evil'
   );
-  await expect(page.locator('#contact-service')).toHaveValue('informe-comercial', {
+  await expect(page.locator('#contact-service')).toHaveValue('software-a-medida', {
     timeout: 10_000
   });
   await expect(page.locator('#contact-project')).toHaveValue('front-valencia');

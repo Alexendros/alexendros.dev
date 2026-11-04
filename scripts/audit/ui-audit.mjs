@@ -7,7 +7,6 @@ const ROUTES = [
   '/',
   '/servicios',
   '/servicios/software-a-medida',
-  '/servicios/informe-comercial',
   '/referencias',
   '/referencias/front-valencia',
   '/referencias/graficas-nasve',

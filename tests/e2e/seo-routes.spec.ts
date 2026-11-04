@@ -14,9 +14,6 @@ const SITEMAP_PUBLIC_PATHS = [
   '/metodo/',
   '/referencias/',
   '/servicios/',
-  '/servicios/informe-comercial/',
-  '/servicios/cumplimiento-normativo/',
-  '/servicios/ciberseguridad/',
   '/servicios/software-a-medida/',
   '/articulos/presupuesto-web/',
   '/articulos/web-o-app-a-medida/'
@@ -215,9 +212,6 @@ test('ROUTE-04: embudo retirado no anuncia lead-magnet ni newsletter', async ({ 
 const TITLE_SEED_PATHS = [
   '/',
   '/servicios',
-  '/servicios/informe-comercial',
-  '/servicios/cumplimiento-normativo',
-  '/servicios/ciberseguridad',
   '/referencias',
   '/metodo',
   '/contacto',

@@ -19,9 +19,6 @@ const routes = [
   '/referencias/graficas-nasve/',
   '/referencias/zedazo/',
   '/servicios/',
-  '/servicios/ciberseguridad/',
-  '/servicios/cumplimiento-normativo/',
-  '/servicios/informe-comercial/',
   '/servicios/software-a-medida/',
   '/sobre-mi/',
   '/404/'
