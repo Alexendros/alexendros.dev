@@ -1,4 +1,10 @@
 @layer components {
+  .action {
+    max-inline-size: 100%;
+    text-align: center;
+    white-space: normal;
+  }
+
   .spinner {
     display: inline-block;
     inline-size: 1em;
