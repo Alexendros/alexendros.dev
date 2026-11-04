@@ -32,7 +32,8 @@ const SEMANTIC = [
   'card',
   'danger',
   'link',
-  'primary-ghost'
+  'primary-ghost',
+  'grid-major'
 ];
 
 const PAIRS = [
@@ -54,7 +55,10 @@ const PAIRS = [
   ['brand/bg-subtle (acento sobre gradiente)', 'brand', 'bg-subtle', 4.5],
   ['fg/primary-ghost (texto sobre superficie ghost)', 'fg', 'primary-ghost', 4.5],
   ['border-strong/card (frontera de inputs)', 'border-strong', 'card', 3.0],
-  ['border-strong/bg (frontera de inputs)', 'border-strong', 'bg', 3.0]
+  ['border-strong/bg (frontera de inputs)', 'border-strong', 'bg', 3.0],
+  // Texto que cae sobre la rejilla del fondo (body::before): línea mayor.
+  ['link/grid-major (enlaces sobre la rejilla)', 'link', 'grid-major', 4.5],
+  ['danger/grid-major (error sobre la rejilla)', 'danger', 'grid-major', 4.5]
 ];
 
 const DAISY_ROLES = [
@@ -364,8 +368,8 @@ const ATLAPS_PAIRS = [
   ['oscuro', 'texto sobre superficie mid', 'paper-bone', 'blueprint-mid', 7.77, 4.5],
   ['oscuro', 'error original (prohibido)', 'danger', 'blueprint-deep', 2.48, null],
   ['oscuro', 'borde ajustado', 'border-dark', 'blueprint-deep', 3.08, 3],
-  ['oscuro', 'error ajustado', 'danger-dark', 'blueprint-deep', 4.57, 4.5],
-  ['oscuro', 'enlace ajustado', 'link-dark', 'blueprint-deep', 4.57, 4.5]
+  ['oscuro', 'error ajustado (AA sobre la rejilla)', 'danger-dark', 'blueprint-deep', 7.37, 7],
+  ['oscuro', 'enlace ajustado (AA sobre la rejilla)', 'link-dark', 'blueprint-deep', 7.28, 7]
 ];
 
 for (const [theme, use, fgName, bgName, expected, minimum] of ATLAPS_PAIRS) {

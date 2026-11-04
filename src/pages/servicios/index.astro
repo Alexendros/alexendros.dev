@@ -5,6 +5,7 @@ import Button from '../../components/Button.astro';
 import Paquetes from '../../components/Paquetes.astro';
 import { paquetesPublicados } from '../../content/paquetes';
 import { serviceProducts } from '../../content/services';
+import styles from './index.module.css';
 
 const collaboration = serviceProducts[0];
 ---
@@ -19,7 +20,7 @@ const collaboration = serviceProducts[0];
     <header>
       <h1 class="text-step-3 break-words font-bold max-w-5xl text-balance">
         Catálogo de servicios profesionales en{' '}
-        <span class="text-primary">respuesta a necesidades reales</span>
+        <span class={styles.accent}>respuesta a necesidades reales</span>
       </h1>
       <div class="pagehead-rule mt-4 h-px bg-border" aria-hidden="true"></div>
       <p class="text-muted mt-3 max-w-2xl">

@@ -29,6 +29,7 @@ type VercelRedirect = {
   source: string;
   destination: string;
   permanent?: boolean;
+  statusCode?: number;
   has?: unknown[];
 };
 
@@ -90,15 +91,37 @@ async function assertPathRedirect(request: APIRequestContext, rule: VercelRedire
   const from = sampleSourceUrl(rule.source);
   const dest = splitDestination(rule.destination);
   const hop = await firstHop(request, from);
+  // 308 por defecto (permanent), 307 si no; 301/302 vienen de statusCode.
+  const expectedStatus = rule.statusCode ?? (rule.permanent === false ? 307 : 308);
 
-  const location = hop.location ? new URL(hop.location, APEX) : null;
-  const served =
-    location !== null &&
-    PERMANENT_REDIRECT.has(hop.status) &&
+  const pointsToDestination = (location: URL): boolean =>
     (dest.path.startsWith('http')
       ? `${location.origin}${pathnameOf(location.pathname)}` === dest.path
       : location.origin === APEX && pathnameOf(location.pathname) === dest.path) &&
     location.hash.slice(1) === dest.hash;
+
+  const firstLocation = hop.location ? new URL(hop.location, APEX) : null;
+  let served =
+    firstLocation !== null &&
+    hop.status === expectedStatus &&
+    PERMANENT_REDIRECT.has(hop.status) &&
+    pointsToDestination(firstLocation);
+
+  // Vercel aplica `trailingSlash` antes que `redirects`: una regla declarada
+  // sin barra recibe primero un 308 de normalización hacia la variante con
+  // barra. Se acepta ese salto de plataforma y se exige el 301 final.
+  if (!served && firstLocation !== null && hop.status === 308) {
+    const normalized = `${pathnameOf(rule.source)}/`;
+    if (firstLocation.origin === APEX && firstLocation.pathname === normalized) {
+      const second = await firstHop(request, firstLocation.href);
+      const secondLocation = second.location ? new URL(second.location, APEX) : null;
+      served =
+        secondLocation !== null &&
+        second.status === expectedStatus &&
+        PERMANENT_REDIRECT.has(second.status) &&
+        pointsToDestination(secondLocation);
+    }
+  }
 
   if (served) {
     if (dest.path.startsWith('http')) return;
@@ -112,7 +135,10 @@ async function assertPathRedirect(request: APIRequestContext, rule: VercelRedire
     type: 'pendiente-despliegue',
     description: `${rule.source} → ${rule.destination} (producción: ${hop.status} ${hop.location ?? '-'})`
   });
-  expect(rule.permanent ?? true, `${rule.source}: debe ser permanente`).toBe(true);
+  expect(
+    rule.permanent === true || rule.statusCode === 301,
+    `${rule.source}: debe ser permanente (301 o 308)`
+  ).toBe(true);
   if (dest.path.startsWith('http')) return;
   const local = await request.get(dest.path, { maxRedirects: 0 });
   expect(local.status(), `${rule.source}: destino local ${dest.path} debe dar 200`).toBe(200);
@@ -140,6 +166,22 @@ test.describe('CP-10 edge producción', () => {
     expect(redirects.length, 'vercel.json debe declarar redirects de path').toBeGreaterThan(5);
 
     for (const rule of redirects) {
+      await assertPathRedirect(request, rule);
+    }
+  });
+
+  test('las seis direcciones retiradas acaban en /servicios/ (sin barra: 308 + 301)', async ({
+    request
+  }) => {
+    const retired = loadPathRedirects().filter((rule) =>
+      ['informe-comercial', 'cumplimiento-normativo', 'ciberseguridad'].includes(
+        rule.source.split('/').filter(Boolean).pop() ?? ''
+      )
+    );
+    expect(retired, 'seis direcciones con y sin barra').toHaveLength(6);
+    for (const rule of retired) {
+      expect(rule.destination).toBe('/servicios/');
+      expect(rule.statusCode, `${rule.source}: 301 explícito`).toBe(301);
       await assertPathRedirect(request, rule);
     }
   });

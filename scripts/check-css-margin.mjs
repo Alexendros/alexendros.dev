@@ -2,14 +2,36 @@ import { readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
 const reportDirectory = process.env.LHCI_REPORT_DIR ?? '.lighthouseci';
-const requiredRoutes = new Map([
-  ['/', { limit: 25100 }],
-  ['/contacto/', { limit: 25100, optional: true }],
-  [
-    '/servicios/software-a-medida/',
-    { limit: 25100, knownFailure: 'KF-V10-SAM', knownMaximum: 25598 }
-  ]
-]);
+// Rutas del inventario del build. Las tres primeras son obligatorias en el
+// LHCI del repo; el resto se verifica cuando el informe LHCI las incluye
+// (p. ej. con un collect de las 20 rutas).
+const REQUIRED = new Set(['/', '/contacto/', '/servicios/software-a-medida/']);
+const ROUTES = [
+  '/',
+  '/servicios/',
+  '/servicios/software-a-medida/',
+  '/referencias/',
+  '/referencias/front-valencia/',
+  '/referencias/graficas-nasve/',
+  '/referencias/zedazo/',
+  '/referencias/alexendros-me/',
+  '/metodo/',
+  '/contacto/',
+  '/experiencia/',
+  '/privacidad/',
+  '/cookies/',
+  '/accesibilidad/',
+  '/identidad/',
+  '/sobre-mi/',
+  '/articulos/presupuesto-web/',
+  '/articulos/web-o-app-a-medida/',
+  '/design-system/',
+  '/404/'
+];
+// KF-V10-SAM retirado: software-a-medida entra en el control común.
+const requiredRoutes = new Map(
+  ROUTES.map((route) => [route, { limit: 25100, optional: !REQUIRED.has(route) }])
+);
 
 const files = readdirSync(reportDirectory).filter((file) => /^lhr-.*\.json$/.test(file));
 const measurements = new Map();
@@ -39,11 +61,7 @@ for (const [route, rule] of requiredRoutes) {
     continue;
   }
   const size = Math.max(...samples);
-  if (size > rule.limit && rule.knownFailure && size <= rule.knownMaximum) {
-    console.log(
-      `${route}: ${size} B · ${rule.knownFailure} fallo conocido; máximo temporal ${rule.knownMaximum} B`
-    );
-  } else if (size > rule.limit) {
+  if (size > rule.limit) {
     console.error(`${route}: ${size} B · ERROR; límite ${rule.limit} B`);
     failed = true;
   } else {

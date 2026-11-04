@@ -40,3 +40,22 @@ test('A11Y-04: GitHub y Correo tienen objetivos de al menos 44×44 px', async ({
   await expect44(links.getByRole('link', { name: 'GitHub', exact: true }));
   await expect44(links.getByRole('link', { name: 'Correo', exact: true }));
 });
+
+test('A11Y-04: los CTA de sección miden al menos 44 px de alto', async ({ page }) => {
+  await page.goto('/');
+  for (const name of [
+    'Ver el catálogo de servicios',
+    'Ver todas las referencias',
+    'Ver el método completo'
+  ]) {
+    await expect44(page.getByRole('link', { name, exact: true }));
+  }
+});
+
+test('A11Y-04: los enlaces de las referencias destacadas miden 44 px de alto', async ({ page }) => {
+  await page.goto('/');
+  const referencias = page.locator('#referencias');
+  for (const name of ['Front Valencia', 'Gráficas Nasve']) {
+    await expect44(referencias.getByRole('link', { name, exact: true }));
+  }
+});

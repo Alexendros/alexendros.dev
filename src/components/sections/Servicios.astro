@@ -4,6 +4,7 @@ import Icon from '../ui/Icon.astro';
 import SectionHeader from '../SectionHeader.astro';
 import Paquetes from '../Paquetes.astro';
 import { paquetesPublicados } from '../../content/paquetes';
+import styles from './Servicios.module.css';
 ---
 
 <section
@@ -42,7 +43,7 @@ import { paquetesPublicados } from '../../content/paquetes';
     )
   }
   <p class="mt-8">
-    <a class="btn btn-outline" href="/servicios/">
+    <a class:list={['btn btn-outline', styles['more-link']]} href="/servicios/">
       Ver el catálogo de servicios
       <Icon name="arrow-right" size={16} />
     </a>

@@ -33,7 +33,7 @@
 - `--surface-header`: fallback opaco de la cabecera.
 - `--surface-header-glass`: superficie translúcida activada solo con soporte de `backdrop-filter`.
 - `--surface-sunken`: fondo de base y filas internas del configurador, mezcla de `bg` y `card`.
-- `--gradient-section`: gradiente estático de hero y cierre de contacto, derivado de `bg`, `bg-subtle` y `card`.
+- `--gradient-section`: gradiente estático del cierre de contacto, derivado de `bg`, `bg-subtle` y `card`.
 - `--scrim`: overlay de dialog/CMP.
 
 ## 3. Componentes y patrones
@@ -64,6 +64,8 @@
 
 ### Composición y encabezados
 
+Énfasis ámbar: el ámbar no se usa como color de texto sobre el fondo (no alcanza AA en oscuro con la rejilla). Se aplica `--fg` con subrayado decorativo (`text-decoration-color: var(--color-accent)`, grosor y offset en el módulo de la página), como en el titular de `/servicios/` y los números de paso de `/metodo/`.
+
 `SectionHeader.astro` encapsula eyebrow + H2 + descripción opcional para Servicios, Referencias, Método y Contacto de home. Recibe `id`, `eyebrow`, `title` y `description?`; sus reglas específicas se importan desde `SectionHeader.module.css`. Cada sección conserva `aria-labelledby`.
 
 `PageHead` permanece separado porque usa H1. `Section`, `Container`, `Stack` y `Grid` no son componentes vigentes; no reintroducir wrappers sin consumidores reales.
@@ -76,7 +78,7 @@ Primer foco de la página, salta a `#main`, visible con teclado y por encima de 
 
 - H1 y copy fijos, sin rotación; CTAs y URLs definidos en el contenido.
 - El prompt presenta `~/alexendros $ nuevo-encargo` como firma visual mono, con borde, superficie y `--shadow-1`; su regla se importa desde `Hero.module.css`.
-- Hero y ContactCta comparten `--gradient-section` desde sus respectivos módulos CSS.
+- El fondo de todas las páginas es una rejilla de dos capas en `body::before` (`global.css`, `@layer base`): celda fina de 22 px y mayor de 120 px, fija tras el contenido (`position: fixed`, `inset: 0`, `z-index: -1`, `pointer-events: none`), con líneas de `--border-color` al 30 % y 40 % y sin `mask`. El trazo cambia con el tema del sitio por tokens (`--grid-line`/`--grid-major`), sin `prefers-color-scheme` propio; se retira con `prefers-contrast: more`, `forced-colors: active` y al imprimir. El hero no tiene fondo propio; cabecera, tarjetas, cierre de contacto (que conserva `--gradient-section`) y pie mantienen su superficie. `body` no lleva `bg-base-200`: el color de página lo pinta `:root`.
 - La entrada `.rise-*` usa `transform`/`opacity` y desaparece con reduced motion.
 - Sin View Transitions ni librerías de motion.
 

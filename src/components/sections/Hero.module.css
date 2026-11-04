@@ -3,41 +3,10 @@
   .surface {
     --hero-title-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.75rem);
     --hero-padding-block: clamp(4rem, 8vw, 8rem);
-    --section-gap: clamp(5rem, 10vw, 9rem);
-    --bp: oklch(from var(--ds-atlaps-blueprint-mid) l c h / 0.1);
 
-    background-image: var(--gradient-section);
+    /* Sin fondo propio: la rejilla del plano vive en body::before
+       (global.css) y se ve a través del hero. */
     padding-block: var(--hero-padding-block);
-    position: relative;
-    isolation: isolate;
-  }
-
-  .surface::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background:
-      linear-gradient(var(--bp) 1px, transparent 1px) 0 0 / 7.5rem 7.5rem,
-      linear-gradient(90deg, var(--bp) 1px, transparent 1px) 0 0 / 7.5rem 7.5rem;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    .surface {
-      --bp: oklch(from var(--ds-atlaps-paper-bone) l c h / 0.08);
-    }
-  }
-
-  /* stylelint-disable-next-line selector-pseudo-class-no-unknown */
-  :global([data-theme='alexdark']) .surface {
-    --bp: oklch(from var(--ds-atlaps-paper-bone) l c h / 0.08);
-  }
-
-  @media (prefers-contrast: more), (forced-colors: active) {
-    .surface::before {
-      background: none;
-    }
   }
 
   .title {

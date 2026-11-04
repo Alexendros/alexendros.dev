@@ -141,32 +141,32 @@
     {
       "source": "/servicios/informe-comercial",
       "destination": "/servicios/",
-      "permanent": true
+      "statusCode": 301
     },
     {
       "source": "/servicios/informe-comercial/",
       "destination": "/servicios/",
-      "permanent": true
+      "statusCode": 301
     },
     {
       "source": "/servicios/cumplimiento-normativo",
       "destination": "/servicios/",
-      "permanent": true
+      "statusCode": 301
     },
     {
       "source": "/servicios/cumplimiento-normativo/",
       "destination": "/servicios/",
-      "permanent": true
+      "statusCode": 301
     },
     {
       "source": "/servicios/ciberseguridad",
       "destination": "/servicios/",
-      "permanent": true
+      "statusCode": 301
     },
     {
       "source": "/servicios/ciberseguridad/",
       "destination": "/servicios/",
-      "permanent": true
+      "statusCode": 301
     }
   ],
   "headers": [
