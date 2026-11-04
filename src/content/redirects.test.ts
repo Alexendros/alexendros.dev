@@ -25,13 +25,19 @@ describe('redirecciones permanentes', () => {
       ['/proyectos/', '/referencias'],
       ['/proyectos/:path*', '/referencias/:path*'],
       ['/servicios/produccion-sitios-web', '/servicios'],
-      ['/servicios/auditorias', '/servicios/informe-comercial'],
+      ['/servicios/auditorias', '/servicios/'],
+      ['/servicios/informe-comercial', '/servicios/'],
+      ['/servicios/informe-comercial/', '/servicios/'],
+      ['/servicios/cumplimiento-normativo', '/servicios/'],
+      ['/servicios/cumplimiento-normativo/', '/servicios/'],
+      ['/servicios/ciberseguridad', '/servicios/'],
+      ['/servicios/ciberseguridad/', '/servicios/'],
       ['/servicios/consultoria-tecnologica', '/servicios'],
       ['/servicios/landing-10-dias', '/servicios'],
       ['/servicios/sesion-profesional', '/servicios'],
       ['/servicios/sesion-profesional/', '/servicios'],
-      ['/servicios/auditoria-normativa-ciberseguridad', '/servicios/cumplimiento-normativo'],
-      ['/servicios/auditoria-normativa-ciberseguridad/', '/servicios/cumplimiento-normativo'],
+      ['/servicios/auditoria-normativa-ciberseguridad', '/servicios/'],
+      ['/servicios/auditoria-normativa-ciberseguridad/', '/servicios/'],
       ['/servicios/web-para', '/servicios'],
       ['/servicios/web-para/:path*', '/servicios'],
       ['/design-system', 'https://designsystem.alexendros.dev/'],
@@ -63,6 +69,15 @@ describe('redirecciones permanentes', () => {
   });
 
   it('las páginas retiradas ya no existen; experiencia, referencias y servicios sí', () => {
+    expect(existsSync(resolve(process.cwd(), 'src/pages/servicios/informe-comercial.astro'))).toBe(
+      false
+    );
+    expect(
+      existsSync(resolve(process.cwd(), 'src/pages/servicios/cumplimiento-normativo.astro'))
+    ).toBe(false);
+    expect(existsSync(resolve(process.cwd(), 'src/pages/servicios/ciberseguridad.astro'))).toBe(
+      false
+    );
     expect(existsSync(resolve(process.cwd(), 'src/pages/metodologia.astro'))).toBe(false);
     expect(existsSync(resolve(process.cwd(), 'src/pages/valores.astro'))).toBe(false);
     expect(existsSync(resolve(process.cwd(), 'src/pages/proceso-y-entrega.astro'))).toBe(false);

@@ -135,8 +135,8 @@ test.describe('CP-09 contacto — foco, errores y axe', () => {
   });
 
   test('contexto allowlisted llega oculto', async ({ page }) => {
-    await page.goto('/contacto?servicio=informe-comercial&proyecto=front-valencia');
-    await expect(page.locator('#contact-service')).toHaveValue('informe-comercial', {
+    await page.goto('/contacto?servicio=software-a-medida&proyecto=front-valencia');
+    await expect(page.locator('#contact-service')).toHaveValue('software-a-medida', {
       timeout: 10_000
     });
     await expect(page.locator('#contact-project')).toHaveValue('front-valencia');
@@ -146,19 +146,19 @@ test.describe('CP-09 contacto — foco, errores y axe', () => {
 });
 
 test.describe('CP-09 recorridos A–E (muestreo)', () => {
-  test('A/B: servicios → ficha informe → Solicitar propuesta', async ({ page }) => {
+  test('A/B: servicios → ficha colaboración → Solicitar propuesta', async ({ page }) => {
     await page.goto('/servicios');
     await assertSingleH1AndMain(page);
-    await page.getByRole('link', { name: 'Revisión técnica para aparecer en buscadores' }).click();
-    await expect(page).toHaveURL(/\/servicios\/informe-comercial/);
+    await page.getByRole('link', { name: 'Colaboración en proyectos de programación' }).click();
+    await expect(page).toHaveURL(/\/servicios\/software-a-medida/);
     await assertSingleH1AndMain(page);
-    const cta = page.locator('#detail-servicios-informe-comercial').getByRole('link', {
+    const cta = page.locator('#detail-servicios-software-a-medida').getByRole('link', {
       name: 'Solicitar propuesta'
     });
     await expect(cta).toBeVisible();
     await cta.click();
     await expect(page).toHaveURL(/\/contacto/);
-    await expect(page.locator('#contact-service')).toHaveValue('informe-comercial');
+    await expect(page.locator('#contact-service')).toHaveValue('software-a-medida');
   });
 
   test('C: proyecto → CTA disponibilidad → contacto con proyecto', async ({ page }) => {

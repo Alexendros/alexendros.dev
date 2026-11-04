@@ -102,17 +102,17 @@ describe('parseContactBody R04', () => {
   it('CFG-06: servicio y proyecto allowlisted; desconocidos se descartan', () => {
     const parsed = parseContactBody({
       ...validCorreo,
-      serviceSlug: 'informe-comercial',
+      serviceSlug: 'software-a-medida',
       projectSlug: 'front-valencia',
       origin: 'proceso'
     });
     expect(parsed.success).toBe(true);
     if (!parsed.success) return;
-    expect(parsed.data.serviceSlug).toBe('informe-comercial');
+    expect(parsed.data.serviceSlug).toBe('software-a-medida');
     expect(parsed.data.projectSlug).toBe('front-valencia');
     expect(parsed.data.origin).toBe('proceso');
     const msg = buildContactMessage(parsed.data);
-    expect(msg).toMatch(/Revisión técnica para aparecer en buscadores/);
+    expect(msg).toMatch(/Colaboración en proyectos de programación/);
     expect(msg).toMatch(/Front Valencia/);
     expect(msg).toMatch(/Origen de página: proceso/);
 

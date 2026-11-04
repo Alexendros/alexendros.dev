@@ -9,9 +9,6 @@ import { test, expect, type Page } from '@playwright/test';
 const URLS = [
   '/',
   '/servicios',
-  '/servicios/informe-comercial',
-  '/servicios/cumplimiento-normativo',
-  '/servicios/ciberseguridad',
   '/referencias',
   '/referencias/front-valencia',
   '/metodo',

@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const bookingOfferSchema = z.object({
   kind: z.literal('form'),
-  id: z.enum(['informe-comercial', 'cumplimiento-normativo', 'ciberseguridad']),
+  id: z.string().min(1),
   title: z.string().min(1),
   summary: z.string().min(1),
   cta: z.string().min(1),
@@ -26,7 +26,7 @@ export const contactSchema = z.object({
   bookings: z.object({
     heading: z.string().min(1),
     intro: z.string().min(1),
-    offers: z.array(bookingOfferSchema).min(1).max(3)
+    offers: z.array(bookingOfferSchema).max(3)
   })
 });
 
@@ -61,36 +61,7 @@ export const contact = contactSchema.parse({
   },
   bookings: {
     heading: 'Opciones de contacto',
-    intro:
-      'Las revisiones técnicas de buscadores, privacidad y seguridad se solicitan por formulario.',
-    offers: [
-      {
-        kind: 'form',
-        id: 'informe-comercial',
-        title: 'Revisión técnica para aparecer en buscadores',
-        summary:
-          'Revisión de indexación, estructura y rendimiento con incidencias priorizadas y métricas de referencia.',
-        cta: 'Rellenar formulario',
-        href: '#escribir'
-      },
-      {
-        kind: 'form',
-        id: 'cumplimiento-normativo',
-        title: 'Revisión técnica de privacidad, cookies y accesibilidad',
-        summary:
-          'Evaluación de formularios, consentimiento y accesibilidad en una muestra de rutas.',
-        cta: 'Rellenar formulario',
-        href: '#escribir'
-      },
-      {
-        kind: 'form',
-        id: 'ciberseguridad',
-        title: 'Revisión básica de seguridad web',
-        summary:
-          'Revisión de cabeceras y superficies públicas evidentes, con incidencias priorizadas.',
-        cta: 'Rellenar formulario',
-        href: '#escribir'
-      }
-    ]
+    intro: 'La colaboración en proyectos de programación se solicita por formulario.',
+    offers: []
   }
 });

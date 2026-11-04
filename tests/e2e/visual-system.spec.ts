@@ -106,7 +106,6 @@ test('cabecera: glass con superficie semántica y foco con anillo', async ({ pag
   expect(styles.backdrop).toBe('blur(12px)');
   expect(styles.background).not.toBe('rgba(0, 0, 0, 0)');
 
-  await page.goto('/servicios/informe-comercial/');
   const summary = page.locator('summary.focus-ring').first();
   await summary.focus();
   expect(await summary.evaluate((el) => getComputedStyle(el).boxShadow)).not.toBe('none');

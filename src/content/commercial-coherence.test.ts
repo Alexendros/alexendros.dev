@@ -15,12 +15,8 @@ describe('coherencia comercial vigente', () => {
     }
   });
 
-  it('contacto y catálogo alinean las ofertas de formulario', () => {
-    const byId = Object.fromEntries(contact.bookings.offers.map((offer) => [offer.id, offer]));
-    for (const id of ['informe-comercial', 'cumplimiento-normativo', 'ciberseguridad'] as const) {
-      expect(byId[id]?.title).toBe(services.find((service) => service.slug === id)?.title);
-      expect(byId[id]?.kind).toBe('form');
-    }
+  it('no quedan ofertas de formulario para las fichas retiradas', () => {
+    expect(contact.bookings.offers).toEqual([]);
   });
 
   it('base y módulos no incorporan campos económicos', () => {

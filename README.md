@@ -4,13 +4,10 @@ Sitio profesional de [alexendros.dev](https://alexendros.dev): sitios web, integ
 
 ## Servicios y colaboración técnica
 
-| Servicio                                                                                                            | Para quién                                                                               |
-| ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| [Sitio web profesional](https://alexendros.dev/servicios/#portal-heading)                                           | Profesionales y negocios locales que necesitan una web clara lista para captar consultas |
-| [Auditoría técnica SEO](https://alexendros.dev/servicios/informe-comercial/)                                        | Quienes necesitan un informe SEO técnico y un plan de ajustes con métricas verificables  |
-| [Revisión técnica de privacidad, cookies y accesibilidad](https://alexendros.dev/servicios/cumplimiento-normativo/) | Protección de datos, políticas de cookies y accesibilidad                                |
-| [Revisión básica de seguridad web](https://alexendros.dev/servicios/ciberseguridad/)                                | Vulnerabilidades básicas priorizadas, sin prueba de intrusión                            |
-| [Colaboración en proyectos de software](https://alexendros.dev/servicios/software-a-medida/)                        | Refuerzo técnico por fases en proyectos grandes con más compañeros                       |
+| Servicio                                                                                     | Para quién                                                                               |
+| -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| [Sitio web profesional](https://alexendros.dev/servicios/#portal-heading)                    | Profesionales y negocios locales que necesitan una web clara lista para captar consultas |
+| [Colaboración en proyectos de software](https://alexendros.dev/servicios/software-a-medida/) | Refuerzo técnico por fases en proyectos grandes con más compañeros                       |
 
 Más detalle y solicitud de propuesta en [Servicios](https://alexendros.dev/servicios/). Metodología en [Metodología](https://alexendros.dev/metodo/). Referencias en [Referencias](https://alexendros.dev/referencias/).
 

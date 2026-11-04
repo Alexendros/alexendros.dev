@@ -38,12 +38,7 @@ const listSectionsSoftware = ['audience', 'deliverables', 'exclusions', 'require
 
 test.describe('DET estructura común de fichas', () => {
   test('catálogo publicado: cuatro slugs sin portal-inicio', () => {
-    expect(products.map((p) => p.slug)).toEqual([
-      'informe-comercial',
-      'cumplimiento-normativo',
-      'ciberseguridad',
-      'software-a-medida'
-    ]);
+    expect(products.map((p) => p.slug)).toEqual(['software-a-medida']);
     expect(products.some((p) => p.slug === 'portal-inicio')).toBe(false);
   });
 
