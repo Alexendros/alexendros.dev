@@ -243,11 +243,10 @@ test('C-2: campo con anillo de foco visible', async ({ page }) => {
   expect(shadow).not.toBe('none');
 });
 
-test('C-3: plazo y garantía presentados como insignias', async ({ page }) => {
+test('C-3: plazo, entrega y garantía presentados como lista de datos', async ({ page }) => {
   await page.goto('/servicios/software-a-medida/');
-  await expect(page.locator('[data-service-badges]')).toHaveCount(1);
-  await expect(page.locator('[data-service-badge]')).toHaveCount(2);
-  await expect(page.locator('[data-product-section="commercial"] dt')).toHaveText([
+  await expect(page.locator('[data-next-step-facts]')).toHaveCount(1);
+  await expect(page.locator('[data-next-step-facts] dt')).toHaveText([
     'Plazo',
     'Entrega',
     'Garantía'
