@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import ServiceCard from '../../components/ServiceCard.astro';
+import Button from '../../components/Button.astro';
 import DetailIsland from '../../components/DetailIsland.astro';
 import Paquetes from '../../components/Paquetes.astro';
 import { paquetesPublicados } from '../../content/paquetes';
@@ -41,6 +42,11 @@ const detailItems = services.map((s) => ({
     <p class="mt-4 max-w-2xl text-sm text-muted" data-services-proposal-note>
       El alcance, el calendario y las condiciones económicas se detallan en cada propuesta.
     </p>
+    <div class="mt-6" data-services-primary-action>
+      <Button href="/contacto/?motivo=propuestaComercial&origen=servicios">
+        Solicitar propuesta
+      </Button>
+    </div>
     <div class="grid mt-8 gap-6 md:grid-cols-2" data-services-grid>
       {
         serviceProducts.map((product) => (

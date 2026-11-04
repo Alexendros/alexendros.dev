@@ -68,6 +68,32 @@ const jsonLd = [
         El alcance y las condiciones económicas se detallan en la propuesta individual.
       </p>
 
+      <section class="mt-8" data-product-section="next-step">
+        <h2 class="text-step-2 font-bold">Siguiente paso</h2>
+        <p class="mt-2 text-sm text-muted max-w-2xl">
+          La solicitud se envía desde el formulario con el contexto de este servicio. La respuesta
+          llega por el canal indicado.
+        </p>
+        <div class="mt-4">
+          {
+            service.action.newTab ? (
+              <Button
+                href={service.action.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-product-action="primary"
+              >
+                {service.action.label}
+              </Button>
+            ) : (
+              <Button href={service.action.href} data-product-action="primary">
+                {service.action.label}
+              </Button>
+            )
+          }
+        </div>
+      </section>
+
       <ServiceBadges
         timeline={service.commercial.timeline}
         delivery={service.commercial.delivery}
@@ -162,32 +188,6 @@ const jsonLd = [
           <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
             {service.requirements.map((item) => <li>{item}</li>)}
           </ul>
-        </section>
-
-        <section data-product-section="next-step">
-          <h2 class="text-step-2 font-bold">Siguiente paso</h2>
-          <p class="mt-2 text-sm text-muted max-w-2xl">
-            La solicitud se envía desde el formulario con el contexto de este servicio. La respuesta
-            llega por el canal indicado.
-          </p>
-          <div class="mt-4">
-            {
-              service.action.newTab ? (
-                <Button
-                  href={service.action.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-product-action="primary"
-                >
-                  {service.action.label}
-                </Button>
-              ) : (
-                <Button href={service.action.href} data-product-action="primary">
-                  {service.action.label}
-                </Button>
-              )
-            }
-          </div>
         </section>
 
         {

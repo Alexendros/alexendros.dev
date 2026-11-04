@@ -4,7 +4,7 @@
 - Tarea: T0, solo auditoría; no contiene cambios de producto.
 - Base: `origin/main` = `7ae85bcf0c0ddcb441d907edb5947f78102cb087`.
 - Fecha de medición: 3–4 de noviembre de 2026, Europe/Madrid.
-- Resultado: cinco hallazgos abiertos; ninguno bloqueante. La adopción de la paleta exige las restricciones de contraste descritas abajo.
+- Resultado: cinco hallazgos iniciales; DIS-01 y DIS-02 están cerrados en T5 y quedan tres abiertos de accesibilidad para T6. Ninguno es bloqueante. La adopción de la paleta exige las restricciones de contraste descritas abajo.
 
 ## 1. Integridad de fuentes y correcciones de la OT
 
@@ -314,3 +314,15 @@ Antes de T1, Arquitecto debe confirmar la prioridad y el mapeo seguro. Antes de 
 | V11         | `gh pr checks <PR> --watch --fail-fast`                                                    | Pendiente: todavía no existe PR; T0 para antes de crearlo |
 
 No se han retirado ni añadido tests de producto. Los artefactos temporales de auditoría están fuera del diff.
+
+## 12. Cierre de hallazgos
+
+| ID      | Estado            | Evidencia de cierre                                                                                                                                                                                                                                                                                                                          |
+| ------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| DIS-01  | **Cerrado en T5** | La acción existente se movió junto a la introducción de `/servicios/`. A 390×844 ocupa y=477,75–521,75 px, completamente visible. `DIS-01` ya no lleva `test.fail()`.                                                                                                                                                                        |
+| DIS-02  | **Cerrado en T5** | «Siguiente paso» se colocó antes de las insignias comerciales en las cuatro fichas. A 390×844, las acciones ocupan: informe-comercial 605,36–649,36 px; cumplimiento-normativo 673,08–717,08 px; ciberseguridad 610,95–654,95 px; software-a-medida 625,36–669,36 px. Todas completas y a 44 px de alto. `DIS-02` ya no lleva `test.fail()`. |
+| A11Y-01 | Abierto para T6   | Mantiene su `test.fail()`.                                                                                                                                                                                                                                                                                                                   |
+| A11Y-02 | Abierto para T6   | Mantiene su `test.fail()`.                                                                                                                                                                                                                                                                                                                   |
+| A11Y-03 | Abierto para T6   | Mantiene su `test.fail()`.                                                                                                                                                                                                                                                                                                                   |
+
+La comprobación específica de estas cinco acciones pasa 5/5 y la estructura de las fichas 6/6. No se añadieron textos comerciales ni precios.

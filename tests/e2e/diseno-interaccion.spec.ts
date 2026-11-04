@@ -179,7 +179,6 @@ test('D3: CTA principal de portada en la primera pantalla móvil', async ({ page
 });
 
 test('DIS-01: CTA principal de /servicios/ en la primera pantalla móvil', async ({ page }) => {
-  test.fail(); // DIS-01 se cierra en T5.
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/servicios/');
   const cta = page.locator('main a[href^="/contacto/"]').first();
@@ -191,7 +190,6 @@ for (const slug of serviceSlugs) {
   test(`DIS-02: CTA principal de /servicios/${slug}/ en la primera pantalla móvil`, async ({
     page
   }) => {
-    test.fail(); // DIS-02 se cierra en T5.
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(`/servicios/${slug}/`);
     const cta = page.locator('[data-product-action="primary"]');
