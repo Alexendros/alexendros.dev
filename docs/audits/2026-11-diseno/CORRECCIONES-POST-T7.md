@@ -52,9 +52,9 @@ GET https://alexendros.dev/metodologia                   → 308 Location: /meto
 GET https://alexendros.dev/r/abc                         → 308 Location: /r/abc/          (ruta de función)
 ```
 
-Por tanto, la dirección **con** barra sale con un solo 301 tras el despliegue; la dirección **sin** barra recibe primero el 308 de normalización de la plataforma y después el 301 (dos saltos, con paso por la versión con barra). No hay regla de `vercel.json` que se evalúe antes de esa normalización. Alternativas: (a) aceptar dos saltos en la variante sin barra (los enlaces canónicos del sitio siempre llevan barra), o (b) cambiar `trailingSlash` a nivel global, que altera todas las URL canónicas y queda fuera de esta OT.
+Por tanto, la dirección **con** barra sale con un solo 301 tras el despliegue; la dirección **sin** barra recibe primero el 308 de normalización de la plataforma y después el 301 (dos saltos, con paso por la versión con barra). No hay regla de `vercel.json` que se evalúe antes de esa normalización. **Decisión registrada (4 nov 2026, opción a):** se acepta la cadena de plataforma en la variante sin barra —308 a la versión con barra y 301 final a `/servicios/`— porque los enlaces canónicos del sitio, el sitemap y el JSON-LD siempre llevan barra final. No se cambia `trailingSlash` a nivel global: alteraría todas las URL canónicas y queda fuera de esta OT. El hero claro se queda en pergamino.
 
-Cobertura: `tests/e2e/retirada-fichas.spec.ts` con una prueba por dirección (6) en `e2e-critical`, más el mapa completo; `seo-edge-prod.spec.ts` acepta `statusCode: 301` y verifica el primer salto contra el apex cuando producción ya sirve la regla.
+Cobertura: `tests/e2e/retirada-fichas.spec.ts` con una prueba por dirección (6) en `e2e-critical`, más el mapa completo. `tests/e2e/seo-edge-prod.spec.ts` acepta `statusCode: 301`, resuelve el 308 de normalización de la variante sin barra y exige el 301 final a `/servicios/`; incluye una prueba propia para las seis direcciones retiradas que anota `pendiente-despliegue` hasta que producción sirve la regla.
 
 ## 4. Objetivos táctiles de 44 px
 
@@ -69,18 +69,19 @@ Cobertura: `tests/e2e/retirada-fichas.spec.ts` con una prueba por dirección (6)
 
 ## 5. Checks ejecutados
 
-| Control                                                              | Resultado                                                            |
-| -------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| `pnpm typecheck`                                                     | OK                                                                   |
-| `pnpm lint` / `pnpm lint:css` / `pnpm format:check`                  | OK                                                                   |
-| `pnpm test`                                                          | 198/198                                                              |
-| `pnpm build` (`astro check` incluido)                                | OK                                                                   |
-| `e2e-critical` (22 specs del job)                                    | 173/173                                                              |
-| `tests/e2e/a11y.spec.ts` (axe, 20 rutas × 2 temas)                   | 40/40, 0 violaciones                                                 |
-| `pnpm check:contrast`                                                | OK (28 pares; `badge-soft` sigue bajo AA, aviso ya existente)        |
-| `pnpm check:copy`, `check:classes`, `check:records`, `audit:cookies` | OK                                                                   |
-| `node scripts/check-css-margin.mjs`                                  | Las tres rutas dentro de 25.100 B                                    |
-| `tests/e2e/visual-system.spec.ts`                                    | 13/17; fallos de cabecera, configurador y borde ya presentes en main |
+| Control                                                              | Resultado                                                                                   |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `pnpm typecheck`                                                     | OK                                                                                          |
+| `pnpm lint` / `pnpm lint:css` / `pnpm format:check`                  | OK                                                                                          |
+| `pnpm test`                                                          | 198/198                                                                                     |
+| `pnpm build` (`astro check` incluido)                                | OK                                                                                          |
+| `e2e-critical` (22 specs del job)                                    | 173/173                                                                                     |
+| `tests/e2e/a11y.spec.ts` (axe, 20 rutas × 2 temas)                   | 40/40, 0 violaciones                                                                        |
+| `pnpm check:contrast`                                                | OK (28 pares; `badge-soft` sigue bajo AA, aviso ya existente)                               |
+| `pnpm check:copy`, `check:classes`, `check:records`, `audit:cookies` | OK                                                                                          |
+| `node scripts/check-css-margin.mjs`                                  | Las tres rutas dentro de 25.100 B                                                           |
+| `tests/e2e/visual-system.spec.ts`                                    | 33/37; los 4 fallos (cabecera glass, configurador, borde claro/oscuro) ya estaban en `main` |
+| `seo-edge-prod` (301 + 308 de plataforma)                            | Las 6 direcciones aceptadas; anota `pendiente-despliegue` hasta el deploy                   |
 
 ## 6. Capturas
 
