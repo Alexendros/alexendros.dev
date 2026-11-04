@@ -14,10 +14,12 @@
     --ds-atlaps-success: oklch(58.07% 0.1191 156.1);
     --ds-atlaps-danger: oklch(52.53% 0.155 17.61);
 
-    /* Ajustes aprobados para el tema oscuro: solo cambia L. */
+    /* Ajustes aprobados para el tema oscuro: solo cambia L. Enlace y error
+       suben de luminosidad (mismo tono) para mantener AA sobre la línea mayor
+       de la rejilla del fondo: ≥ 4,5:1 sobre la línea y ≥ 7:1 sobre --bg. */
     --ds-atlaps-border-dark: oklch(55.64% 0.0911 250.21);
-    --ds-atlaps-danger-dark: oklch(67.53% 0.155 17.61);
-    --ds-atlaps-link-dark: oklch(65.39% 0.1157 249.29);
+    --ds-atlaps-danger-dark: oklch(84% 0.155 17.61);
+    --ds-atlaps-link-dark: oklch(78% 0.1157 249.29);
   }
 }
 /* stylelint-enable hue-degree-notation */

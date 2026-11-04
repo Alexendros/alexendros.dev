@@ -25,12 +25,14 @@ Peor caso, línea mayor al 40 % (`scripts/contrast-lib.mjs` y barrido de las 20 
 | ------------------------ | ----------------: | -----------------: |
 | `--fg`                   |         13,69 : 1 |           8,23 : 1 |
 | `--fg-muted`             |          4,53 : 1 |           7,05 : 1 |
-| `--link`                 |          7,31 : 1 |           2,93 : 1 |
+| `--link`                 |          7,31 : 1 |           4,66 : 1 |
 | `--brand` (text-primary) |         12,08 : 1 |           3,92 : 1 |
-| `--danger`               |          4,88 : 1 |           2,93 : 1 |
+| `--danger`               |          4,88 : 1 |           4,72 : 1 |
 
 - **Claro:** todo el texto que queda sobre la rejilla cumple AA (mínimo 4,53 : 1, `--fg-muted`).
-- **Oscuro:** `--fg` y `--fg-muted` cumplen; `--link`, `--brand` y `--danger` bajan al cruzar la línea (planos: 4,57, 6,12 y 4,57 : 1). La causa es el enlace oscuro: su 4,57 : 1 plano no deja margen, y con alfa 0,08 ya baja a 4,22 : 1. Afecta a tres textos: «respuesta a necesidades reales» (`/servicios/`), «política de privacidad» (`/contacto/`) y «Ver referencias» (`/experiencia/`, `/design-system/`). axe no lo detecta (la rejilla es un pseudo-elemento, no un `background-color`). Opciones: (1) aceptarlo como decoración de 1 px, (2) subir `--link`/`--danger` en oscuro (p. ej. `--ds-atlaps-paper-grid`, 10 : 1 plano), o (3) líneas oscuras en oscuro. **Pendiente de decisión.**
+- **Oscuro:** con la decisión del 4 de noviembre, `--link` y `--danger` suben de luminosidad solo en tema oscuro (`--ds-atlaps-link-dark` a `oklch(78% 0.1157 249.29)` y `--ds-atlaps-danger-dark` a `oklch(84% 0.155 17.61)`, mismo tono): 7,28 : 1 y 7,37 : 1 sobre fondo plano, 4,66 : 1 y 4,72 : 1 sobre la línea mayor. Las líneas y el tema claro no cambian. `--fg` (8,23) y `--fg-muted` (7,05) ya cumplían.
+- **Pendiente (fuera de la decisión):** el ámbar `text-primary` de «respuesta a necesidades reales» (`/servicios/`) sigue en 3,92 : 1 sobre la línea (6,12 : 1 plano). Para AA sobre la rejilla, `--ds-atlaps-amber-glow` tendría que subir a L 79 % (`oklch(79% 0.1386 63.1)`: 7,26 : 1 plano y 4,65 : 1 sobre línea), lo que cambia el acento/CTA del tema oscuro; sin autorización no se toca.
+- Los dos pares nuevos (`link/grid-major` y `danger/grid-major`) están en `scripts/check-contrast.mjs` (30 pares por tema) y la referencia Atlaps de `link-dark`/`danger-dark` sube a 7.
 
 ## 2. Bytes (control local `scripts/check-css-margin.mjs`)
 
@@ -39,16 +41,16 @@ build; todas dentro de 25.100 B:
 
 | Ruta                                                                              |  Bytes | Margen |
 | --------------------------------------------------------------------------------- | -----: | -----: |
-| `/servicios/software-a-medida/`                                                   | 23.218 | +1.882 |
-| `/`                                                                               | 22.431 | +2.669 |
-| `/servicios/`, fichas de referencia, `/metodo/`, `/sobre-mi/`, artículos, `/404/` | 22.153 | +2.947 |
-| `/contacto/`                                                                      | 21.901 | +3.199 |
-| `/referencias/`                                                                   | 21.854 | +3.246 |
-| `/experiencia/`, legales, `/accesibilidad/`, `/design-system/`                    | 21.497 | +3.603 |
+| `/servicios/software-a-medida/`                                                   | 23.215 | +1.885 |
+| `/`                                                                               | 22.428 | +2.672 |
+| `/servicios/`, fichas de referencia, `/metodo/`, `/sobre-mi/`, artículos, `/404/` | 22.150 | +2.950 |
+| `/contacto/`                                                                      | 21.898 | +3.202 |
+| `/referencias/`                                                                   | 21.851 | +3.249 |
+| `/experiencia/`, legales, `/accesibilidad/`, `/design-system/`                    | 21.494 | +3.606 |
 
 Antes del cambio, con el control de 3 rutas: portada 25.087 → 22.449; contacto
 24.355 → 21.679; software-a-medida 25.672 → 22.996. El traslado de la rejilla al
-`body` deja la portada en 22.431 B y sube software-a-medida a 23.218 B (+222 por
+`body` deja la portada en 22.428 B y sube software-a-medida a 23.215 B (+219 por
 la regla global), dentro del límite.
 
 Recorte de reglas sin uso (con evidencia):
@@ -95,9 +97,9 @@ Cobertura: `tests/e2e/retirada-fichas.spec.ts` con una prueba por dirección (6)
 | `pnpm build` (`astro check` incluido)                                | OK                                                                                          |
 | `e2e-critical` (22 specs del job)                                    | 175/175                                                                                     |
 | `tests/e2e/a11y.spec.ts` (axe, 20 rutas × 2 temas)                   | 40/40, 0 violaciones                                                                        |
-| `pnpm check:contrast`                                                | OK (28 pares; `badge-soft` sigue bajo AA, aviso ya existente)                               |
+| `pnpm check:contrast`                                                | OK (30 pares por tema, con los dos de la rejilla; `badge-soft` bajo AA, aviso ya existente) |
 | `pnpm check:copy`, `check:classes`, `check:records`, `audit:cookies` | OK                                                                                          |
-| `node scripts/check-css-margin.mjs`                                  | 20 rutas dentro de 25.100 B (máximo 23.218)                                                 |
+| `node scripts/check-css-margin.mjs`                                  | 20 rutas dentro de 25.100 B (máximo 23.215)                                                 |
 | `tests/e2e/visual-system.spec.ts`                                    | 33/37; los 4 fallos (cabecera glass, configurador, borde claro/oscuro) ya estaban en `main` |
 | `seo-edge-prod` (301 + 308 de plataforma)                            | Las 6 direcciones aceptadas; anota `pendiente-despliegue` hasta el deploy                   |
 
