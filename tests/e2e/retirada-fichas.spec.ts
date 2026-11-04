@@ -8,41 +8,60 @@ const retiredPaths = [
   '/servicios/ciberseguridad'
 ];
 const retiredSlugs = ['informe-comercial', 'cumplimiento-normativo', 'ciberseguridad'];
+const SOURCES = retiredPaths.flatMap((route) => [route, `${route}/`]);
+const DESTINATION = '/servicios/';
 
 type Redirect = {
   source: string;
   destination: string;
   permanent?: boolean;
   statusCode?: number;
+  has?: unknown[];
 };
 
-test('DIS-09: la configuración retira cada ficha con 301 y Location exacto', () => {
+function loadRedirects(): Redirect[] {
   const config = JSON.parse(readFileSync('vercel.json', 'utf8')) as { redirects: Redirect[] };
-  const redirects = new Map(config.redirects.map((redirect) => [redirect.source, redirect]));
-  for (const route of retiredPaths) {
-    for (const source of [route, `${route}/`]) {
-      const redirect = redirects.get(source);
-      expect(redirect, source).toBeDefined();
-      expect(redirect?.destination, source).toBe('/servicios/');
-      expect(redirect?.permanent, source).toBe(true);
-    }
+  return config.redirects;
+}
+
+function redirectFor(redirects: Redirect[], source: string): Redirect | undefined {
+  return redirects.find((redirect) => redirect.source === source);
+}
+
+test('DIS-09: las seis direcciones se retiran con 301 y destino exacto', () => {
+  const redirects = loadRedirects();
+  for (const source of SOURCES) {
+    const redirect = redirectFor(redirects, source);
+    expect(redirect, source).toBeDefined();
+    expect(redirect?.destination, source).toBe(DESTINATION);
+    expect(redirect?.statusCode, source).toBe(301);
+    expect(redirect?.permanent, `${source}: 301 explícito, no 308`).toBeUndefined();
   }
 });
 
-test('DIS-09: el preview no conserva las fichas y aplica 301 si sirve redirecciones', async ({
-  request
-}) => {
-  for (const route of retiredPaths.slice(0, 3)) {
-    for (const source of [route, `${route}/`]) {
-      const response = await request.get(source, { maxRedirects: 0 });
-      if (response.status() === 301) {
-        expect(response.headers().location, source).toBe('/servicios/');
-      } else {
-        expect(response.status(), `${source}: el preview estático no aplica vercel.json`).toBe(404);
-      }
+// Una prueba por dirección (6). Comprueba la regla y el primer salto del
+// preview; el edge de producción lo cubre seo-edge-prod.spec.ts.
+for (const source of SOURCES) {
+  test(`DIS-09: ${source} sale en un solo salto 301 a ${DESTINATION}`, async ({ request }) => {
+    const redirects = loadRedirects();
+    const redirect = redirectFor(redirects, source);
+    expect(redirect, source).toBeDefined();
+    expect(redirect?.destination, source).toBe(DESTINATION);
+    expect(redirect?.statusCode, source).toBe(301);
+    expect(redirect?.has, `${source}: sin condiciones de host`).toBeUndefined();
+
+    // Un solo salto: el destino no vuelve a estar en la tabla de redirects.
+    expect(redirectFor(redirects, DESTINATION), `${source}: cadena de redirects`).toBeUndefined();
+
+    const response = await request.get(source, { maxRedirects: 0 });
+    if (response.status() === 301) {
+      expect(response.headers().location, source).toBe(DESTINATION);
+    } else {
+      // El preview estático no aplica vercel.json; producción sí (301 verificado en e2e-critical).
+      expect(response.status(), `${source}: el preview estático no aplica vercel.json`).toBe(404);
     }
-  }
-});
+  });
+}
 
 function htmlFiles(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {

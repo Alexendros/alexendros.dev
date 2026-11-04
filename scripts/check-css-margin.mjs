@@ -5,10 +5,8 @@ const reportDirectory = process.env.LHCI_REPORT_DIR ?? '.lighthouseci';
 const requiredRoutes = new Map([
   ['/', { limit: 25100 }],
   ['/contacto/', { limit: 25100, optional: true }],
-  [
-    '/servicios/software-a-medida/',
-    { limit: 25100, knownFailure: 'KF-V10-SAM', knownMaximum: 25598 }
-  ]
+  // KF-V10-SAM retirado: software-a-medida entra en el control común.
+  ['/servicios/software-a-medida/', { limit: 25100 }]
 ]);
 
 const files = readdirSync(reportDirectory).filter((file) => /^lhr-.*\.json$/.test(file));
@@ -39,11 +37,7 @@ for (const [route, rule] of requiredRoutes) {
     continue;
   }
   const size = Math.max(...samples);
-  if (size > rule.limit && rule.knownFailure && size <= rule.knownMaximum) {
-    console.log(
-      `${route}: ${size} B · ${rule.knownFailure} fallo conocido; máximo temporal ${rule.knownMaximum} B`
-    );
-  } else if (size > rule.limit) {
+  if (size > rule.limit) {
     console.error(`${route}: ${size} B · ERROR; límite ${rule.limit} B`);
     failed = true;
   } else {

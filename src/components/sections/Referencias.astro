@@ -4,6 +4,7 @@ import { homeReferenciasIntro } from '../../content/home';
 import ProjectCard from '../ProjectCard.astro';
 import Icon from '../ui/Icon.astro';
 import SectionHeader from '../SectionHeader.astro';
+import styles from './Referencias.module.css';
 
 const featured = projects.filter((project) => project.featured).slice(0, 2);
 ---
@@ -19,7 +20,7 @@ const featured = projects.filter((project) => project.featured).slice(0, 2);
     title={homeReferenciasIntro.title}
   />
 
-  <div class="mt-8 grid gap-6 sm:grid-cols-2">
+  <div class:list={['cards mt-8 grid gap-6 sm:grid-cols-2', styles.cards]}>
     {
       featured.map((project, index) => (
         <ProjectCard project={project} headingLevel="h3" priority={index === 0} />
@@ -28,7 +29,7 @@ const featured = projects.filter((project) => project.featured).slice(0, 2);
   </div>
 
   <p class="mt-8">
-    <a class="btn btn-outline" href="/referencias/">
+    <a class:list={['btn btn-outline', styles['more-link']]} href="/referencias/">
       Ver todas las referencias
       <Icon name="arrow-right" size={16} />
     </a>

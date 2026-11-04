@@ -29,6 +29,7 @@ type VercelRedirect = {
   source: string;
   destination: string;
   permanent?: boolean;
+  statusCode?: number;
   has?: unknown[];
 };
 
@@ -90,10 +91,13 @@ async function assertPathRedirect(request: APIRequestContext, rule: VercelRedire
   const from = sampleSourceUrl(rule.source);
   const dest = splitDestination(rule.destination);
   const hop = await firstHop(request, from);
+  // 308 por defecto (permanent), 307 si no; 301/302 vienen de statusCode.
+  const expectedStatus = rule.statusCode ?? (rule.permanent === false ? 307 : 308);
 
   const location = hop.location ? new URL(hop.location, APEX) : null;
   const served =
     location !== null &&
+    hop.status === expectedStatus &&
     PERMANENT_REDIRECT.has(hop.status) &&
     (dest.path.startsWith('http')
       ? `${location.origin}${pathnameOf(location.pathname)}` === dest.path
@@ -112,7 +116,10 @@ async function assertPathRedirect(request: APIRequestContext, rule: VercelRedire
     type: 'pendiente-despliegue',
     description: `${rule.source} → ${rule.destination} (producción: ${hop.status} ${hop.location ?? '-'})`
   });
-  expect(rule.permanent ?? true, `${rule.source}: debe ser permanente`).toBe(true);
+  expect(
+    rule.permanent === true || rule.statusCode === 301,
+    `${rule.source}: debe ser permanente (301 o 308)`
+  ).toBe(true);
   if (dest.path.startsWith('http')) return;
   const local = await request.get(dest.path, { maxRedirects: 0 });
   expect(local.status(), `${rule.source}: destino local ${dest.path} debe dar 200`).toBe(200);

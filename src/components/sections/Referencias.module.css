@@ -1,0 +1,14 @@
+@layer components {
+  /* Objetivo táctil de 44 px (WCAG 2.2, 2.5.5) sin tocar el aspecto del botón. */
+  .more-link {
+    min-block-size: 2.75rem;
+  }
+
+  /* Enlaces de referencia: el título estirado del card-link mide el alto del
+     texto; se le da 44 px de caja táctil sin mover el resto de la tarjeta. */
+  .cards a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 2.75rem;
+  }
+}

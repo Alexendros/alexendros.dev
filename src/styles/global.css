@@ -1,6 +1,8 @@
-/* Tokens de producto + marco daisyUI. Temas: theme.css. */
-@import 'tailwindcss';
-@source not "../../tests";
+/* Tokens de producto + marco daisyUI. Temas: theme.css.
+   Tailwind solo escanea src/: docs/ y artefactos (mock de diseño, informes)
+   generaban utilidades que no se aplican en ninguna página. */
+@import 'tailwindcss' source(none);
+@source "../../src";
 @plugin "daisyui" {
   themes: false;
   exclude:

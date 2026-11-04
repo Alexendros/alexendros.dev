@@ -2,7 +2,18 @@ import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-type Redirect = { source: string; destination: string; permanent?: boolean; has?: unknown[] };
+type Redirect = {
+  source: string;
+  destination: string;
+  permanent?: boolean;
+  statusCode?: number;
+  has?: unknown[];
+};
+
+/** Vercel: permanent=true da 308; 301 y 302 se declaran con statusCode. */
+function isPermanent(rule: Redirect | undefined): boolean {
+  return rule?.permanent === true || rule?.statusCode === 301;
+}
 
 describe('redirecciones permanentes', () => {
   const raw = JSON.parse(readFileSync(resolve(process.cwd(), 'vercel.json'), 'utf8')) as {
@@ -50,14 +61,14 @@ describe('redirecciones permanentes', () => {
       const rule = bySource.get(source);
       expect(rule, source).toBeDefined();
       expect(rule?.destination).toBe(destination);
-      expect(rule?.permanent).toBe(true);
+      expect(isPermanent(rule), source).toBe(true);
     }
   });
 
   it('cada redirección es permanente (301/308 en Vercel) y el destino no redirige otra vez', () => {
     const sources = new Set(unconditional.map((r) => r.source));
     for (const rule of unconditional) {
-      expect(rule.permanent, rule.source).toBe(true);
+      expect(isPermanent(rule), rule.source).toBe(true);
       const destPath = rule.destination.split('#')[0] ?? rule.destination;
       if (destPath.startsWith('http')) continue;
       if (destPath.includes(':path*')) continue;

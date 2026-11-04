@@ -26,19 +26,20 @@ test('tipografía: solo Source Sans latin variable tiene preload prioritario', a
   );
 });
 
-test('hero: firma terminal, gradiente y compromisos elevados', async ({ page }) => {
+test('hero: firma terminal, fondo plano y rejilla con desvanecido', async ({ page }) => {
   await page.goto('/');
 
   await expect(page.locator('#top [data-terminal-prompt]')).toHaveCount(1);
-  const heroBackground = await page
-    .locator('#top')
-    .evaluate((el) => getComputedStyle(el).backgroundImage);
-  const commitment = page.locator('#top .commitment-item').first();
-  await expect(commitment).toBeVisible();
-  const commitmentShadow = await commitment.evaluate((el) => getComputedStyle(el).boxShadow);
+  const hero = page.locator('#top');
+  const heroBackground = await hero.evaluate((el) => getComputedStyle(el).backgroundImage);
+  const gridMask = await hero.evaluate((el) => getComputedStyle(el, '::before').maskImage);
+  const processSurface = page.locator('#metodo .surface-raised');
+  await expect(processSurface).toBeVisible();
+  const processShadow = await processSurface.evaluate((el) => getComputedStyle(el).boxShadow);
 
-  expect(heroBackground).toContain('radial-gradient');
-  expect(commitmentShadow).not.toBe('none');
+  expect(heroBackground).toBe('none');
+  expect(gridMask).not.toBe('none');
+  expect(processShadow).not.toBe('none');
 });
 
 test('cards: superficie estática en home y elevación solo en cards enlazables', async ({

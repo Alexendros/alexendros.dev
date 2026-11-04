@@ -2,6 +2,7 @@
 import { processPage } from '../../content/process';
 import Icon from '../ui/Icon.astro';
 import SectionHeader from '../SectionHeader.astro';
+import styles from './Metodo.module.css';
 ---
 
 <section
@@ -26,7 +27,7 @@ import SectionHeader from '../SectionHeader.astro';
     }
   </ul>
   <p class="mt-8">
-    <a class="btn btn-outline" href="/metodo/">
+    <a class:list={['btn btn-outline', styles['more-link']]} href="/metodo/">
       Ver el método completo
       <Icon name="arrow-right" size={16} />
     </a>

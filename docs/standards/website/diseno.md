@@ -33,7 +33,7 @@
 - `--surface-header`: fallback opaco de la cabecera.
 - `--surface-header-glass`: superficie translúcida activada solo con soporte de `backdrop-filter`.
 - `--surface-sunken`: fondo de base y filas internas del configurador, mezcla de `bg` y `card`.
-- `--gradient-section`: gradiente estático de hero y cierre de contacto, derivado de `bg`, `bg-subtle` y `card`.
+- `--gradient-section`: gradiente estático del cierre de contacto, derivado de `bg`, `bg-subtle` y `card`.
 - `--scrim`: overlay de dialog/CMP.
 
 ## 3. Componentes y patrones
@@ -76,7 +76,7 @@ Primer foco de la página, salta a `#main`, visible con teclado y por encima de 
 
 - H1 y copy fijos, sin rotación; CTAs y URLs definidos en el contenido.
 - El prompt presenta `~/alexendros $ nuevo-encargo` como firma visual mono, con borde, superficie y `--shadow-1`; su regla se importa desde `Hero.module.css`.
-- Hero y ContactCta comparten `--gradient-section` desde sus respectivos módulos CSS.
+- El hero usa fondo plano (`--bg`) y una rejilla de dos capas en su `::before` (celda fina de 22 px y mayor de 120 px) con líneas de `--border-color`, desvanecida arriba y abajo con `mask-image`. El trazo cambia con el tema del sitio por tokens, sin `prefers-color-scheme` propio en el módulo; se retira con `prefers-contrast: more` y `forced-colors: active`. ContactCta conserva `--gradient-section` desde su módulo.
 - La entrada `.rise-*` usa `transform`/`opacity` y desaparece con reduced motion.
 - Sin View Transitions ni librerías de motion.
 
