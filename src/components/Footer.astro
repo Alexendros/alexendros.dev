@@ -2,10 +2,12 @@
 import { site } from '../content/site';
 ---
 
-<footer class="chrome-surface footer border-t border-border px-10 py-8 sm:footer-horizontal">
-  <aside>
-    <p class="text-step-1 font-bold">Alexendros.dev</p>
-    <p class="text-muted">
+<footer
+  class="chrome-surface footer gap-6 border-t border-border px-6 py-5 sm:footer-horizontal lg:px-8"
+>
+  <aside class="gap-1">
+    <p class="text-step-0 font-bold leading-tight">Alexendros.dev</p>
+    <p class="text-step--1 text-muted leading-snug">
       Servicios informáticos y tecnológicos.<br />Valencia y en remoto.
     </p>
   </aside>
@@ -38,15 +40,8 @@ import { site } from '../content/site';
   </nav>
   <nav aria-label="Enlaces">
     <h2 class="footer-title chrome-label">Enlaces</h2>
-    <a
-      class="link link-hover inline-flex min-h-11 min-w-11 items-center justify-center"
-      href={site.social.github}
-      rel="noopener">GitHub</a
-    >
+    <a class="link link-hover" href={site.social.github} rel="noopener">GitHub</a>
     <a class="link link-hover" href={site.social.linkedin} rel="noopener">LinkedIn</a>
-    <a
-      class="link link-hover inline-flex min-h-11 min-w-11 items-center justify-center"
-      href={site.social.email}>Correo</a
-    >
+    <a class="link link-hover" href={site.social.email}>Correo</a>
   </nav>
 </footer>

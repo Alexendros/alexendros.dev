@@ -387,8 +387,18 @@
   }
 
   .footer-title.chrome-label {
+    margin-bottom: 0.35rem;
     color: var(--fg);
     opacity: 1;
+    line-height: 1.2;
+  }
+
+  footer.footer {
+    gap: 1.25rem 1.5rem;
+  }
+
+  footer.footer > nav {
+    gap: 0;
   }
 
   .js-only {
@@ -415,9 +425,10 @@
   footer nav a.link {
     display: flex;
     align-items: center;
-    min-block-size: 2rem;
-    padding-block: 0.25rem;
-    line-height: 1.25;
+    min-block-size: 1.5rem;
+    padding-block: 0.1rem;
+    font-size: var(--step--1);
+    line-height: 1.2;
     color: var(--fg-muted);
     text-decoration-line: none;
   }
@@ -425,10 +436,6 @@
   footer nav a.link:hover {
     color: var(--fg);
     text-decoration-line: underline;
-  }
-
-  footer nav a.link.min-h-11 {
-    min-block-size: 2.75rem;
   }
 
   .project-details > summary::after {
