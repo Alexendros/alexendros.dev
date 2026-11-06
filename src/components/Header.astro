@@ -30,7 +30,9 @@ const contactHref = '/contacto/?motivo=propuestaComercial';
         {
           site.nav.map((item) => (
             <li>
-              <a href={item.href}>{item.label}</a>
+              <a class="chrome-label" href={item.href}>
+                {item.label}
+              </a>
             </li>
           ))
         }
@@ -48,7 +50,9 @@ const contactHref = '/contacto/?motivo=propuestaComercial';
       {
         site.nav.map((item) => (
           <li>
-            <a href={item.href}>{item.label}</a>
+            <a class="chrome-label" href={item.href}>
+              {item.label}
+            </a>
           </li>
         ))
       }
@@ -59,11 +63,19 @@ const contactHref = '/contacto/?motivo=propuestaComercial';
     <input type="checkbox" class="theme-controller hidden" value="alexdark" data-theme-input />
     <button
       type="button"
-      class="btn btn-ghost btn-circle js-only h-11 w-11"
+      class="btn btn-ghost btn-square js-only h-11 w-11"
       data-theme-toggle
-      aria-label="Tema: sistema. Pulsar para cambiar"
+      aria-label="Tema: sistema. Pulsar para claro"
     >
-      <Icon name="theme" />
+      <span data-theme-icon="system">
+        <Icon name="theme" />
+      </span>
+      <span data-theme-icon="alexlight" hidden>
+        <Icon name="sun" />
+      </span>
+      <span data-theme-icon="alexdark" hidden>
+        <Icon name="moon" />
+      </span>
     </button>
     <a class="btn btn-primary btn-sm min-h-11 px-3 sm:btn-md sm:px-4" href={contactHref}>Contacto</a
     >

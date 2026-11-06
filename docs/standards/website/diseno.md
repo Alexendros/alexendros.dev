@@ -37,11 +37,13 @@
 
 - `--shadow-1`: elevación base de compromisos, cards, menú, prompt y botón primario.
 - `--shadow-2`: énfasis hover/foco, sin transición de sombra.
-- `--surface-header`: fallback opaco de la cabecera.
-- `--surface-header-glass`: superficie translúcida activada solo con soporte de `backdrop-filter`.
+- `--surface-chrome`: tinte de cabecera/pie (`border-color` 16 % sobre `card`), distinto del plano.
+- `--surface-chrome-glass`: translúcido (~58 %) sobre chrome; con `backdrop-filter: blur(8px)`.
+- `--surface-header` / `--surface-header-glass`: alias de chrome (compatibilidad).
 - `--surface-sunken`: fondo de base y filas internas del configurador, mezcla de `bg` y `card`.
 - `--gradient-section`: gradiente estático del cierre de contacto, derivado de `bg`, `bg-subtle` y `card`.
 - `--scrim`: overlay de dialog/CMP.
+- `.chrome-label`: versales UI (`--tracking-chrome` 0.1em, `--step--1`, peso 600, `fg-muted`); nav de cabecera y títulos del pie.
 
 ## 3. Componentes y patrones
 
@@ -101,9 +103,12 @@ Primer foco de la página, salta a `#main`, visible con teclado y por encima de 
 
 La home usa DaisyUI `steps` con `step-primary` como tratamiento visual de una secuencia estática. No se añade `aria-current`, progreso completado ni interacción ficticia. La lista conserva orden, vertical en móvil, horizontal desde `lg` y contenido sin JavaScript. `/metodo` mantiene su composición editorial propia.
 
-### Cabecera
+### Cabecera y pie (chrome)
 
-`#site-header` parte de `--surface-header`; `Header.module.css` activa `--surface-header-glass` y `backdrop-filter: blur(8px)` solo con soporte. No cambia altura, navegación, CTA, selector de tema ni stacking del CMP. El menú móvil usa `.surface-raised`.
+- `#site-header` y el `footer` comparten `--surface-chrome` / `--surface-chrome-glass` + `blur(8px)` con soporte. Bordes con `border-border`. El pie no usa `bg-base-100`.
+- Nav principal y menú móvil: `.chrome-label` (versales). Títulos del pie: `.footer-title.chrome-label`. Enlaces del pie en sentence case, densos (`min-block-size: 2rem`); GitHub/Correo conservan 44×44.
+- Toggle de tema: `btn-square` 44×44; iconos `theme` (sistema), `sun` (claro), `moon` (oscuro) sincronizados por `themeToggle.ts`.
+- CMP (`cookieBanner.css`): barra sólida con tokens de card/borde y `--radius-surface`; compacta en desktop (sin divisor textos/botones) y en móvil; sin `backdrop-filter`. Stacking del CMP por encima del chrome.
 
 ### Configurador de módulos
 

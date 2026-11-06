@@ -1,11 +1,11 @@
 @layer components {
   .header {
-    background-color: var(--surface-header);
+    background-color: var(--surface-chrome);
   }
 
   @supports (backdrop-filter: blur(8px)) {
     .header {
-      background-color: var(--surface-header-glass);
+      background-color: var(--surface-chrome-glass);
       backdrop-filter: blur(8px);
     }
   }

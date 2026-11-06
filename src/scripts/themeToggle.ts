@@ -30,6 +30,15 @@ function applyThemeColor(mode: ThemeMode) {
   });
 }
 
+function syncIcons(button: HTMLButtonElement, mode: ThemeMode) {
+  const icons = button.querySelectorAll<HTMLElement>('[data-theme-icon]');
+  icons.forEach((el) => {
+    const match = el.dataset.themeIcon === mode;
+    el.hidden = !match;
+    el.setAttribute('aria-hidden', match ? 'false' : 'true');
+  });
+}
+
 function applyMode(mode: ThemeMode, input: HTMLInputElement, button: HTMLButtonElement) {
   const root = document.documentElement;
   if (mode === 'system') {
@@ -58,6 +67,7 @@ function applyMode(mode: ThemeMode, input: HTMLInputElement, button: HTMLButtonE
     input.checked = true;
   }
   button.setAttribute('aria-label', LABELS[mode]);
+  syncIcons(button, mode);
   applyThemeColor(mode);
 }
 

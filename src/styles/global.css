@@ -114,8 +114,12 @@
       0 0 0 1px var(--ds-atlaps-paper-grid),
       0 2px 0 0 color-mix(in srgb, var(--ds-atlaps-blueprint-mid) 12%, transparent),
       0 4px 0 0 color-mix(in srgb, var(--ds-atlaps-blueprint-mid) 4%, transparent);
-    --surface-header: var(--card);
-    --surface-header-glass: color-mix(in srgb, var(--card) 88%, transparent);
+
+    /* Chrome (cabecera/pie): tinte distinto del plano + glass legible. */
+    --surface-chrome: color-mix(in srgb, var(--border-color) 16%, var(--card));
+    --surface-chrome-glass: color-mix(in srgb, var(--surface-chrome) 58%, transparent);
+    --surface-header: var(--surface-chrome);
+    --surface-header-glass: var(--surface-chrome-glass);
     --surface-sunken: color-mix(in srgb, var(--bg) 65%, var(--card));
     --gradient-section:
       radial-gradient(
@@ -133,6 +137,7 @@
     --leading-tight: 1.08;
     --leading-body: 1.6;
     --tracking-eyebrow: 0.14em;
+    --tracking-chrome: 0.1em;
     --measure: 66ch;
     --header-h: 4.5rem;
     --duration-fast: 180ms;
@@ -356,6 +361,25 @@
     opacity: 0.7;
   }
 
+  .chrome-label {
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: var(--tracking-chrome);
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+
+  a.chrome-label:hover,
+  a.chrome-label[aria-current='page'] {
+    color: var(--fg);
+  }
+
+  .footer-title.chrome-label {
+    color: var(--fg);
+    opacity: 1;
+  }
+
   .js-only {
     display: none;
   }
@@ -365,10 +389,34 @@
   }
 
   #site-header .menu a,
-  footer .link,
   details > summary {
     display: flex;
     align-items: center;
+    min-block-size: 2.75rem;
+  }
+
+  #site-header .navbar-center .menu a {
+    min-block-size: 2.5rem;
+    padding-block: 0.35rem;
+    padding-inline: 0.65rem;
+  }
+
+  footer nav a.link {
+    display: flex;
+    align-items: center;
+    min-block-size: 2rem;
+    padding-block: 0.25rem;
+    line-height: 1.25;
+    color: var(--fg-muted);
+    text-decoration-line: none;
+  }
+
+  footer nav a.link:hover {
+    color: var(--fg);
+    text-decoration-line: underline;
+  }
+
+  footer nav a.link.min-h-11 {
     min-block-size: 2.75rem;
   }
 

@@ -1,0 +1,12 @@
+@layer components {
+  .footer {
+    background-color: var(--surface-chrome);
+  }
+
+  @supports (backdrop-filter: blur(8px)) {
+    .footer {
+      background-color: var(--surface-chrome-glass);
+      backdrop-filter: blur(8px);
+    }
+  }
+}
