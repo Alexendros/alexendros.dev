@@ -10,14 +10,33 @@ const LABELS: Record<ThemeMode, string> = {
   alexdark: 'Tema: oscuro. Pulsar para sistema'
 };
 
+const CYCLE: Record<ThemeMode, ThemeMode> = {
+  system: 'alexlight',
+  alexlight: 'alexdark',
+  alexdark: 'system'
+};
+
+export function nextThemeMode(mode: ThemeMode): ThemeMode {
+  return CYCLE[mode];
+}
+
 function readStored(): ThemeMode {
   try {
     const v = localStorage.getItem('theme');
     if (v === 'alexlight' || v === 'alexdark') return v;
   } catch {
-    /* ignore */
+    /* private mode / storage blocked */
   }
   return 'system';
+}
+
+function writeStored(mode: ThemeMode): void {
+  try {
+    if (mode === 'system') localStorage.removeItem('theme');
+    else localStorage.setItem('theme', mode);
+  } catch {
+    /* private mode / storage blocked */
+  }
 }
 
 function applyThemeColor(mode: ThemeMode) {
@@ -43,29 +62,12 @@ function applyMode(mode: ThemeMode, input: HTMLInputElement, button: HTMLButtonE
   const root = document.documentElement;
   if (mode === 'system') {
     root.removeAttribute('data-theme');
-    try {
-      localStorage.removeItem('theme');
-    } catch {
-      /* ignore */
-    }
-    input.checked = false;
-  } else if (mode === 'alexlight') {
-    root.setAttribute('data-theme', 'alexlight');
-    try {
-      localStorage.setItem('theme', 'alexlight');
-    } catch {
-      /* ignore */
-    }
     input.checked = false;
   } else {
-    root.setAttribute('data-theme', 'alexdark');
-    try {
-      localStorage.setItem('theme', 'alexdark');
-    } catch {
-      /* ignore */
-    }
-    input.checked = true;
+    root.setAttribute('data-theme', mode);
+    input.checked = mode === 'alexdark';
   }
+  writeStored(mode);
   button.setAttribute('aria-label', LABELS[mode]);
   syncIcons(button, mode);
   applyThemeColor(mode);
@@ -81,7 +83,7 @@ export function initThemeToggle(): void {
   applyMode(mode, input, button);
 
   button.addEventListener('click', () => {
-    mode = mode === 'system' ? 'alexlight' : mode === 'alexlight' ? 'alexdark' : 'system';
+    mode = nextThemeMode(mode);
     applyMode(mode, input, button);
   });
 }

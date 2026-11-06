@@ -1,14 +1,13 @@
 ---
 import { site } from '../content/site';
 import Icon from './ui/Icon.astro';
-import styles from './Header.module.css';
 
 const contactHref = '/contacto/?motivo=propuestaComercial';
 ---
 
 <header
   id="site-header"
-  class:list={['navbar sticky top-0 z-50 border-b border-border px-3 lg:px-8', styles.header]}
+  class="chrome-surface navbar sticky top-0 z-50 border-b border-border px-3 lg:px-8"
 >
   <div class="navbar-start">
     <div class="relative lg:hidden">
@@ -68,7 +67,7 @@ const contactHref = '/contacto/?motivo=propuestaComercial';
       aria-label="Tema: sistema. Pulsar para claro"
     >
       <span data-theme-icon="system">
-        <Icon name="theme" />
+        <Icon name="theme-system" />
       </span>
       <span data-theme-icon="alexlight" hidden>
         <Icon name="sun" />

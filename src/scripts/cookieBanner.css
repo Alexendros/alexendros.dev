@@ -31,6 +31,28 @@
 
   /* stylelint-disable selector-class-pattern, declaration-no-important, no-descending-specificity */
 
+  /* Compartido desktop/móvil: sin divisor textos/botones; «Configurar» como enlace. */
+  #cc-main .cm--bar .cm__btns {
+    flex-flow: row wrap !important;
+    border-top: 0 !important;
+  }
+
+  #cc-main .cm--bar .cm__btn-group {
+    display: contents !important;
+  }
+
+  #cc-main .cm--bar .cm__btn {
+    margin: 0 !important;
+    min-height: 2.5rem;
+    font-size: var(--step--1);
+  }
+
+  #cc-main .cm--bar .cm__btn[data-role='show'] {
+    background: transparent;
+    border-color: transparent;
+    text-decoration: underline;
+  }
+
   /* Desktop: una sola barra compacta; textos y botones en el mismo cuerpo. */
   @media (width >= 40rem) {
     #cc-main .cm--bar.cm--inline {
@@ -69,39 +91,26 @@
     }
 
     #cc-main .cm--bar.cm--inline .cm__btns {
-      flex-flow: row wrap !important;
       align-items: center;
       gap: 0.5rem;
       padding: 0 !important;
-      border-top: 0 !important;
       margin: 0;
-    }
-
-    #cc-main .cm--bar.cm--inline .cm__btn-group {
-      display: contents !important;
     }
 
     #cc-main .cm--bar.cm--inline .cm__btn {
       flex: 0 1 auto !important;
-      margin: 0 !important;
-      min-height: 2.5rem;
       padding: 0.4rem 0.9rem;
-      font-size: var(--step--1);
       line-height: 1.2;
     }
 
     #cc-main .cm--bar.cm--inline .cm__btn[data-role='show'] {
-      background: transparent;
-      border-color: transparent;
-      text-decoration: underline;
       min-height: 2rem;
       padding-inline: 0.5rem;
     }
   }
 
-  /* Móvil: barra compacta (máx. 20 % de la altura) con los tres botones en una
-     fila y «Configurar» como enlace. Clases del proveedor (no kebab-case). Su CSS
-     móvil usa !important, así que solo aquí hace falta !important para ganarle. */
+  /* Móvil: barra compacta (máx. 20 % de la altura). El CSS del proveedor usa
+     !important; aquí hace falta !important para ganarle en paddings. */
   @media (width < 40rem) {
     #cc-main .cm--bar {
       max-height: 20vh;
@@ -120,29 +129,17 @@
     }
 
     #cc-main .cm--bar .cm__btns {
-      flex-flow: row wrap !important;
       gap: calc(var(--spacing) * 1.5);
       padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 3) !important;
-      border-top: 0 !important;
-    }
-
-    #cc-main .cm--bar .cm__btn-group {
-      display: contents !important;
     }
 
     #cc-main .cm--bar .cm__btn {
       flex: 1 1 0 !important;
-      margin: 0 !important;
-      min-height: 2.5rem;
       padding: calc(var(--spacing) * 2);
-      font-size: var(--step--1);
     }
 
     #cc-main .cm--bar .cm__btn[data-role='show'] {
       flex-basis: 100% !important;
-      background: transparent;
-      border-color: transparent;
-      text-decoration: underline;
     }
   }
   /* stylelint-enable selector-class-pattern, declaration-no-important, no-descending-specificity */

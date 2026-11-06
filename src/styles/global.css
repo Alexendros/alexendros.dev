@@ -361,6 +361,17 @@
     opacity: 0.7;
   }
 
+  .chrome-surface {
+    background-color: var(--surface-chrome);
+  }
+
+  @supports (backdrop-filter: blur(8px)) {
+    .chrome-surface {
+      background-color: var(--surface-chrome-glass);
+      backdrop-filter: blur(8px);
+    }
+  }
+
   .chrome-label {
     font-family: var(--font-sans);
     font-size: var(--step--1);
