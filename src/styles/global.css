@@ -390,11 +390,19 @@
     margin-bottom: 0.35rem;
     color: var(--fg);
     opacity: 1;
+    font-weight: 600;
     line-height: 1.2;
+  }
+
+  #site-header.navbar {
+    flex-wrap: wrap;
+    max-width: 100%;
+    row-gap: 0.25rem;
   }
 
   footer.footer {
     gap: 1.25rem 1.5rem;
+    max-width: 100%;
   }
 
   footer.footer > nav {
@@ -668,6 +676,13 @@ html:not(.js) .js-only {
   details {
     border: 1px solid CanvasText;
   }
+}
+
+/* Fuera de @layer: gana a DaisyUI `.footer-title { opacity: .6 }` (capa daisyui.l*). */
+footer.footer .footer-title.chrome-label {
+  opacity: 1;
+  color: var(--fg);
+  font-weight: 600;
 }
 
 .table-wrap table {
