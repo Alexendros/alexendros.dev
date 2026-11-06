@@ -5,14 +5,10 @@ import SectionHeader from '../SectionHeader.astro';
 import styles from './Metodo.module.css';
 ---
 
-<section
-  id="metodo"
-  class="mx-auto max-w-6xl scroll-mt-nav px-4 py-20"
-  aria-labelledby="metodo-heading"
->
+<section id="metodo" class="section-shell scroll-mt-nav" aria-labelledby="metodo-heading">
   <SectionHeader id="metodo-heading" eyebrow={processPage.eyebrow} title={processPage.title} />
   <ul
-    class="steps steps-vertical surface-raised mt-10 w-full rounded-xl px-4 py-6 lg:steps-horizontal lg:px-6"
+    class="steps steps-vertical surface-raised stack-block w-full radius-surface px-4 py-6 lg:steps-horizontal lg:px-6"
     id="steps"
   >
     {
@@ -20,13 +16,13 @@ import styles from './Metodo.module.css';
         <li class="step step-primary" data-content={String(i + 1)}>
           <div class="py-2 text-left lg:px-2">
             <h3 class="text-step-1 font-semibold">{step.title}</h3>
-            <p class="text-sm text-muted">{step.description}</p>
+            <p class="text-step--1 text-muted">{step.description}</p>
           </div>
         </li>
       ))
     }
   </ul>
-  <p class="mt-8">
+  <p class="stack-gap">
     <a class:list={['btn btn-outline', styles['more-link']]} href="/metodo/">
       Ver el método completo
       <Icon name="arrow-right" size={16} />

@@ -65,7 +65,7 @@ Redirecciones antiguas que apuntaban a `/metodo`, `/servicios` o `/referencias` 
 | Pieza                                 | Destino                                                              |
 | ------------------------------------- | -------------------------------------------------------------------- |
 | `src/scripts/header.ts`               | Sustituido por menú `<details>` + tema en fichero propio             |
-| `src/scripts/reveal.ts`               | Sustituido por CSS `rise` (estado final = visible sin JS)            |
+| `src/scripts/reveal.ts`               | Retirado; entrada hero vía CSS `.rise-*` (visible sin JS)            |
 | `src/scripts/contactForm.ts`          | Adaptado al formulario daisyUI (fase 3); honeypot `website` intacto  |
 | `src/scripts/needsConfigurator.ts`    | Se elimina con NeedsConfigurator                                     |
 | `src/styles/global.css` (1044 líneas) | Reducir a &lt;250: marco, rise, impresión, foco, tipografía base     |

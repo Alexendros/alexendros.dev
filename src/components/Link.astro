@@ -26,12 +26,7 @@ const variants = {
   {...attrs}
   href={href}
   aria-current={current ? 'page' : undefined}
-  class:list={[
-    'focus-ring rounded transition-colors',
-    variants[variant],
-    current && 'text-primary',
-    className
-  ]}
+  class:list={['focus-ring rounded', variants[variant], current && 'text-primary', className]}
 >
   <slot />
   {

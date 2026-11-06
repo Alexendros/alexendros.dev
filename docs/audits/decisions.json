@@ -451,6 +451,21 @@
       "context": "Auditoría 2026-11-03 (F-08): se propone unificar el CSS. Medido con pnpm preview + audit:css: gzip total 23102 bytes. Layout.teixN1nf.css es el CMP (cookie-consent) y Layout.ybSSrTO-.css es el resto con la fuente embebida; sin solapamiento.",
       "decision": "No se unifica: la unión no baja el peso (contenidos disjuntos) y ya se cumple ≤ 23,6 KB gzip. Se mantiene la división actual.",
       "consequences": "Sin cambios de CSS. El presupuesto se revisa en la próxima auditoría si crece."
+    },
+    {
+      "id": "0031",
+      "sequence": 31,
+      "timestamp": "2026-11-06T21:10:00Z",
+      "active": true,
+      "title": "Ritmo visual: shells, tipografía step y rejilla suavizada",
+      "summary": "Tokens de espacio/radio, shells page/section, tipografía comercial en --step-*, rejilla al 18%/26% sin mask, rise 200 ms y glass blur(8px).",
+      "recordType": "decision",
+      "status": "aceptada",
+      "supersedes": [],
+      "supersededBy": null,
+      "context": "El portal comercial mezclaba py-16/md:py-24 y py-20, text-sm/xs con la escala step, radios xl/2xl/lg y motion redundante; la rejilla al 30%/40% competía con el texto.",
+      "decision": "Añadir --space-* y --radius-* en global.css; .page-shell / .section-shell en índices y home; secundario comercial con text-step--1; rejilla --grid-line 18% y --grid-major 26% sin mask; rise del hero a --duration-normal; glass de cabecera blur(8px); retirar reveal.ts muerto y transition-colors redundantes. Conservar card-lift, zoom de imagen y contrato AA sobre la línea mayor.",
+      "consequences": "Actualizar diseno.md, visual-system (blur 8px), check:contrast y presupuesto CSS. Las páginas legales heredan tokens sin rediseño de shell."
     }
   ]
 }

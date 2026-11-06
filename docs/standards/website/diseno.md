@@ -22,19 +22,28 @@
 
 - **Source Sans 3 Variable** (`--font-sans`, también referenciada por `--font-display`): cuerpo, titulares y controles. Se autoaloja con `@fontsource-variable/source-sans-3`; el archivo latin variable tiene preload en `Layout.astro`.
 - **JetBrains Mono Variable** (`--font-mono`): prompt, código, eyebrows y metadatos seleccionados. Se autoaloja con `@fontsource-variable/jetbrains-mono`, sin preload prioritario.
-- **Escala:** `--step--1…--step-4` fluida mediante `clamp`; Tailwind la expone como `text-step--1…4`. H1 de página y hero usan `text-step-3`, `text-balance` y peso 700 como máximo.
+- **Escala:** `--step--1…--step-4` fluida mediante `clamp`; Tailwind la expone como `text-step--1…4`. Roles: H1 de página `text-step-3`; H2 de sección `text-step-2`; título de card/H3 `text-step-1`; cuerpo `text-step-0`; secundario/help/meta `text-step--1`. El H1 del hero usa `--hero-title-size` (rol display entre step-3 y step-4), `text-balance` y peso 700 como máximo.
 - **Lectura:** `--leading-body`, `--leading-tight`, `--tracking-eyebrow` y `--measure` (66ch). La prosa legal usa `.legal-prose`.
 - **Licencias:** ambas familias usan SIL OFL 1.1; se conservan los avisos distribuidos por Fontsource. No se cargan Google Fonts.
+
+### Espaciado y radios
+
+- `--space-page-x` (1rem), `--space-section-y` (`clamp(4rem, 6vw, 6rem)`), `--space-block` (2.5rem), `--space-stack` (2rem), `--space-card` (1.5rem), `--space-gap` (1.5rem).
+- Shells: `.page-shell` (índices `max-w-6xl`), `.page-shell-narrow` (fichas/contacto `max-w-3xl`), `.section-shell` (secciones de home). Sustituyen `py-16 md:py-24` / `py-20` ad hoc en el portal comercial.
+- Radios: `--radius-control` (controles DaisyUI/`rounded-box`), `--radius-surface` (0.75rem → cards, dialog, menú; clase `.radius-surface`), `--radius-panel` (1rem → cierre de contacto; clase `.radius-panel`).
+- **Anti-patrones:** no `py-16 md:py-24` en páginas comerciales; no `text-sm`/`text-xs` DaisyUI donde exista `text-step--1`; no `rounded-2xl` en cards.
 
 ### Superficie, elevación y color
 
 - `--shadow-1`: elevación base de compromisos, cards, menú, prompt y botón primario.
 - `--shadow-2`: énfasis hover/foco, sin transición de sombra.
-- `--surface-header`: fallback opaco de la cabecera.
-- `--surface-header-glass`: superficie translúcida activada solo con soporte de `backdrop-filter`.
+- `--surface-chrome`: tinte de cabecera/pie (`border-color` 16 % sobre `card`), distinto del plano.
+- `--surface-chrome-glass`: translúcido (~58 %) sobre chrome; con `backdrop-filter: blur(8px)`.
+- `--surface-header` / `--surface-header-glass`: alias de chrome (compatibilidad).
 - `--surface-sunken`: fondo de base y filas internas del configurador, mezcla de `bg` y `card`.
 - `--gradient-section`: gradiente estático del cierre de contacto, derivado de `bg`, `bg-subtle` y `card`.
 - `--scrim`: overlay de dialog/CMP.
+- `.chrome-label`: versales UI (`--tracking-chrome` 0.1em, `--step--1`, peso 600, `fg-muted`); nav de cabecera y títulos del pie.
 
 ## 3. Componentes y patrones
 
@@ -78,8 +87,8 @@ Primer foco de la página, salta a `#main`, visible con teclado y por encima de 
 
 - H1 y copy fijos, sin rotación; CTAs y URLs definidos en el contenido.
 - El prompt presenta `~/alexendros $ nuevo-encargo` como firma visual mono, con borde, superficie y `--shadow-1`; su regla se importa desde `Hero.module.css`.
-- El fondo de todas las páginas es una rejilla de dos capas en `body::before` (`global.css`, `@layer base`): celda fina de 22 px y mayor de 120 px, fija tras el contenido (`position: fixed`, `inset: 0`, `z-index: -1`, `pointer-events: none`), con líneas de `--border-color` al 30 % y 40 % y sin `mask`. El trazo cambia con el tema del sitio por tokens (`--grid-line`/`--grid-major`), sin `prefers-color-scheme` propio; se retira con `prefers-contrast: more`, `forced-colors: active` y al imprimir. El hero no tiene fondo propio; cabecera, tarjetas, cierre de contacto (que conserva `--gradient-section`) y pie mantienen su superficie. `body` no lleva `bg-base-200`: el color de página lo pinta `:root`.
-- La entrada `.rise-*` usa `transform`/`opacity` y desaparece con reduced motion.
+- El fondo de todas las páginas es una rejilla de dos capas en `body::before` (`global.css`, `@layer base`): celda fina de 22 px y mayor de 120 px, fija tras el contenido (`position: fixed`, `inset: 0`, `z-index: -1`, `pointer-events: none`), con líneas de `--border-color` al **18 %** (fina) y **26 %** (mayor) y sin `mask`. El trazo cambia con el tema del sitio por tokens (`--grid-line`/`--grid-major`), sin `prefers-color-scheme` propio; se retira con `prefers-contrast: more`, `forced-colors: active` y al imprimir. El hero no tiene fondo propio; cabecera, tarjetas, cierre de contacto (que conserva `--gradient-section`) y pie mantienen su superficie. `body` no lleva `bg-base-200`: el color de página lo pinta `:root`.
+- La entrada `.rise-1…4` (solo hero) usa `transform`/`opacity` con `--duration-normal` (200 ms) y delays 40/80/120 ms; desaparece con reduced motion. No hay script `reveal.ts`.
 - Sin View Transitions ni librerías de motion.
 
 ### Cards y elevación
@@ -94,9 +103,12 @@ Primer foco de la página, salta a `#main`, visible con teclado y por encima de 
 
 La home usa DaisyUI `steps` con `step-primary` como tratamiento visual de una secuencia estática. No se añade `aria-current`, progreso completado ni interacción ficticia. La lista conserva orden, vertical en móvil, horizontal desde `lg` y contenido sin JavaScript. `/metodo` mantiene su composición editorial propia.
 
-### Cabecera
+### Cabecera y pie (chrome)
 
-`#site-header` parte de `--surface-header`; `Header.module.css` activa `--surface-header-glass` y `backdrop-filter: blur(12px)` solo con soporte. No cambia altura, navegación, CTA, selector de tema ni stacking del CMP. El menú móvil usa `.surface-raised`.
+- `#site-header` y el `footer` usan la clase compartida `.chrome-surface` (`--surface-chrome` / glass + `blur(8px)`). Bordes con `border-border`. El pie no usa `bg-base-100`.
+- Nav principal y menú móvil: `.chrome-label` (versales). Títulos del pie: `.footer-title.chrome-label`. Enlaces del pie en sentence case, densos (`min-block-size: 1.5rem`, `text-step--1`); GitHub y Correo conservan objetivo táctil 44×44 (`min-h-11 min-w-11`).
+- Toggle de tema: `btn-square` 44×44; iconos `theme` (sistema), `sun` (claro), `moon` (oscuro) sincronizados por `themeToggle.ts`.
+- CMP (`cookieBanner.css`): barra sólida con tokens de card/borde y `--radius-surface`; compacta en desktop (sin divisor textos/botones) y en móvil; sin `backdrop-filter`. Stacking del CMP por encima del chrome.
 
 ### Configurador de módulos
 

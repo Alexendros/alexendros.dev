@@ -9,18 +9,14 @@ import styles from './Referencias.module.css';
 const featured = projects.filter((project) => project.featured).slice(0, 2);
 ---
 
-<section
-  id="referencias"
-  class="mx-auto max-w-6xl scroll-mt-nav px-4 py-20"
-  aria-labelledby="referencias-heading"
->
+<section id="referencias" class="section-shell scroll-mt-nav" aria-labelledby="referencias-heading">
   <SectionHeader
     id="referencias-heading"
     eyebrow={homeReferenciasIntro.eyebrow}
     title={homeReferenciasIntro.title}
   />
 
-  <div class:list={['cards mt-8 grid gap-6 sm:grid-cols-2', styles.cards]}>
+  <div class:list={['cards stack-gap grid gap-6 sm:grid-cols-2', styles.cards]}>
     {
       featured.map((project, index) => (
         <ProjectCard project={project} headingLevel="h3" priority={index === 0} />
@@ -28,7 +24,7 @@ const featured = projects.filter((project) => project.featured).slice(0, 2);
     }
   </div>
 
-  <p class="mt-8">
+  <p class="stack-gap">
     <a class:list={['btn btn-outline', styles['more-link']]} href="/referencias/">
       Ver todas las referencias
       <Icon name="arrow-right" size={16} />

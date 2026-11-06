@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import ServiceCard from '../../components/ServiceCard.astro';
 import Button from '../../components/Button.astro';
 import Paquetes from '../../components/Paquetes.astro';
+import PageHead from '../../components/PageHead.astro';
 import { paquetesPublicados } from '../../content/paquetes';
 import { serviceProducts } from '../../content/services';
 import styles from './index.module.css';
@@ -16,20 +17,16 @@ const collaboration = serviceProducts[0];
   ogImage="/og/servicios.png"
   ogImageAlt="Servicios profesionales de Alexendros.dev"
 >
-  <div class="mx-auto max-w-6xl px-4 py-16 md:py-24">
-    <header>
-      <h1 class="text-step-3 break-words font-bold max-w-5xl text-balance">
-        Catálogo de servicios profesionales en{' '}
-        <span class={styles.accent}>respuesta a necesidades reales</span>
-      </h1>
-      <div class="pagehead-rule mt-4 h-px bg-border" aria-hidden="true"></div>
-      <p class="text-muted mt-3 max-w-2xl">
-        Colaboración por fases: se define el alcance de cada encargo y se entrega un trabajo
-        acotado, con sus límites por escrito.
-      </p>
-    </header>
+  <div class="page-shell">
+    <PageHead
+      wide
+      description="Colaboración por fases: se define el alcance de cada encargo y se entrega un trabajo acotado, con sus límites por escrito."
+    >
+      Catálogo de servicios profesionales en{' '}
+      <span class={styles.accent}>respuesta a necesidades reales</span>
+    </PageHead>
     {paquetesPublicados && <Paquetes headingLevel="h2" />}
-    <p class="mt-4 max-w-2xl text-sm text-muted" data-services-proposal-note>
+    <p class="mt-4 max-w-2xl text-step--1 text-muted" data-services-proposal-note>
       El alcance, el calendario y las condiciones económicas se detallan en cada propuesta.
     </p>
     <div class="mt-6" data-services-primary-action>
@@ -39,7 +36,7 @@ const collaboration = serviceProducts[0];
     </div>
     {
       collaboration && (
-        <div class="mt-8 max-w-md">
+        <div class="stack-gap max-w-md">
           <ServiceCard product={collaboration} />
         </div>
       )

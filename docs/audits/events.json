@@ -232,6 +232,17 @@
       "recordType": "event",
       "kind": "aviso",
       "source": "https://github.com/Alexendros/alexendrosdev/pull/152"
+    },
+    {
+      "id": "evt-2026-11-06-ritmo-visual",
+      "sequence": 22,
+      "timestamp": "2026-11-06T21:10:00Z",
+      "active": true,
+      "title": "Pasada de ritmo visual en portal comercial",
+      "summary": "Implantación de la decisión 0031: shells, escala tipográfica, rejilla suavizada, motion y glass reducidos.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "docs/standards/website/diseno.md"
     }
   ]
 }

@@ -13,10 +13,10 @@ const { headingLevel = 'h3' } = Astro.props;
 const Heading = headingLevel;
 ---
 
-<div class="mt-10 grid gap-6 md:grid-cols-3" data-paquetes>
+<div class="stack-block grid gap-6 md:grid-cols-3" data-paquetes>
   {
     paquetesVisibles().map((p) => (
-      <article class="card surface-raised rounded-xl" data-paquete={p.id}>
+      <article class="card surface-raised radius-surface" data-paquete={p.id}>
         <div class="card-body gap-4">
           <Heading class="card-title text-step-1 leading-tight">{p.nombre}</Heading>
           <p class="text-muted">{p.paraQuien}</p>

@@ -1,14 +1,13 @@
 ---
 import { site } from '../content/site';
 import Icon from './ui/Icon.astro';
-import styles from './Header.module.css';
 
 const contactHref = '/contacto/?motivo=propuestaComercial';
 ---
 
 <header
   id="site-header"
-  class:list={['navbar sticky top-0 z-50 border-b border-border px-3 lg:px-8', styles.header]}
+  class="chrome-surface navbar sticky top-0 z-50 border-b border-border px-3 lg:px-8"
 >
   <div class="navbar-start">
     <div class="relative lg:hidden">
@@ -25,12 +24,14 @@ const contactHref = '/contacto/?motivo=propuestaComercial';
       <ul
         id="mobile-nav"
         hidden
-        class="menu surface-raised absolute left-0 z-10 mt-3 w-64 rounded-xl p-2"
+        class="menu surface-raised absolute left-0 z-10 mt-3 w-64 radius-surface p-2"
       >
         {
           site.nav.map((item) => (
             <li>
-              <a href={item.href}>{item.label}</a>
+              <a class="chrome-label" href={item.href}>
+                {item.label}
+              </a>
             </li>
           ))
         }
@@ -48,7 +49,9 @@ const contactHref = '/contacto/?motivo=propuestaComercial';
       {
         site.nav.map((item) => (
           <li>
-            <a href={item.href}>{item.label}</a>
+            <a class="chrome-label" href={item.href}>
+              {item.label}
+            </a>
           </li>
         ))
       }
@@ -59,11 +62,19 @@ const contactHref = '/contacto/?motivo=propuestaComercial';
     <input type="checkbox" class="theme-controller hidden" value="alexdark" data-theme-input />
     <button
       type="button"
-      class="btn btn-ghost btn-circle js-only h-11 w-11"
+      class="btn btn-ghost btn-square js-only h-11 w-11"
       data-theme-toggle
-      aria-label="Tema: sistema. Pulsar para cambiar"
+      aria-label="Tema: sistema. Pulsar para claro"
     >
-      <Icon name="theme" />
+      <span data-theme-icon="system">
+        <Icon name="theme-system" />
+      </span>
+      <span data-theme-icon="alexlight" hidden>
+        <Icon name="sun" />
+      </span>
+      <span data-theme-icon="alexdark" hidden>
+        <Icon name="moon" />
+      </span>
     </button>
     <a class="btn btn-primary btn-sm min-h-11 px-3 sm:btn-md sm:px-4" href={contactHref}>Contacto</a
     >
