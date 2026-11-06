@@ -106,7 +106,7 @@ La home usa DaisyUI `steps` con `step-primary` como tratamiento visual de una se
 ### Cabecera y pie (chrome)
 
 - `#site-header` y el `footer` usan la clase compartida `.chrome-surface` (`--surface-chrome` / glass + `blur(8px)`). Bordes con `border-border`. El pie no usa `bg-base-100`.
-- Nav principal y menú móvil: `.chrome-label` (versales). Títulos del pie: `.footer-title.chrome-label`. Enlaces del pie en sentence case, densos (`min-block-size: 1.5rem`, `text-step--1`).
+- Nav principal y menú móvil: `.chrome-label` (versales). Títulos del pie: `.footer-title.chrome-label`. Enlaces del pie en sentence case, densos (`min-block-size: 1.5rem`, `text-step--1`); GitHub y Correo conservan objetivo táctil 44×44 (`min-h-11 min-w-11`).
 - Toggle de tema: `btn-square` 44×44; iconos `theme` (sistema), `sun` (claro), `moon` (oscuro) sincronizados por `themeToggle.ts`.
 - CMP (`cookieBanner.css`): barra sólida con tokens de card/borde y `--radius-surface`; compacta en desktop (sin divisor textos/botones) y en móvil; sin `backdrop-filter`. Stacking del CMP por encima del chrome.
 

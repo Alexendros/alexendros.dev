@@ -438,6 +438,14 @@
     text-decoration-line: underline;
   }
 
+  /* A11Y-04 / plan chrome: 44×44 solo en acciones de Enlaces (GitHub, Correo). */
+  footer nav a.link.min-h-11 {
+    min-block-size: 2.75rem;
+    min-inline-size: 2.75rem;
+    padding-block: 0;
+    justify-content: center;
+  }
+
   .project-details > summary::after {
     content: '+';
     margin-inline-start: auto;
