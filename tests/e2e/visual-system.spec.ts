@@ -111,7 +111,7 @@ test('cabecera: glass con superficie semántica y foco con anillo', async ({ pag
     const computed = getComputedStyle(el);
     return { backdrop: computed.backdropFilter, background: computed.backgroundColor };
   });
-  expect(styles.backdrop).toBe('blur(12px)');
+  expect(styles.backdrop).toBe('blur(8px)');
   expect(styles.background).not.toBe('rgba(0, 0, 0, 0)');
 
   const summary = page.locator('summary.focus-ring').first();

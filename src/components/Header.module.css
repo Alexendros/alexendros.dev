@@ -3,10 +3,10 @@
     background-color: var(--surface-header);
   }
 
-  @supports (backdrop-filter: blur(12px)) {
+  @supports (backdrop-filter: blur(8px)) {
     .header {
       background-color: var(--surface-header-glass);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(8px);
     }
   }
 }

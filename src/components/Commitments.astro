@@ -25,9 +25,9 @@ const {
   <ul class="grid list-none gap-3 p-0 sm:grid-cols-3">
     {
       commitments.items.map((item) => (
-        <li class="commitment-item surface-raised rounded-xl p-5">
+        <li class="commitment-item surface-raised radius-surface p-5">
           <p class="font-semibold text-fg">{item.title}</p>
-          <p class="mt-1 text-sm text-muted">{item.detail}</p>
+          <p class="mt-1 text-step--1 text-muted">{item.detail}</p>
         </li>
       ))
     }

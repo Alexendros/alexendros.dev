@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import DetailIsland from '../../components/DetailIsland.astro';
+import PageHead from '../../components/PageHead.astro';
 import {
   availabilityCtaLabels,
   productTypeLabels,
@@ -27,16 +28,11 @@ const detailItems = projects.map((p) => ({
   ogImage="/og/proyectos.png"
   ogImageAlt="Proyectos realizados"
 >
-  <div class="mx-auto max-w-6xl px-4 py-16 md:py-24">
-    <header>
-      <h1 class="text-step-3 break-words font-bold max-w-3xl text-balance">
-        Proyectos realizados.
-      </h1>
-      <div class="pagehead-rule mt-4 h-px bg-border" aria-hidden="true"></div>
-    </header>
+  <div class="page-shell">
+    <PageHead title="Proyectos realizados." />
 
     <div
-      class="mt-8 flex flex-wrap gap-2"
+      class="stack-gap flex flex-wrap gap-2"
       role="group"
       aria-label="Filtrar referencias por tipo"
       data-ref-filters
@@ -56,7 +52,7 @@ const detailItems = projects.map((p) => ({
     </div>
     <p class="sr-only" aria-live="polite" data-ref-live></p>
 
-    <div class="mt-8 grid gap-6 md:grid-cols-2" data-ref-grid>
+    <div class="stack-gap grid gap-6 md:grid-cols-2" data-ref-grid>
       {
         projects.map((project, index) => (
           <div class="h-full" data-kind={project.workKind === 'encargo' ? 'encargo' : 'propio'}>

@@ -15,22 +15,20 @@ const Heading = headingLevel;
 ---
 
 <article
-  class="card-lift group relative border border-border rounded-xl overflow-hidden bg-card flex flex-col h-full has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-focus has-[:focus-visible]:outline-offset-2"
+  class="card-lift group relative flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-focus"
 >
   <Image
     src={project.cover}
     alt={project.coverAlt}
     widths={[400, 800]}
     sizes="(max-width: 768px) 100vw, 400px"
-    class="card-img w-full aspect-[16/10] object-cover border-b border-border"
+    class="card-img aspect-[16/10] w-full border-b border-border object-cover"
     loading={priority ? 'eager' : 'lazy'}
     fetchpriority={priority ? 'high' : 'auto'}
     decoding="async"
   />
-  <div class="p-6 flex-1 flex flex-col">
-    <Heading
-      class="mt-1 text-step-1 font-semibold leading-tight group-hover:text-primary transition-colors"
-    >
+  <div class="flex flex-1 flex-col p-6">
+    <Heading class="mt-1 text-step-1 font-semibold leading-tight group-hover:text-primary">
       <a href={`/referencias/${project.slug}/`} class="rounded after:absolute after:inset-0">
         {project.title}
       </a>
@@ -44,19 +42,19 @@ const Heading = headingLevel;
     <p class="mt-2 text-step--1 text-muted">{project.short}</p>
     {
       project.metrics && project.metrics.length > 0 && (
-        <p class="mt-2 text-xs font-medium text-primary">
+        <p class="mt-2 text-step--1 font-medium text-primary">
           {project.metrics[0].value} · {project.metrics[0].label}
         </p>
       )
     }
     <div
-      class="mt-auto pt-4 text-sm font-medium text-primary"
+      class="mt-auto pt-4 text-step--1 font-medium text-primary"
       aria-hidden="true"
       data-project-card-cta
     >
       Conocer más
       <span
-        class="inline-block transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:transform-none"
+        class="inline-block transition-transform duration-[var(--duration-normal)] group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:transform-none"
       >
         <Icon name="arrow-right" size={16} />
       </span>

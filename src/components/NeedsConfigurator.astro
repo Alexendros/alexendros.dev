@@ -5,15 +5,15 @@ import styles from './NeedsConfigurator.module.css';
 
 <div data-needs-configurator class:list={['surface-raised', styles.configurator]}>
   <h2 id="portal-heading" class="text-step-2 font-bold">Sitio web profesional por módulos</h2>
-  <p class="mt-2 text-sm text-muted">
+  <p class="mt-2 text-step--1 text-muted">
     Base: {portalBase.delivery}. Plazo orientativo: {portalBase.timeline}. Los módulos y sus
     dependencias se revisan antes de definir el calendario y las condiciones en la propuesta.
   </p>
 
   <section class={styles.base} data-portal-base aria-labelledby="portal-base-title">
     <h3 id="portal-base-title" class={styles['zone-title']}>{portalBase.title}</h3>
-    <p class="mt-1 text-sm text-muted">{portalBase.short}</p>
-    <p class="mt-1 text-sm text-muted">{portalBase.scope}</p>
+    <p class="mt-1 text-step--1 text-muted">{portalBase.short}</p>
+    <p class="mt-1 text-step--1 text-muted">{portalBase.scope}</p>
   </section>
 
   <section class={styles.options} data-portal-options aria-labelledby="portal-options-title">
@@ -21,7 +21,7 @@ import styles from './NeedsConfigurator.module.css';
     <ul class={styles['module-list']} data-needs-list>
       {
         portalModules.map((module) => (
-          <li class="text-sm">
+          <li class="text-step--1">
             <label class={styles.module} for={`mod-${module.id}`}>
               <input
                 id={`mod-${module.id}`}
@@ -66,7 +66,7 @@ import styles from './NeedsConfigurator.module.css';
       href="/contacto/?motivo=propuestaComercial&origen=servicios"
       data-needs-cta
       class:list={[
-        'btn focus-ring inline-flex min-h-11 items-center justify-center gap-2 rounded bg-primary px-6 py-3 font-medium text-ink transition-colors hover:bg-primaryHover',
+        'btn focus-ring inline-flex min-h-11 items-center justify-center gap-2 rounded bg-primary px-6 py-3 font-medium text-ink hover:bg-primaryHover',
         styles.action
       ]}
     >
@@ -75,7 +75,7 @@ import styles from './NeedsConfigurator.module.css';
     <a
       href="/contacto/?motivo=informacionCliente"
       class:list={[
-        'focus-ring inline-flex min-h-6 items-center rounded text-sm font-medium text-muted underline decoration-dotted underline-offset-4 hover:text-primary',
+        'focus-ring inline-flex min-h-6 items-center rounded text-step--1 font-medium text-muted underline decoration-dotted underline-offset-4 hover:text-primary',
         styles.action
       ]}
     >

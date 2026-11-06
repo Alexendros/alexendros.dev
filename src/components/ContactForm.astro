@@ -60,7 +60,7 @@ const vias = [
   >
     La solicitud
   </h2>
-  <p class="text-sm text-muted">Los campos con * son obligatorios.</p>
+  <p class="text-step--1 text-muted">Los campos con * son obligatorios.</p>
 
   <div class="honeypot" aria-hidden="true" inert>
     <label for="contact-website">Sitio web</label>
@@ -74,7 +74,7 @@ const vias = [
   <input type="hidden" name="modules" value={initialModules} />
   <input type="hidden" name="channel" value="correo" />
 
-  <p class="text-sm text-muted" data-contact-modules hidden={!moduleLabels}>
+  <p class="text-step--1 text-muted" data-contact-modules hidden={!moduleLabels}>
     Módulos indicados:{' '}
     <strong class="opacity-100" data-contact-module-labels>{moduleLabels}</strong>
   </p>
@@ -85,7 +85,7 @@ const vias = [
     <div class="grid gap-2">
       {
         vias.map((via) => (
-          <label class="flex min-h-11 cursor-pointer items-start gap-3 rounded-box border border-base-300 p-3 transition-colors hover:border-primary has-checked:border-primary has-checked:bg-base-200">
+          <label class="flex min-h-11 cursor-pointer items-start gap-3 rounded-box border border-base-300 p-3 hover:border-primary has-checked:border-primary has-checked:bg-base-200">
             <input
               type="checkbox"
               name="via"
@@ -98,7 +98,7 @@ const vias = [
             />
             <span>
               <span class="block font-medium">{via.label}</span>
-              <span class="text-sm text-muted">{via.hint}</span>
+              <span class="text-step--1 text-muted">{via.hint}</span>
             </span>
           </label>
         ))
@@ -115,9 +115,9 @@ const vias = [
         placeholder="Describir la otra necesidad"
         aria-describedby="contact-otra-error"
       />
-      <p id="contact-otra-error" role="alert" class="mt-1 text-sm text-error" hidden></p>
+      <p id="contact-otra-error" role="alert" class="mt-1 text-step--1 text-error" hidden></p>
     </div>
-    <p id="contact-vias-error" role="alert" class="mt-1 text-sm text-error" hidden></p>
+    <p id="contact-vias-error" role="alert" class="mt-1 text-step--1 text-error" hidden></p>
   </fieldset>
 
   <fieldset class="fieldset min-w-0">
@@ -132,7 +132,12 @@ const vias = [
       aria-required="true"
       aria-describedby="contact-name-error"
     />
-    <p id="contact-name-error" role="alert" class="validator-hint mt-1 text-sm text-error" hidden>
+    <p
+      id="contact-name-error"
+      role="alert"
+      class="validator-hint mt-1 text-step--1 text-error"
+      hidden
+    >
     </p>
   </fieldset>
 
@@ -148,7 +153,12 @@ const vias = [
       aria-required="true"
       aria-describedby="contact-email-error"
     />
-    <p id="contact-email-error" role="alert" class="validator-hint mt-1 text-sm text-error" hidden>
+    <p
+      id="contact-email-error"
+      role="alert"
+      class="validator-hint mt-1 text-step--1 text-error"
+      hidden
+    >
     </p>
   </fieldset>
 
@@ -165,7 +175,12 @@ const vias = [
       pattern="(https?://)?[^\s/.]+(\.[^\s/.]+)+(/\S*)?"
       aria-describedby="contact-sitio-error"
     />
-    <p id="contact-sitio-error" role="alert" class="validator-hint mt-1 text-sm text-error" hidden>
+    <p
+      id="contact-sitio-error"
+      role="alert"
+      class="validator-hint mt-1 text-step--1 text-error"
+      hidden
+    >
     </p>
   </fieldset>
 
@@ -184,7 +199,7 @@ const vias = [
     <p
       id="contact-message-error"
       role="alert"
-      class="validator-hint mt-1 text-sm text-error"
+      class="validator-hint mt-1 text-step--1 text-error"
       hidden
     >
     </p>
@@ -199,7 +214,7 @@ const vias = [
     </p>
   </fieldset>
 
-  <label class="flex flex-wrap items-start gap-x-3 gap-y-1 text-sm" for="contact-consent">
+  <label class="flex flex-wrap items-start gap-x-3 gap-y-1 text-step--1" for="contact-consent">
     <input
       id="contact-consent"
       type="checkbox"
@@ -212,47 +227,47 @@ const vias = [
       <a href="/privacidad/" class="link link-hover">política de privacidad</a>.
     </span>
   </label>
-  <p id="contact-consent-error" role="alert" class="text-sm text-error" hidden></p>
+  <p id="contact-consent-error" role="alert" class="text-step--1 text-error" hidden></p>
 
   {turnstileSiteKey && <div class="cf-turnstile" data-turnstile data-site-key={turnstileSiteKey} />}
 
-  <div role="alert" class="space-y-1 text-sm text-error" data-contact-errors hidden>
+  <div role="alert" class="space-y-1 text-step--1 text-error" data-contact-errors hidden>
     <p data-contact-error-count></p>
     <ul class="list-disc pl-5" data-contact-error-list></ul>
   </div>
 
-  <p role="alert" class="text-sm text-error" data-contact-status="error" hidden>
+  <p role="alert" class="text-step--1 text-error" data-contact-status="error" hidden>
     {errorMessage} Alternativa:{' '}
     <a href="mailto:contratacion@alexendros.dev" class="link">contratacion@alexendros.dev</a>.
   </p>
-  <p role="alert" class="text-sm text-error" data-contact-status="rate_limited" hidden>
+  <p role="alert" class="text-step--1 text-error" data-contact-status="rate_limited" hidden>
     Demasiados intentos. Esperar un minuto antes de reintentar, o escribir a{' '}
     <a href="mailto:contratacion@alexendros.dev" class="link">contratacion@alexendros.dev</a>.
   </p>
-  <p role="alert" class="text-sm text-error" data-contact-status="unavailable" hidden>
+  <p role="alert" class="text-step--1 text-error" data-contact-status="unavailable" hidden>
     Servicio temporalmente no disponible. Contacto:{' '}
     <a href="mailto:contratacion@alexendros.dev" class="link">contratacion@alexendros.dev</a>.
   </p>
-  <p role="status" class="text-sm text-muted" data-contact-status="processing" hidden>
+  <p role="status" class="text-step--1 text-muted" data-contact-status="processing" hidden>
     La petición se está procesando. Esperar unos segundos antes de reintentar; no se confirma aún la
     recepción.
   </p>
-  <p role="alert" class="text-sm text-error" data-contact-status="conflict" hidden>
+  <p role="alert" class="text-step--1 text-error" data-contact-status="conflict" hidden>
     Esta petición no coincide con un envío anterior. Comprobar los datos o escribir a{' '}
     <a href="mailto:contratacion@alexendros.dev" class="link">contratacion@alexendros.dev</a>.
   </p>
-  <p role="alert" class="text-sm text-error" data-contact-status="unknown" hidden>
+  <p role="alert" class="text-step--1 text-error" data-contact-status="unknown" hidden>
     No se puede confirmar si el mensaje llegó. Evitar reenvío inmediato; esperar un momento o
     escribe a <a href="mailto:contratacion@alexendros.dev" class="link"
       >contratacion@alexendros.dev</a
     >.
   </p>
-  <p role="alert" class="text-sm text-error" data-contact-status="timeout" hidden>
+  <p role="alert" class="text-step--1 text-error" data-contact-status="timeout" hidden>
     La respuesta tarda más de lo esperado. No sabemos si el mensaje llegó: espera un momento antes
     de reintentar o escribe a{' '}
     <a href="mailto:contratacion@alexendros.dev" class="link">contratacion@alexendros.dev</a>.
   </p>
-  <p role="status" class="text-sm text-muted" data-contact-status="loading" hidden>
+  <p role="status" class="text-step--1 text-muted" data-contact-status="loading" hidden>
     Enviando la solicitud…
   </p>
 
@@ -262,7 +277,7 @@ const vias = [
 </form>
 
 <noscript>
-  <p data-contact-nojs class="mt-6 rounded-box border border-base-300 bg-base-100 p-4 text-sm">
+  <p data-contact-nojs class="mt-6 rounded-box border border-base-300 bg-base-100 p-4 text-step--1">
     El formulario interactivo necesita JavaScript. Mientras tanto también se puede escribir a{' '}
     <a href={site.social.email} class="link">contratacion@alexendros.dev</a>.
   </p>
@@ -271,7 +286,7 @@ const vias = [
 <p
   data-contact-fallback
   hidden
-  class="mt-6 rounded-box border border-base-300 bg-base-100 p-4 text-sm"
+  class="mt-6 rounded-box border border-base-300 bg-base-100 p-4 text-step--1"
 >
   El formulario interactivo necesita JavaScript y no se ha cargado. Mientras tanto también se puede
   escribir a{' '}

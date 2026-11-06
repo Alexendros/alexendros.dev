@@ -1,22 +1,27 @@
 ---
 interface Props {
   kicker?: string;
-  title: string;
+  title?: string;
   description?: string;
+  titleId?: string;
+  /** Amplía el max-width del H1 (p. ej. catálogo de servicios). */
+  wide?: boolean;
 }
-const { kicker, title, description } = Astro.props;
+const { kicker, title, description, titleId, wide = false } = Astro.props;
 ---
 
 <div>
   {kicker ? <p class="eyebrow">{kicker}</p> : null}
   <h1
+    id={titleId}
     class:list={[
       kicker ? 'mt-2' : null,
-      'break-words text-step-3 font-bold text-balance max-w-3xl'
+      'break-words text-step-3 font-bold text-balance',
+      wide ? 'max-w-5xl' : 'max-w-3xl'
     ]}
   >
-    {title}
+    <slot>{title}</slot>
   </h1>
-  <div class="mt-4 h-px bg-base-300" aria-hidden="true"></div>
+  <div class="pagehead-rule mt-4 h-px bg-border" aria-hidden="true"></div>
   {description && <p class="mt-3 max-w-2xl text-muted">{description}</p>}
 </div>

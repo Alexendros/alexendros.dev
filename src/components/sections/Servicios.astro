@@ -7,11 +7,7 @@ import { paquetesPublicados } from '../../content/paquetes';
 import styles from './Servicios.module.css';
 ---
 
-<section
-  id="servicios"
-  class="mx-auto max-w-6xl scroll-mt-nav px-4 py-20"
-  aria-labelledby="servicios-heading"
->
+<section id="servicios" class="section-shell scroll-mt-nav" aria-labelledby="servicios-heading">
   <SectionHeader
     id="servicios-heading"
     eyebrow={homeServiciosIntro.eyebrow}
@@ -22,9 +18,9 @@ import styles from './Servicios.module.css';
     paquetesPublicados ? (
       <Paquetes />
     ) : (
-      <div class="mt-10 grid gap-6 md:grid-cols-3">
+      <div class="stack-block grid gap-6 md:grid-cols-3">
         {homeVias.map((via) => (
-          <article class="card surface-raised rounded-xl">
+          <article class="card surface-raised radius-surface">
             <div class="card-body gap-4">
               <div>
                 <span class="badge badge-accent badge-sm font-medium">{via.badge}</span>
@@ -42,7 +38,7 @@ import styles from './Servicios.module.css';
       </div>
     )
   }
-  <p class="mt-8">
+  <p class="stack-gap">
     <a class:list={['btn btn-outline', styles['more-link']]} href="/servicios/">
       Ver el catálogo de servicios
       <Icon name="arrow-right" size={16} />

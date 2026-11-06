@@ -93,12 +93,11 @@
     --border-color: var(--ds-atlaps-paper-grid);
     --border-strong: var(--ds-atlaps-ink-pencil);
 
-    /* Rejilla del plano (fondo de todo el body). El trazo sale de
-       --border-color, que ya cambia con el tema; los alfalfa se limitan a
-       que el texto secundario siga en AA sobre la línea mayor (claro
-       4,53:1, oscuro 7,95:1). */
-    --grid-line: color-mix(in srgb, var(--border-color) 30%, transparent);
-    --grid-major: color-mix(in srgb, var(--border-color) 40%, transparent);
+    /* Rejilla del plano (fondo de todo el body). Sin mask. Opacidades
+       suavizadas (18 % / 26 %) respecto al 30 % / 40 % post-T7; el texto
+       secundario sigue en AA sobre la línea mayor. */
+    --grid-line: color-mix(in srgb, var(--border-color) 18%, transparent);
+    --grid-major: color-mix(in srgb, var(--border-color) 26%, transparent);
     --card: var(--ds-atlaps-paper-bone);
     --danger: var(--ds-atlaps-danger);
     --link: var(--ds-atlaps-blueprint-mid);
@@ -139,6 +138,15 @@
     --duration-fast: 180ms;
     --duration-normal: 200ms;
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --space-page-x: 1rem;
+    --space-section-y: clamp(4rem, 6vw, 6rem);
+    --space-block: 2.5rem;
+    --space-stack: 2rem;
+    --space-card: 1.5rem;
+    --space-gap: 1.5rem;
+    --radius-control: var(--radius-field);
+    --radius-surface: 0.75rem;
+    --radius-panel: 1rem;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme='alexlight']) {
@@ -417,6 +425,42 @@
     border: 0;
   }
 
+  .page-shell {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: var(--space-page-x);
+    padding-block: var(--space-section-y);
+  }
+
+  .page-shell-narrow {
+    max-width: 48rem;
+  }
+
+  .section-shell {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: var(--space-page-x);
+    padding-block: var(--space-section-y);
+  }
+
+  .stack-block {
+    margin-top: var(--space-block);
+  }
+
+  .stack-gap {
+    margin-top: var(--space-stack);
+  }
+
+  .radius-surface {
+    border-radius: var(--radius-surface);
+  }
+
+  .radius-panel {
+    border-radius: var(--radius-panel);
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     @keyframes rise-in {
       from {
@@ -433,30 +477,20 @@
     .js .rise-1,
     .js .rise-2,
     .js .rise-3,
-    .js .rise-4,
-    .js .rise-5,
-    .js .rise-6 {
-      animation: rise-in 0.6s var(--ease-out) both;
+    .js .rise-4 {
+      animation: rise-in var(--duration-normal) var(--ease-out) both;
     }
 
     .js .rise-2 {
-      animation-delay: 60ms;
+      animation-delay: 40ms;
     }
 
     .js .rise-3 {
-      animation-delay: 120ms;
+      animation-delay: 80ms;
     }
 
     .js .rise-4 {
-      animation-delay: 180ms;
-    }
-
-    .js .rise-5 {
-      animation-delay: 240ms;
-    }
-
-    .js .rise-6 {
-      animation-delay: 300ms;
+      animation-delay: 120ms;
     }
   }
 }

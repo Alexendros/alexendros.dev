@@ -4,15 +4,11 @@ import styles from './ContactCta.module.css';
 import SectionHeader from '../SectionHeader.astro';
 ---
 
-<section
-  id="contacto"
-  class="mx-auto max-w-6xl scroll-mt-nav px-4 py-20"
-  aria-labelledby="contacto-heading"
->
+<section id="contacto" class="section-shell scroll-mt-nav" aria-labelledby="contacto-heading">
   <div
     class:list={[
       'surface-raised',
-      'rounded-2xl',
+      'radius-panel',
       'px-6',
       'py-10',
       'sm:px-10',
@@ -27,7 +23,7 @@ import SectionHeader from '../SectionHeader.astro';
       title={homeContactoIntro.title}
       description={homeContactoIntro.lead}
     />
-    <div class="mt-8">
+    <div class="stack-gap">
       <a class="btn btn-primary btn-lg" href="/contacto/?origen=home&motivo=propuestaComercial">
         Solicitar propuesta
       </a>
