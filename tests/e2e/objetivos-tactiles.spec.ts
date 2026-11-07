@@ -34,11 +34,22 @@ test('A11Y-04: el logo de cabecera mide al menos 44×44 px', async ({ page }) =>
   await expect44(page.locator('#site-header a[href="/#top"]'));
 });
 
-test('A11Y-04: GitHub y Correo tienen objetivos de al menos 44×44 px', async ({ page }) => {
+test('A11Y-04: GitHub, LinkedIn y Correo tienen hit-area de al menos 44×44 px', async ({
+  page
+}) => {
   await page.goto('/');
   const links = page.getByRole('navigation', { name: 'Enlaces', exact: true });
-  await expect44(links.getByRole('link', { name: 'GitHub', exact: true }));
-  await expect44(links.getByRole('link', { name: 'Correo', exact: true }));
+  for (const name of [/GitHub/, /LinkedIn/, /^Correo$/] as const) {
+    const box = await links.getByRole('link', { name }).evaluate((node) => {
+      const before = getComputedStyle(node, '::before');
+      const height = parseFloat(before.height) || 0;
+      const width = Math.max(parseFloat(before.width) || 0, node.getBoundingClientRect().width);
+      return { width, height, hasPseudo: before.content !== 'none' && before.content !== '' };
+    });
+    expect(box.hasPseudo, `${name} ::before`).toBe(true);
+    expect(box.width, `${name} width`).toBeGreaterThanOrEqual(44);
+    expect(box.height, `${name} height`).toBeGreaterThanOrEqual(44);
+  }
 });
 
 test('A11Y-04: los CTA de sección miden al menos 44 px de alto', async ({ page }) => {
@@ -52,10 +63,18 @@ test('A11Y-04: los CTA de sección miden al menos 44 px de alto', async ({ page 
   }
 });
 
-test('A11Y-04: los enlaces de las referencias destacadas miden 44 px de alto', async ({ page }) => {
+test('A11Y-04: las tarjetas de referencias destacadas miden 44 px de alto', async ({ page }) => {
   await page.goto('/');
   const referencias = page.locator('#referencias');
   for (const name of ['Front Valencia', 'Gráficas Nasve']) {
-    await expect44(referencias.getByRole('link', { name, exact: true }));
+    const card = referencias
+      .locator('article')
+      .filter({ has: page.getByRole('link', { name, exact: true }) });
+    const box = await card.evaluate((node) => {
+      const rect = node.getBoundingClientRect();
+      return { width: rect.width, height: rect.height };
+    });
+    expect(box.width).toBeGreaterThanOrEqual(44);
+    expect(box.height).toBeGreaterThanOrEqual(44);
   }
 });

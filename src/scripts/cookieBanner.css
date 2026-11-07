@@ -109,11 +109,11 @@
     }
   }
 
-  /* Móvil: barra compacta (máx. 20 % de la altura). El CSS del proveedor usa
+  /* Móvil: barra usable (máx. 40 % de la altura). El CSS del proveedor usa
      !important; aquí hace falta !important para ganarle en paddings. */
   @media (width < 40rem) {
     #cc-main .cm--bar {
-      max-height: 20vh;
+      max-height: min(40vh, 12rem);
       overflow-y: auto;
     }
 

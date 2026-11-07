@@ -40,7 +40,7 @@ const { basePath, items } = Astro.props;
         </h2>
         <button
           type="button"
-          class="focus-ring inline-flex shrink-0 items-center justify-center rounded-lg p-2 text-muted hover:text-fg"
+          class="btn btn-ghost btn-square focus-ring h-11 w-11 shrink-0 text-muted hover:text-fg"
           data-detail-close
           aria-label="Cerrar"
         >
@@ -52,7 +52,6 @@ const { basePath, items } = Astro.props;
           <p class="font-mono text-step--1 text-muted text-pretty">{item.meta}</p>
         ) : null}
         <p class="text-step--1 text-muted">{item.short}</p>
-        {item.description ? <p class="text-step--1 text-muted">{item.description}</p> : null}
         <div class="pt-2">
           <a
             href={item.ctaHref}

@@ -30,6 +30,23 @@ const FIELD_IDS: Record<string, string> = {
   sitio: 'contact-sitio'
 };
 
+/** IDs estáticos de aria-describedby por control (hint/count); el error se fusiona. */
+const FIELD_STATIC_DESCRIBEDBY: Record<string, string[]> = {
+  message: ['contact-message-hint', 'contact-message-error', 'contact-message-count'],
+  name: ['contact-name-error'],
+  email: ['contact-email-error'],
+  sitio: ['contact-sitio-error'],
+  otraDetalle: ['contact-otra-error']
+};
+
+function setDescribedBy(field: string, control: HTMLElement, includeError: boolean): void {
+  const ids = new Set<string>(FIELD_STATIC_DESCRIBEDBY[field] ?? []);
+  if (includeError) ids.add(`${control.id}-error`);
+  const value = [...ids].join(' ').trim();
+  if (value) control.setAttribute('aria-describedby', value);
+  else control.removeAttribute('aria-describedby');
+}
+
 type TurnstileApi = {
   render: (element: HTMLElement, options: Record<string, unknown>) => string;
   reset: (id?: string) => void;
@@ -261,7 +278,7 @@ function initContactForm(form: HTMLFormElement): void {
     for (const field of Object.keys(FIELD_IDS)) {
       const control = document.getElementById(FIELD_IDS[field]!);
       control?.removeAttribute('aria-invalid');
-      control?.removeAttribute('aria-describedby');
+      if (control) setDescribedBy(field, control, false);
       const error = document.getElementById(`${FIELD_IDS[field]}-error`);
       if (error) {
         error.hidden = true;
@@ -295,7 +312,7 @@ function initContactForm(form: HTMLFormElement): void {
       );
       if (control) {
         control.setAttribute('aria-invalid', 'true');
-        control.setAttribute('aria-describedby', `${control.id}-error`);
+        setDescribedBy(error.field, control, true);
       }
       if (errorElement) {
         errorElement.textContent =

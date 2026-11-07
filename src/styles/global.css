@@ -139,7 +139,9 @@
     --tracking-eyebrow: 0.14em;
     --tracking-chrome: 0.1em;
     --measure: 66ch;
-    --header-h: 4.5rem;
+
+    /* Una fila de chrome tras anular el 50% daisyUI (logo + nav + CTA). */
+    --header-h: 4rem;
     --duration-fast: 180ms;
     --duration-normal: 200ms;
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -394,15 +396,69 @@
     line-height: 1.2;
   }
 
-  #site-header.navbar {
-    flex-wrap: wrap;
+  #site-header {
+    width: 100%;
+  }
+
+  #site-header .navbar-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, auto) minmax(0, 1fr);
+    align-items: center;
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: var(--space-page-x);
+    padding-block: 0.25rem;
+    min-width: 0;
+    min-height: var(--header-h);
+  }
+
+  #site-header .navbar-start,
+  #site-header .navbar-center,
+  #site-header .navbar-end {
+    width: auto;
     max-width: 100%;
-    row-gap: 0.25rem;
+    min-width: 0;
+    flex: unset;
+  }
+
+  #site-header .navbar-end {
+    justify-self: end;
+  }
+
+  .skip-link {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .skip-link:focus-visible {
+    position: fixed;
+    left: 0.75rem;
+    top: 0.75rem;
+    z-index: 100;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip-path: none;
+    white-space: nowrap;
+    padding-inline: var(--btn-p, 1rem);
+    padding-block: 0.5rem;
+    min-block-size: 2.75rem;
   }
 
   footer.footer {
     gap: 1.25rem 1.5rem;
-    max-width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: var(--space-page-x);
   }
 
   footer.footer > nav {
@@ -428,6 +484,9 @@
     min-block-size: 2.5rem;
     padding-block: 0.35rem;
     padding-inline: 0.65rem;
+
+    /* A zoom 200 % puede partir para no forzar overflow-x. */
+    overflow-wrap: anywhere;
   }
 
   footer nav a.link {
@@ -446,12 +505,21 @@
     text-decoration-line: underline;
   }
 
-  /* A11Y-04 / plan chrome: 44×44 solo en acciones de Enlaces (GitHub, Correo). */
-  footer nav a.link.min-h-11 {
-    min-block-size: 2.75rem;
-    min-inline-size: 2.75rem;
-    padding-block: 0;
-    justify-content: center;
+  /* A11Y-04: hit-area 44×44 sin inflar el ritmo denso del pie. */
+  footer nav a.link.footer-social {
+    position: relative;
+    min-block-size: 1.5rem;
+    justify-content: flex-start;
+  }
+
+  footer nav a.link.footer-social::before {
+    content: '';
+    position: absolute;
+    inset-block: 50%;
+    inset-inline-start: 0;
+    block-size: 2.75rem;
+    inline-size: max(100%, 2.75rem);
+    translate: 0 -50%;
   }
 
   .project-details > summary::after {
@@ -596,18 +664,71 @@
   /* stylelint-enable declaration-no-important, declaration-property-value-disallowed-list */
 }
 
-/* Correos y URL largas en textos legales: partir antes que desbordar. */
+/* Legales: escala tipográfica + wrap seguro (preflight TW aplana h1/h2). */
+.legal-prose h1 {
+  font-size: var(--step-3);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-block: 0 0.75rem;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.legal-prose h2 {
+  font-size: var(--step-2);
+  font-weight: 700;
+  line-height: 1.25;
+  margin-block: 1.75rem 0.5rem;
+}
+
+.legal-prose p,
+.legal-prose ul,
+.legal-prose ol {
+  margin-block: 0.75rem;
+}
+
+.legal-prose > .eyebrow,
+.legal-prose > p.font-mono:first-child {
+  margin-block: 0 0.5rem;
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-eyebrow);
+  opacity: 0.7;
+}
+
 .legal-prose a {
   overflow-wrap: anywhere;
 }
 
+.pagehead-rule {
+  height: 1px;
+  background-color: var(--border-color);
+  transform-origin: left center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pagehead-rule {
+    animation: pagehead-rule-in var(--duration-normal) var(--ease-out) both;
+  }
+
+  @keyframes pagehead-rule-in {
+    from {
+      transform: scaleX(0);
+    }
+
+    to {
+      transform: scaleX(1);
+    }
+  }
+}
+
 /* Ancla bajo la navbar fija: el destino no queda tapado. */
 html {
-  scroll-padding-top: var(--header-h);
+  scroll-padding-top: calc(var(--header-h) + env(safe-area-inset-top, 0));
 }
 
 :target {
-  scroll-margin-top: calc(var(--header-h) + 1rem);
+  scroll-margin-top: calc(var(--header-h) + env(safe-area-inset-top, 0) + 1rem);
 }
 
 main:focus {
@@ -646,6 +767,11 @@ html:not(.js) .js-only {
   }
 
   .link.link-hover {
+    text-decoration-line: none;
+  }
+
+  .link.link-hover:hover,
+  .link.link-hover:focus-visible {
     text-decoration-line: underline;
   }
 

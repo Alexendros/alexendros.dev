@@ -15,7 +15,6 @@ const detailItems = projects.map((p) => ({
   path: `/referencias/${p.slug}/`,
   title: p.title,
   short: p.short,
-  description: p.summary,
   meta: productTypeLabels[p.productType],
   ctaLabel: availabilityCtaLabels[p.availability],
   ctaHref: `/contacto/?motivo=informacionCliente&proyecto=${p.slug}&origen=referencias`
@@ -41,7 +40,13 @@ const detailItems = projects.map((p) => ({
         projectFilters.map((filter, index) => (
           <button
             type="button"
-            class:list={['btn', index === 0 && 'btn-active']}
+            class:list={[
+              'btn',
+              'btn-outline',
+              'min-h-11',
+              'focus-ring',
+              index === 0 && 'btn-active'
+            ]}
             data-filter={filter.id}
             aria-pressed={index === 0 ? 'true' : 'false'}
           >
@@ -51,6 +56,9 @@ const detailItems = projects.map((p) => ({
       }
     </div>
     <p class="sr-only" aria-live="polite" data-ref-live></p>
+    <p class="stack-gap text-step--1 text-muted" hidden data-ref-empty>
+      No hay referencias de este tipo.
+    </p>
 
     <div class="stack-gap grid gap-6 md:grid-cols-2" data-ref-grid>
       {
