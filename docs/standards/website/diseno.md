@@ -4,7 +4,7 @@
 
 - **Objetivo:** contrato vigente de tokens, tipografía, componentes y accesibilidad del portal.
 - **Fuentes de verdad:** `src/styles/theme.css`, `src/styles/global.css` y los componentes de `src/components/`.
-- **Alcance:** documenta el sistema real. La ruta local `/design-system` redirige a `designsystem.alexendros.dev`; no es una vitrina local de componentes.
+- **Alcance:** documenta el sistema real. La vitrina viva es `/design-system` (noindex) en este repositorio. En producción, el apex redirige esa ruta a `designsystem.alexendros.dev` (mismo proyecto Hobby `alexendros-dev`); el subdominio reescribe `/` hacia la vitrina. En preview/local se sirve la página sin ese 308.
 
 ## 1. Principios
 
@@ -59,6 +59,13 @@
 - **Estados:** primary tiene `--shadow-1` y hover `--shadow-2`; disabled conserva semántica nativa/`aria-disabled`; loading usa `aria-busy`, deshabilita el botón y muestra `styles.spinner` desde `Button.module.css`, con animación solo si el movimiento está permitido.
 - **Uso:** no anidar interactivos ni duplicar manualmente una variante cuando se puede usar `Button.astro`.
 
+#### Gobernanza de CTAs
+
+- **Obligatorio:** el Hero y los CTAs de conversión de página usan `Button.astro` (API canónica). En home, `ContactCta` se incluye por coherencia de conversión.
+- **Prohibido** en el markup fuente de esas superficies: clases DaisyUI directas `btn`, `btn-primary`, `btn-outline`, `btn-ghost`, `btn-lg` (u otras `btn-*`) sin pasar por el componente.
+- **Gate:** `pnpm check:classes` escanea solo el markup fuente de `Hero.astro` y `ContactCta.astro`. No escanea `Button.astro` ni la vitrina `/design-system` (el componente emite `btn*` internamente).
+- **Lista blanca (sin gate):** `Header.astro` (CTA Contacto de chrome), `SkipLink.astro`, submit de `ContactForm.astro`, `Paquetes.astro`, enlaces «más» de listados en home (`Servicios`, `Referencias`, `Metodo`).
+
 ### Link
 
 - **API:** `href`, `variant: 'inline'|'nav'|'arrow'`, `current?` y atributos nativos.
@@ -85,7 +92,7 @@ Primer foco de la página, salta a `#main`, visible con teclado y por encima de 
 
 ### Hero y cierre de contacto
 
-- H1 y copy fijos, sin rotación; CTAs y URLs definidos en el contenido.
+- H1 y copy fijos, sin rotación; CTAs y URLs definidos en el contenido. Los CTAs del Hero y de `ContactCta` usan `Button.astro` (ver gobernanza arriba).
 - El prompt presenta `~/alexendros $ nuevo-encargo` como firma visual mono, con borde, superficie y `--shadow-1`; su regla se importa desde `Hero.module.css`.
 - El fondo de todas las páginas es una rejilla de dos capas en `body::before` (`global.css`, `@layer base`): celda fina de 22 px y mayor de 120 px, fija tras el contenido (`position: fixed`, `inset: 0`, `z-index: -1`, `pointer-events: none`), con líneas de `--border-color` al **18 %** (fina) y **26 %** (mayor) y sin `mask`. El trazo cambia con el tema del sitio por tokens (`--grid-line`/`--grid-major`), sin `prefers-color-scheme` propio; se retira con `prefers-contrast: more`, `forced-colors: active` y al imprimir. El hero no tiene fondo propio; cabecera, tarjetas, cierre de contacto (que conserva `--gradient-section`) y pie mantienen su superficie. `body` no lleva `bg-base-200`: el color de página lo pinta `:root`.
 - La entrada `.rise-1…4` (solo hero) usa `transform`/`opacity` con `--duration-normal` (200 ms) y delays 40/80/120 ms; desaparece con reduced motion. No hay script `reveal.ts`.

@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { scanSource } from '../../scripts/check-classes.mjs';
+import {
+  PROTECTED_BTN_SURFACES,
+  scanProtectedBtnSurfaces,
+  scanSource
+} from '../../scripts/check-classes.mjs';
 
 describe('check:classes (C-08)', () => {
   it('falla con shadow-lg, /alpha, hex, bg-black y text-white', () => {
@@ -35,5 +39,37 @@ describe('check:classes (C-08)', () => {
       scanSource('<script is:inline></script>', 'i.astro').some((h) => h.id === 'is-inline')
     ).toBe(true);
     expect(scanSource('el.innerHTML = "x"', 'x.ts').some((h) => h.id === 'inner-html')).toBe(true);
+  });
+});
+
+describe('check:classes — btn en superficies protegidas', () => {
+  it('lista cerrada: Hero y ContactCta', () => {
+    expect(PROTECTED_BTN_SURFACES).toEqual([
+      'src/components/sections/Hero.astro',
+      'src/components/sections/ContactCta.astro'
+    ]);
+  });
+
+  it('falla si Hero reintroduce btn btn-primary en markup fuente', () => {
+    const bad = '<a class="btn btn-primary btn-lg" href="/x">CTA</a>';
+    const hits = scanProtectedBtnSurfaces(bad, 'src/components/sections/Hero.astro');
+    expect(hits.some((h) => h.id === 'btn-direct')).toBe(true);
+    expect(hits[0]?.message).toMatch(/Button\.astro/);
+  });
+
+  it('acepta Hero que usa el componente Button sin literales btn', () => {
+    const ok = `<Button href="/x" variant="primary" size="lg">CTA</Button>`;
+    expect(scanProtectedBtnSurfaces(ok, 'src/components/sections/Hero.astro')).toEqual([]);
+  });
+
+  it('no falla por HTML generado típico de Button.astro (fuera de superficies)', () => {
+    const generated = '<a class="btn btn-primary min-h-11" href="/x"><span>CTA</span></a>';
+    expect(scanProtectedBtnSurfaces(generated, 'src/components/Button.astro')).toEqual([]);
+    expect(scanProtectedBtnSurfaces(generated, 'src/pages/design-system.astro')).toEqual([]);
+  });
+
+  it('no aplica a Header ni otras excepciones', () => {
+    const raw = '<a class="btn btn-primary" href="/contacto">Contacto</a>';
+    expect(scanProtectedBtnSurfaces(raw, 'src/components/Header.astro')).toEqual([]);
   });
 });

@@ -1,5 +1,6 @@
 ---
 import { homeHero } from '../../content/home';
+import Button from '../Button.astro';
 import styles from './Hero.module.css';
 ---
 
@@ -19,12 +20,12 @@ import styles from './Hero.module.css';
     </h1>
     <p class:list={['rise', 'rise-3', 'max-w-2xl', styles.lead]}>{homeHero.lead}</p>
     <div class:list={['rise rise-4 flex flex-wrap gap-3', styles.actions]}>
-      <a class="btn btn-primary btn-lg" href={homeHero.primaryCta.href}>
+      <Button href={homeHero.primaryCta.href} variant="primary" size="lg">
         {homeHero.primaryCta.label}
-      </a>
-      <a class="btn btn-outline btn-lg" href={homeHero.secondaryCta.href}>
+      </Button>
+      <Button href={homeHero.secondaryCta.href} variant="secondary" size="lg">
         {homeHero.secondaryCta.label}
-      </a>
+      </Button>
     </div>
   </div>
 </section>
