@@ -23,6 +23,15 @@ import SectionHeader from '../SectionHeader.astro';
       title={homeContactoIntro.title}
       description={homeContactoIntro.lead}
     />
+    <ul class="mt-4 flex flex-wrap gap-2" aria-label="Condiciones">
+      {
+        homeContactoIntro.badges.map((badge) => (
+          <li>
+            <span class="badge badge-ghost badge-sm text-muted">{badge}</span>
+          </li>
+        ))
+      }
+    </ul>
     <div class="stack-gap">
       <a class="btn btn-primary btn-lg" href="/contacto/?origen=home&motivo=propuestaComercial">
         Solicitar propuesta

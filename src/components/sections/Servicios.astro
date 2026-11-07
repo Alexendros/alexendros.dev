@@ -20,19 +20,19 @@ import styles from './Servicios.module.css';
     ) : (
       <div class="stack-block grid gap-6 md:grid-cols-3">
         {homeVias.map((via) => (
-          <article class="card surface-raised radius-surface">
-            <div class="card-body gap-4">
-              <div>
-                <span class="badge badge-accent badge-sm font-medium">{via.badge}</span>
-              </div>
-              <h3 class="card-title text-step-1 leading-tight">{via.title}</h3>
-              <p class="text-muted">{via.short}</p>
-              <div class="card-actions mt-auto flex flex-wrap justify-start gap-2">
-                {via.tags.map((tag) => (
-                  <span class="badge badge-ghost badge-sm text-muted">{tag}</span>
-                ))}
-              </div>
+          <article class="min-w-0">
+            <div>
+              <span class="badge badge-accent badge-sm font-medium">{via.badge}</span>
             </div>
+            <h3 class="mt-3 text-step-1 font-semibold leading-tight">{via.title}</h3>
+            <p class="mt-2 text-muted">{via.short}</p>
+            <ul class="mt-4 flex flex-wrap gap-2" aria-label="Ámbitos">
+              {via.tags.map((tag) => (
+                <li>
+                  <span class="badge badge-ghost badge-sm text-muted">{tag}</span>
+                </li>
+              ))}
+            </ul>
           </article>
         ))}
       </div>

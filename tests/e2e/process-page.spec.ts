@@ -2,10 +2,22 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { processPage } from '../../src/content/process';
 
-/** Metodología vive en la home (#metodo); /metodo queda como HTML residual / SEO. */
+/** Snippet de metodología en la home (#metodo). */
 const route = '/';
 const SECTION = '#metodo';
 const TITLE = processPage.title;
+
+test('proceso: página /metodo con H1, pasos y CTA', async ({ page }) => {
+  await page.goto('/metodo/');
+  await expect(page.locator('h1')).toHaveCount(1);
+  await expect(
+    page.getByRole('heading', { level: 2, name: processPage.close.heading })
+  ).toBeVisible();
+  for (const step of processPage.steps) {
+    await expect(page.getByRole('heading', { level: 3, name: step.title })).toBeVisible();
+  }
+  await expect(page.getByRole('link', { name: 'Enviar solicitud', exact: true })).toBeVisible();
+});
 
 for (const width of [320, 390, 768, 1280]) {
   test(`proceso: contenido y reflow a ${width}px`, async ({ page }) => {

@@ -32,4 +32,6 @@ En el repositorio se conservan cuatro muestras; el resto es reproducible con `no
 ## Pendiente de decisión visual
 
 - H1 «Proyectos profesionales cumplidos con el criterio de Alexendros.dev» (R2-07): corregido en `description` y `og:image:alt`; el H1 requiere decisión de copy.
-- M-02 (flecha del CTA de tarjetas), M-07 (orden del hero) y M-08 (nav en dos líneas) siguen abiertos.
+- M-02 (flecha del CTA de tarjetas): revalidar en captura tras `Icon` + card-lift.
+- M-07 (orden/gutters del hero): cerrado al alinear chrome y shells a `72rem` + `--space-page-x`.
+- M-08 (nav en dos líneas): cerrado — anulado `width: 50%` daisyUI; grid `1fr auto 1fr`; e2e a 1024/1280 exige una sola fila (`headerH ≤ 80`).

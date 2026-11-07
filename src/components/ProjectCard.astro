@@ -15,20 +15,22 @@ const Heading = headingLevel;
 ---
 
 <article
-  class="card-lift group relative flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-focus"
+  class="card-lift group relative flex h-full flex-col radius-surface border border-border bg-card has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-focus"
 >
-  <Image
-    src={project.cover}
-    alt={project.coverAlt}
-    widths={[400, 800]}
-    sizes="(max-width: 768px) 100vw, 400px"
-    class="card-img aspect-[16/10] w-full border-b border-border object-cover"
-    loading={priority ? 'eager' : 'lazy'}
-    fetchpriority={priority ? 'high' : 'auto'}
-    decoding="async"
-  />
+  <div class="overflow-hidden rounded-t-[inherit]">
+    <Image
+      src={project.cover}
+      alt={project.coverAlt}
+      widths={[400, 800]}
+      sizes="(max-width: 768px) 100vw, 400px"
+      class="card-img aspect-[16/10] w-full border-b border-border object-cover"
+      loading={priority ? 'eager' : 'lazy'}
+      fetchpriority={priority ? 'high' : 'auto'}
+      decoding="async"
+    />
+  </div>
   <div class="flex flex-1 flex-col p-6">
-    <Heading class="mt-1 text-step-1 font-semibold leading-tight group-hover:text-primary">
+    <Heading class="text-step-1 font-semibold leading-tight group-hover:text-primary">
       <a href={`/referencias/${project.slug}/`} class="rounded after:absolute after:inset-0">
         {project.title}
       </a>

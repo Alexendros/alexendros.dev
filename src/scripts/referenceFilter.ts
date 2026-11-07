@@ -3,6 +3,7 @@ export function initReferenceFilter(): void {
   const group = document.querySelector<HTMLElement>('[data-ref-filters]');
   const grid = document.querySelector<HTMLElement>('[data-ref-grid]');
   const live = document.querySelector<HTMLElement>('[data-ref-live]');
+  const empty = document.querySelector<HTMLElement>('[data-ref-empty]');
   if (!group || !grid) return;
 
   const buttons = Array.from(group.querySelectorAll<HTMLButtonElement>('button[data-filter]'));
@@ -24,6 +25,8 @@ export function initReferenceFilter(): void {
     if (live) {
       live.textContent = `${visible} ${visible === 1 ? 'referencia visible' : 'referencias visibles'}`;
     }
+    if (empty) empty.hidden = visible > 0;
+    if (grid) grid.hidden = visible === 0;
   }
 
   group.addEventListener('click', (event) => {
