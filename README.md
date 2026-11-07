@@ -28,4 +28,4 @@ pnpm i
 pnpm dev    # http://localhost:4321
 ```
 
-Node 22 + pnpm 9.15.9 (`packageManager`). Producción en Vercel Hobby (`alexendros-dev`); el merge a `main` publica el sitio.
+Node 24 + pnpm 9.15.9 (`packageManager`). Producción en Vercel Hobby (`alexendros-dev`); el merge a `main` publica el sitio.

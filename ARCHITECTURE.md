@@ -10,7 +10,7 @@ Sitio profesional de conversión + contratación. Producción: [https://alexendr
 
 ## Stack
 
-Astro 7.3 con `output: 'static'` y rutas on-demand (`prerender = false`) + Tailwind (PostCSS) + TypeScript estricto + Zod. Sin islas React: formulario, CMP y configurador son componentes Astro con scripts vanilla. Fuentes Inter + JetBrains Mono self-hosted. Tracking comercial (GA4, Meta, Clarity, PostHog, LinkedIn, GTM) solo con consentimiento previo y granular (Consent Mode v2 default-deny). Vercel Analytics y Speed Insights solo en builds de Vercel (`__IS_VERCEL__`).
+Astro 7.3 con `output: 'static'` y rutas on-demand (`prerender = false`) + Tailwind (PostCSS) + TypeScript estricto + Zod. Sin islas React: formulario, CMP y configurador son componentes Astro con scripts vanilla. Fuentes Source Sans 3 Variable + JetBrains Mono Variable self-hosted (Fontsource). Tracking comercial (GA4, Meta, Clarity, PostHog, LinkedIn, GTM) solo con consentimiento previo y granular (Consent Mode v2 default-deny). Vercel Analytics y Speed Insights solo en builds de Vercel (`__IS_VERCEL__`).
 
 ## Runtime
 

@@ -1,6 +1,7 @@
 ---
 import { homeContactoIntro } from '../../content/home';
 import styles from './ContactCta.module.css';
+import Button from '../Button.astro';
 import SectionHeader from '../SectionHeader.astro';
 ---
 
@@ -33,9 +34,9 @@ import SectionHeader from '../SectionHeader.astro';
       }
     </ul>
     <div class="stack-gap">
-      <a class="btn btn-primary btn-lg" href="/contacto/?origen=home&motivo=propuestaComercial">
+      <Button href="/contacto/?origen=home&motivo=propuestaComercial" variant="primary" size="lg">
         Solicitar propuesta
-      </a>
+      </Button>
     </div>
   </div>
 </section>

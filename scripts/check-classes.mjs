@@ -3,7 +3,8 @@
  * Guardrail de markup en .astro/.tsx/.ts/.js bajo src/:
  * sombras Tailwind por defecto, /alpha de tema, hex, bg-black/text-white,
  * style=, is:inline e innerHTML.
- * El JSON-LD (`type="application/ld+json"`) puede vivir en la página sin is:inline.
+ * Además: clases btn* directas en superficies de conversión protegidas
+ * (Hero + ContactCta); no escanea Button.astro ni design-system.
  * Uso: pnpm check:classes
  */
 import { readdirSync, readFileSync, statSync } from 'node:fs';
@@ -13,6 +14,26 @@ import { pathToFileURL } from 'node:url';
 const ROOT = process.cwd();
 const TARGET_DIRS = ['src'];
 const EXT = /\.(astro|tsx|ts|js)$/;
+
+/** Markup fuente donde está prohibido usar clases btn* sin Button.astro. */
+export const PROTECTED_BTN_SURFACES = [
+  'src/components/sections/Hero.astro',
+  'src/components/sections/ContactCta.astro'
+];
+
+/**
+ * Excepciones documentadas en diseno.md (sin gate).
+ * Mantener alineado con la lista blanca del contrato.
+ */
+export const BTN_WHITELIST_EXCEPTIONS = [
+  'Header.astro',
+  'SkipLink.astro',
+  'ContactForm.astro',
+  'Paquetes.astro',
+  'Servicios.astro',
+  'Referencias.astro',
+  'Metodo.astro'
+];
 
 const RULES = [
   {
@@ -65,6 +86,9 @@ const RULES = [
   }
 ];
 
+/** Clases DaisyUI de botón usadas en atributos class / class:list. */
+const BTN_DIRECT_RE = /\b(?:btn-primary|btn-outline|btn-ghost|btn-lg|btn-sm|btn-block|btn)\b/;
+
 function walk(dir, files = []) {
   for (const name of readdirSync(dir)) {
     if (name === 'node_modules' || name.startsWith('.')) continue;
@@ -79,8 +103,20 @@ function walk(dir, files = []) {
 function stripFrontmatterAndScripts(source) {
   return source
     .replace(/^---[\s\S]*?---\s*/, '')
+    .replace(/<!--[\s\S]*?-->/g, ' ')
     .replace(/<script\b[^>]*>[\s\S]*?<\/script\b[^>]*>/gi, ' ')
     .replace(/<style\b[^>]*>[\s\S]*?<\/style\b[^>]*>/gi, ' ');
+}
+
+/** Solo valores de class / class:list (evita falsos positivos en texto o comentarios). */
+function extractClassAttrValues(markup) {
+  const values = [];
+  const re = /\bclass(?::list)?\s*=\s*(?:"([^"]*)"|'([^']*)'|\{([\s\S]*?)\})/g;
+  let m;
+  while ((m = re.exec(markup))) {
+    values.push(m[1] ?? m[2] ?? m[3] ?? '');
+  }
+  return values.join(' ');
 }
 
 export function scanSource(source, fileLabel = 'input') {
@@ -97,12 +133,45 @@ export function scanSource(source, fileLabel = 'input') {
   return hits;
 }
 
+/**
+ * Detecta literales btn* en atributos class del markup fuente de superficies protegidas.
+ * No aplica a Button.astro ni a páginas de design-system (el componente emite btn* internamente).
+ */
+export function scanProtectedBtnSurfaces(source, fileLabel) {
+  const normalized = fileLabel.replace(/\\/g, '/');
+  if (/Button\.astro$/.test(normalized) || /(?:^|\/)design-system/.test(normalized)) {
+    return [];
+  }
+  const protectedPath = PROTECTED_BTN_SURFACES.find(
+    (p) => normalized === p || normalized.endsWith('/' + p) || normalized.endsWith(p)
+  );
+  if (!protectedPath) return [];
+
+  const markup = stripFrontmatterAndScripts(source);
+  const classHaystack = extractClassAttrValues(markup);
+  BTN_DIRECT_RE.lastIndex = 0;
+  if (!BTN_DIRECT_RE.test(classHaystack)) return [];
+  BTN_DIRECT_RE.lastIndex = 0;
+  const m = classHaystack.match(BTN_DIRECT_RE);
+  return [
+    {
+      file: fileLabel,
+      id: 'btn-direct',
+      snippet: m?.[0] ?? 'btn',
+      message: `clase btn directa prohibida en ${protectedPath}; usa Button.astro`
+    }
+  ];
+}
+
 export function scanRepo(root = ROOT) {
   const files = [];
   for (const d of TARGET_DIRS) walk(join(root, d), files);
   const hits = [];
   for (const file of files) {
-    hits.push(...scanSource(readFileSync(file, 'utf8'), relative(root, file)));
+    const rel = relative(root, file);
+    const source = readFileSync(file, 'utf8');
+    hits.push(...scanSource(source, rel));
+    hits.push(...scanProtectedBtnSurfaces(source, rel));
   }
   return hits;
 }

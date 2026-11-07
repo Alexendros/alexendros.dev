@@ -51,8 +51,6 @@ describe('redirecciones permanentes', () => {
       ['/servicios/auditoria-normativa-ciberseguridad/', '/servicios/'],
       ['/servicios/web-para', '/servicios'],
       ['/servicios/web-para/:path*', '/servicios'],
-      ['/design-system', 'https://designsystem.alexendros.dev/'],
-      ['/design-system/', 'https://designsystem.alexendros.dev/'],
       ['/aviso-legal', '/identidad'],
       ['/afiliados', '/']
     ];

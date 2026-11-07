@@ -1,6 +1,28 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "astro",
+  "rewrites": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "designsystem.alexendros.dev"
+        }
+      ],
+      "destination": "/design-system/"
+    },
+    {
+      "source": "/index.html",
+      "has": [
+        {
+          "type": "host",
+          "value": "designsystem.alexendros.dev"
+        }
+      ],
+      "destination": "/design-system/"
+    }
+  ],
   "redirects": [
     {
       "source": "/:path*",
@@ -12,6 +34,28 @@
       ],
       "destination": "https://alexendros.dev/:path*",
       "permanent": true
+    },
+    {
+      "source": "/design-system",
+      "has": [
+        {
+          "type": "host",
+          "value": "designsystem.alexendros.dev"
+        }
+      ],
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/design-system/",
+      "has": [
+        {
+          "type": "host",
+          "value": "designsystem.alexendros.dev"
+        }
+      ],
+      "destination": "/",
+      "permanent": false
     },
     {
       "source": "/metodologia",
@@ -66,16 +110,6 @@
     {
       "source": "/proyectos/:path*",
       "destination": "/referencias/:path*",
-      "permanent": true
-    },
-    {
-      "source": "/design-system",
-      "destination": "https://designsystem.alexendros.dev/",
-      "permanent": true
-    },
-    {
-      "source": "/design-system/",
-      "destination": "https://designsystem.alexendros.dev/",
       "permanent": true
     },
     {

@@ -1,17 +1,118 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Button from '../components/Button.astro';
+import Link from '../components/Link.astro';
+import PageHead from '../components/PageHead.astro';
+
+const colorTokens = [
+  { name: 'bg', cls: 'bg-bg border border-border' },
+  { name: 'card', cls: 'bg-card border border-border' },
+  { name: 'primary', cls: 'bg-primary' },
+  { name: 'primaryHover', cls: 'bg-primaryHover' },
+  { name: 'subtle', cls: 'bg-subtle border border-border' },
+  { name: 'danger', cls: 'bg-danger' }
+] as const;
+
+const typeSteps = [
+  { name: 'step-4', cls: 'text-step-4' },
+  { name: 'step-3', cls: 'text-step-3' },
+  { name: 'step-2', cls: 'text-step-2' },
+  { name: 'step-1', cls: 'text-step-1' },
+  { name: 'step-0', cls: 'text-step-0' },
+  { name: 'step--1', cls: 'text-step--1' }
+] as const;
 ---
 
 <Layout
-  title="Design system — movido"
-  description="El design system vive en designsystem.alexendros.dev."
+  title="Design system — Alexendros"
+  description="Vitrina de tokens y componentes del design system de alexendros.dev."
   robots="noindex, follow"
 >
-  <div class="mx-auto max-w-3xl px-4 py-24">
-    <h1 class="text-step-3 font-bold">Design system</h1>
-    <p class="mt-4 text-muted legal-prose">
-      Esta ruta redirige a
-      <a class="link" href="https://designsystem.alexendros.dev/">designsystem.alexendros.dev</a>.
-    </p>
+  <div class="page-shell" data-ds-vitrina>
+    <PageHead
+      kicker="design system"
+      title="Vitrina del sistema"
+      description="Tokens semánticos y componentes reales (Button, Link, shells). Página noindex."
+    />
+
+    <section class="section-shell" aria-labelledby="ds-tokens-color">
+      <h2 id="ds-tokens-color" class="text-step-2 font-bold">Tokens de color</h2>
+      <p class="mt-2 max-w-2xl text-step--1 text-muted">
+        Semánticos consumidos por componentes. Sin colores literales fuera de las capas autorizadas.
+      </p>
+      <ul class="mt-6 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+        {
+          colorTokens.map((t) => (
+            <li class="radius-surface border border-border bg-card p-4">
+              <div class:list={['h-12 radius-surface', t.cls]} aria-hidden="true" />
+              <p class="mt-3 font-mono text-step--1">{t.name}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="section-shell" aria-labelledby="ds-tokens-type">
+      <h2 id="ds-tokens-type" class="text-step-2 font-bold">Tipografía</h2>
+      <p class="mt-2 max-w-2xl text-step--1 text-muted">
+        Source Sans 3 Variable (sans) y JetBrains Mono Variable (mono). Escala <code>--step-*</code
+        >.
+      </p>
+      <ul class="mt-6 space-y-3">
+        {typeSteps.map((t) => <li class:list={[t.cls, 'font-bold']}>{t.name} — Aa Bb Cc 123</li>)}
+      </ul>
+      <p class="mt-4 font-mono text-step--1 text-muted">~/alexendros $ mono sample</p>
+    </section>
+
+    <section class="section-shell" aria-labelledby="ds-tokens-space">
+      <h2 id="ds-tokens-space" class="text-step-2 font-bold">Espacio y shells</h2>
+      <p class="mt-2 max-w-2xl text-step--1 text-muted">
+        Esta página usa <code>.page-shell</code> y secciones <code>.section-shell</code>.
+      </p>
+      <div class="mt-6 surface-raised radius-surface p-6">
+        <p class="text-step-0">
+          Bloque <code>.surface-raised</code> + <code>.radius-surface</code>.
+        </p>
+      </div>
+    </section>
+
+    <section class="section-shell" aria-labelledby="ds-button">
+      <h2 id="ds-button" class="text-step-2 font-bold">Button</h2>
+      <p class="mt-2 max-w-2xl text-step--1 text-muted">
+        Componente canónico. Variantes primary / secondary / ghost; tamaños sm / md / lg; disabled y
+        loading.
+      </p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <Button variant="primary" size="lg">Primary lg</Button>
+        <Button variant="secondary" size="lg">Secondary lg</Button>
+        <Button variant="ghost" size="lg">Ghost lg</Button>
+      </div>
+      <div class="mt-4 flex flex-wrap gap-3">
+        <Button variant="primary" size="md">Primary md</Button>
+        <Button variant="secondary" size="sm">Secondary sm</Button>
+        <Button variant="primary" size="md" disabled> Disabled </Button>
+        <Button variant="primary" size="md" loading> Loading </Button>
+      </div>
+      <div class="mt-4">
+        <Button href="/contacto/?motivo=propuestaComercial" variant="primary" size="lg">
+          Enlace primary
+        </Button>
+      </div>
+    </section>
+
+    <section class="section-shell" aria-labelledby="ds-link">
+      <h2 id="ds-link" class="text-step-2 font-bold">Link</h2>
+      <ul class="mt-6 space-y-3 text-step-0">
+        <li>
+          <Link href="/servicios/" variant="inline">Inline (prosa)</Link>
+        </li>
+        <li>
+          <Link href="/referencias/" variant="nav">Nav</Link>
+        </li>
+        <li>
+          <Link href="/metodo/" variant="arrow">Arrow</Link>
+        </li>
+      </ul>
+    </section>
   </div>
 </Layout>
