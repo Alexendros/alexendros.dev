@@ -57,9 +57,11 @@ const jsonLd = [
 >
   <div class="page-shell page-shell-narrow">
     <article data-product-detail={service.slug}>
-      <nav class="min-w-0 text-step--1 text-muted break-words" aria-label="Miga de pan">
-        <Link href="/servicios/" variant="nav" class="inline-flex min-h-11 items-center"
-          >Servicios</Link
+      <nav class="min-w-0 max-w-full text-step--1 text-muted break-words" aria-label="Miga de pan">
+        <Link
+          href="/servicios/"
+          variant="nav"
+          class="inline-flex min-h-11 max-w-full items-center break-words">Servicios</Link
         >
         <span aria-hidden="true"> / </span>
         <span class="break-words">{service.title}</span>

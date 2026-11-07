@@ -174,7 +174,7 @@ test.describe('CP-09 recorridos A–E (muestreo)', () => {
     await assertSingleH1AndMain(page);
     await page
       .getByRole('main')
-      .getByRole('link', { name: 'Solicitar propuesta', exact: true })
+      .getByRole('link', { name: 'Enviar solicitud', exact: true })
       .first()
       .click();
     await expect(page).toHaveURL(/\/contacto\/\?origen=proceso/);
