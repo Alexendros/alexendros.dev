@@ -21,6 +21,20 @@ export const PROTECTED_BTN_SURFACES = [
   'src/components/sections/ContactCta.astro'
 ];
 
+/**
+ * Excepciones documentadas en diseno.md (sin gate).
+ * Mantener alineado con la lista blanca del contrato.
+ */
+export const BTN_WHITELIST_EXCEPTIONS = [
+  'Header.astro',
+  'SkipLink.astro',
+  'ContactForm.astro',
+  'Paquetes.astro',
+  'Servicios.astro',
+  'Referencias.astro',
+  'Metodo.astro'
+];
+
 const RULES = [
   {
     id: 'shadow-default',
@@ -72,7 +86,7 @@ const RULES = [
   }
 ];
 
-/** Clases DaisyUI de botón usadas en markup sin pasar por Button.astro. */
+/** Clases DaisyUI de botón usadas en atributos class / class:list. */
 const BTN_DIRECT_RE = /\b(?:btn-primary|btn-outline|btn-ghost|btn-lg|btn-sm|btn-block|btn)\b/;
 
 function walk(dir, files = []) {
@@ -89,8 +103,20 @@ function walk(dir, files = []) {
 function stripFrontmatterAndScripts(source) {
   return source
     .replace(/^---[\s\S]*?---\s*/, '')
+    .replace(/<!--[\s\S]*?-->/g, ' ')
     .replace(/<script\b[^>]*>[\s\S]*?<\/script\b[^>]*>/gi, ' ')
     .replace(/<style\b[^>]*>[\s\S]*?<\/style\b[^>]*>/gi, ' ');
+}
+
+/** Solo valores de class / class:list (evita falsos positivos en texto o comentarios). */
+function extractClassAttrValues(markup) {
+  const values = [];
+  const re = /\bclass(?::list)?\s*=\s*(?:"([^"]*)"|'([^']*)'|\{([\s\S]*?)\})/g;
+  let m;
+  while ((m = re.exec(markup))) {
+    values.push(m[1] ?? m[2] ?? m[3] ?? '');
+  }
+  return values.join(' ');
 }
 
 export function scanSource(source, fileLabel = 'input') {
@@ -108,23 +134,25 @@ export function scanSource(source, fileLabel = 'input') {
 }
 
 /**
- * Detecta literales btn* en el markup fuente de superficies protegidas.
- * No aplica a Button.astro ni a páginas de design-system (el componente
- * emite btn* internamente; el HTML generado no se escanea aquí).
+ * Detecta literales btn* en atributos class del markup fuente de superficies protegidas.
+ * No aplica a Button.astro ni a páginas de design-system (el componente emite btn* internamente).
  */
 export function scanProtectedBtnSurfaces(source, fileLabel) {
   const normalized = fileLabel.replace(/\\/g, '/');
+  if (/Button\.astro$/.test(normalized) || /(?:^|\/)design-system/.test(normalized)) {
+    return [];
+  }
   const protectedPath = PROTECTED_BTN_SURFACES.find(
     (p) => normalized === p || normalized.endsWith('/' + p) || normalized.endsWith(p)
   );
   if (!protectedPath) return [];
-  if (/Button\.astro$/.test(normalized) || /design-system/.test(normalized)) return [];
 
   const markup = stripFrontmatterAndScripts(source);
+  const classHaystack = extractClassAttrValues(markup);
   BTN_DIRECT_RE.lastIndex = 0;
-  if (!BTN_DIRECT_RE.test(markup)) return [];
+  if (!BTN_DIRECT_RE.test(classHaystack)) return [];
   BTN_DIRECT_RE.lastIndex = 0;
-  const m = markup.match(BTN_DIRECT_RE);
+  const m = classHaystack.match(BTN_DIRECT_RE);
   return [
     {
       file: fileLabel,

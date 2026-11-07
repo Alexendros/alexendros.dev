@@ -1,7 +1,7 @@
 # Design — Platform coherence closure (Opción B)
 
 **Fecha:** 2026-11-07  
-**Estado:** DRAFT  
+**Estado:** IMPLEMENTADO en PR #208 (MADR-1: vitrina = página Astro `/design-system` del mismo repo; sin Storybook ni `design-system-site/`)  
 **Spec de referencia:** `spec.md`
 
 ## 1. Contexto C4 (solo lo no obvio)

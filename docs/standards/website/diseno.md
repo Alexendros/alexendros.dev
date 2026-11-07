@@ -4,7 +4,7 @@
 
 - **Objetivo:** contrato vigente de tokens, tipografía, componentes y accesibilidad del portal.
 - **Fuentes de verdad:** `src/styles/theme.css`, `src/styles/global.css` y los componentes de `src/components/`.
-- **Alcance:** documenta el sistema real. La vitrina viva es `/design-system` (noindex) en este repositorio. En producción, el apex redirige esa ruta a `designsystem.alexendros.dev` (mismo proyecto Hobby `alexendros-dev`); el subdominio reescribe `/` hacia la vitrina. En preview/local se sirve la página sin ese 308.
+- **Alcance:** documenta el sistema real. La vitrina viva es `/design-system` (noindex) en este repositorio. El subdominio `designsystem.alexendros.dev` (mismo proyecto Hobby `alexendros-dev`) reescribe `/` e `/index.html` hacia esa vitrina; en el host del subdominio, `/design-system` redirige a `/`. El 308 apex → subdominio solo se reactivará cuando el body del subdominio muestre `data-ds-vitrina` en producción (hoy el apex sirve la vitrina localmente).
 
 ## 1. Principios
 
@@ -64,7 +64,7 @@
 - **Obligatorio:** el Hero y los CTAs de conversión de página usan `Button.astro` (API canónica). En home, `ContactCta` se incluye por coherencia de conversión.
 - **Prohibido** en el markup fuente de esas superficies: clases DaisyUI directas `btn`, `btn-primary`, `btn-outline`, `btn-ghost`, `btn-lg` (u otras `btn-*`) sin pasar por el componente.
 - **Gate:** `pnpm check:classes` escanea solo el markup fuente de `Hero.astro` y `ContactCta.astro`. No escanea `Button.astro` ni la vitrina `/design-system` (el componente emite `btn*` internamente).
-- **Lista blanca (sin gate):** `Header.astro` (CTA Contacto de chrome), `SkipLink.astro`, submit de `ContactForm.astro`, `Paquetes.astro`, enlaces «más» de listados en home (`Servicios`, `Referencias`, `Metodo`).
+- **Lista blanca (sin gate; idéntica a `BTN_WHITELIST_EXCEPTIONS` en `check-classes.mjs`):** `Header.astro` (CTA Contacto de chrome), `SkipLink.astro`, submit de `ContactForm.astro`, `Paquetes.astro`, enlaces «más» de listados en home (`Servicios.astro`, `Referencias.astro`, `Metodo.astro`).
 
 ### Link
 

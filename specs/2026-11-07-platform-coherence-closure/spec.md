@@ -1,7 +1,7 @@
 # Spec — Platform coherence closure (Opción B)
 
 **Fecha:** 2026-11-07  
-**Estado:** DRAFT  
+**Estado:** IMPLEMENTADO en PR #208 (cierre humano CA-H1 subdominio tras Production)  
 **Opción elegida:** B — Vitrina rica + gobernanza de componentes  
 **Commit de referencia de auditorías:** 7541a20952623165449c46b959935997c7fbc796
 

@@ -33,5 +33,11 @@
 ## 2026-11-07 — T-07 dominio
 
 - **Señal:** `add_project_domain` OK; `verified: true` en proyecto `alexendros-dev`
-- **Decisión:** No degradación. Subdominio `designsystem.alexendros.dev` ligado al mismo Hobby; rewrite `/` → `/design-system/`; 308 apex condicionado a host `alexendros.dev`. Confirmación de contenido de vitrina tras deploy Production.
+- **Decisión:** No degradación de vitrina. Subdominio ligado al mismo Hobby; rewrite `/` e `/index.html` → `/design-system/`.
 - **Archivo tocado:** vercel.json; checklist PLAN-PLATFORM-COHERENCE-CLOSURE.md
+
+## 2026-11-07 — T-07 308 diferido
+
+- **Señal:** curl producción a `designsystem.alexendros.dev` → 200 pero body = home comercial (sin `data-ds-vitrina`); rewrite aún no en Production
+- **Decisión:** Retirar el 308 apex `/design-system` → subdominio hasta confirmar body DS en producción. Apex sirve la vitrina en `/design-system` (noindex). Preview confirma marcadores vía fetch autenticado. Reactivar 308 solo como follow-up post-deploy.
+- **Archivo tocado:** vercel.json; diseno.md; PLAN-PLATFORM-COHERENCE-CLOSURE.md

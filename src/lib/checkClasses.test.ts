@@ -1,5 +1,8 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
+  BTN_WHITELIST_EXCEPTIONS,
   PROTECTED_BTN_SURFACES,
   scanProtectedBtnSurfaces,
   scanSource
@@ -50,6 +53,18 @@ describe('check:classes — btn en superficies protegidas', () => {
     ]);
   });
 
+  it('lista blanca de excepciones alineada con diseno.md', () => {
+    expect(BTN_WHITELIST_EXCEPTIONS).toEqual([
+      'Header.astro',
+      'SkipLink.astro',
+      'ContactForm.astro',
+      'Paquetes.astro',
+      'Servicios.astro',
+      'Referencias.astro',
+      'Metodo.astro'
+    ]);
+  });
+
   it('falla si Hero reintroduce btn btn-primary en markup fuente', () => {
     const bad = '<a class="btn btn-primary btn-lg" href="/x">CTA</a>';
     const hits = scanProtectedBtnSurfaces(bad, 'src/components/sections/Hero.astro');
@@ -62,10 +77,24 @@ describe('check:classes — btn en superficies protegidas', () => {
     expect(scanProtectedBtnSurfaces(ok, 'src/components/sections/Hero.astro')).toEqual([]);
   });
 
-  it('no falla por HTML generado típico de Button.astro (fuera de superficies)', () => {
-    const generated = '<a class="btn btn-primary min-h-11" href="/x"><span>CTA</span></a>';
-    expect(scanProtectedBtnSurfaces(generated, 'src/components/Button.astro')).toEqual([]);
-    expect(scanProtectedBtnSurfaces(generated, 'src/pages/design-system.astro')).toEqual([]);
+  it('no dispara por comentario HTML que mencione btn-primary', () => {
+    const withComment = `<!-- legacy: class="btn btn-primary" -->\n<Button href="/x">CTA</Button>`;
+    expect(scanProtectedBtnSurfaces(withComment, 'src/components/sections/Hero.astro')).toEqual([]);
+  });
+
+  it('no dispara por texto fuera de atributos class', () => {
+    const prose = `<p>No usar btn-primary a mano; usa Button.</p><Button href="/x">OK</Button>`;
+    expect(scanProtectedBtnSurfaces(prose, 'src/components/sections/Hero.astro')).toEqual([]);
+  });
+
+  it('Button.astro real queda fuera del gate aunque emita btn*', () => {
+    const src = readFileSync(resolve('src/components/Button.astro'), 'utf8');
+    expect(scanProtectedBtnSurfaces(src, 'src/components/Button.astro')).toEqual([]);
+  });
+
+  it('design-system.astro queda fuera del gate', () => {
+    const src = readFileSync(resolve('src/pages/design-system.astro'), 'utf8');
+    expect(scanProtectedBtnSurfaces(src, 'src/pages/design-system.astro')).toEqual([]);
   });
 
   it('no aplica a Header ni otras excepciones', () => {

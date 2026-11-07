@@ -11,6 +11,16 @@
         }
       ],
       "destination": "/design-system/"
+    },
+    {
+      "source": "/index.html",
+      "has": [
+        {
+          "type": "host",
+          "value": "designsystem.alexendros.dev"
+        }
+      ],
+      "destination": "/design-system/"
     }
   ],
   "redirects": [
@@ -30,22 +40,22 @@
       "has": [
         {
           "type": "host",
-          "value": "alexendros.dev"
+          "value": "designsystem.alexendros.dev"
         }
       ],
-      "destination": "https://designsystem.alexendros.dev/",
-      "permanent": true
+      "destination": "/",
+      "permanent": false
     },
     {
       "source": "/design-system/",
       "has": [
         {
           "type": "host",
-          "value": "alexendros.dev"
+          "value": "designsystem.alexendros.dev"
         }
       ],
-      "destination": "https://designsystem.alexendros.dev/",
-      "permanent": true
+      "destination": "/",
+      "permanent": false
     },
     {
       "source": "/metodologia",

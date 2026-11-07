@@ -1,7 +1,7 @@
 # Tasks — Platform coherence closure (Opción B)
 
 **Fecha:** 2026-11-07  
-**Estado:** DRAFT  
+**Estado:** IMPLEMENTADO en PR #208 (T-01…T-09; CA-H1 body en subdominio pendiente de deploy Production)  
 **Spec / Design de referencia:** `spec.md`, `design.md`  
 **Regla:** Cada tarea es atómica, verificable sola y no implementa el feature completo. Prohibido “hacer el backend” o equivalentes.
 
