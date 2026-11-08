@@ -49,17 +49,15 @@ test('hero: firma terminal, hero transparente y rejilla en el fondo del cuerpo',
   expect(processShadow).not.toBe('none');
 });
 
-test('cards: superficie estática en home y elevación solo en cards enlazables', async ({
-  page
-}) => {
+test('vías estáticas en home y elevación solo en cards enlazables', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.goto('/');
 
-  const homeCard = page.locator('#servicios .card').first();
-  await expect(homeCard.locator('.badge-accent')).toHaveClass(/badge-sm/);
-  expect(await homeCard.evaluate((el) => getComputedStyle(el).boxShadow)).not.toBe('none');
-  await homeCard.hover();
-  expect(await homeCard.evaluate((el) => getComputedStyle(el).transform)).toBe('none');
+  const homeRoute = page.locator('#servicios article').first();
+  await expect(homeRoute.locator('.badge-accent')).toHaveClass(/badge-sm/);
+  expect(await homeRoute.evaluate((el) => getComputedStyle(el).boxShadow)).toBe('none');
+  await homeRoute.hover();
+  expect(await homeRoute.evaluate((el) => getComputedStyle(el).transform)).toBe('none');
 
   await page.goto('/servicios/');
   const linkedCard = page.locator('[data-product-card]').first();
@@ -114,47 +112,41 @@ test('cabecera: glass con superficie semántica y foco con anillo', async ({ pag
   expect(styles.backdrop).toBe('blur(8px)');
   expect(styles.background).not.toBe('rgba(0, 0, 0, 0)');
 
-  const summary = page.locator('summary.focus-ring').first();
-  await summary.focus();
-  expect(await summary.evaluate((el) => getComputedStyle(el).boxShadow)).not.toBe('none');
+  const contactCta = page.locator('#site-header a.btn-primary');
+  await contactCta.focus();
+  expect(await contactCta.evaluate((el) => getComputedStyle(el).boxShadow)).not.toBe('none');
 });
 
-test('configurador: base estática, cuatro opcionales y resumen diferenciado', async ({ page }) => {
+test('catálogo: tres vías y ficha única conservan sus superficies', async ({ page }) => {
   await page.goto('/servicios/');
 
-  const base = page.locator('[data-portal-base]');
-  const options = page.locator('[data-portal-options]');
-  const summary = page.locator('[data-selected-modules]');
-  await expect(base).toBeVisible();
-  await expect(base.locator('input')).toHaveCount(0);
-  await expect(options.locator('input[data-module]')).toHaveCount(4);
-  await expect(summary).toBeVisible();
+  const catalogItems = page.locator('[data-catalogo-item]');
+  const productCard = page.locator('[data-product-card]');
+  await expect(catalogItems).toHaveCount(3);
+  await expect(productCard).toHaveCount(1);
+  await expect(productCard).toBeVisible();
 
-  const backgrounds = await page.evaluate(() => {
-    const readStyles = (selector: string) => {
-      const element = document.querySelector(selector);
-      if (!element) throw new Error(`Falta ${selector}`);
-      return getComputedStyle(element);
-    };
-    const baseStyles = readStyles('[data-portal-base]');
-    const summaryStyles = readStyles('[data-selected-modules]');
-    return {
-      base: baseStyles.backgroundColor,
-      summary: summaryStyles.backgroundColor,
-      summaryBorder: summaryStyles.borderTopColor
-    };
-  });
-  expect(backgrounds.base).not.toBe('rgba(0, 0, 0, 0)');
-  expect(backgrounds.summary).not.toBe('rgba(0, 0, 0, 0)');
-  expect(backgrounds.summaryBorder).not.toBe('rgba(0, 0, 0, 0)');
+  const surfaces = await page
+    .locator('[data-catalogo-item], [data-product-card]')
+    .evaluateAll((elements) =>
+      elements.map((element) => {
+        const styles = getComputedStyle(element);
+        return { background: styles.backgroundColor, border: styles.borderTopColor };
+      })
+    );
+
+  for (const surface of surfaces) {
+    expect(surface.background).not.toBe('rgba(0, 0, 0, 0)');
+    expect(surface.border).not.toBe('rgba(0, 0, 0, 0)');
+  }
 });
 
 test('badges: categoría sólida y atributos neutrales', async ({ page }) => {
   await page.goto('/');
 
-  const card = page.locator('#servicios .card').first();
+  const card = page.locator('#servicios article').first();
   const category = card.locator('.badge-accent');
-  const attribute = card.locator('.card-actions .badge').first();
+  const attribute = card.locator('ul[aria-label="Ámbitos"] .badge').first();
   await expect(category).toHaveClass(/badge-accent/);
   await expect(category).not.toHaveClass(/badge-outline/);
   await expect(attribute).toHaveClass(/badge-ghost/);
@@ -204,10 +196,11 @@ for (const theme of ['alexlight', 'alexdark'] as const) {
     expect(result.colorToken).not.toBe('1px');
     expect(result.actual).toBe(result.expected);
 
-    const configuratorBorder = await page
-      .locator('[data-needs-configurator]')
+    const catalogBorder = await page
+      .locator('[data-catalogo-item]')
+      .first()
       .evaluate((el) => getComputedStyle(el).borderColor);
-    expect(configuratorBorder).toBe(result.expected);
+    expect(catalogBorder).toBe(result.expected);
   });
 }
 
