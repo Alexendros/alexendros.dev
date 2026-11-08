@@ -8,7 +8,12 @@ export const catalogoCtaSchema = z
     href: nonEmptyTrimmed
   })
   .superRefine((cta, ctx) => {
-    if (!cta.href.startsWith('/') || cta.href.startsWith('//')) {
+    if (
+      !cta.href.startsWith('/') ||
+      cta.href.startsWith('//') ||
+      cta.href.includes('\\') ||
+      /[\u0000-\u001f]/.test(cta.href)
+    ) {
       ctx.addIssue({
         code: 'custom',
         message: `href interno inválido: ${cta.href}`,
@@ -80,4 +85,12 @@ catalogoPromocional.forEach((item, i) => {
 
 if (catalogoPromocional.length < 3) {
   throw new Error('El catálogo promocional necesita al menos 3 ítems');
+}
+
+for (const item of catalogoPromocional) {
+  if (item.precioOpcional !== undefined) {
+    throw new Error(
+      `CatalogoItem ${item.id}: precioOpcional no se publica (decisión 0025 / check-public-pricing)`
+    );
+  }
 }

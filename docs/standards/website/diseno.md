@@ -101,7 +101,7 @@ Primer foco de la página, salta a `#main`, visible con teclado y por encima de 
 
 ### Catalogo
 
-`Catalogo.astro` presenta el catálogo promocional de `/servicios/`. Props: `items` (`readonly CatalogoItem[]`, datos estáticos de `src/content/catalogo.ts`) y `headingLevel` (`h2` | `h3`). Cada ítem muestra título, descripción y, si existe, un solo CTA con `Button.astro`. `precioOpcional` forma parte del tipo y no se publica: el array vigente no define importes.
+`Catalogo.astro` presenta el catálogo promocional de `/servicios/`. Props: `items` (`readonly CatalogoItem[]`, datos estáticos de `src/content/catalogo.ts`) y `headingLevel` (`h2` | `h3`). Cada ítem muestra título, descripción y, si existe, un solo CTA con `Button.astro`. `precioOpcional` existe en el tipo para el contrato de datos, pero el módulo falla al cargar si algún ítem lo define y el componente no lo renderiza.
 
 La sección vive dentro del `.page-shell` de la página y no anida `.section-shell`, para no duplicar padding ni max-width. Las tarjetas usan `.surface-raised`, `.radius-surface` y tokens de texto (`text-step-*`, `text-muted`). El ámbar no se usa como color de texto. No hay hover que simule un enlace. Si `items` llega vacío, se muestra un párrafo de estado vacío y el build no se rompe.
 
