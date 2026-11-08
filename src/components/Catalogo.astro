@@ -1,0 +1,40 @@
+---
+import type { CatalogoItem } from '../content/catalogo';
+import Button from './Button.astro';
+
+interface Props {
+  items: readonly CatalogoItem[];
+  headingLevel: 'h2' | 'h3';
+}
+const { items, headingLevel } = Astro.props;
+const Heading = headingLevel;
+---
+
+{
+  items.length === 0 ? (
+    <p class="stack-block text-muted" data-catalogo-empty>
+      El catálogo no tiene encargos publicados en este momento.
+    </p>
+  ) : (
+    <section class="stack-block" aria-label="Catálogo promocional" data-catalogo>
+      <div class="grid gap-6 md:grid-cols-3">
+        {items.map((item) => (
+          <article
+            class="surface-raised radius-surface flex h-full flex-col p-6"
+            data-catalogo-item={item.id}
+          >
+            <Heading class="text-step-1 font-semibold leading-tight">{item.titulo}</Heading>
+            <p class="mt-3 flex-1 text-step--1 text-muted">{item.descripcion}</p>
+            {item.ctaOpcional ? (
+              <div class="mt-4">
+                <Button href={item.ctaOpcional.href} variant="secondary">
+                  {item.ctaOpcional.label}
+                </Button>
+              </div>
+            ) : null}
+          </article>
+        ))}
+      </div>
+    </section>
+  )
+}

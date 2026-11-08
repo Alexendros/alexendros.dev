@@ -9,4 +9,18 @@
     text-decoration-thickness: 0.08em;
     text-underline-offset: 0.16em;
   }
+
+  /* Centrado local del H1, la regla y la descripción. Los ids no se usan
+     aquí: el CSS module los renombra y dejan de coincidir con el HTML.
+     La lista de pasos sigue al ancho del page-shell, con padding simétrico. */
+  .balance h1,
+  .balance h1 + div,
+  .balance h1 + div + p {
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .step {
+    text-align: center;
+  }
 }
