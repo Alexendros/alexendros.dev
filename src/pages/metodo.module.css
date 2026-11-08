@@ -1,3 +1,12 @@
+/* El CSS de Button puede cargarse antes que Layout y dejar `components`
+   por delante de `base`. Esta regla local queda fuera de capas para que el
+   reset no elimine el centrado y el espaciado del shell solo en /metodo/. */
+.shell {
+  margin-inline: auto;
+  padding-inline: var(--space-page-x);
+  padding-block: var(--space-section-y);
+}
+
 @layer components {
   /* Número de paso: color de texto normal y subrayado decorativo ámbar, igual
      que el énfasis del titular de /servicios/. El ámbar no se usa como color
