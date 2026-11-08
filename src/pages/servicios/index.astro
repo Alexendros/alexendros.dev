@@ -1,9 +1,11 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import ServiceCard from '../../components/ServiceCard.astro';
+import Catalogo from '../../components/Catalogo.astro';
 import Button from '../../components/Button.astro';
 import Paquetes from '../../components/Paquetes.astro';
 import PageHead from '../../components/PageHead.astro';
+import { catalogoPromocional } from '../../content/catalogo';
 import { paquetesPublicados } from '../../content/paquetes';
 import { serviceProducts } from '../../content/services';
 import styles from './index.module.css';
@@ -25,6 +27,7 @@ const collaboration = serviceProducts[0];
       Catálogo de servicios profesionales en{' '}
       <span class={styles.accent}>respuesta a necesidades reales</span>
     </PageHead>
+    <Catalogo items={catalogoPromocional} headingLevel="h2" />
     {paquetesPublicados && <Paquetes headingLevel="h2" />}
     <p class="mt-4 max-w-2xl text-step--1 text-muted" data-services-proposal-note>
       El alcance, el calendario y las condiciones económicas se detallan en cada propuesta.
