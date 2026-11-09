@@ -10,6 +10,10 @@ const TITLE = processPage.title;
 test('proceso: página /metodologia con H1, pasos y CTA', async ({ page }) => {
   await page.goto('/metodologia/');
   await expect(page.locator('h1')).toHaveCount(1);
+  await expect(page.locator('#proceso')).toHaveAttribute('aria-labelledby', 'proceso-heading');
+  await expect(
+    page.getByRole('heading', { level: 2, name: 'Pasos del encargo', exact: true })
+  ).toBeAttached();
   await expect(
     page.getByRole('heading', { level: 2, name: processPage.close.heading })
   ).toBeVisible();
@@ -17,6 +21,13 @@ test('proceso: página /metodologia con H1, pasos y CTA', async ({ page }) => {
     await expect(page.getByRole('heading', { level: 3, name: step.title })).toBeVisible();
   }
   await expect(page.getByRole('link', { name: 'Enviar solicitud', exact: true })).toBeVisible();
+});
+
+test('proceso: la página conserva el orden de headings', async ({ page }) => {
+  await page.goto('/metodologia/');
+  const results = await // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  new AxeBuilder({ page: page as any }).include('main').withRules(['heading-order']).analyze();
+  expect(results.violations).toEqual([]);
 });
 
 test('proceso: ritmo de secciones, grids y cierre centrado', async ({ page }) => {
