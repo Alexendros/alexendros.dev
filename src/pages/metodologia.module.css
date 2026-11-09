@@ -1,10 +1,22 @@
-/* El CSS de Button puede cargarse antes que Layout y dejar `components`
-   por delante de `base`. Esta regla local queda fuera de capas para que el
-   reset no elimine el centrado y el espaciado del shell solo en /metodo/. */
+/* El CSS de Button puede cargarse antes que Layout y alterar el orden de las
+   capas. La composición local queda fuera de capas para que el reset no
+   elimine el centrado ni el ritmo del shell solo en /metodologia/. */
 .shell {
+  display: grid;
+  row-gap: var(--space-section-y);
   margin-inline: auto;
   padding-inline: var(--space-page-x);
   padding-block: var(--space-section-y);
+}
+
+.balance {
+  display: grid;
+  row-gap: var(--space-block);
+}
+
+.close {
+  margin-inline: auto;
+  text-align: center;
 }
 
 @layer components {
@@ -20,7 +32,7 @@
   }
 
   /* Centrado local del H1, la regla y la descripción. Los ids no se usan
-     aquí: el CSS module los renombra y dejan de coincidir con el HTML.
+     aquí: el CSS module los renombra y deja de coincidir con el HTML.
      La lista de pasos sigue al ancho del page-shell, con padding simétrico. */
   .balance h1,
   .balance h1 + div,

@@ -9,7 +9,7 @@ Sitio profesional de [alexendros.dev](https://alexendros.dev): sitios web, integ
 | [Sitio web profesional](https://alexendros.dev/servicios/#portal-heading)                    | Profesionales y negocios locales que necesitan una web clara lista para captar consultas |
 | [Colaboración en proyectos de software](https://alexendros.dev/servicios/software-a-medida/) | Refuerzo técnico por fases en proyectos grandes con más compañeros                       |
 
-Más detalle y solicitud de propuesta en [Servicios](https://alexendros.dev/servicios/). Metodología en [Metodología](https://alexendros.dev/metodo/). Referencias en [Referencias](https://alexendros.dev/referencias/).
+Más detalle y solicitud de propuesta en [Servicios](https://alexendros.dev/servicios/). Metodología en [Metodología](https://alexendros.dev/metodologia/). Referencias en [Referencias](https://alexendros.dev/referencias/).
 
 ## Cómo empezar
 

@@ -396,13 +396,13 @@
       "id": "0027",
       "sequence": 27,
       "timestamp": "2026-10-30T10:10:00Z",
-      "active": true,
+      "active": false,
       "title": "Nav corta, referencias y CTA Contacto",
       "summary": "Rótulos de navegación en una palabra, canónica /referencias, CTA Contacto, sin banner sticky y pasos de /metodo sin duraciones.",
       "recordType": "decision",
-      "status": "aceptada",
+      "status": "superseded",
       "supersedes": ["0026"],
-      "supersededBy": null,
+      "supersededBy": "0032",
       "context": "La revisión visual sobre Preview pedía acortar la cabecera, renombrar Proyectos a Referencias, unificar el CTA Contacto con el formulario comercial, alinear la auditoría SEO al listado del hero, retirar el sticky y las duraciones de los pasos.",
       "decision": "Conservar el catálogo y la marca individual de 0026. Nav: Servicios (/servicios), Referencias (/referencias), Metodología (/metodo), sin etiquetas apiladas. 308 permanente desde /proyectos y /proyectos/* hacia /referencias. CTA de cabecera Contacto → /contacto?motivo=propuestaComercial (también en viewport estrecho); el menú hamburguesa no duplica Contacto. El CTA Solicitar propuesta del hero usa el mismo formulario con origen=home. H1 de home: «Servicios informáticos y tecnológicos empresariales y profesionales.» Hero: cuatro enlaces iguales (sitio, catálogo y pagos, colaboración, auditoría SEO). Pie con glass-bg y backdrop-blur como la cabecera. Retirar StickyCta del layout; en /metodo el cierre «Solicitar propuesta» queda en página. Los pasos de metodología no muestran duraciones.",
       "consequences": "Actualizar site.ts, Header, Hero, Footer, DetailIsland, Layout, process.ts, vercel.json, AGENTS, e2e (sin sticky), allowlist de origen (referencias) y regenerar OG de índice de referencias."
@@ -466,6 +466,21 @@
       "context": "El portal comercial mezclaba py-16/md:py-24 y py-20, text-sm/xs con la escala step, radios xl/2xl/lg y motion redundante; la rejilla al 30%/40% competía con el texto.",
       "decision": "Añadir --space-* y --radius-* en global.css; .page-shell / .section-shell en índices y home; secundario comercial con text-step--1; rejilla --grid-line 18% y --grid-major 26% sin mask; rise del hero a --duration-normal; glass de cabecera blur(8px); retirar reveal.ts muerto y transition-colors redundantes. Conservar card-lift, zoom de imagen y contrato AA sobre la línea mayor.",
       "consequences": "Actualizar diseno.md, visual-system (blur 8px), check:contrast y presupuesto CSS. Las páginas legales heredan tokens sin rediseño de shell."
+    },
+    {
+      "id": "0032",
+      "sequence": 32,
+      "timestamp": "2026-11-09T14:01:18Z",
+      "active": true,
+      "title": "Canónica /metodologia y chrome de footer a todo el ancho",
+      "summary": "Metodología pasa a /metodologia con /metodo como alias; el footer separa superficie completa y contenedor interior centrado; la página usa ritmo por tokens y cierre centrado.",
+      "recordType": "decision",
+      "status": "aceptada",
+      "supersedes": ["0027"],
+      "supersededBy": null,
+      "context": "La revisión visual detectó que la superficie del footer quedaba limitada a 72rem, que el contenido necesitaba el mismo contrato exterior/interior del header y que /metodo debía renombrarse a /metodologia. La página mezclaba separaciones internas y de sección con 40px y dejaba el cierre fuera del eje centrado.",
+      "decision": "Se conservan el catálogo, la marca, la nav corta, Referencias, Contacto, el home, el CTA Solicitar propuesta y el resto de contratos de 0027; solo cambia la canónica de Metodología a /metodologia. /metodo, /valores, /como-trabajo y /proceso-y-entrega redirigen permanentemente y directamente a la nueva canónica, que es la única presente en enlaces, canonical, og:url y sitemap. El ancla #metodo de home permanece estable. El footer exterior ocupa todo el ancho y .footer-inner centra el contenido a 72rem alineado con .navbar-inner. En /metodologia, --space-section-y separa bloques principales, --space-block separa PageHead y pasos, --space-gap separa ambos grids y el cierre max-w-2xl queda centrado.",
+      "consequences": "Renombrar página, módulo y OG; actualizar site.ts, vercel.json, README, AGENTS, diseno.md, scripts y suites de rutas. Añadir pruebas geométricas de chrome y ritmo. La verificación de redirects aplicados en producción depende del despliegue."
     }
   ]
 }

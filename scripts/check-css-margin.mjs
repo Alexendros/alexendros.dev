@@ -15,7 +15,7 @@ const ROUTES = [
   '/referencias/graficas-nasve/',
   '/referencias/zedazo/',
   '/referencias/alexendros-me/',
-  '/metodo/',
+  '/metodologia/',
   '/contacto/',
   '/experiencia/',
   '/privacidad/',

@@ -24,14 +24,14 @@ describe('redirecciones permanentes', () => {
 
   it('R08: aliases históricos saltan a la página o ficha en un salto', () => {
     const expected: Array<[string, string]> = [
-      ['/metodologia', '/metodo'],
-      ['/metodologia/', '/metodo'],
-      ['/valores', '/metodo'],
-      ['/valores/', '/metodo'],
-      ['/como-trabajo', '/metodo'],
-      ['/como-trabajo/', '/metodo'],
-      ['/proceso-y-entrega', '/metodo'],
-      ['/proceso-y-entrega/', '/metodo'],
+      ['/metodo', '/metodologia'],
+      ['/metodo/', '/metodologia'],
+      ['/valores', '/metodologia'],
+      ['/valores/', '/metodologia'],
+      ['/como-trabajo', '/metodologia'],
+      ['/como-trabajo/', '/metodologia'],
+      ['/proceso-y-entrega', '/metodologia'],
+      ['/proceso-y-entrega/', '/metodologia'],
       ['/proyectos', '/referencias'],
       ['/proyectos/', '/referencias'],
       ['/proyectos/:path*', '/referencias/:path*'],
@@ -87,7 +87,7 @@ describe('redirecciones permanentes', () => {
     expect(existsSync(resolve(process.cwd(), 'src/pages/servicios/ciberseguridad.astro'))).toBe(
       false
     );
-    expect(existsSync(resolve(process.cwd(), 'src/pages/metodologia.astro'))).toBe(false);
+    expect(existsSync(resolve(process.cwd(), 'src/pages/metodologia.astro'))).toBe(true);
     expect(existsSync(resolve(process.cwd(), 'src/pages/valores.astro'))).toBe(false);
     expect(existsSync(resolve(process.cwd(), 'src/pages/proceso-y-entrega.astro'))).toBe(false);
     expect(existsSync(resolve(process.cwd(), 'src/pages/proyectos'))).toBe(false);
@@ -95,6 +95,6 @@ describe('redirecciones permanentes', () => {
     expect(existsSync(resolve(process.cwd(), 'src/pages/referencias/index.astro'))).toBe(true);
     expect(existsSync(resolve(process.cwd(), 'src/pages/servicios/index.astro'))).toBe(true);
     expect(existsSync(resolve(process.cwd(), 'src/pages/contacto.astro'))).toBe(true);
-    expect(existsSync(resolve(process.cwd(), 'src/pages/metodo.astro'))).toBe(true);
+    expect(existsSync(resolve(process.cwd(), 'src/pages/metodo.astro'))).toBe(false);
   });
 });

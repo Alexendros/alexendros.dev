@@ -117,7 +117,7 @@ await writeOg(
   'Contacto y solicitud de propuesta',
   'Respuesta en un día laborable'
 );
-await writeOg('metodo.png', 'METODOLOGÍA', 'Cómo se trabaja', 'Alcance y plazo por escrito');
+await writeOg('metodologia.png', 'METODOLOGÍA', 'Cómo se trabaja', 'Alcance y plazo por escrito');
 await writeOg(
   'experiencia.png',
   'EXPERIENCIA',

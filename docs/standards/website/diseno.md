@@ -80,7 +80,7 @@
 
 ### Composición y encabezados
 
-Énfasis ámbar: el ámbar no se usa como color de texto sobre el fondo (no alcanza AA en oscuro con la rejilla). Se aplica `--fg` con subrayado decorativo (`text-decoration-color: var(--color-accent)`, grosor y offset en el módulo de la página), como en el titular de `/servicios/` y los números de paso de `/metodo/`.
+Énfasis ámbar: el ámbar no se usa como color de texto sobre el fondo (no alcanza AA en oscuro con la rejilla). Se aplica `--fg` con subrayado decorativo (`text-decoration-color: var(--color-accent)`, grosor y offset en el módulo de la página), como en el titular de `/servicios/` y los números de paso de `/metodologia/`.
 
 `SectionHeader.astro` encapsula eyebrow + H2 + descripción opcional para Servicios, Referencias, Método y Contacto de home. Recibe `id`, `eyebrow`, `title` y `description?`; sus reglas específicas se importan desde `SectionHeader.module.css`. Cada sección conserva `aria-labelledby`.
 
@@ -116,11 +116,11 @@ La sección vive dentro del `.page-shell` de la página y no anida `.section-she
 
 ### Proceso
 
-La home usa DaisyUI `steps` con `step-primary` como tratamiento visual de una secuencia estática. No se añade `aria-current`, progreso completado ni interacción ficticia. La lista conserva orden, vertical en móvil, horizontal desde `lg` y contenido sin JavaScript. `/metodo` mantiene su composición editorial propia.
+La home usa DaisyUI `steps` con `step-primary` como tratamiento visual de una secuencia estática. No se añade `aria-current`, progreso completado ni interacción ficticia. La lista conserva orden, vertical en móvil, horizontal desde `lg` y contenido sin JavaScript. `/metodologia/` mantiene su composición editorial propia: `row-gap` con `--space-section-y` entre bloques principales, `--space-block` entre PageHead y pasos, `--space-gap` en los grids y cierre `max-w-2xl` centrado.
 
 ### Cabecera y pie (chrome)
 
-- `#site-header` y el `footer` usan la clase compartida `.chrome-surface` (`--surface-chrome` / glass + `blur(8px)`). Bordes con `border-border`. El pie no usa `bg-base-100`.
+- `#site-header` y el `footer` usan la clase compartida `.chrome-surface` (`--surface-chrome` / glass + `blur(8px)`). Bordes con `border-border`. Header y footer pintan su superficie a todo el ancho; `.navbar-inner` y `.footer-inner` limitan el contenido a `72rem`, lo centran y usan `--space-page-x`. El pie no usa `bg-base-100`.
 - Nav principal y menú móvil: `.chrome-label` (versales). Cabecera en una fila desde `lg` (grid interno `1fr auto 1fr`, sin `width: 50%` daisyUI). Títulos del pie: `.footer-title.chrome-label`. Enlaces del pie en sentence case, densos (`min-block-size: 1.5rem`, `text-step--1`); sociales (GitHub, LinkedIn, Correo) con hit-area 44×44 vía `.footer-social::before` sin inflar el ritmo visual.
 - Toggle de tema: `btn-square` 44×44; iconos `theme` (sistema), `sun` (claro), `moon` (oscuro) sincronizados por `themeToggle.ts`.
 - CMP (`cookieBanner.css`): barra sólida con tokens de card/borde y `--radius-surface`; compacta en desktop (sin divisor textos/botones) y en móvil (`max-height: min(40vh, 12rem)`); sin `backdrop-filter`. Stacking del CMP por encima del chrome.

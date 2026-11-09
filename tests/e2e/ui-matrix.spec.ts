@@ -11,7 +11,7 @@ const URLS = [
   '/servicios',
   '/referencias',
   '/referencias/front-valencia',
-  '/metodo',
+  '/metodologia',
   '/contacto',
   '/cookies',
   '/privacidad',

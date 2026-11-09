@@ -12,7 +12,7 @@ const ROUTES = [
   '/servicios/',
   '/referencias/',
   '/referencias/front-valencia/',
-  '/metodo/',
+  '/metodologia/',
   '/contacto/?motivo=propuestaComercial',
   '/experiencia/'
 ];

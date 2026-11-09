@@ -9,7 +9,7 @@ export const site = {
   nav: [
     { label: 'Servicios', href: '/servicios/' },
     { label: 'Referencias', href: '/referencias/' },
-    { label: 'Metodología', href: '/metodo/' }
+    { label: 'Metodología', href: '/metodologia/' }
   ],
   footerNav: [
     { label: 'Identidad', href: '/identidad/' },

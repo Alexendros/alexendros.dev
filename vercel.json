@@ -58,43 +58,43 @@
       "permanent": false
     },
     {
-      "source": "/metodologia",
-      "destination": "/metodo",
+      "source": "/metodo",
+      "destination": "/metodologia",
       "permanent": true
     },
     {
-      "source": "/metodologia/",
-      "destination": "/metodo",
+      "source": "/metodo/",
+      "destination": "/metodologia",
       "permanent": true
     },
     {
       "source": "/valores",
-      "destination": "/metodo",
+      "destination": "/metodologia",
       "permanent": true
     },
     {
       "source": "/valores/",
-      "destination": "/metodo",
+      "destination": "/metodologia",
       "permanent": true
     },
     {
       "source": "/como-trabajo",
-      "destination": "/metodo",
+      "destination": "/metodologia",
       "permanent": true
     },
     {
       "source": "/como-trabajo/",
-      "destination": "/metodo",
+      "destination": "/metodologia",
       "permanent": true
     },
     {
       "source": "/proceso-y-entrega",
-      "destination": "/metodo",
+      "destination": "/metodologia",
       "permanent": true
     },
     {
       "source": "/proceso-y-entrega/",
-      "destination": "/metodo",
+      "destination": "/metodologia",
       "permanent": true
     },
     {

@@ -4,8 +4,8 @@ import { site } from './site';
 describe('site.nav', () => {
   it('R06: site.nav es Servicios, Referencias, Metodología hacia páginas', () => {
     expect(site.nav.map((i) => i.label)).toEqual(['Servicios', 'Referencias', 'Metodología']);
-    expect(site.nav.map((i) => i.href)).toEqual(['/servicios/', '/referencias/', '/metodo/']);
-    expect(site.nav.map((i) => i.href)).not.toContain('/metodologia');
+    expect(site.nav.map((i) => i.href)).toEqual(['/servicios/', '/referencias/', '/metodologia/']);
+    expect(site.nav.map((i) => i.href)).not.toContain('/metodo/');
     expect(site.nav.map((i) => i.href)).not.toContain('/proyectos');
   });
 });
