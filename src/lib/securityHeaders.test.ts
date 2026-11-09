@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { CSP_REPORT_URI } from './csp';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
@@ -33,7 +34,8 @@ describe('security headers (vercel.json)', () => {
 
   it('observa una CSP Report-Only sin unsafe-inline', () => {
     const reportOnly = byKey['content-security-policy-report-only'] ?? '';
-    expect(reportOnly).toMatch(/report-uri\s+\/api\/csp-report/);
+    expect(reportOnly).toContain(`report-uri ${CSP_REPORT_URI}`);
+    expect(reportOnly).toContain('report-uri /api/csp-report/');
     expect(reportOnly).not.toMatch(/unsafe-inline/);
     expect(reportOnly).not.toMatch(/unsafe-eval/);
     expect(reportOnly).toMatch(/frame-ancestors\s+'none'/);

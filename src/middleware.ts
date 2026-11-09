@@ -2,7 +2,7 @@
 // Con output: 'static' las páginas prerenderizadas no pasan por este middleware;
 // su cabecera Report-Only la fija vercel.json. Aquí solo se cubre prerender = false.
 import { defineMiddleware } from 'astro:middleware';
-import { buildCsp } from './lib/csp';
+import { buildCsp, CSP_REPORT_URI } from './lib/csp';
 
 export const onRequest = defineMiddleware(async (ctx, next) => {
   const nonce = crypto.randomUUID().replace(/-/g, '');
@@ -13,7 +13,7 @@ export const onRequest = defineMiddleware(async (ctx, next) => {
   if (contentType.includes('text/html')) {
     res.headers.set(
       'Content-Security-Policy-Report-Only',
-      buildCsp({ nonce, reportUri: '/api/csp-report' })
+      buildCsp({ nonce, reportUri: CSP_REPORT_URI })
     );
   }
   return res;

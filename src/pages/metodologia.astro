@@ -21,7 +21,8 @@ const { seo, hero, steps, close } = processPage;
         {hero.h1Lead}<span class="text-primary">{hero.h1Accent}</span>
       </PageHead>
 
-      <section id="proceso" aria-labelledby="metodologia-hero-title">
+      <section id="proceso" aria-labelledby="proceso-heading">
+        <h2 id="proceso-heading" class="sr-only">Pasos del encargo</h2>
         <ol class="grid list-none gap-6 p-0 md:grid-cols-2 lg:grid-cols-4">
           {
             steps.map((step, i) => (

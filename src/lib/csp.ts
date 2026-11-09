@@ -3,6 +3,8 @@
 // Alimenta la cabecera Report-Only de vercel.json y el middleware de rutas
 // on-demand. La CSP de enforce en vercel.json permanece intacta hasta la fase ③.
 
+export const CSP_REPORT_URI = '/api/csp-report/';
+
 export type CspDirectiveMap = Record<string, string[]>;
 
 /** Allowlists de terceros portadas desde la CSP de enforce (fase ①). */
