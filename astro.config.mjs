@@ -14,8 +14,8 @@ export default defineConfig({
   // Astro 5 elimina output: 'hybrid'. static conserva el opt-in por ruta
   // (prerender = false en API y /r/[code]).
   output: 'static',
-  // El adapter 11 emite nodejs24.x. scripts/fix-vercel-runtime.mjs lo deja en
-  // nodejs22.x, que es el engines del repo.
+  // scripts/fix-vercel-runtime.mjs alinea el runtime de las funciones con
+  // package.json#engines.node, la fuente de verdad del repo.
   adapter: vercel({
     maxDuration: 10
   }),

@@ -39,6 +39,15 @@ const FIELD_STATIC_DESCRIBEDBY: Record<string, string[]> = {
   otraDetalle: ['contact-otra-error']
 };
 
+const FIELD_ERROR_MESSAGES: Record<string, string> = {
+  name: 'Falta el nombre.',
+  email: 'El correo no es válido. Ejemplo: nombre@empresa.es.',
+  message: 'Falta el mensaje. Bastan una o dos frases sobre qué se necesita.',
+  otraDetalle: 'Falta describir la otra necesidad.',
+  sitio: 'El sitio no parece válido. Ejemplo: empresa.es.',
+  consent: 'Hace falta aceptar el tratamiento de datos para poder responder.'
+};
+
 function setDescribedBy(field: string, control: HTMLElement, includeError: boolean): void {
   const ids = new Set<string>(FIELD_STATIC_DESCRIBEDBY[field] ?? []);
   if (includeError) ids.add(`${control.id}-error`);
@@ -315,20 +324,7 @@ function initContactForm(form: HTMLFormElement): void {
         setDescribedBy(error.field, control, true);
       }
       if (errorElement) {
-        errorElement.textContent =
-          error.field === 'name'
-            ? 'Falta el nombre.'
-            : error.field === 'email'
-              ? 'El correo no es válido. Ejemplo: nombre@empresa.es.'
-              : error.field === 'message'
-                ? 'Falta el mensaje. Bastan una o dos frases sobre qué se necesita.'
-                : error.field === 'otraDetalle'
-                  ? 'Falta describir la otra necesidad.'
-                  : error.field === 'sitio'
-                    ? 'El sitio no parece válido. Ejemplo: empresa.es.'
-                    : error.field === 'consent'
-                      ? 'Hace falta aceptar el tratamiento de datos para poder responder.'
-                      : error.cause;
+        errorElement.textContent = FIELD_ERROR_MESSAGES[error.field] ?? error.cause;
         errorElement.hidden = false;
       }
     }

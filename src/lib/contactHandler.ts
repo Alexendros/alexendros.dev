@@ -319,10 +319,8 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
     ownerId = begin.ownerId;
   }
 
-  let mailAccepted = false;
   try {
     await deps.sendMail({ ...fields, smtp });
-    mailAccepted = true;
   } catch {
     if (idemKey && store && ownerId) {
       await finishContactIdempotency(store, {
@@ -350,7 +348,7 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
     } catch {
       persisted = false;
     }
-    if (!persisted && mailAccepted) {
+    if (!persisted) {
       // SMTP aceptó pero no pudimos persistir el resultado → unknown, sin reenvío ciego
       try {
         await finishContactIdempotency(store, {
