@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 /**
- * @astrojs/vercel@7.8.x solo conoce Node 18/20. Con Node 22 en el build
- * cae a runtime nodejs18.x, que Vercel ya rechaza. Reescribe al major de
+ * Alinea el runtime Node emitido por @astrojs/vercel con el major de
  * package.json#engines.node (fuente de verdad; override del dashboard).
  */
 import fs from 'node:fs';

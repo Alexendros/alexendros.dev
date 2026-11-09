@@ -104,24 +104,40 @@ function leaseActive(record: ContactIdempotencyRecord, nowMs: number): boolean {
   return record.status === 'processing' && record.leaseExpiresAt > nowMs;
 }
 
+type BeginContactIdempotencyOptions = {
+  key: string;
+  fingerprint: string;
+  requestId: string;
+  nowMs: number;
+  leaseMs?: number;
+  resultTtlMs?: number;
+  createOwnerId?: () => string;
+};
+
+function createProcessingRecord(
+  opts: BeginContactIdempotencyOptions,
+  ownerId: string
+): ContactIdempotencyRecord {
+  const leaseMs = opts.leaseMs ?? CONTACT_IDEMPOTENCY_LEASE_SECONDS * 1000;
+  const resultTtlMs = opts.resultTtlMs ?? CONTACT_IDEMPOTENCY_TTL_SECONDS * 1000;
+  return {
+    status: 'processing',
+    fingerprint: opts.fingerprint,
+    ownerId,
+    requestId: opts.requestId,
+    leaseExpiresAt: opts.nowMs + leaseMs,
+    resultExpiresAt: opts.nowMs + resultTtlMs
+  };
+}
+
 /**
  * Inicia o reconsulta un claim. Un propietario antiguo no puede usurpar
  * un lease vivo de otro; solo puede reclamarse tras vencimiento o fallo reintentable.
  */
 export async function beginContactIdempotency(
   store: ContactIdempotencyStore,
-  opts: {
-    key: string;
-    fingerprint: string;
-    requestId: string;
-    nowMs: number;
-    leaseMs?: number;
-    resultTtlMs?: number;
-    createOwnerId?: () => string;
-  }
+  opts: BeginContactIdempotencyOptions
 ): Promise<BeginIdempotencyResult> {
-  const leaseMs = opts.leaseMs ?? CONTACT_IDEMPOTENCY_LEASE_SECONDS * 1000;
-  const resultTtlMs = opts.resultTtlMs ?? CONTACT_IDEMPOTENCY_TTL_SECONDS * 1000;
   const newOwner = () => opts.createOwnerId?.() ?? crypto.randomUUID();
 
   const existing = await store.get(opts.key);
@@ -138,14 +154,7 @@ export async function beginContactIdempotency(
     }
     if (existing.status === 'retryable_failure') {
       const ownerId = newOwner();
-      const record: ContactIdempotencyRecord = {
-        status: 'processing',
-        fingerprint: opts.fingerprint,
-        ownerId,
-        requestId: opts.requestId,
-        leaseExpiresAt: opts.nowMs + leaseMs,
-        resultExpiresAt: opts.nowMs + resultTtlMs
-      };
+      const record = createProcessingRecord(opts, ownerId);
       const ok = await store.compareAndSet(
         opts.key,
         existing.ownerId,
@@ -164,14 +173,7 @@ export async function beginContactIdempotency(
     }
     // Lease vencido en processing: reclamar
     const ownerId = newOwner();
-    const record: ContactIdempotencyRecord = {
-      status: 'processing',
-      fingerprint: opts.fingerprint,
-      ownerId,
-      requestId: opts.requestId,
-      leaseExpiresAt: opts.nowMs + leaseMs,
-      resultExpiresAt: opts.nowMs + resultTtlMs
-    };
+    const record = createProcessingRecord(opts, ownerId);
     const ok = await store.compareAndSet(
       opts.key,
       existing.ownerId,
@@ -183,14 +185,7 @@ export async function beginContactIdempotency(
   }
 
   const ownerId = newOwner();
-  const record: ContactIdempotencyRecord = {
-    status: 'processing',
-    fingerprint: opts.fingerprint,
-    ownerId,
-    requestId: opts.requestId,
-    leaseExpiresAt: opts.nowMs + leaseMs,
-    resultExpiresAt: opts.nowMs + resultTtlMs
-  };
+  const record = createProcessingRecord(opts, ownerId);
   const created = await store.tryCreate(
     opts.key,
     record,

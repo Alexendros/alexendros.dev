@@ -143,12 +143,14 @@ test.describe('CP-08 matriz UI — overflow y apilado', () => {
     await expect(page.getByLabel(/^Nombre( \*)?$/)).toBeVisible();
   });
 
-  test('servicios 320: selector y CTA Solicitar propuesta sin overflow', async ({ page }) => {
+  test('servicios 320: catálogo y CTA Solicitar propuesta sin overflow', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: VIEWPORT_HEIGHT });
     await page.goto('/servicios');
-    await expect(page.locator('[data-needs-configurator]')).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator('[data-catalogo]')).toBeVisible({ timeout: 10_000 });
     await assertNoOverflow(page, '/servicios@320');
-    const ask = page.locator('[data-needs-cta]');
+    const ask = page.locator('[data-services-primary-action]').getByRole('link', {
+      name: 'Solicitar propuesta'
+    });
     await expect(ask).toBeVisible();
     await ask.click({ force: false });
     await expect(page).toHaveURL(/\/contacto/);
