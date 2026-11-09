@@ -210,7 +210,7 @@ async function runDynamic(baseUrl) {
   const browser = await chromium.launch();
   const context = await browser.newContext();
   const page = await context.newPage();
-  const routes = ['/', '/servicios/', '/referencias/', '/metodo/', '/contacto/', '/cookies'];
+  const routes = ['/', '/servicios/', '/referencias/', '/metodologia/', '/contacto/', '/cookies'];
 
   try {
     await page.goto(new URL('/', baseUrl).href, { waitUntil: 'domcontentloaded' });

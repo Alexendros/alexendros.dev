@@ -10,7 +10,7 @@ const routes = [
   '/design-system/',
   '/experiencia/',
   '/identidad/',
-  '/metodo/',
+  '/metodologia/',
   '/privacidad/',
   '/referencias/',
   '/referencias/alexendros-me/',

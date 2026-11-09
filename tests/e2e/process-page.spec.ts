@@ -7,8 +7,8 @@ const route = '/';
 const SECTION = '#metodo';
 const TITLE = processPage.title;
 
-test('proceso: página /metodo con H1, pasos y CTA', async ({ page }) => {
-  await page.goto('/metodo/');
+test('proceso: página /metodologia con H1, pasos y CTA', async ({ page }) => {
+  await page.goto('/metodologia/');
   await expect(page.locator('h1')).toHaveCount(1);
   await expect(
     page.getByRole('heading', { level: 2, name: processPage.close.heading })
@@ -17,6 +17,74 @@ test('proceso: página /metodo con H1, pasos y CTA', async ({ page }) => {
     await expect(page.getByRole('heading', { level: 3, name: step.title })).toBeVisible();
   }
   await expect(page.getByRole('link', { name: 'Enviar solicitud', exact: true })).toBeVisible();
+});
+
+test('proceso: ritmo de secciones, grids y cierre centrado', async ({ page }) => {
+  await page.goto('/metodologia/');
+
+  for (const width of [390, 1440]) {
+    await page.setViewportSize({ width, height: 1000 });
+    const layout = await page.evaluate(() => {
+      const shell = document.querySelector('main > .page-shell');
+      const process = document.getElementById('proceso');
+      if (!shell || !process || shell.children.length !== 3) return null;
+
+      const [heroAndSteps, commitments, close] = [...shell.children];
+      const pageHead = heroAndSteps.firstElementChild;
+      if (!pageHead) return null;
+      const tokenSize = (name: string): number => {
+        const probe = document.createElement('div');
+        probe.style.position = 'absolute';
+        probe.style.visibility = 'hidden';
+        probe.style.height = `var(${name})`;
+        document.body.append(probe);
+        const size = Number.parseFloat(getComputedStyle(probe).height);
+        probe.remove();
+        return size;
+      };
+      const shellRect = shell.getBoundingClientRect();
+      const heroRect = heroAndSteps.getBoundingClientRect();
+      const processRect = process.getBoundingClientRect();
+      const commitmentsRect = commitments.getBoundingClientRect();
+      const closeRect = close.getBoundingClientRect();
+      const stepsGrid = process.querySelector('ol');
+      const commitmentsGrid = commitments.querySelector('ul');
+      if (!stepsGrid || !commitmentsGrid) return null;
+
+      return {
+        sectionSpace: tokenSize('--space-section-y'),
+        blockSpace: tokenSize('--space-block'),
+        gridSpace: tokenSize('--space-gap'),
+        heroToSteps: processRect.top - pageHead.getBoundingClientRect().bottom,
+        stepsToCommitments: commitmentsRect.top - heroRect.bottom,
+        commitmentsToClose: closeRect.top - commitmentsRect.bottom,
+        stepsGap: Number.parseFloat(getComputedStyle(stepsGrid).rowGap),
+        commitmentsGap: Number.parseFloat(getComputedStyle(commitmentsGrid).rowGap),
+        closeLeftInset: closeRect.left - shellRect.left,
+        closeRightInset: shellRect.right - closeRect.right
+      };
+    });
+
+    expect(layout, `estructura medible a ${width}px`).not.toBeNull();
+    expect(layout!.heroToSteps, `hero→pasos a ${width}px`).toBeCloseTo(layout!.blockSpace, 0);
+    expect(layout!.stepsToCommitments, `pasos→compromisos a ${width}px`).toBeCloseTo(
+      layout!.sectionSpace,
+      0
+    );
+    expect(layout!.commitmentsToClose, `compromisos→cierre a ${width}px`).toBeCloseTo(
+      layout!.sectionSpace,
+      0
+    );
+    expect(layout!.stepsGap).toBeCloseTo(layout!.gridSpace, 0);
+    expect(layout!.commitmentsGap, `gap de compromisos a ${width}px`).toBeCloseTo(
+      layout!.gridSpace,
+      0
+    );
+    expect(
+      Math.abs(layout!.closeLeftInset - layout!.closeRightInset),
+      `cierre centrado a ${width}px`
+    ).toBeLessThanOrEqual(1);
+  }
 });
 
 for (const width of [320, 390, 768, 1280]) {

@@ -11,7 +11,7 @@ const SITEMAP_PUBLIC_PATHS = [
   '/cookies/',
   '/identidad/',
   '/privacidad/',
-  '/metodo/',
+  '/metodologia/',
   '/referencias/',
   '/servicios/',
   '/servicios/software-a-medida/',
@@ -19,12 +19,7 @@ const SITEMAP_PUBLIC_PATHS = [
   '/articulos/web-o-app-a-medida/'
 ];
 
-const SITEMAP_RETIRED_PATHS = [
-  '/metodologia/',
-  '/valores/',
-  '/como-trabajo/',
-  '/proceso-y-entrega/'
-];
+const SITEMAP_RETIRED_PATHS = ['/metodo/', '/valores/', '/como-trabajo/', '/proceso-y-entrega/'];
 
 const NOINDEX_PATHS = ['/design-system', '/sobre-mi'];
 
@@ -144,13 +139,16 @@ test('ROUTE-02: el sitemap anuncia las páginas públicas y excluye /design-syst
   }
 });
 
-test('ROUTE-02b: /metodo emite canonical alineado con el HTML construido', async ({ page }) => {
-  await page.goto('/metodo');
+test('ROUTE-02b: /metodologia emite canonical alineado con el HTML construido', async ({
+  page
+}) => {
+  await page.goto('/metodologia');
   const canonical = page.locator('link[rel="canonical"]');
-  await expect(canonical).toHaveAttribute('href', /metodo\/?$/);
+  await expect(canonical).toHaveAttribute('href', /metodologia\/?$/);
   const href = await canonical.getAttribute('href');
   expect(href).toBeTruthy();
-  expect(href!).toMatch(/^https:\/\/alexendros\.dev\/metodo\/?$/);
+  expect(href!).toMatch(/^https:\/\/alexendros\.dev\/metodologia\/?$/);
+  await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', href!);
 });
 
 test('ROUTE-02c: /sobre-mi es noindex y canonical a /experiencia', async ({ page }) => {
@@ -213,7 +211,7 @@ const TITLE_SEED_PATHS = [
   '/',
   '/servicios',
   '/referencias',
-  '/metodo',
+  '/metodologia',
   '/contacto',
   '/identidad',
   '/privacidad',

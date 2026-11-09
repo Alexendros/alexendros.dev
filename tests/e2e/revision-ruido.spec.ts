@@ -4,7 +4,7 @@ const pages = [
   '/',
   '/servicios',
   '/servicios/software-a-medida',
-  '/metodo',
+  '/metodologia',
   '/referencias',
   '/referencias/zedazo',
   '/contacto'
@@ -35,7 +35,7 @@ for (const p of pages) {
 }
 
 test('pasos sin numeración duplicada', async ({ page }) => {
-  await page.goto('/metodo');
+  await page.goto('/metodologia');
   const titles = await page.locator('ol h2').allInnerTexts();
   for (const t of titles) expect(t).not.toMatch(/^\s*0\d/);
 });

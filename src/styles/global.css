@@ -406,8 +406,6 @@
     align-items: center;
     width: 100%;
     max-width: 72rem;
-    margin-inline: auto;
-    padding-inline: var(--space-page-x);
     padding-block: 0.25rem;
     min-width: 0;
     min-height: var(--header-h);
@@ -454,15 +452,9 @@
     min-block-size: 2.75rem;
   }
 
-  footer.footer {
-    gap: 1.25rem 1.5rem;
+  footer > .footer-inner {
+    width: 100%;
     max-width: 72rem;
-    margin-inline: auto;
-    padding-inline: var(--space-page-x);
-  }
-
-  footer.footer > nav {
-    gap: 0;
   }
 
   .js-only {
@@ -649,7 +641,7 @@
   /* stylelint-disable declaration-no-important, declaration-property-value-disallowed-list -- impresión */
   @media print {
     .navbar,
-    .footer,
+    footer,
     [data-theme-toggle],
     .js-only,
     body::before {
@@ -804,8 +796,19 @@ html:not(.js) .js-only {
   }
 }
 
-/* Fuera de @layer: gana a DaisyUI `.footer-title { opacity: .6 }` (capa daisyui.l*). */
-footer.footer .footer-title.chrome-label {
+/* Chrome fuera de @layer: gana a DaisyUI y evita que el orden de los módulos
+   CSS de una página cambie el eje compartido de header y footer. */
+#site-header .navbar-inner,
+footer > .footer-inner {
+  margin-inline: auto;
+  padding-inline: var(--space-page-x);
+}
+
+footer .footer-inner > nav {
+  gap: 0;
+}
+
+footer .footer-inner .footer-title.chrome-label {
   opacity: 1;
   color: var(--fg);
   font-weight: 600;

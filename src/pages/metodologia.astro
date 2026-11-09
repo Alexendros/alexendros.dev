@@ -4,7 +4,7 @@ import Button from '../components/Button.astro';
 import Commitments from '../components/Commitments.astro';
 import PageHead from '../components/PageHead.astro';
 import { processPage } from '../content/process';
-import styles from './metodo.module.css';
+import styles from './metodologia.module.css';
 
 const { seo, hero, steps, close } = processPage;
 ---
@@ -12,16 +12,16 @@ const { seo, hero, steps, close } = processPage;
 <Layout
   title={seo.title}
   description={seo.description}
-  ogImage="/og/metodo.png"
+  ogImage="/og/metodologia.png"
   ogImageAlt="Cómo se trabaja. Desde la idea hasta el producto entregado"
 >
   <div class:list={['page-shell', styles.shell]}>
     <div class={styles.balance}>
-      <PageHead titleId="delivery-hero-title">
+      <PageHead titleId="metodologia-hero-title">
         {hero.h1Lead}<span class="text-primary">{hero.h1Accent}</span>
       </PageHead>
 
-      <section id="proceso" class="stack-block" aria-labelledby="delivery-hero-title">
+      <section id="proceso" aria-labelledby="metodologia-hero-title">
         <ol class="grid list-none gap-6 p-0 md:grid-cols-2 lg:grid-cols-4">
           {
             steps.map((step, i) => (
@@ -47,12 +47,12 @@ const { seo, hero, steps, close } = processPage;
       </section>
     </div>
 
-    <section class="stack-block">
+    <section>
       <Commitments heading="Compromisos antes de empezar" showHeading />
     </section>
 
-    <section class="stack-block max-w-2xl" aria-labelledby="metodo-close-heading">
-      <h2 id="metodo-close-heading" class="text-step-2 font-bold">
+    <section class:list={['max-w-2xl', styles.close]} aria-labelledby="metodologia-close-heading">
+      <h2 id="metodologia-close-heading" class="text-step-2 font-bold">
         {close.heading}
       </h2>
       <p class="mt-3 text-muted">{close.body}</p>

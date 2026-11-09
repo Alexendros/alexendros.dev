@@ -71,6 +71,21 @@ async function finalUrl(request: APIRequestContext, url: string): Promise<string
   return response.url();
 }
 
+async function sitemapPaths(request: APIRequestContext, base: string): Promise<string[]> {
+  const index = await request.get(`${base}/sitemap-index.xml`);
+  expect(index.status()).toBe(200);
+  const sitemapUrls = [...(await index.text()).matchAll(/<loc>([^<]+)<\/loc>/g)].map(
+    (match) => match[1]!
+  );
+  const locs: string[] = [];
+  for (const sitemapUrl of sitemapUrls) {
+    const response = await request.get(`${base}${new URL(sitemapUrl).pathname}`);
+    expect(response.status()).toBe(200);
+    locs.push(...[...(await response.text()).matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]!));
+  }
+  return locs.map((loc) => new URL(loc).pathname);
+}
+
 function splitDestination(destination: string): { path: string; hash: string } {
   const expanded = expandPathPattern(destination);
   if (expanded.startsWith('http')) {
@@ -186,23 +201,31 @@ test.describe('CP-10 edge producción', () => {
     }
   });
 
-  test('rutas retiradas no aparecen en sitemap ni nav de producción', async ({ request }) => {
-    const index = await request.get(`${APEX}/sitemap-index.xml`);
-    expect(index.status()).toBe(200);
-    const sitemapUrls = [...(await index.text()).matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-    const locs: string[] = [];
-    for (const sitemapUrl of sitemapUrls) {
-      const body = await (await request.get(sitemapUrl!)).text();
-      locs.push(...[...body.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]!));
+  test('rutas retiradas no aparecen en sitemap ni nav', async ({ request }) => {
+    let base = APEX;
+    let paths = await sitemapPaths(request, base);
+
+    // Antes del promote, producción todavía sirve la canónica anterior. Como
+    // en assertPathRedirect, se anota el estado y se exige el contrato al build
+    // local; una producción ya migrada debe cumplir también las exclusiones.
+    if (!paths.includes('/metodologia/')) {
+      test.info().annotations.push({
+        type: 'pendiente-despliegue',
+        description:
+          'La sitemap de producción aún no incluye /metodologia/; se valida el build local'
+      });
+      base = '';
+      paths = await sitemapPaths(request, base);
     }
-    const paths = locs.map((loc) => new URL(loc).pathname);
-    for (const retired of ['/metodologia/', '/valores/', '/como-trabajo/']) {
+
+    expect(paths).toContain('/metodologia/');
+    for (const retired of ['/metodo/', '/valores/', '/como-trabajo/']) {
       expect(paths, `sitemap no debe incluir ${retired}`).not.toContain(retired);
     }
 
-    const home = await request.get(`${APEX}/`);
+    const home = await request.get(`${base}/`);
     const html = await home.text();
-    expect(html).not.toMatch(/href=["']\/metodologia\/?["']/);
+    expect(html).not.toMatch(/href=["']\/metodo\/?["']/);
     expect(html).not.toMatch(/href=["']\/valores\/?["']/);
   });
 });
