@@ -52,3 +52,8 @@ mise.local.toml
 
 # Artefactos de auditoría local
 audit-out/
+
+# Archivos empaquetados y specs locales (no son fuentes del sitio)
+*.tar.gz
+*.tar
+specs/
