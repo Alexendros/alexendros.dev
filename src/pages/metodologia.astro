@@ -4,9 +4,12 @@ import Button from '../components/Button.astro';
 import Commitments from '../components/Commitments.astro';
 import PageHead from '../components/PageHead.astro';
 import { processPage } from '../content/process';
+import { seoForPath } from '../content/seo';
+import { breadcrumbFromHome } from '../lib/breadcrumb';
 import styles from './metodologia.module.css';
 
-const { seo, hero, steps, close } = processPage;
+const { hero, steps, close } = processPage;
+const seo = seoForPath('/metodologia/');
 ---
 
 <Layout
@@ -14,6 +17,7 @@ const { seo, hero, steps, close } = processPage;
   description={seo.description}
   ogImage="/og/metodologia.png"
   ogImageAlt="Cómo se trabaja. Desde la idea hasta el producto entregado"
+  jsonLd={breadcrumbFromHome({ name: 'Metodología', path: '/metodologia/' })}
 >
   <div class:list={['page-shell', styles.shell]}>
     <div class={styles.balance}>

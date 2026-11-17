@@ -1,10 +1,15 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { seoForPath } from '../content/seo';
+import { breadcrumbFromHome } from '../lib/breadcrumb';
+
+const seo = seoForPath('/cookies/');
 ---
 
 <Layout
-  title="Cookies — qué se guarda, para qué y cómo lo controlas"
-  description="Explicación clara de las cookies de este sitio: qué hace cada una, quién la emite, cuánto dura, si necesita tu permiso y cómo cambiar o retirar el consentimiento."
+  title={seo.title}
+  description={seo.description}
+  jsonLd={breadcrumbFromHome({ name: 'Cookies', path: '/cookies/' })}
 >
   <div class="page-shell page-shell-narrow legal-prose">
     <p class="font-mono">LEGAL</p>

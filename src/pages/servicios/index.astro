@@ -8,16 +8,20 @@ import PageHead from '../../components/PageHead.astro';
 import { catalogoPromocional } from '../../content/catalogo';
 import { paquetesPublicados } from '../../content/paquetes';
 import { serviceProducts } from '../../content/services';
+import { seoForPath } from '../../content/seo';
+import { breadcrumbFromHome } from '../../lib/breadcrumb';
 import styles from './index.module.css';
 
 const collaboration = serviceProducts[0];
+const seo = seoForPath('/servicios/');
 ---
 
 <Layout
-  title="Servicios profesionales — Alexendros"
-  description="Colaboración técnica y sitio profesional por módulos."
+  title={seo.title}
+  description={seo.description}
   ogImage="/og/servicios.png"
   ogImageAlt="Servicios profesionales de Alexendros.dev"
+  jsonLd={breadcrumbFromHome({ name: 'Servicios', path: '/servicios/' })}
 >
   <div class="page-shell">
     <PageHead

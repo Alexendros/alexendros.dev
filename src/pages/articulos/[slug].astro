@@ -4,6 +4,8 @@ import Link from '../../components/Link.astro';
 import Button from '../../components/Button.astro';
 import PageHead from '../../components/PageHead.astro';
 import { articles } from '../../content/articles';
+import { seoForArticle } from '../../content/seo';
+import { breadcrumbFromHome } from '../../lib/breadcrumb';
 
 export async function getStaticPaths() {
   return articles.map((article) => ({
@@ -13,9 +15,14 @@ export async function getStaticPaths() {
 }
 
 const { article } = Astro.props;
+const seo = seoForArticle(article.slug);
 ---
 
-<Layout title={`${article.title} — Alexendros`} description={article.description}>
+<Layout
+  title={seo.title}
+  description={seo.description}
+  jsonLd={breadcrumbFromHome({ name: article.title, path: `/articulos/${article.slug}/` })}
+>
   <div class="page-shell page-shell-narrow">
     <p class="text-step--1 text-muted">
       <Link href="/" variant="nav">Inicio</Link> / Artículo

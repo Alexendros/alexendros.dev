@@ -481,6 +481,21 @@
       "context": "La revisión visual detectó que la superficie del footer quedaba limitada a 72rem, que el contenido necesitaba el mismo contrato exterior/interior del header y que /metodo debía renombrarse a /metodologia. La página mezclaba separaciones internas y de sección con 40px y dejaba el cierre fuera del eje centrado.",
       "decision": "Se conservan el catálogo, la marca, la nav corta, Referencias, Contacto, el home, el CTA Solicitar propuesta y el resto de contratos de 0027; solo cambia la canónica de Metodología a /metodologia. /metodo, /valores, /como-trabajo y /proceso-y-entrega redirigen permanentemente y directamente a la nueva canónica, que es la única presente en enlaces, canonical, og:url y sitemap. El ancla #metodo de home permanece estable. El footer exterior ocupa todo el ancho y .footer-inner centra el contenido a 72rem alineado con .navbar-inner. En /metodologia, --space-section-y separa bloques principales, --space-block separa PageHead y pasos, --space-gap separa ambos grids y el cierre max-w-2xl queda centrado.",
       "consequences": "Renombrar página, módulo y OG; actualizar site.ts, vercel.json, README, AGENTS, diseno.md, scripts y suites de rutas. Añadir pruebas geométricas de chrome y ritmo. La verificación de redirects aplicados en producción depende del despliegue."
+    },
+    {
+      "id": "0033",
+      "sequence": 33,
+      "timestamp": "2026-11-17T20:30:00Z",
+      "active": true,
+      "title": "Cierre de residuos de auditoría web-compliance",
+      "summary": "Titles/metas y BreadcrumbList con gates en repo; E-E-A-T en /experiencia/; CrUX, off-page, Ads y AT quedan N/A o revisión trimestral documentada.",
+      "recordType": "decision",
+      "status": "aceptada",
+      "supersedes": [],
+      "supersededBy": null,
+      "context": "La auditoría 2026-11-17 dejó WARN de titles/metas/JSON-LD/E-E-A-T y PENDING sin herramienta (CrUX, backlinks, paridad Ads, validador W3C, NVDA). /sobre-mi ya es noindex por 0029.",
+      "decision": "Centralizar snippets SEO indexables en src/content/seo.ts (title 50–65, description 150–170) con test; emitir BreadcrumbList vía src/lib/breadcrumb.ts en plantillas indexables salvo la portada; reforzar autoría visible en /experiencia/ sin indexar /sobre-mi; marcar el checkbox de tema con aria-hidden. TEC-06, OFF-01/03, ANA-02, ACC-11/12/13 se cierran como N/A o revisión trimestral en docs/standards/website/calidad.md, sin inventar métricas de campo ni campañas.",
+      "consequences": "quality/test deben pasar seo.test y breadcrumb.test; e2e seo-routes sigue exigiendo noindex de /sobre-mi. La próxima auditoría no debe reabrir esos PENDING sin cambiar esta decisión."
     }
   ]
 }

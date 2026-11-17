@@ -1,4 +1,5 @@
 import { commitments } from './commitments';
+import { seoByPath } from './seo';
 
 export type ProcessStep = {
   id: string;
@@ -10,9 +11,8 @@ export type ProcessStep = {
 /** Pasos alineados al mock v4 (copia aprobada). */
 export const processPage = {
   seo: {
-    title: 'Cómo se trabaja — Alexendros',
-    description:
-      'Metodología clara. Desde la idea hasta el producto entregado. Método de trabajo para sitios web y productos digitales.',
+    title: seoByPath['/metodologia/'].title,
+    description: seoByPath['/metodologia/'].description,
     ogTitle: 'Cómo se trabaja'
   },
   hero: {

@@ -9,7 +9,10 @@ import {
   projectFilters,
   projects
 } from '../../content/projects';
+import { seoForPath } from '../../content/seo';
+import { breadcrumbFromHome } from '../../lib/breadcrumb';
 
+const seo = seoForPath('/referencias/');
 const detailItems = projects.map((p) => ({
   slug: p.slug,
   path: `/referencias/${p.slug}/`,
@@ -22,10 +25,11 @@ const detailItems = projects.map((p) => ({
 ---
 
 <Layout
-  title="Proyectos realizados — Alexendros"
-  description="Proyectos realizados con el alcance acordado en cada caso."
+  title={seo.title}
+  description={seo.description}
   ogImage="/og/proyectos.png"
   ogImageAlt="Proyectos realizados"
+  jsonLd={breadcrumbFromHome({ name: 'Referencias', path: '/referencias/' })}
 >
   <div class="page-shell">
     <PageHead title="Proyectos realizados." />

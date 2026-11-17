@@ -1,10 +1,15 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { seoForPath } from '../content/seo';
+import { breadcrumbFromHome } from '../lib/breadcrumb';
+
+const seo = seoForPath('/identidad/');
 ---
 
 <Layout
-  title="Identidad — Alexendros"
-  description="Propietario de alexendros.dev, responsabilidad legal y cumplimiento mercantil."
+  title={seo.title}
+  description={seo.description}
+  jsonLd={breadcrumbFromHome({ name: 'Identidad', path: '/identidad/' })}
 >
   <div class="page-shell page-shell-narrow legal-prose">
     <p class="font-mono">LEGAL</p>
