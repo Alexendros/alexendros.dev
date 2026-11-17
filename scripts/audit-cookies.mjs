@@ -210,11 +210,15 @@ async function runDynamic(baseUrl) {
   const browser = await chromium.launch();
   const context = await browser.newContext();
   const page = await context.newPage();
+  // vanilla-cookieconsent oculta el aviso si navigator.webdriver es true.
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'webdriver', { get: () => false });
+  });
   const routes = ['/', '/servicios/', '/referencias/', '/metodologia/', '/contacto/', '/cookies'];
 
   try {
     await page.goto(new URL('/', baseUrl).href, { waitUntil: 'domcontentloaded' });
-    const accept = page.getByRole('button', { name: 'Aceptar todo' }).first();
+    const accept = page.getByRole('button', { name: 'Aceptar todas' }).first();
     await accept.click({ timeout: 10_000 });
     for (const route of routes) {
       await page

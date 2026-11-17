@@ -210,4 +210,47 @@ describe('tracking loaders', () => {
       'snap.licdn.com'
     );
   });
+
+  it('solo analítica: GA4 Clarity PostHog con id en URL; sin píxel ni LinkedIn', async () => {
+    vi.stubEnv('PUBLIC_GA4_ID', 'G-ANALYTICS1');
+    vi.stubEnv('PUBLIC_CLARITY_ID', 'clarity-id-1');
+    vi.stubEnv('PUBLIC_POSTHOG_KEY', 'phc_analytics');
+    vi.stubEnv('PUBLIC_META_PIXEL_ID', 'PIXEL-SHOULD-NOT');
+    vi.stubEnv('PUBLIC_LINKEDIN_PARTNER_ID', '999');
+
+    const consent = await import('./consent');
+    const { initTracking } = await import('./loaders');
+
+    consent.writeConsent(['necessary', 'analytics']);
+    initTracking();
+
+    const tags = env.scripts.map((script) => script.dataset.tracker);
+    expect(tags).toEqual(expect.arrayContaining(['ga4', 'clarity', 'posthog']));
+    expect(tags).not.toContain('meta-pixel');
+    expect(tags).not.toContain('linkedin');
+    expect(env.scripts.find((s) => s.dataset.tracker === 'ga4')?.src).toContain('G-ANALYTICS1');
+    expect(env.scripts.find((s) => s.dataset.tracker === 'clarity')?.src).toContain('clarity-id-1');
+    expect(env.scripts.find((s) => s.dataset.tracker === 'posthog')?.src).toContain(
+      'eu.i.posthog.com'
+    );
+  });
+
+  it('publicidad: URL del píxel y LinkedIn llevan su id', async () => {
+    vi.stubEnv('PUBLIC_META_PIXEL_ID', '111222333');
+    vi.stubEnv('PUBLIC_LINKEDIN_PARTNER_ID', '777888');
+
+    const consent = await import('./consent');
+    const { initTracking } = await import('./loaders');
+
+    consent.writeConsent(['necessary', 'marketing']);
+    initTracking();
+
+    expect(env.scripts.find((s) => s.dataset.tracker === 'meta-pixel')?.src).toContain(
+      'connect.facebook.net'
+    );
+    expect(env.scripts.find((s) => s.dataset.tracker === 'linkedin')?.src).toContain(
+      'snap.licdn.com'
+    );
+    expect(env.window._linkedin_partner_id).toBe('777888');
+  });
 });

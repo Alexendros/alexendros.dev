@@ -238,106 +238,60 @@ describe('handleContactPost', () => {
     expect(sendMail).not.toHaveBeenCalled();
   });
 
-  it('OPS-01: fallo CRM tras correo aceptado → 200 accepted, log sin PII', async () => {
-    const sendMail = vi.fn(async () => undefined);
-    const saveLead = vi.fn(async () => {
-      throw new Error('notion down');
-    });
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
-    const res = await handleContactPost(postJson(validBody), deps({ sendMail, saveLead }));
-    expect(res.status).toBe(200);
-    const body = await res.json();
-    expect(body).toEqual({
-      ok: true,
-      status: 'accepted',
-      requestId: 'req-test',
-      replay: false
-    });
-    expect(JSON.stringify(body)).not.toMatch(/notion|crm|registro|lead/i);
-    expect(sendMail).toHaveBeenCalledOnce();
-    expect(saveLead).toHaveBeenCalledOnce();
-    expect(errorSpy).toHaveBeenCalled();
-    const logged = String(errorSpy.mock.calls[0]?.[0] ?? '');
-    expect(logged).toContain('contact_crm_error');
-    expect(logged).not.toContain(validBody.email);
-    expect(logged).not.toContain(validBody.name);
-    expect(logged).not.toContain(validBody.message);
-    errorSpy.mockRestore();
-  });
-
-  it('OPS-02: fallo Notion → correo FALLO NOTION con datos y push sin PII; cliente 200', async () => {
-    const sendMail = vi.fn(async () => undefined);
-    const sendCrmFailureMail = vi.fn(async (_p: unknown) => undefined);
-    const sendAlertWebhook = vi.fn(async (_t: string) => undefined);
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
-    const res = await handleContactPost(
-      postJson(validBody),
-      deps({
-        sendMail,
-        sendCrmFailureMail,
-        sendAlertWebhook,
-        saveLead: async () => {
-          throw new Error('notion down');
-        }
+  function consentCookie(categories: string[]): string {
+    vi.stubEnv('PUBLIC_COOKIE_CONSENT_VERSION', '2');
+    return `consent_v1=${encodeURIComponent(
+      JSON.stringify({
+        categories,
+        consentTimestamp: new Date(1_700_000_000_000).toISOString(),
+        revision: 2
       })
-    );
-    expect(res.status).toBe(200);
-    expect((await res.json()).status).toBe('accepted');
-    expect(sendCrmFailureMail).toHaveBeenCalledOnce();
-    const mail = sendCrmFailureMail.mock.calls[0]?.[0] as unknown as Record<string, string>;
-    expect(mail.name).toBe(validBody.name);
-    expect(mail.email).toBe(validBody.email);
-    expect(mail.message).toContain(validBody.message);
-    expect(sendAlertWebhook).toHaveBeenCalledOnce();
-    const text = String(sendAlertWebhook.mock.calls[0]?.[0]);
-    expect(text).toMatch(/revisa el correo/i);
-    expect(text).not.toContain(validBody.email);
-    expect(text).not.toContain(validBody.name);
-    errorSpy.mockRestore();
-  });
+    )}`;
+  }
 
-  it('OPS-02: si fallan el correo de aviso y el push, el cliente sigue con 200', async () => {
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+  it('CAPI: sin cookie de publicidad → no sendLeadEvent', async () => {
+    const sendLeadEvent = vi.fn(async () => undefined);
     const res = await handleContactPost(
-      postJson(validBody),
-      deps({
-        saveLead: async () => {
-          throw new Error('notion down');
-        },
-        sendCrmFailureMail: async () => {
-          throw new Error('smtp');
-        },
-        sendAlertWebhook: async () => {
-          throw new Error('push');
+      postJson({ ...validBody, eventId: 'evt-no-mkt' }),
+      deps({ sendLeadEvent })
+    );
+    expect(res.status).toBe(200);
+    expect(sendLeadEvent).not.toHaveBeenCalled();
+  });
+
+  it('CAPI: solo analítica → no sendLeadEvent', async () => {
+    const sendLeadEvent = vi.fn(async () => undefined);
+    const res = await handleContactPost(
+      postJson(
+        { ...validBody, eventId: 'evt-analytics' },
+        { headers: { Cookie: consentCookie(['necessary', 'analytics']) } }
+      ),
+      deps({ sendLeadEvent })
+    );
+    expect(res.status).toBe(200);
+    expect(sendLeadEvent).not.toHaveBeenCalled();
+  });
+
+  it('CAPI: publicidad → sendLeadEvent con eventId', async () => {
+    const sendLeadEvent = vi.fn(async (_input: unknown) => undefined);
+    const res = await handleContactPost(
+      postJson(
+        { ...validBody, eventId: 'evt-lead-12345' },
+        {
+          headers: {
+            Cookie: `${consentCookie(['necessary', 'analytics', 'marketing'])}; _fbp=fb.1.x`
+          }
         }
-      })
+      ),
+      deps({ sendLeadEvent })
     );
     expect(res.status).toBe(200);
-    errorSpy.mockRestore();
-  });
-
-  it('OPS-02: Notion ok → sin avisos', async () => {
-    const sendCrmFailureMail = vi.fn(async (_p: unknown) => undefined);
-    const sendAlertWebhook = vi.fn(async (_t: string) => undefined);
-    await handleContactPost(
-      postJson(validBody),
-      deps({ saveLead: async () => undefined, sendCrmFailureMail, sendAlertWebhook })
-    );
-    expect(sendCrmFailureMail).not.toHaveBeenCalled();
-    expect(sendAlertWebhook).not.toHaveBeenCalled();
-  });
-
-  it('OPS-01: CRM ok no altera accepted ni promete registro', async () => {
-    const saveLead = vi.fn(async () => undefined);
-    const res = await handleContactPost(postJson(validBody), deps({ saveLead }));
-    expect(res.status).toBe(200);
-    expect(await res.json()).toEqual({
-      ok: true,
-      status: 'accepted',
-      requestId: 'req-test',
-      replay: false
+    expect(sendLeadEvent).toHaveBeenCalledOnce();
+    expect(sendLeadEvent.mock.calls[0]?.[0]).toMatchObject({
+      email: validBody.email,
+      eventId: 'evt-lead-12345',
+      fbp: 'fb.1.x'
     });
-    expect(saveLead).toHaveBeenCalledOnce();
   });
 
   it('API-01: envío válido con store → un sendMail y accepted', async () => {
@@ -480,33 +434,20 @@ describe('handleContactPost', () => {
     expect(sendMail).toHaveBeenCalledOnce();
   });
 
-  it('API-08: Turnstile distinto no cambia la huella de claim', async () => {
+  it('API-08: eventId distinto no cambia la huella de claim', async () => {
     const store = createMemoryContactIdempotencyStore();
     const sendMail = vi.fn(async () => undefined);
-    const d = deps({
-      sendMail,
-      idempotencyStore: store,
-      getEnv: () => ({
-        SMTP_HOST: 'smtp.example.com',
-        SMTP_PORT: '587',
-        SMTP_USER: 'user@example.com',
-        SMTP_PASS: 'secret',
-        UPSTASH_REDIS_REST_URL: 'https://example.upstash.io',
-        UPSTASH_REDIS_REST_TOKEN: 'token',
-        TURNSTILE_SECRET_KEY: 'secret'
-      }),
-      verifyTurnstile: async () => true
-    });
+    const d = deps({ sendMail, idempotencyStore: store });
     const first = await handleContactPost(
       postJson(
-        { ...validBody, turnstileToken: 'token-old' },
+        { ...validBody, eventId: 'evt-old-12345' },
         { headers: { 'Idempotency-Key': 'api-08-key' } }
       ),
       d
     );
     const second = await handleContactPost(
       postJson(
-        { ...validBody, turnstileToken: 'token-new' },
+        { ...validBody, eventId: 'evt-new-67890' },
         { headers: { 'Idempotency-Key': 'api-08-key' } }
       ),
       d

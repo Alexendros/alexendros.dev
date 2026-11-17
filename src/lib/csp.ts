@@ -18,8 +18,7 @@ export const CSP_DIRECTIVES: CspDirectiveMap = {
     'https://www.clarity.ms',
     'https://eu.i.posthog.com',
     'https://eu-assets.i.posthog.com',
-    'https://snap.licdn.com',
-    'https://challenges.cloudflare.com'
+    'https://snap.licdn.com'
   ],
   'style-src': [
     "'self'",
@@ -37,8 +36,7 @@ export const CSP_DIRECTIVES: CspDirectiveMap = {
     'https://www.facebook.com',
     'https://c.clarity.ms',
     'https://eu.i.posthog.com',
-    'https://px.ads.linkedin.com',
-    'https://challenges.cloudflare.com'
+    'https://px.ads.linkedin.com'
   ],
   'font-src': ["'self'", 'data:'],
   'connect-src': [
@@ -49,7 +47,6 @@ export const CSP_DIRECTIVES: CspDirectiveMap = {
     'https://region1.google-analytics.com',
     'https://analytics.google.com',
     'https://www.googletagmanager.com',
-    'https://metrics.alexendros.dev',
     'https://connect.facebook.net',
     'https://www.facebook.com',
     'https://graph.facebook.com',
@@ -58,14 +55,9 @@ export const CSP_DIRECTIVES: CspDirectiveMap = {
     'https://eu.i.posthog.com',
     'https://eu-assets.i.posthog.com',
     'https://snap.licdn.com',
-    'https://px.ads.linkedin.com',
-    'https://challenges.cloudflare.com'
+    'https://px.ads.linkedin.com'
   ],
-  'frame-src': [
-    'https://www.googletagmanager.com',
-    'https://td.doubleclick.net',
-    'https://challenges.cloudflare.com'
-  ],
+  'frame-src': ['https://www.googletagmanager.com', 'https://td.doubleclick.net'],
   'frame-ancestors': ["'none'"],
   'base-uri': ["'self'"],
   'form-action': ["'self'"],

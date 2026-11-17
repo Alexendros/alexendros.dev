@@ -33,7 +33,7 @@ No abras issues públicos con exploits, PoCs ofensivos, tokens, secretos ni PII.
 - Valores solo en GitHub Secrets / Vercel Env; nunca en el repo:
   - Proton SMTP (`SMTP_*`)
   - Upstash Redis (`UPSTASH_*`)
-  - Notion (`NOTION_TOKEN`; `NOTION_LEADS_DATABASE_ID` es un id público de data source, no un secreto)
+  - Meta CAPI (`META_CAPI_TOKEN`; solo con consentimiento de publicidad)
 - Rotar tokens ante sospecha de fuga o cadencia trimestral mínima del SMTP.
 - `/api/contact` es **fail-closed** sin Upstash o si Redis falla (HTTP 503 genérico). No devolver stacks, detalles Zod, ni nombres de variables al cliente.
 

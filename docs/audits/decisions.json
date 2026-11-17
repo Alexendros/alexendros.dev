@@ -496,6 +496,21 @@
       "context": "La auditoría 2026-11-17 dejó WARN de titles/metas/JSON-LD/E-E-A-T y PENDING sin herramienta (CrUX, backlinks, paridad Ads, validador W3C, NVDA). /sobre-mi ya es noindex por 0029.",
       "decision": "Centralizar snippets SEO indexables en src/content/seo.ts (title 50–65, description 150–170) con test; emitir BreadcrumbList vía src/lib/breadcrumb.ts en plantillas indexables salvo la portada; reforzar autoría visible en /experiencia/ sin indexar /sobre-mi; marcar el checkbox de tema con aria-hidden. TEC-06, OFF-01/03, ANA-02, ACC-11/12/13 se cierran como N/A o revisión trimestral en docs/standards/website/calidad.md, sin inventar métricas de campo ni campañas.",
       "consequences": "quality/test deben pasar seo.test y breadcrumb.test; e2e seo-routes sigue exigiendo noindex de /sobre-mi. La próxima auditoría no debe reabrir esos PENDING sin cambiar esta decisión."
+    },
+    {
+      "id": "0034",
+      "sequence": 34,
+      "timestamp": "2026-11-17T21:40:00Z",
+      "active": true,
+      "title": "Cierre de integraciones: contacto mínimo y medición por consentimiento",
+      "summary": "Retirar Notion, Turnstile, Cal webhook y ntfy; contacto solo Proton+Upstash; Meta CAPI Lead solo con publicidad en consent_v1; inventario de cookies v2 como fuente de /cookies.",
+      "recordType": "decision",
+      "status": "aceptada",
+      "supersedes": [],
+      "supersededBy": null,
+      "context": "Había CRM Notion a medias, Turnstile apagado, secretos de Cal/Resend huérfanos y loaders de medición sin ids. El formulario solo pide consentimiento de respuesta.",
+      "decision": "El contacto operativo es correo Proton a operaciones@ con honeypot, Zod y Upstash (rate limit e idempotencia). Sin Notion, Turnstile ni ALERT_WEBHOOK. Meta CAPI Lead solo si consent_v1 incluye marketing y hay META_* / PUBLIC_META_PIXEL_ID, con eventId compartido con el píxel. Inventario docs/cookies-inventory.json v2 es la fuente de la tabla /cookies; PUBLIC_COOKIE_CONSENT_VERSION=2. Loaders GA4/GTM web/Clarity/PostHog/Meta/LinkedIn se mantienen gated; sin id no cargan. Se borran de Vercel CAL_WEBHOOK_SECRET, NOTION_*, EMAIL_FROM*, UNSUBSCRIBE_SECRET, PUBLIC_SITE_URL y PUBLIC_GTM_SS_DOMAIN. SMTP_* se replica a Preview y Development; Upstash también a Development.",
+      "consequences": "Sin SMTP/Upstash el contacto sigue en 503 fail-closed. Sin ids de medición el sitio no emite etiquetas. La medición en producción exige aprovisionar ids reales y redeploy. El CMP vuelve a preguntar por la versión 2."
     }
   ]
 }

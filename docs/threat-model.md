@@ -1,19 +1,19 @@
 # Threat Model — alexendrosdev
 
-**Versión**: 1.2 | **Fecha**: 2026-11-17 | **Autor**: Alexendros
+**Versión**: 1.3 | **Fecha**: 2026-11-17 | **Autor**: Alexendros
 **Metodología**: STRIDE + ATT&CK v19 · mapeo OWASP Top 10:2021 | **Revisión**: cada cambio mayor
 
 ---
 
 ## 1. Activos
 
-| Activo                                         | Tipo          | Criticidad | Descripción                                       |
-| ---------------------------------------------- | ------------- | ---------- | ------------------------------------------------- |
-| Datos de leads (Notion)                        | PII           | Alta       | Nombre, email, teléfono desde formulario contacto |
-| Cookies de consentimiento                      | PII (técnica) | Media      | Preferencias CMP v2, versión consentimiento       |
-| Métricas analíticas (GA4, PostHog, Clarity)    | Analítica     | Media      | Eventos de usuario, IDs pseudónimos               |
-| Secretos de despliegue (Vercel, Upstash, SMTP) | Credenciales  | Crítica    | Tokens en Vercel/Upstash/Proton; **no en repo**   |
-| Código fuente y dependencias                   | IP            | Media      | Repo público GitHub                               |
+| Activo                                         | Tipo          | Criticidad | Descripción                                     |
+| ---------------------------------------------- | ------------- | ---------- | ----------------------------------------------- |
+| Datos de contacto (correo Proton)              | PII           | Alta       | Nombre, email y mensaje del formulario          |
+| Cookies de consentimiento                      | PII (técnica) | Media      | Preferencias CMP v2, versión consentimiento     |
+| Métricas analíticas (GA4, PostHog, Clarity)    | Analítica     | Media      | Eventos de usuario, IDs pseudónimos             |
+| Secretos de despliegue (Vercel, Upstash, SMTP) | Credenciales  | Crítica    | Tokens en Vercel/Upstash/Proton; **no en repo** |
+| Código fuente y dependencias                   | IP            | Media      | Repo público GitHub                             |
 
 ---
 
@@ -32,16 +32,15 @@
 
 ### Formulario de contacto (`/api/contact`)
 
-| STRIDE                     | Amenaza                       | Mitigación actual                          | Gap                   |
-| -------------------------- | ----------------------------- | ------------------------------------------ | --------------------- |
-| **S**poofing               | Falsificación remitente       | Turnstile (configurado), honeypot          | ✅                    |
-| **T**ampering              | Inyección en payload          | Zod schema validation                      | ✅                    |
-| **R**epudiation            | Negación envío                | Log estructurado ausente                   | ❌ Logging (ACEPTADO) |
-| **I**nformation Disclosure | Fuga emails en error          | Respuesta genérica                         | ✅                    |
-| **D**enial of Service      | Flood API                     | Upstash Ratelimit (10/min/IP)              | ✅                    |
-| **E**levation of Privilege | N/A (sin auth)                | —                                          | —                     |
-| Inyección SMTP (A03)       | CRLF en `name` → Subject      | Zod rechaza CRLF + sanitize asunto         | ✅ (2026-11-17)       |
-| SSRF webhook (A10)         | `ALERT_WEBHOOK_URL` maliciosa | HTTPS + allowlist host (default `ntfy.sh`) | ✅ (2026-11-17)       |
+| STRIDE                     | Amenaza                  | Mitigación actual                   | Gap                   |
+| -------------------------- | ------------------------ | ----------------------------------- | --------------------- |
+| **S**poofing               | Falsificación remitente  | Honeypot + Zod + rate limit Upstash | ✅                    |
+| **T**ampering              | Inyección en payload     | Zod schema validation               | ✅                    |
+| **R**epudiation            | Negación envío           | Log estructurado ausente            | ❌ Logging (ACEPTADO) |
+| **I**nformation Disclosure | Fuga emails en error     | Respuesta genérica                  | ✅                    |
+| **D**enial of Service      | Flood API                | Upstash Ratelimit (10/min/IP)       | ✅                    |
+| **E**levation of Privilege | N/A (sin auth)           | —                                   | —                     |
+| Inyección SMTP (A03)       | CRLF en `name` → Subject | Zod rechaza CRLF + sanitize asunto  | ✅ (2026-11-17)       |
 
 ### Lead magnet / newsletter (retirados)
 
@@ -92,7 +91,7 @@ Residuales aceptados del expediente `20261007-085704`, tras los parches de la mi
 - `http-cache-semantics` residual de toolchain: aceptado si no hay parche en la misma línea.
 - `nodemailer` **10.x** (issue #12 cerrado 2026-10-09). El email que va a `replyTo` sigue limitado a 254 caracteres.
 - F-003 a F-007 están cerrados en `.gitleaks.toml`: `STORAGE_KEY` de `localStorage` del banner, no una credencial.
-- Meta CAPI `Lead` desde `/api/contact` desactivado (2026-10-16): el formulario solo recoge consentimiento de respuesta. Ver `docs/audits/archive/matriz-consentimiento.md`.
+- Meta CAPI `Lead` (decisión 0034): solo si `consent_v1` incluye publicidad y hay `META_*`; el checkbox del formulario autoriza la respuesta, no la publicidad. Ver `docs/audits/archive/matriz-consentimiento.md` (histórico) y decisión 0034.
 
 ---
 
@@ -103,9 +102,11 @@ Usuario → [Navegador] → (HTTPS/TLS 1.3) → [Vercel Edge] → [Astro SSR/SSG
                                                         ↓
                                             [API /contact] → [Zod] → [Upstash Ratelimit]
                                                         ↓
-                                              [Proton SMTP] → [Notion API]
+                                              [Proton SMTP]
                                                         ↓
-                                              [GA4/PostHog/Clarity] (consent-gated)
+                                              [Meta CAPI] (solo si publicidad en consent_v1)
+                                                        ↓
+                                              [GA4/PostHog/Clarity/Meta/LinkedIn] (consent-gated)
 ```
 
 **Zonas de confianza:**
@@ -113,8 +114,8 @@ Usuario → [Navegador] → (HTTPS/TLS 1.3) → [Vercel Edge] → [Astro SSR/SSG
 1. **Navegador usuario** — No confiable (validar todo en server)
 2. **Vercel Edge/Functions** — Confiable (infraestructura gestionada)
 3. **Upstash Redis** — Confiable (managed, TLS)
-4. **Proton SMTP / Notion API** — Confiable (proveedores externos, auth mutua)
-5. **Analytics endpoints** — Semi-confiable (solo con consentimiento)
+4. **Proton SMTP** — Confiable (proveedor externo, auth mutua)
+5. **Analytics / Meta CAPI** — Semi-confiable (solo con consentimiento de categoría)
 
 ---
 
@@ -145,15 +146,14 @@ Usuario → [Navegador] → (HTTPS/TLS 1.3) → [Vercel Edge] → [Astro SSR/SSG
 
 ## 6. Decisiones de riesgo aceptado
 
-| Riesgo                             | Decisión              | Justificación                                                        | Revisión   |
-| ---------------------------------- | --------------------- | -------------------------------------------------------------------- | ---------- |
-| Sin branch protection              | **ACEPTADO temporal** | Requiere admin repo; pendiente configuración manual                  | 2026-10-14 |
-| Logging estructurado               | **ACEPTADO**          | Vercel Logs + Analytics cubren observabilidad básica                 | 2026-11-07 |
-| CSP enforce `unsafe-inline`        | **ACEPTADO temporal** | Fase ③ (nonces/hashes); Report-Only sin inline ya activa             | 2026-11-17 |
-| Scripts terceros sin SRI           | **ACEPTADO**          | Consent-gated; URLs fijas; self-host/SRI en backlog                  | 2026-11-17 |
-| Idempotencia Redis no atómica      | **ACEPTADO**          | Carrera rara; coste = doble correo; Lua atómica en backlog           | 2026-11-17 |
-| Turnstile antes del rate limit     | **ACEPTADO**          | Prioriza fricción de bot; siteverify puede agotarse antes del 10/min | 2026-11-17 |
-| Sin check Origin en `/api/contact` | **ACEPTADO**          | JSON + sin CORS; abuso directo mitigado por Turnstile + rate limit   | 2026-11-17 |
+| Riesgo                             | Decisión              | Justificación                                                     | Revisión   |
+| ---------------------------------- | --------------------- | ----------------------------------------------------------------- | ---------- |
+| Sin branch protection              | **ACEPTADO temporal** | Requiere admin repo; pendiente configuración manual               | 2026-10-14 |
+| Logging estructurado               | **ACEPTADO**          | Vercel Logs + Analytics cubren observabilidad básica              | 2026-11-07 |
+| CSP enforce `unsafe-inline`        | **ACEPTADO temporal** | Fase ③ (nonces/hashes); Report-Only sin inline ya activa          | 2026-11-17 |
+| Scripts terceros sin SRI           | **ACEPTADO**          | Consent-gated; URLs fijas; self-host/SRI en backlog               | 2026-11-17 |
+| Idempotencia Redis no atómica      | **ACEPTADO**          | Carrera rara; coste = doble correo; Lua atómica en backlog        | 2026-11-17 |
+| Sin check Origin en `/api/contact` | **ACEPTADO**          | JSON + sin CORS; abuso directo mitigado por honeypot + rate limit | 2026-11-17 |
 
 ---
 

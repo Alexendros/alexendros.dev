@@ -34,7 +34,9 @@ function metaEvent(event: FunnelEvent, props: Props): void {
   target.fbq('trackCustom', event, props);
   // Lead solo tras aceptación contractual del formulario (no en el intento).
   if (event === 'contact_form_success') {
-    target.fbq('track', 'Lead', props);
+    const eventID = typeof props.eventId === 'string' ? props.eventId : undefined;
+    if (eventID) target.fbq('track', 'Lead', props, { eventID });
+    else target.fbq('track', 'Lead', props);
   }
   if (event === 'contact_click') {
     target.fbq('track', 'Contact', props);

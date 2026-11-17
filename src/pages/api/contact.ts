@@ -4,16 +4,13 @@ import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import {
   buildContactEmailHtml,
-  CRM_FAILURE_SUBJECT_PREFIX,
   handleContactPost,
   methodNotAllowed,
   type ContactDeps,
   type ContactMailPayload
 } from '../../lib/contactHandler';
-import { parseAlertWebhookAllowedHosts, sendAlertWebhook } from '../../lib/alertWebhook';
-import { verifyTurnstileToken } from '../../lib/turnstile';
 import { createRedisContactIdempotencyStore } from '../../lib/contactIdempotency';
-import { createNotionLeadsStore } from '../../lib/notionLeads';
+import { isCapiConfigured, sendCapiEvent } from '../../lib/tracking/capi';
 
 export const prerender = false;
 
@@ -53,20 +50,12 @@ function createProductionDeps(): ContactDeps {
       SMTP_USER: import.meta.env.SMTP_USER,
       SMTP_PASS: import.meta.env.SMTP_PASS,
       UPSTASH_REDIS_REST_URL: import.meta.env.UPSTASH_REDIS_REST_URL,
-      UPSTASH_REDIS_REST_TOKEN: import.meta.env.UPSTASH_REDIS_REST_TOKEN,
-      TURNSTILE_SECRET_KEY: import.meta.env.TURNSTILE_SECRET_KEY
+      UPSTASH_REDIS_REST_TOKEN: import.meta.env.UPSTASH_REDIS_REST_TOKEN
     }),
     rateLimit: async (ip) => {
       const result = await getContactRatelimit().limit(ip);
       return { success: result.success, reset: result.reset };
     },
-    verifyTurnstile: async (token, ip) => {
-      const secret = import.meta.env.TURNSTILE_SECRET_KEY;
-      if (!secret) return false;
-      return verifyTurnstileToken(secret, token, ip);
-    },
-    // Meta CAPI Lead no se emite desde el formulario: solo hay consentimiento
-    // de respuesta, no de publicidad (CIERRE-21).
     idempotencyStore: createRedisContactIdempotencyStore({
       get: async (key) => getContactRedis().get(key),
       set: async (key, value, opts) => {
@@ -77,42 +66,36 @@ function createProductionDeps(): ContactDeps {
         return redis.set(key, value, { ex: opts.ex });
       }
     }),
-    saveLead: async ({ name, email, subject, message }) => {
-      const token = import.meta.env.NOTION_TOKEN;
-      const dataSourceId =
-        import.meta.env.NOTION_LEADS_DATA_SOURCE_ID ?? import.meta.env.NOTION_LEADS_DATABASE_ID;
-      if (!token || !dataSourceId) return;
-      const store = createNotionLeadsStore(token, dataSourceId);
-      await store.create({
-        nombre: name,
-        email,
-        canal: 'Formulario',
-        tipo: 'Lead contacto',
-        estado: 'Nuevo',
-        asunto: subject,
-        mensaje: message,
-        fuente: 'formulario',
-        consentMarketing: false
+    sendLeadEvent: async ({ email, ip, userAgent, sourceUrl, eventId, fbp, fbc }) => {
+      const pixelId =
+        (import.meta.env.META_PIXEL_ID as string | undefined)?.trim() ||
+        (import.meta.env.PUBLIC_META_PIXEL_ID as string | undefined)?.trim();
+      const accessToken = (import.meta.env.META_CAPI_TOKEN as string | undefined)?.trim();
+      const cfg = {
+        pixelId,
+        accessToken,
+        testEventCode: (import.meta.env.META_CAPI_TEST_EVENT_CODE as string | undefined)?.trim()
+      };
+      if (!isCapiConfigured(cfg)) return;
+      await sendCapiEvent(cfg, {
+        eventName: 'Lead',
+        eventSourceUrl: sourceUrl ?? undefined,
+        eventId,
+        userData: { email, ip, userAgent: userAgent ?? undefined, fbp, fbc }
       });
-    },
-    sendCrmFailureMail: async (payload) => sendContactMail(payload, CRM_FAILURE_SUBJECT_PREFIX),
-    sendAlertWebhook: async (text) => {
-      await sendAlertWebhook(
-        import.meta.env.ALERT_WEBHOOK_URL,
-        text,
-        fetch,
-        5000,
-        parseAlertWebhookAllowedHosts(import.meta.env.ALERT_WEBHOOK_ALLOWED_HOSTS)
-      );
     },
     sendMail: async (payload) => sendContactMail(payload)
   };
 }
 
-async function sendContactMail(
-  { name, email, subject, message, replyTo, smtp }: ContactMailPayload,
-  subjectPrefix?: string
-): Promise<void> {
+async function sendContactMail({
+  name,
+  email,
+  subject,
+  message,
+  replyTo,
+  smtp
+}: ContactMailPayload): Promise<void> {
   const { html, text, mailSubject } = buildContactEmailHtml({
     name,
     email,
@@ -129,7 +112,7 @@ async function sendContactMail(
     from: MAIL_FROM,
     to: MAIL_TO,
     ...(replyTo ? { replyTo } : {}),
-    subject: subjectPrefix ? `${subjectPrefix} ${mailSubject}` : mailSubject,
+    subject: mailSubject,
     html,
     text
   });

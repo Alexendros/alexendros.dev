@@ -254,6 +254,17 @@
       "recordType": "event",
       "kind": "aviso",
       "source": "docs/threat-model.md"
+    },
+    {
+      "id": "evt-2026-11-17-cierre-integraciones",
+      "sequence": 24,
+      "timestamp": "2026-11-17T21:40:00Z",
+      "active": true,
+      "title": "Cierre de integraciones muertas y cableado de medición",
+      "summary": "Decisión 0034: Notion/Turnstile/ntfy/Cal/Resend fuera; CAPI gated por publicidad; cookies inventory v2; SMTP y Upstash alineados en entornos Vercel.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "docs/audits/decisions.json"
     }
   ]
 }

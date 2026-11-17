@@ -16,7 +16,6 @@ import {
 import { paquetesPublicados } from '../content/paquetes';
 
 const SUBMIT_TIMEOUT_MS = 25_000;
-const TURNSTILE_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 const FIELD_IDS: Record<string, string> = {
   reason: 'contact-reason',
   name: 'contact-name',
@@ -56,17 +55,6 @@ function setDescribedBy(field: string, control: HTMLElement, includeError: boole
   else control.removeAttribute('aria-describedby');
 }
 
-type TurnstileApi = {
-  render: (element: HTMLElement, options: Record<string, unknown>) => string;
-  reset: (id?: string) => void;
-};
-
-declare global {
-  interface Window {
-    turnstile?: TurnstileApi;
-  }
-}
-
 function reasonFromSearch(value: string | null | undefined): ContactInput['reason'] {
   return value && (contactReasons as readonly string[]).includes(value)
     ? (value as ContactInput['reason'])
@@ -85,6 +73,12 @@ function newIdempotencyKey(): string {
     : `contact-${Date.now()}`;
 }
 
+function newEventId(): string {
+  return typeof crypto !== 'undefined' && 'randomUUID' in crypto
+    ? crypto.randomUUID()
+    : `lead-${Date.now()}`;
+}
+
 function logicalPayloadKey(data: ContactInput): string {
   return JSON.stringify({
     name: data.name,
@@ -101,30 +95,6 @@ function logicalPayloadKey(data: ContactInput): string {
     projectSlug: data.projectSlug ?? null,
     origin: data.origin ?? null,
     consent: data.consent
-  });
-}
-
-function loadTurnstileScript(): Promise<void> {
-  if (window.turnstile) return Promise.resolve();
-  const existing = document.querySelector<HTMLScriptElement>(`script[src="${TURNSTILE_SRC}"]`);
-  if (existing) {
-    return new Promise((resolve, reject) => {
-      existing.addEventListener('load', () => resolve(), { once: true });
-      existing.addEventListener('error', () => reject(new Error('turnstile_load_failed')), {
-        once: true
-      });
-    });
-  }
-  return new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = TURNSTILE_SRC;
-    script.async = true;
-    script.defer = true;
-    script.addEventListener('load', () => resolve(), { once: true });
-    script.addEventListener('error', () => reject(new Error('turnstile_load_failed')), {
-      once: true
-    });
-    document.head.appendChild(script);
   });
 }
 
@@ -159,7 +129,6 @@ function initContactForm(form: HTMLFormElement): void {
   const errorList = form.querySelector<HTMLElement>('[data-contact-error-list]')!;
   const modulesWrapper = form.querySelector<HTMLElement>('[data-contact-modules]');
   const moduleLabels = form.querySelector<HTMLElement>('[data-contact-module-labels]');
-  const turnstileContainer = form.querySelector<HTMLElement>('[data-turnstile]');
   const messageField = form.querySelector<HTMLTextAreaElement>('#contact-message');
   const messageCount = form.querySelector<HTMLElement>('[data-message-count]');
   const otraCheckbox = form.querySelector<HTMLInputElement>('#contact-via-otra');
@@ -174,8 +143,6 @@ function initContactForm(form: HTMLFormElement): void {
   let idempotencyKey: string | null = null;
   let payloadKey: string | null = null;
   let successTracked = false;
-  let turnstileToken = '';
-  let turnstileWidgetId: string | null = null;
 
   document.documentElement.dataset.contactHydrated = 'true';
 
@@ -346,17 +313,6 @@ function initContactForm(form: HTMLFormElement): void {
     if (errors[0]) focusField(errors[0].field);
   }
 
-  function resetTurnstile(): void {
-    turnstileToken = '';
-    if (turnstileWidgetId && window.turnstile) {
-      try {
-        window.turnstile.reset(turnstileWidgetId);
-      } catch {
-        /* noop */
-      }
-    }
-  }
-
   function resolveIdempotencyKey(data: ContactInput): string {
     const logical = logicalPayloadKey(data);
     if (idempotencyKey && payloadKey === logical) return idempotencyKey;
@@ -370,6 +326,7 @@ function initContactForm(form: HTMLFormElement): void {
     if (inFlight) return;
 
     const data = new FormData(form);
+    const eventId = newEventId();
     const payload = {
       name: data.get('name'),
       entityType: data.get('entityType'),
@@ -386,7 +343,7 @@ function initContactForm(form: HTMLFormElement): void {
       origin: data.get('origin') || undefined,
       consent: data.get('consent') === 'on',
       honeypot: data.get('website'),
-      turnstileToken: turnstileToken || undefined
+      eventId
     };
     const parsed = parseContactBody(payload);
     if (!parsed.success) {
@@ -430,17 +387,15 @@ function initContactForm(form: HTMLFormElement): void {
         success.focus();
         if (body.replay !== true && !successTracked) {
           successTracked = true;
-          track('contact_form_success');
+          track('contact_form_success', { eventId });
         }
       } else {
         showStatus('error');
       }
-      resetTurnstile();
     } catch (error) {
       showStatus(
         error instanceof DOMException && error.name === 'AbortError' ? 'timeout' : 'error'
       );
-      resetTurnstile();
     } finally {
       window.clearTimeout(timer);
       inFlight = false;
@@ -465,31 +420,6 @@ function initContactForm(form: HTMLFormElement): void {
     setOtra(open);
     if (open) otraField?.focus();
   });
-
-  if (turnstileContainer) {
-    const siteKey = turnstileContainer.dataset.siteKey;
-    if (siteKey) {
-      void loadTurnstileScript()
-        .then(() => {
-          if (!window.turnstile) return;
-          turnstileWidgetId = window.turnstile.render(turnstileContainer, {
-            sitekey: siteKey,
-            callback: (token: string) => {
-              turnstileToken = token;
-            },
-            'expired-callback': () => {
-              turnstileToken = '';
-            },
-            'error-callback': () => {
-              turnstileToken = '';
-            }
-          });
-        })
-        .catch(() => {
-          turnstileToken = '';
-        });
-    }
-  }
 }
 
 for (const form of document.querySelectorAll<HTMLFormElement>('[data-contact-form]')) {

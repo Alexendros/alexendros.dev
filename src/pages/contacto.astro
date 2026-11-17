@@ -43,7 +43,6 @@ const initialModules = serializePortalModuleIds(normalizePortalModuleIds(params.
       <ContactForm
         successMessage={contact.messages.success}
         errorMessage={contact.messages.error}
-        turnstileSiteKey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
         initialReason={initialReason}
         initialOrigin={initialOrigin}
         initialServiceSlug={initialServiceSlug}

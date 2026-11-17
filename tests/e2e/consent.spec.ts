@@ -37,27 +37,71 @@ function isTrackerHost(hostname: string): boolean {
   return matchesHost(hostname, ANALYTICS_HOSTS) || matchesHost(hostname, MARKETING_HOSTS);
 }
 
+/** Cookie canónica por host de tracker (simulada en el origen del preview). */
+const TRACKER_FIRST_PARTY_COOKIES: ReadonlyArray<{ host: string; name: string; value: string }> = [
+  { host: 'googletagmanager.com', name: '_ga', value: 'GA1.1.e2e' },
+  { host: 'google-analytics.com', name: '_ga', value: 'GA1.1.e2e' },
+  { host: 'clarity.ms', name: '_clck', value: 'e2eclarity' },
+  { host: 'i.posthog.com', name: 'ph_e2e_posthog', value: '{}' },
+  { host: 'posthog.com', name: 'ph_e2e_posthog', value: '{}' },
+  { host: 'facebook.net', name: '_fbp', value: 'fb.1.e2e' },
+  { host: 'facebook.com', name: '_fbp', value: 'fb.1.e2e' },
+  { host: 'licdn.com', name: 'li_sugr', value: 'e2e' },
+  { host: 'linkedin.com', name: 'li_sugr', value: 'e2e' }
+];
+
+const ANALYTICS_COOKIE_NAMES = ['_ga', '_clck', 'ph_e2e_posthog'] as const;
+const MARKETING_COOKIE_NAMES = ['_fbp', 'li_sugr'] as const;
+
+function trackerCookieForHost(hostname: string): { name: string; value: string } | undefined {
+  return TRACKER_FIRST_PARTY_COOKIES.find(
+    (entry) => hostname === entry.host || hostname.endsWith(`.${entry.host}`)
+  );
+}
+
 /**
  * Intercepta en el contexto (cubre páginas nuevas) trackers y /_vercel.
- * Observa intención de red sin alcanzar APIs reales.
+ * Observa intención de red sin alcanzar APIs reales. Al servir un tracker,
+ * escribe su cookie canónica en el origen del preview (Chrome bloquea muchas
+ * de terceros en automatización).
  */
 async function instrumentNetwork(page: Page): Promise<SeenRequest[]> {
   const seen: SeenRequest[] = [];
   const context = page.context();
+  const planted = new Set<string>();
   page.on('request', (request) => {
     const url = new URL(request.url());
     seen.push({ hostname: url.hostname, pathname: url.pathname });
   });
   await context.route(
     (url) => isTrackerHost(url.hostname) || url.pathname.startsWith('/_vercel'),
-    (route) =>
-      route.fulfill({
+    async (route) => {
+      const url = new URL(route.request().url());
+      const cookie = trackerCookieForHost(url.hostname);
+      if (cookie && !planted.has(cookie.name)) {
+        planted.add(cookie.name);
+        await context.addCookies([
+          {
+            name: cookie.name,
+            value: cookie.value,
+            url: 'http://127.0.0.1:4321/',
+            path: '/'
+          }
+        ]);
+      }
+      await route.fulfill({
         status: 200,
         contentType: 'application/javascript',
         body: '/* e2e */'
-      })
+      });
+    }
   );
   return seen;
+}
+
+async function cookieNames(page: Page): Promise<string[]> {
+  const cookies = await page.context().cookies();
+  return cookies.map((cookie) => cookie.name);
 }
 
 function requestsOutsidePreview(seen: SeenRequest[]): string[] {
@@ -338,6 +382,7 @@ test('PRIV-01c: control positivo, con consentimiento total los trackers sí carg
   await waitForCmp(page);
   await page.locator('#cc-main .cm').getByRole('button', { name: 'Aceptar todas' }).click();
   await expect.poll(async () => (await readConsentStorage(page))?.marketing).toBe(true);
+  await page.waitForLoadState('networkidle');
 
   const tags = await trackerTags(page);
   // Sin IDs en el build el control positivo debe fallar (no omitir).
@@ -346,6 +391,10 @@ test('PRIV-01c: control positivo, con consentimiento total los trackers sí carg
   expect(tags).toEqual(
     expect.arrayContaining(['ga4', 'gtm', 'meta-pixel', 'clarity', 'posthog', 'linkedin'])
   );
+  const names = await cookieNames(page);
+  for (const name of [...ANALYTICS_COOKIE_NAMES, ...MARKETING_COOKIE_NAMES]) {
+    expect(names).toContain(name);
+  }
 });
 
 /**
@@ -382,6 +431,7 @@ test('PRIV-02: aceptar solo analítica no enciende ningún proveedor de publicid
   const seen = await instrumentNetwork(page);
 
   await acceptOnlyAnalytics(page);
+  await page.waitForLoadState('networkidle');
 
   const consent = await readConsentStorage(page);
   expect(consent?.analytics).toBe(true);
@@ -405,6 +455,37 @@ test('PRIV-02: aceptar solo analítica no enciende ningún proveedor de publicid
   expect(globals).not.toContain('fbq');
   expect(globals).not.toContain('lintrk');
   expectAnalyticsLoaded(tags);
+
+  const names = await cookieNames(page);
+  for (const name of ANALYTICS_COOKIE_NAMES) {
+    expect(names).toContain(name);
+  }
+  for (const name of MARKETING_COOKIE_NAMES) {
+    expect(names).not.toContain(name);
+  }
+});
+
+test('PRIV-01a-cookies: sin decisión no hay cookies de analítica ni publicidad', async ({
+  page
+}) => {
+  await instrumentNetwork(page);
+  await page.goto('/');
+  await waitForCmp(page);
+  await page.waitForLoadState('networkidle');
+  const names = await cookieNames(page);
+  for (const name of [...ANALYTICS_COOKIE_NAMES, ...MARKETING_COOKIE_NAMES]) {
+    expect(names).not.toContain(name);
+  }
+});
+
+test('PRIV-cookies-inventory: la tabla de /cookies lista cada nombre del inventario', async ({
+  page
+}) => {
+  const inventory = await import('../../docs/cookies-inventory.json');
+  await page.goto('/cookies/');
+  for (const cookie of inventory.cookies) {
+    await expect(page.locator(`[data-cookie-name="${cookie.name}"]`)).toHaveCount(1);
+  }
 });
 
 test('PRIV-02b: la elección de solo analítica persiste al recargar sin abrir publicidad', async ({

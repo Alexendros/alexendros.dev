@@ -190,7 +190,12 @@ export const contactSchema = z
     }, z.enum(contactOrigins).optional()),
     consent: z.literal(true),
     honeypot: z.string().optional(),
-    turnstileToken: z.string().max(4096).optional()
+    /** Idempotencia de conversión Meta (píxel + CAPI). */
+    eventId: z.preprocess((v) => {
+      if (typeof v !== 'string') return undefined;
+      const trimmed = v.trim();
+      return trimmed === '' ? undefined : trimmed;
+    }, z.string().min(8).max(64).optional())
   })
   .superRefine((data, ctx) => {
     rejectUnsafe(data.name, ctx, 'name');
