@@ -39,7 +39,7 @@ for (const route of ['/', '/metodologia/'] as const) {
       const geometry = await page.evaluate(() => {
         const footer = document.querySelector('footer');
         const inner = document.querySelector('.footer-inner');
-        const headerInner = document.querySelector('.navbar-inner');
+        const headerInner = document.querySelector('.header-bar');
         if (!footer || !inner || !headerInner) return null;
         const footerRect = footer.getBoundingClientRect();
         const innerRect = inner.getBoundingClientRect();

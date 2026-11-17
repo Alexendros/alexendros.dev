@@ -7,15 +7,12 @@ import styles from './Metodo.module.css';
 
 <section id="metodo" class="section-shell scroll-mt-nav" aria-labelledby="metodo-heading">
   <SectionHeader id="metodo-heading" eyebrow={processPage.eyebrow} title={processPage.title} />
-  <ul
-    class="steps steps-vertical surface-raised stack-block w-full radius-surface px-4 py-6 xl:steps-horizontal xl:overflow-y-visible xl:px-6"
-    id="steps"
-  >
+  <ul class="steps surface-raised stack-block w-full radius-surface px-4 py-6 xl:px-6" id="steps">
     {
       processPage.steps.map((step, i) => (
         <li class="step step-primary" data-content={String(i + 1)}>
           <div class="py-2 text-left lg:px-2">
-            <h3 class="text-step-1 font-semibold">{step.title}</h3>
+            <h3 class="text-step-1 font-bold">{step.title}</h3>
             <p class="text-step--1 text-muted">{step.description}</p>
           </div>
         </li>

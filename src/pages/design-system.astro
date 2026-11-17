@@ -10,6 +10,8 @@ const colorTokens = [
   { name: 'primary', cls: 'bg-primary' },
   { name: 'primaryHover', cls: 'bg-primaryHover' },
   { name: 'subtle', cls: 'bg-subtle border border-border' },
+  { name: 'brand-soft', cls: 'bg-brand-soft border border-border' },
+  { name: 'peach', cls: 'bg-peach' },
   { name: 'danger', cls: 'bg-danger' }
 ] as const;
 
@@ -55,13 +57,15 @@ const typeSteps = [
     <section class="section-shell" aria-labelledby="ds-tokens-type">
       <h2 id="ds-tokens-type" class="text-step-2 font-bold">Tipografía</h2>
       <p class="mt-2 max-w-2xl text-step--1 text-muted">
-        Source Sans 3 Variable (sans) y JetBrains Mono Variable (mono). Escala <code>--step-*</code
+        Plus Jakarta Sans (texto), Space Grotesk (títulos) y JetBrains Mono (cejas). Escala <code
+          >--step-*</code
         >.
       </p>
       <ul class="mt-6 space-y-3">
         {typeSteps.map((t) => <li class:list={[t.cls, 'font-bold']}>{t.name} — Aa Bb Cc 123</li>)}
       </ul>
-      <p class="mt-4 font-mono text-step--1 text-muted">~/alexendros $ mono sample</p>
+      <p class="mt-4 font-display text-step-2 font-bold">Space Grotesk en los títulos</p>
+      <p class="eyebrow mt-4">ceja de sección</p>
     </section>
 
     <section class="section-shell" aria-labelledby="ds-tokens-space">

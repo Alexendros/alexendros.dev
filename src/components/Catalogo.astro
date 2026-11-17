@@ -17,13 +17,13 @@ const Heading = headingLevel;
     </p>
   ) : (
     <section class="stack-block" aria-label="Catálogo promocional" data-catalogo>
-      <div class="grid gap-6 md:grid-cols-3">
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
         {items.map((item) => (
           <article
             class="surface-raised radius-surface flex h-full flex-col p-6"
             data-catalogo-item={item.id}
           >
-            <Heading class="text-step-1 font-semibold leading-tight">{item.titulo}</Heading>
+            <Heading class="text-step-1 font-bold leading-tight">{item.titulo}</Heading>
             <p class="mt-3 flex-1 text-step--1 text-muted">{item.descripcion}</p>
             {item.ctaOpcional ? (
               <div class="mt-4">

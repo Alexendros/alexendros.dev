@@ -1,0 +1,32 @@
+---
+import { processPage } from '../../content/process';
+import Icon from '../ui/Icon.astro';
+
+const icons = ['file', 'check', 'layers', 'flag'] as const;
+---
+
+<div class="flow-card" data-flow>
+  <p class="eyebrow mb-5">cómo se trabaja</p>
+  <ol class="flex flex-col">
+    {
+      processPage.steps.map((step, index) => (
+        <li>
+          <div class="flex items-center gap-3">
+            <span class="icon-tile">
+              <Icon name={icons[index] ?? 'file'} />
+            </span>
+            <div class="min-w-0">
+              <p class="font-display text-step--1 font-bold">{step.title}</p>
+              <p class="truncate text-step--1 text-muted">{step.receive}</p>
+            </div>
+          </div>
+          {index < processPage.steps.length - 1 ? (
+            <span class="flow-line" aria-hidden="true">
+              <span class="flow-pulse" />
+            </span>
+          ) : null}
+        </li>
+      ))
+    }
+  </ol>
+</div>

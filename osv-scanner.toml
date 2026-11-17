@@ -50,3 +50,7 @@ reason = "path-to-regexp override a 6.3.0; residual si queda copia antigua en to
 [[IgnoredVulns]]
 id = "GHSA-g3hv-75wg-m249"
 reason = "minimatch 3.x solo CI/toolchain (@lhci/cli > rimraf > glob 7); la línea 10.x se fuerza a >=11.0.1 por override"
+
+[[IgnoredVulns]]
+id = "GHSA-fc5q-39xc-vjpf"
+reason = "picomatch 2.3.2 y 4.0.7 solo build/CI (Astro, Vite, stylelint, semantic-release); sin parche; no entra en el sitio ni en la función de contacto"

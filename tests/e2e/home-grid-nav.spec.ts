@@ -36,5 +36,5 @@ test('F01: home delgada con hero, secciones y CTA sin formulario', async ({ page
   }
   await expect(page.locator('main form')).toHaveCount(0);
   await expect(page.locator('#referencias img')).toHaveCount(2);
-  await expect(page.getByRole('heading', { name: 'Preguntas frecuentes' })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Preguntas frecuentes' })).toHaveCount(1);
 });

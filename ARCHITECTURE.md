@@ -10,17 +10,17 @@ Sitio profesional de conversión + contratación. Producción: [https://alexendr
 
 ## Stack
 
-Astro 7.3 con `output: 'static'` y rutas on-demand (`prerender = false`) + Tailwind (PostCSS) + TypeScript estricto + Zod. Sin islas React: formulario, CMP y configurador son componentes Astro con scripts vanilla. Fuentes Source Sans 3 Variable + JetBrains Mono Variable self-hosted (Fontsource). Tracking comercial (GA4, Meta, Clarity, PostHog, LinkedIn, GTM) solo con consentimiento previo y granular (Consent Mode v2 default-deny). Vercel Analytics y Speed Insights solo en builds de Vercel (`__IS_VERCEL__`).
+Astro 7.3 con `output: 'static'` y rutas on-demand (`prerender = false`) + Tailwind (PostCSS) + TypeScript estricto + Zod. Sin islas React: formulario y CMP son componentes Astro con scripts vanilla. Fuentes Plus Jakarta Sans, Space Grotesk y JetBrains Mono self-hosted (Fontsource). Tracking comercial (GA4, Meta, Clarity, PostHog, LinkedIn, GTM) solo con consentimiento previo y granular (Consent Mode v2 default-deny). Vercel Analytics y Speed Insights solo en builds de Vercel (`__IS_VERCEL__`).
 
 ## Runtime
 
-| Capa                 | Dónde                                                              | Notas                                 |
-| -------------------- | ------------------------------------------------------------------ | ------------------------------------- |
-| Páginas SSG          | `src/pages/*.astro`                                                | Contenido tipado; 0 JS de contenido   |
-| Scripts cliente      | `src/scripts/*.ts` (reveal, header, CMP, formulario, configurador) | Importados desde Layout y componentes |
-| APIs serverless      | `src/pages/api/contact.ts`, `src/pages/api/csp-report.ts`          | Adapter `@astrojs/vercel`             |
-| Contenido            | `src/content/*.ts`                                                 | Zod en build; no CMS                  |
-| Estáticos de preview | `.vercel/output/static`                                            | `pnpm preview` / job `smoke`          |
+| Capa                 | Dónde                                                        | Notas                                 |
+| -------------------- | ------------------------------------------------------------ | ------------------------------------- |
+| Páginas SSG          | `src/pages/*.astro`                                          | Contenido tipado; 0 JS de contenido   |
+| Scripts cliente      | `src/scripts/*.ts` (cabecera, tema, CMP, formulario, fichas) | Importados desde Layout y componentes |
+| APIs serverless      | `src/pages/api/contact.ts`, `src/pages/api/csp-report.ts`    | Adapter `@astrojs/vercel`             |
+| Contenido            | `src/content/*.ts`                                           | Zod en build; no CMS                  |
+| Estáticos de preview | `.vercel/output/static`                                      | `pnpm preview` / job `smoke`          |
 
 ## APIs
 

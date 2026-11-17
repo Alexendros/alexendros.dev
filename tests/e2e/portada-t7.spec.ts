@@ -15,8 +15,8 @@ for (const width of [390, 1280]) {
     const fontSize = await page
       .locator('main h1')
       .evaluate((node) => Number.parseFloat(getComputedStyle(node).fontSize));
-    const expected = Math.min(60, Math.max(36, 25.6 + width * 0.026));
-    expect(fontSize).toBeCloseTo(expected, 1);
+    const expected = width >= 1024 ? 60 : width >= 640 ? 48 : 36;
+    expect(fontSize).toBeCloseTo(expected, 0);
   });
 }
 
@@ -46,68 +46,28 @@ async function openWithTheme(page: Page, theme: 'alexlight' | 'alexdark', route 
 const GRID_ROUTES = ['/', '/servicios/', '/servicios/software-a-medida/'];
 
 for (const theme of ['alexlight', 'alexdark'] as const) {
-  test(`DIS-08: rejilla del plano en ${theme} y retirada con contraste forzado`, async ({
-    page
-  }) => {
+  test(`DIS-08: fondo liso en ${theme}`, async ({ page }) => {
     await openWithTheme(page, theme);
     const grid = await bodyGrid(page);
-
-    // Dos capas: celda fina de 22 px y mayor de 120 px, fijas tras el contenido.
-    expect(grid.backgroundSize).toContain('22px 22px');
-    expect(grid.backgroundSize).toContain('120px 120px');
-    expect(grid.backgroundImage.split('linear-gradient').length - 1).toBe(4);
-    expect(grid.position).toBe('fixed');
-    expect(grid.zIndex).toBe('-1');
-    expect(grid.pointerEvents).toBe('none');
-    expect(grid.inset).toBe('0px 0px 0px 0px');
-    // Sin desvanecido: la rejilla es el fondo de toda la página.
-    expect(grid.maskImage).toBe('none');
-
-    await page.emulateMedia({ contrast: 'more' });
-    await expect.poll(() => bodyGrid(page).then((g) => g.backgroundImage)).toBe('none');
-    await page.emulateMedia({ contrast: 'no-preference', forcedColors: 'active' });
-    await expect.poll(() => bodyGrid(page).then((g) => g.backgroundImage)).toBe('none');
+    expect(grid.backgroundImage).toBe('none');
+    const pageColor = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+    expect(pageColor).not.toBe('rgba(0, 0, 0, 0)');
   });
 }
 
-test('DIS-08: la rejilla cubre portada, índice y ficha; el hero queda transparente', async ({
-  page
-}) => {
+test('DIS-08: el fondo liso cubre portada, índice y ficha', async ({ page }) => {
   await openWithTheme(page, 'alexlight');
   for (const route of GRID_ROUTES) {
     await page.goto(route);
     const grid = await bodyGrid(page);
-    expect(grid.backgroundImage, route).toContain('linear-gradient');
-    expect(grid.backgroundSize, route).toContain('120px 120px');
+    expect(grid.backgroundImage, route).toBe('none');
   }
-
-  await page.goto('/');
-  const hero = await page.locator('main #top').evaluate((node) => {
-    const surface = getComputedStyle(node);
-    const own = getComputedStyle(node, '::before');
-    return {
-      image: surface.backgroundImage,
-      color: surface.backgroundColor,
-      own: own.backgroundImage
-    };
-  });
-  expect(hero.image).toBe('none');
-  expect(hero.color).toBe('rgba(0, 0, 0, 0)');
-  expect(hero.own).toBe('none');
 });
 
-test('DIS-08: las líneas siguen el tema del sitio, no prefers-color-scheme', async ({ page }) => {
+test('DIS-08: el fondo sigue el tema del sitio', async ({ page }) => {
   await openWithTheme(page, 'alexlight');
-  const light = await bodyGrid(page);
+  const light = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
   await openWithTheme(page, 'alexdark');
-  const dark = await bodyGrid(page);
-  expect(dark.backgroundImage).not.toBe(light.backgroundImage);
-
-  // Sin data-theme (modo sistema), el tema oscuro del sitio da las mismas
-  // líneas que alexdark: el color sale de tokens, no de una media query.
-  const system = await page.context().newPage();
-  await system.emulateMedia({ colorScheme: 'dark' });
-  await system.goto('/');
-  expect((await bodyGrid(system)).backgroundImage).toBe(dark.backgroundImage);
-  await system.close();
+  const dark = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  expect(dark).not.toBe(light);
 });
