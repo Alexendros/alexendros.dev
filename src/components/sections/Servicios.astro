@@ -18,14 +18,15 @@ import styles from './Servicios.module.css';
     paquetesPublicados ? (
       <Paquetes />
     ) : (
-      <div class="stack-block grid gap-6 md:grid-cols-3">
+      <div class="stack-block grid gap-5 sm:grid-cols-2 lg:grid-cols-3" data-reveal>
         {homeVias.map((via) => (
-          <article class="min-w-0">
-            <div>
-              <span class="badge badge-accent badge-sm font-medium">{via.badge}</span>
-            </div>
-            <h3 class="mt-3 text-step-1 font-semibold leading-tight">{via.title}</h3>
-            <p class="mt-2 text-muted">{via.short}</p>
+          <article class="surface-card radius-surface min-w-0 p-6" data-via>
+            <span class="icon-tile mb-4">
+              <Icon name="layers" />
+            </span>
+            <span class="badge badge-brand">{via.badge}</span>
+            <h3 class="mt-3 font-display text-step-1 font-bold leading-tight">{via.title}</h3>
+            <p class="mt-2 text-step--1 text-muted">{via.short}</p>
             <ul class="mt-4 flex flex-wrap gap-2" aria-label="Ámbitos">
               {via.tags.map((tag) => (
                 <li>

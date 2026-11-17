@@ -3,12 +3,12 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { THEME_BG_LIGHT, THEME_BG_DARK } from './themeColors';
 
-const palette = readFileSync(resolve(process.cwd(), 'src/styles/design-references.css'), 'utf8');
+const palette = readFileSync(resolve(process.cwd(), 'src/styles/global.css'), 'utf8');
 
-describe('theme-color derivado de la paleta Atlaps', () => {
+describe('theme-color derivado de la paleta', () => {
   it('usa las propiedades de fondo aprobadas', () => {
-    expect(THEME_BG_LIGHT).toBe('--ds-atlaps-paper-bone');
-    expect(THEME_BG_DARK).toBe('--ds-atlaps-blueprint-deep');
+    expect(THEME_BG_LIGHT).toBe('--bg-day');
+    expect(THEME_BG_DARK).toBe('--bg-night');
     expect(palette).toContain(`${THEME_BG_LIGHT}:`);
     expect(palette).toContain(`${THEME_BG_DARK}:`);
   });
@@ -29,6 +29,6 @@ describe('theme-color derivado de la paleta Atlaps', () => {
     const layout = readFileSync(resolve(process.cwd(), 'src/layouts/Layout.astro'), 'utf8');
     expect(layout).toContain('paletteColor(THEME_BG_LIGHT)');
     expect(layout).toContain('paletteColor(THEME_BG_DARK)');
-    expect(layout).toContain('design-references.css?raw');
+    expect(layout).toContain('global.css?raw');
   });
 });

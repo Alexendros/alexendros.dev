@@ -1,5 +1,6 @@
 @layer components {
   .panel {
+    background-color: color-mix(in srgb, var(--brand-soft) 40%, var(--bg));
     background-image: var(--gradient-section);
   }
 }

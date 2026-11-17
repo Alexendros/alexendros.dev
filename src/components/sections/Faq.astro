@@ -9,22 +9,25 @@ interface Props {
 const { heading = 'Preguntas frecuentes', id = 'faq' } = Astro.props;
 ---
 
-<div id={id} class="scroll-mt-nav">
-  <h2 class="mb-4 text-step-2 font-bold">{heading}</h2>
-  <div class="flex w-full flex-col gap-2">
+<section
+  id={id}
+  class="section-shell scroll-mt-nav border-t border-border"
+  aria-labelledby="faq-heading"
+>
+  <div class="mx-auto max-w-3xl text-center">
+    <p class="eyebrow mb-3">preguntas</p>
+    <h2 id="faq-heading" class="font-display text-3xl font-bold tracking-tight sm:text-4xl">
+      {heading}
+    </h2>
+  </div>
+  <div class="mx-auto mt-10 max-w-3xl">
     {
-      homeFaq.map((item, i) => (
-        <details
-          class="collapse collapse-plus border border-base-300 bg-base-100"
-          name="faq"
-          open={i === 0}
-        >
-          <summary class="collapse-title min-h-12 font-semibold">{item.q}</summary>
-          <div class="collapse-content text-sm text-muted">
-            <p>{item.a}</p>
-          </div>
+      homeFaq.map((item) => (
+        <details class="faq-item" name="faq">
+          <summary class="min-h-12 py-4 font-display font-bold">{item.q}</summary>
+          <p class="pb-4 text-muted">{item.a}</p>
         </details>
       ))
     }
   </div>
-</div>
+</section>

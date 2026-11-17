@@ -17,7 +17,7 @@ test('C-11: cabecera con menú móvil a 768 px', async ({ page }) => {
   await page.goto('/');
   const info = await page.evaluate(() => {
     const header = document.getElementById('site-header');
-    const desktopNav = header?.querySelector('.navbar-center');
+    const desktopNav = header?.querySelector('.header-nav');
     const mobileMenu = header?.querySelector('[data-menu-button]');
     const menuWrapper = mobileMenu?.parentElement;
     const navDisplay = desktopNav ? getComputedStyle(desktopNav).display : 'none';
@@ -41,7 +41,7 @@ for (const width of [1024, 1280] as const) {
       const header = document.getElementById('site-header');
       const logo = header?.querySelector('a[href="/#top"]');
       const cta = header?.querySelector('a.btn-primary');
-      const links = [...(header?.querySelectorAll('.navbar-center a') ?? [])];
+      const links = [...(header?.querySelectorAll('.header-nav a') ?? [])];
       if (!header || !logo || !cta || links.length < 3) return null;
       const logoTop = logo.getBoundingClientRect().top;
       const ctaTop = cta.getBoundingClientRect().top;

@@ -1,0 +1,2 @@
+/* Orden fijo. Tiene que cargarse antes que cualquier hoja que abra una capa. */
+@layer properties, reset, theme, base, components, utilities;

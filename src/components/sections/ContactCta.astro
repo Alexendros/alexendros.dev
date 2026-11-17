@@ -8,35 +8,40 @@ import SectionHeader from '../SectionHeader.astro';
 <section id="contacto" class="section-shell scroll-mt-nav" aria-labelledby="contacto-heading">
   <div
     class:list={[
-      'surface-raised',
+      'relative',
+      'overflow-hidden',
       'radius-panel',
+      'border',
+      'border-border',
       'px-6',
-      'py-10',
-      'sm:px-10',
-      'sm:py-12',
+      'py-14',
+      'sm:px-12',
       styles.panel
     ]}
     data-contact-panel
   >
-    <SectionHeader
-      id="contacto-heading"
-      eyebrow={homeContactoIntro.eyebrow}
-      title={homeContactoIntro.title}
-      description={homeContactoIntro.lead}
-    />
-    <ul class="mt-4 flex flex-wrap gap-2" aria-label="Condiciones">
-      {
-        homeContactoIntro.badges.map((badge) => (
-          <li>
-            <span class="badge badge-ghost badge-sm text-muted">{badge}</span>
-          </li>
-        ))
-      }
-    </ul>
-    <div class="stack-gap">
-      <Button href="/contacto/?origen=home&motivo=propuestaComercial" variant="primary" size="lg">
-        Solicitar propuesta
-      </Button>
+    <div class="glow -bottom-20 left-1/2 h-64 w-96 -translate-x-1/2" aria-hidden="true"></div>
+    <div class="relative">
+      <SectionHeader
+        id="contacto-heading"
+        eyebrow={homeContactoIntro.eyebrow}
+        title={homeContactoIntro.title}
+        description={homeContactoIntro.lead}
+      />
+      <ul class="mt-4 flex flex-wrap gap-2" aria-label="Condiciones">
+        {
+          homeContactoIntro.badges.map((badge) => (
+            <li>
+              <span class="badge badge-ghost badge-sm text-muted">{badge}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="stack-gap">
+        <Button href="/contacto/?origen=home&motivo=propuestaComercial" variant="primary" size="lg">
+          Solicitar propuesta
+        </Button>
+      </div>
     </div>
   </div>
 </section>

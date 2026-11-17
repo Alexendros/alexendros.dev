@@ -1,31 +1,31 @@
 ---
 import { homeHero } from '../../content/home';
 import Button from '../Button.astro';
-import styles from './Hero.module.css';
+import FlowDiagram from './FlowDiagram.astro';
 ---
 
-<section id="top" class:list={['hero', 'scroll-mt-nav', styles.surface]}>
-  <div class="hero-content w-full min-w-0 max-w-6xl flex-col items-start justify-start gap-6 px-4">
-    <p
-      class:list={['rise', 'rise-1', styles['terminal-prompt']]}
-      data-terminal-prompt
-      aria-hidden="true"
-    >
-      <span class="text-primary">{homeHero.prompt}</span>
-      {' '}
-      <span class="opacity-70">{homeHero.command}</span>
-    </p>
-    <h1 class:list={['rise', 'rise-2', 'text-balance', 'font-bold', styles.title]}>
-      {homeHero.title}
-    </h1>
-    <p class:list={['rise', 'rise-3', 'max-w-2xl', styles.lead]}>{homeHero.lead}</p>
-    <div class:list={['rise rise-4 flex flex-wrap gap-3', styles.actions]}>
-      <Button href={homeHero.primaryCta.href} variant="primary" size="lg">
-        {homeHero.primaryCta.label}
-      </Button>
-      <Button href={homeHero.secondaryCta.href} variant="secondary" size="lg">
-        {homeHero.secondaryCta.label}
-      </Button>
+<section id="top" class="relative scroll-mt-nav overflow-hidden">
+  <div class="glow -top-24 left-1/2 h-[28rem] w-[40rem] -translate-x-1/2" aria-hidden="true"></div>
+  <div
+    class="relative mx-auto grid w-full max-w-6xl items-center gap-14 px-6 py-20 md:grid-cols-[1.1fr_0.9fr] md:py-28"
+  >
+    <div class="flex min-w-0 flex-col items-start">
+      <p class="badge badge-brand mb-5">Propuesta por escrito</p>
+      <h1
+        class="rise rise-2 text-balance font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl"
+      >
+        {homeHero.title}
+      </h1>
+      <p class="rise rise-3 mt-6 max-w-xl text-lg text-muted">{homeHero.lead}</p>
+      <div class="rise rise-4 mt-8 flex flex-col gap-4 sm:flex-row">
+        <Button href={homeHero.primaryCta.href} variant="primary" size="lg">
+          {homeHero.primaryCta.label}
+        </Button>
+        <Button href={homeHero.secondaryCta.href} variant="secondary" size="lg">
+          {homeHero.secondaryCta.label}
+        </Button>
+      </div>
     </div>
+    <FlowDiagram />
   </div>
 </section>

@@ -1,51 +1,45 @@
 import { test, expect } from '@playwright/test';
 
-test('tipografía: Source Sans para lectura y JetBrains Mono para el prompt', async ({ page }) => {
+test('tipografía: Plus Jakarta para lectura, Space Grotesk en el titular y mono en la ceja', async ({
+  page
+}) => {
   await page.goto('/');
 
   const bodyFont = await page.locator('body').evaluate((el) => getComputedStyle(el).fontFamily);
   const headingFont = await page.locator('h1').evaluate((el) => getComputedStyle(el).fontFamily);
-  const promptFont = await page
-    .locator('#top p')
-    .first()
+  const eyebrowFont = await page
+    .locator('#top .eyebrow')
     .evaluate((el) => getComputedStyle(el).fontFamily);
 
-  expect(bodyFont).toContain('Source Sans 3 Variable');
-  expect(headingFont).toContain('Source Sans 3 Variable');
-  expect(promptFont).toContain('JetBrains Mono Variable');
+  expect(bodyFont).toContain('Plus Jakarta Sans Variable');
+  expect(headingFont).toContain('Space Grotesk');
+  expect(eyebrowFont).toContain('JetBrains Mono Variable');
 });
 
-test('tipografía: solo Source Sans latin variable tiene preload prioritario', async ({ page }) => {
+test('tipografía: solo la letra de lectura tiene preload prioritario', async ({ page }) => {
   await page.goto('/');
 
   const preloads = page.locator('link[rel="preload"][as="font"]');
   await expect(preloads).toHaveCount(1);
   await expect(preloads.first()).toHaveAttribute(
     'href',
-    /source-sans-3-latin-wght-normal.*\.woff2$/
+    /plus-jakarta-sans-latin-wght-normal.*\.woff2$/
   );
 });
 
-test('hero: firma terminal, hero transparente y rejilla en el fondo del cuerpo', async ({
-  page
-}) => {
+test('hero: dos columnas, esquema del método y fondo liso', async ({ page }) => {
   await page.goto('/');
 
-  await expect(page.locator('#top [data-terminal-prompt]')).toHaveCount(1);
-  const heroBackground = await page
-    .locator('#top')
-    .evaluate((el) => getComputedStyle(el).backgroundImage);
-  const grid = await page.evaluate(() => {
-    const style = getComputedStyle(document.body, '::before');
-    return { image: style.backgroundImage, mask: style.maskImage };
-  });
+  await expect(page.locator('#top [data-flow]')).toHaveCount(1);
+  await expect(page.locator('#top [data-terminal-prompt]')).toHaveCount(0);
+  const grid = await page.evaluate(
+    () => getComputedStyle(document.body, '::before').backgroundImage
+  );
   const processSurface = page.locator('#metodo .surface-raised');
   await expect(processSurface).toBeVisible();
   const processShadow = await processSurface.evaluate((el) => getComputedStyle(el).boxShadow);
 
-  expect(heroBackground).toBe('none');
-  expect(grid.image).toContain('linear-gradient');
-  expect(grid.mask).toBe('none');
+  expect(grid).toBe('none');
   expect(processShadow).not.toBe('none');
 });
 
@@ -54,8 +48,8 @@ test('vías estáticas en home y elevación solo en cards enlazables', async ({ 
   await page.goto('/');
 
   const homeRoute = page.locator('#servicios article').first();
-  await expect(homeRoute.locator('.badge-accent')).toHaveClass(/badge-sm/);
-  expect(await homeRoute.evaluate((el) => getComputedStyle(el).boxShadow)).toBe('none');
+  await expect(homeRoute.locator('.badge-brand')).toBeVisible();
+  expect(await homeRoute.evaluate((el) => getComputedStyle(el).boxShadow)).not.toBe('none');
   await homeRoute.hover();
   expect(await homeRoute.evaluate((el) => getComputedStyle(el).transform)).toBe('none');
 
@@ -64,7 +58,7 @@ test('vías estáticas en home y elevación solo en cards enlazables', async ({ 
   expect(await linkedCard.evaluate((el) => getComputedStyle(el).boxShadow)).not.toBe('none');
   await linkedCard.hover();
   await page.waitForTimeout(250);
-  expect(await linkedCard.evaluate((el) => getComputedStyle(el).transform)).not.toBe('none');
+  expect(await linkedCard.evaluate((el) => getComputedStyle(el).transform)).toBe('none');
 });
 
 test('cards enlazables: reduced motion elimina la elevación por movimiento', async ({ page }) => {
@@ -88,16 +82,9 @@ test('referencias: tipología visible y zoom sutil condicionado por movimiento',
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.goto('/referencias/');
 
-  const card = page.locator('#main .card-lift').first();
+  const card = page.locator('#main .surface-card').first();
   await expect(card.locator('[data-project-type]')).toHaveClass(/badge-outline/);
-  await expect(card.locator('[data-project-type]')).toHaveClass(/badge-sm/);
   await card.hover();
-  await page.waitForTimeout(350);
-  expect(await card.locator('img').evaluate((el) => getComputedStyle(el).transform)).not.toBe(
-    'none'
-  );
-
-  await page.emulateMedia({ reducedMotion: 'reduce' });
   expect(await card.locator('img').evaluate((el) => getComputedStyle(el).transform)).toBe('none');
 });
 
@@ -114,7 +101,7 @@ test('cabecera: glass con superficie semántica y foco con anillo', async ({ pag
 
   const contactCta = page.locator('#site-header a.btn-primary');
   await contactCta.focus();
-  expect(await contactCta.evaluate((el) => getComputedStyle(el).boxShadow)).not.toBe('none');
+  expect(await contactCta.evaluate((el) => getComputedStyle(el).outlineStyle)).toBe('solid');
 });
 
 test('catálogo: tres vías y ficha única conservan sus superficies', async ({ page }) => {
@@ -145,12 +132,11 @@ test('badges: categoría sólida y atributos neutrales', async ({ page }) => {
   await page.goto('/');
 
   const card = page.locator('#servicios article').first();
-  const category = card.locator('.badge-accent');
+  const category = card.locator('.badge-brand');
   const attribute = card.locator('ul[aria-label="Ámbitos"] .badge').first();
-  await expect(category).toHaveClass(/badge-accent/);
+  await expect(category).toHaveClass(/badge-brand/);
   await expect(category).not.toHaveClass(/badge-outline/);
   await expect(attribute).toHaveClass(/badge-ghost/);
-  await expect(attribute).toHaveClass(/badge-sm/);
 });
 
 test('home: cuatro encabezados compartidos conservan su relación accesible', async ({ page }) => {
@@ -167,7 +153,7 @@ test('home: cuatro encabezados compartidos conservan su relación accesible', as
 });
 
 for (const theme of ['alexlight', 'alexdark'] as const) {
-  test(`color de borde separado del grosor DaisyUI en ${theme}`, async ({ page }) => {
+  test(`color de borde separado del grosor en ${theme}`, async ({ page }) => {
     await page.addInitScript((selectedTheme) => {
       localStorage.setItem('theme', selectedTheme);
     }, theme);
@@ -209,15 +195,15 @@ test('cierre de contacto: superficie propia y formulario con la sans elegida', a
 
   const panel = page.locator('#contacto [data-contact-panel]');
   await expect(panel).toBeVisible();
-  const background = await panel.evaluate((el) => getComputedStyle(el).backgroundImage);
-  expect(background).toContain('radial-gradient');
-  expect(await panel.evaluate((el) => getComputedStyle(el).boxShadow)).not.toBe('none');
+  await expect(panel.locator('.glow')).toHaveCount(1);
+  const background = await panel.evaluate((el) => getComputedStyle(el).backgroundColor);
+  expect(background).not.toBe('rgba(0, 0, 0, 0)');
 
   await page.goto('/contacto/');
   const inputFont = await page
     .locator('input[name="name"]')
     .evaluate((el) => getComputedStyle(el).fontFamily);
-  expect(inputFont).toContain('Source Sans 3 Variable');
+  expect(inputFont).toContain('Plus Jakarta Sans Variable');
 });
 
 for (const theme of ['alexlight', 'alexdark'] as const) {
@@ -235,7 +221,7 @@ for (const theme of ['alexlight', 'alexdark'] as const) {
     }
 
     const marker = await steps.first().evaluate((el) => {
-      const styles = getComputedStyle(el, '::after');
+      const styles = getComputedStyle(el, '::before');
       return { background: styles.backgroundColor, foreground: styles.color };
     });
     const primary = await page

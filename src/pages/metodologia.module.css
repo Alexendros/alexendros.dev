@@ -20,9 +20,8 @@
 }
 
 @layer components {
-  /* Número de paso: color de texto normal y subrayado decorativo ámbar, igual
-     que el énfasis del titular de /servicios/. El ámbar no se usa como color
-     de texto sobre la rejilla del fondo (no alcanza AA en oscuro). */
+  /* Número de paso: el texto sigue en --fg. El subrayado es melocotón
+     (--color-accent), igual que el énfasis del titular de /servicios/. */
   .step-number {
     color: var(--fg);
     text-decoration-line: underline;

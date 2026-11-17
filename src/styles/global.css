@@ -1,28 +1,37 @@
-/* Tokens de producto + marco daisyUI. Temas: theme.css.
-   Tailwind solo escanea src/: docs/ y artefactos (mock de diseño, informes)
-   generaban utilidades que no se aplican en ninguna página. */
+/* Tokens de producto. Tailwind solo escanea src/. */
 @import 'tailwindcss' source(none);
 @source "../../src";
-@plugin "daisyui" {
-  themes: false;
-  exclude:
-    avatar, breadcrumbs, btm-nav, carousel, chat, countdown, diff, divider, dock, drawer, dropdown,
-    file-input, filter, indicator, kbd, list, loading, mask, mockup-browser, mockup-code,
-    mockup-phone, mockup-window, modal, pagination, progress, radial-progress, radio, range, rating,
-    select, skeleton, stack, stat, status, swap, tab, table, timeline, toast, toggle, tooltip,
-    alert, join;
-}
-@import './theme.css';
-@import './design-references.css';
 
-/* Solo latin: suficiente para el contenido del portal y evita CSS/subconjuntos sin uso. */
+/* Solo latin: suficiente para el contenido del portal. */
 @font-face {
-  font-family: 'Source Sans 3 Variable';
+  font-family: 'Plus Jakarta Sans Variable';
   font-style: normal;
   font-display: swap;
-  font-weight: 200 900;
-  src: url('@fontsource-variable/source-sans-3/files/source-sans-3-latin-wght-normal.woff2')
+  font-weight: 200 800;
+  src: url('@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2')
     format('woff2-variations');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url('@fontsource/space-grotesk/files/space-grotesk-latin-500-normal.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url('@fontsource/space-grotesk/files/space-grotesk-latin-700-normal.woff2') format('woff2');
   unicode-range:
     U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
     U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
@@ -40,7 +49,7 @@
     U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-@layer reset, design-references, theme, base, components, utilities;
+@layer reset, theme, base, components, utilities;
 /* stylelint-disable custom-property-pattern -- compat TW3 */
 @theme {
   --color-bg: var(--bg);
@@ -51,16 +60,22 @@
   --color-primaryHover: var(--brand-hover);
   --color-primarySoft: color-mix(in srgb, var(--brand) 40%, transparent);
   --color-primaryGhost: var(--primary-ghost);
+  --color-brand-soft: var(--brand-soft);
+  --color-peach: var(--peach);
+  --color-peach-soft: var(--peach-soft);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent: var(--peach);
   --color-muted: var(--fg-muted);
   --color-border: var(--border-color);
   --color-border-strong: var(--border-strong);
   --color-card: var(--card);
   --color-ink: var(--brand-fg);
   --color-danger: var(--danger);
+  --color-success: var(--success);
   --color-link: var(--link);
   --color-focus: var(--focus-color);
-  --font-sans: 'Source Sans 3 Variable', ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-sans);
+  --font-sans: 'Plus Jakarta Sans Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Space Grotesk', var(--font-sans);
   --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
   --text-step--1: var(--step--1);
   --text-step-0: var(--step-0);
@@ -80,44 +95,38 @@
   /* stylelint-disable declaration-property-value-disallowed-list -- únicos hex */
   /* stylelint-disable custom-property-pattern -- step negativo */
   :root {
-    --blue-950: var(--ds-atlaps-blueprint-deep);
-    --ink-900: var(--ds-atlaps-ink-graphite);
-    --paper-0: var(--ds-atlaps-paper-bone);
-    --bg: var(--ds-atlaps-paper-bone);
-    --bg-subtle: var(--ds-atlaps-paper-bone);
-    --fg: var(--ds-atlaps-ink-graphite);
-    --fg-muted: var(--ds-atlaps-ink-pencil);
-    --brand: var(--ds-atlaps-blueprint-deep);
-    --brand-hover: var(--ds-atlaps-blueprint-mid);
-    --brand-fg: var(--ds-atlaps-paper-bone);
-    --border-color: var(--ds-atlaps-paper-grid);
-    --border-strong: var(--ds-atlaps-ink-pencil);
+    /* Iris y melocotón. --bg-day no cambia con el tema: la meta theme-color lo lee fijo. */
+    --bg-day: oklch(99% 0.004 280);
+    --bg-night: oklch(16% 0.02 280);
+    --bg: var(--bg-day);
+    --bg-subtle: oklch(96% 0.006 280);
+    --fg: oklch(18% 0.03 277);
+    --fg-muted: oklch(42% 0.03 277);
+    --brand: oklch(46% 0.16 281);
+    --brand-hover: oklch(40% 0.16 281);
+    --brand-fg: oklch(99% 0.004 280);
+    --brand-soft: oklch(94% 0.03 281);
+    --peach: oklch(58% 0.12 40);
+    --peach-soft: oklch(95% 0.045 40);
+    --accent-fg: oklch(32% 0.09 281);
+    --border-color: oklch(86% 0.012 280);
+    --border-strong: oklch(45% 0.03 277);
+    --card: oklch(100% 0 0);
+    --danger: oklch(48% 0.18 27);
+    --success: oklch(42% 0.11 155);
+    --link: oklch(46% 0.16 281);
+    --focus-color: oklch(46% 0.16 281);
+    --focus-ring: 0 0 0 2px var(--focus-color);
+    --badge-bg: oklch(94% 0.03 281);
+    --badge-fg: oklch(32% 0.09 281);
+    --primary-ghost: color-mix(in srgb, var(--brand) 8%, transparent);
+    --scrim: color-mix(in srgb, var(--fg) 55%, transparent);
+    --shadow-1: 0 1px 2px color-mix(in srgb, var(--fg) 8%, transparent);
+    --shadow-2: 0 8px 24px color-mix(in srgb, var(--fg) 12%, transparent);
 
-    /* Rejilla del plano (fondo de todo el body). Sin mask. Opacidades
-       suavizadas (18 % / 26 %) respecto al 30 % / 40 % post-T7; el texto
-       secundario sigue en AA sobre la línea mayor. */
-    --grid-line: color-mix(in srgb, var(--border-color) 18%, transparent);
-    --grid-major: color-mix(in srgb, var(--border-color) 26%, transparent);
-    --card: var(--ds-atlaps-paper-bone);
-    --danger: var(--ds-atlaps-danger);
-    --link: var(--ds-atlaps-blueprint-mid);
-    --focus-color: var(--ds-atlaps-blueprint-mid);
-    --focus-ring: 0 0 0 3px var(--focus-color);
-    --badge-bg: var(--ds-atlaps-paper-grid);
-    --badge-fg: var(--ds-atlaps-ink-graphite);
-    --primary-ghost: color-mix(in srgb, var(--brand) 3%, transparent);
-    --scrim: color-mix(in oklab, var(--blue-950) 55%, transparent);
-    --shadow-1:
-      0 0 0 1px var(--ds-atlaps-paper-grid),
-      0 1px 0 0 color-mix(in srgb, var(--ds-atlaps-blueprint-mid) 8%, transparent);
-    --shadow-2:
-      0 0 0 1px var(--ds-atlaps-paper-grid),
-      0 2px 0 0 color-mix(in srgb, var(--ds-atlaps-blueprint-mid) 12%, transparent),
-      0 4px 0 0 color-mix(in srgb, var(--ds-atlaps-blueprint-mid) 4%, transparent);
-
-    /* Chrome (cabecera/pie): tinte distinto del plano + glass legible. */
-    --surface-chrome: color-mix(in srgb, var(--border-color) 16%, var(--card));
-    --surface-chrome-glass: color-mix(in srgb, var(--surface-chrome) 58%, transparent);
+    /* Velo de cabecera: bastante opaco para que el titular no se lea detrás. */
+    --surface-chrome: color-mix(in srgb, var(--bg-subtle) 30%, var(--card));
+    --surface-chrome-glass: color-mix(in srgb, var(--bg) 92%, transparent);
     --surface-header: var(--surface-chrome);
     --surface-header-glass: var(--surface-chrome-glass);
     --surface-sunken: color-mix(in srgb, var(--bg) 65%, var(--card));
@@ -140,7 +149,7 @@
     --tracking-chrome: 0.1em;
     --measure: 66ch;
 
-    /* Una fila de chrome tras anular el 50% daisyUI (logo + nav + CTA). */
+    --border: 1px;
     --header-h: 4rem;
     --duration-fast: 180ms;
     --duration-normal: 200ms;
@@ -151,62 +160,57 @@
     --space-stack: 2rem;
     --space-card: 1.5rem;
     --space-gap: 1.5rem;
-    --radius-control: var(--radius-field);
+    --radius-control: calc(var(--radius-surface) - 2px);
     --radius-surface: 0.75rem;
-    --radius-panel: 1rem;
+    --radius-panel: 1.5rem;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme='alexlight']) {
       color-scheme: dark;
-      --bg: var(--ds-atlaps-blueprint-deep);
-      --bg-subtle: var(--ds-atlaps-blueprint-deep);
-      --fg: var(--ds-atlaps-paper-bone);
-      --fg-muted: var(--ds-atlaps-paper-grid);
-      --brand: var(--ds-atlaps-amber-glow);
-      --brand-hover: var(--ds-atlaps-paper-grid);
-      --brand-fg: var(--ds-atlaps-blueprint-deep);
-      --border-color: var(--ds-atlaps-border-dark);
-      --border-strong: var(--ds-atlaps-paper-grid);
-      --card: var(--ds-atlaps-blueprint-deep);
-      --danger: var(--ds-atlaps-danger-dark);
-      --link: var(--ds-atlaps-link-dark);
-      --focus-color: var(--ds-atlaps-amber-glow);
-      --badge-bg: var(--ds-atlaps-blueprint-mid);
-      --badge-fg: var(--ds-atlaps-paper-bone);
-      --shadow-1:
-        0 0 0 1px var(--ds-atlaps-border-dark),
-        0 1px 0 0 color-mix(in srgb, var(--ds-atlaps-blueprint-mid) 24%, transparent);
-      --shadow-2:
-        0 0 0 1px var(--ds-atlaps-border-dark),
-        0 2px 0 0 color-mix(in srgb, var(--ds-atlaps-blueprint-mid) 30%, transparent),
-        0 4px 0 0 color-mix(in srgb, var(--ds-atlaps-blueprint-mid) 12%, transparent);
+      --bg: var(--bg-night);
+      --bg-subtle: oklch(22% 0.02 280);
+      --fg: oklch(96% 0.006 280);
+      --fg-muted: oklch(78% 0.02 280);
+      --brand: oklch(78% 0.13 281);
+      --brand-hover: oklch(84% 0.11 281);
+      --brand-fg: oklch(16% 0.02 280);
+      --brand-soft: oklch(28% 0.05 281);
+      --peach: oklch(82% 0.11 40);
+      --peach-soft: oklch(32% 0.05 40);
+      --accent-fg: oklch(92% 0.04 281);
+      --border-color: oklch(40% 0.02 280);
+      --border-strong: oklch(72% 0.02 280);
+      --card: oklch(20% 0.022 280);
+      --danger: oklch(78% 0.14 22);
+      --success: oklch(78% 0.12 155);
+      --link: oklch(78% 0.13 281);
+      --focus-color: oklch(78% 0.13 281);
+      --badge-bg: oklch(28% 0.05 281);
+      --badge-fg: oklch(92% 0.04 281);
     }
   }
   :root[data-theme='alexdark'] {
     color-scheme: dark;
-
-    --bg: var(--ds-atlaps-blueprint-deep);
-    --bg-subtle: var(--ds-atlaps-blueprint-deep);
-    --fg: var(--ds-atlaps-paper-bone);
-    --fg-muted: var(--ds-atlaps-paper-grid);
-    --brand: var(--ds-atlaps-amber-glow);
-    --brand-hover: var(--ds-atlaps-paper-grid);
-    --brand-fg: var(--ds-atlaps-blueprint-deep);
-    --border-color: var(--ds-atlaps-border-dark);
-    --border-strong: var(--ds-atlaps-paper-grid);
-    --card: var(--ds-atlaps-blueprint-deep);
-    --danger: var(--ds-atlaps-danger-dark);
-    --link: var(--ds-atlaps-link-dark);
-    --focus-color: var(--ds-atlaps-amber-glow);
-    --badge-bg: var(--ds-atlaps-blueprint-mid);
-    --badge-fg: var(--ds-atlaps-paper-bone);
-    --shadow-1:
-      0 0 0 1px var(--ds-atlaps-border-dark),
-      0 1px 0 0 color-mix(in srgb, var(--ds-atlaps-blueprint-mid) 24%, transparent);
-    --shadow-2:
-      0 0 0 1px var(--ds-atlaps-border-dark),
-      0 2px 0 0 color-mix(in srgb, var(--ds-atlaps-blueprint-mid) 30%, transparent),
-      0 4px 0 0 color-mix(in srgb, var(--ds-atlaps-blueprint-mid) 12%, transparent);
+    --bg: var(--bg-night);
+    --bg-subtle: oklch(22% 0.02 280);
+    --fg: oklch(96% 0.006 280);
+    --fg-muted: oklch(78% 0.02 280);
+    --brand: oklch(78% 0.13 281);
+    --brand-hover: oklch(84% 0.11 281);
+    --brand-fg: oklch(16% 0.02 280);
+    --brand-soft: oklch(28% 0.05 281);
+    --peach: oklch(82% 0.11 40);
+    --peach-soft: oklch(32% 0.05 40);
+    --accent-fg: oklch(92% 0.04 281);
+    --border-color: oklch(40% 0.02 280);
+    --border-strong: oklch(72% 0.02 280);
+    --card: oklch(20% 0.022 280);
+    --danger: oklch(78% 0.14 22);
+    --success: oklch(78% 0.12 155);
+    --link: oklch(78% 0.13 281);
+    --focus-color: oklch(78% 0.13 281);
+    --badge-bg: oklch(28% 0.05 281);
+    --badge-fg: oklch(92% 0.04 281);
   }
   :root[data-theme='alexlight'] {
     color-scheme: light;
@@ -230,33 +234,8 @@
   body {
     font-family: var(--font-sans);
     line-height: var(--leading-body);
-  }
-
-  /* Fondo del plano en todas las páginas: dos capas (celda fina de 22 px y
-     mayor de 120 px) fijas tras el contenido. Las secciones con superficie
-     propia (cabecera, tarjetas, cierre de contacto, pie) la tapan. */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background-image:
-      linear-gradient(var(--grid-line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
-      linear-gradient(var(--grid-major) 1px, transparent 1px),
-      linear-gradient(90deg, var(--grid-major) 1px, transparent 1px);
-    background-size:
-      1.375rem 1.375rem,
-      1.375rem 1.375rem,
-      7.5rem 7.5rem,
-      7.5rem 7.5rem;
-  }
-
-  @media (prefers-contrast: more), (forced-colors: active) {
-    body::before {
-      background: none;
-    }
+    background-color: var(--bg);
+    color: var(--fg);
   }
 
   h1,
@@ -264,6 +243,7 @@
   h3 {
     font-family: var(--font-display);
     text-wrap: balance;
+    overflow-wrap: anywhere;
   }
 
   p,
@@ -294,54 +274,14 @@
     box-shadow: var(--shadow-1);
   }
 
-  .card-lift {
-    box-shadow: var(--shadow-1);
-  }
-
-  .card-lift:has(:focus-visible) {
-    border-color: var(--color-primary);
-    box-shadow: var(--shadow-2);
-  }
-
-  @media (hover: hover) {
-    .card-lift:hover {
-      border-color: var(--color-primarySoft);
-      box-shadow: var(--shadow-2);
-    }
-  }
-
-  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-    .card-lift {
-      transition: transform var(--duration-fast) var(--ease-out);
-    }
-
-    .card-lift:hover {
-      transform: translateY(-2px);
-    }
-
-    .card-lift:active {
-      transform: translateY(0);
-    }
-
-    .card-lift .card-img {
-      transition: transform var(--duration-normal) var(--ease-out);
-    }
-
-    .card-lift:hover .card-img {
-      transform: scale(1.02);
-    }
-  }
-
-  .navbar {
-    padding-top: env(safe-area-inset-top, 0);
-  }
-
-  .btn-primary {
+  .surface-card {
+    border: 1px solid var(--border-color);
+    background-color: var(--card);
     box-shadow: var(--shadow-1);
   }
 
   @media (hover: hover) {
-    .btn-primary:hover {
+    .surface-card:hover {
       box-shadow: var(--shadow-2);
     }
   }
@@ -349,7 +289,247 @@
   .focus-ring:focus-visible {
     outline: 2px solid var(--focus-color);
     outline-offset: 2px;
-    box-shadow: var(--focus-ring);
+  }
+
+  .checkbox {
+    width: 1.25rem;
+    height: 1.25rem;
+    accent-color: var(--brand);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    max-width: 100%;
+    min-height: 2.75rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-control);
+    background: transparent;
+    color: inherit;
+    font-weight: 500;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    white-space: normal;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: var(--brand);
+    color: var(--brand-fg);
+  }
+
+  @media (hover: hover) {
+    .btn-primary:hover {
+      background: var(--brand-hover);
+    }
+  }
+
+  .btn-outline {
+    border-color: var(--border-strong);
+    background: var(--bg);
+    color: var(--fg);
+  }
+
+  @media (hover: hover) {
+    .btn-outline:hover {
+      background: var(--brand-soft);
+      color: var(--accent-fg);
+    }
+  }
+
+  .btn-ghost {
+    color: var(--fg-muted);
+  }
+
+  @media (hover: hover) {
+    .btn-ghost:hover {
+      background: var(--primary-ghost);
+      color: var(--fg);
+    }
+  }
+
+  .btn-square {
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+  }
+
+  .btn-lg {
+    min-height: 3rem;
+    padding-inline: 1.5rem;
+  }
+
+  .btn-block {
+    width: 100%;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    padding: 0.125rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .badge-accent,
+  .badge-brand {
+    background: var(--brand-soft);
+    color: var(--accent-fg);
+  }
+
+  .badge-peach {
+    background: var(--peach-soft);
+    color: var(--fg);
+  }
+
+  .badge-ghost,
+  .badge-outline {
+    border-color: var(--border-color);
+    background: transparent;
+    color: var(--fg-muted);
+  }
+
+  .input,
+  .textarea {
+    width: 100%;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-control);
+    background: var(--card);
+    color: var(--fg);
+    padding: 0.5rem 0.75rem;
+  }
+
+  .input {
+    min-height: 2.75rem;
+  }
+
+  .menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .menu-horizontal {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .icon-tile {
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    flex-shrink: 0;
+    place-items: center;
+    border-radius: calc(var(--radius-surface) + 0.25rem);
+    background: var(--brand-soft);
+    color: var(--accent-fg);
+  }
+
+  .glow {
+    pointer-events: none;
+    position: absolute;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--brand-soft) 70%, transparent);
+    filter: blur(48px);
+  }
+
+  .flow-card {
+    border: 1px solid var(--border-color);
+    border-radius: calc(var(--radius-surface) + 0.5rem);
+    background: color-mix(in srgb, var(--card) 80%, transparent);
+    box-shadow: var(--shadow-2);
+    padding: 1.5rem;
+  }
+
+  .flow-line {
+    position: relative;
+    display: block;
+    width: 1px;
+    height: 2rem;
+    margin-left: 1.375rem;
+    background: var(--border-color);
+  }
+
+  .flow-pulse {
+    position: absolute;
+    left: -3px;
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 999px;
+    background: var(--brand);
+  }
+
+  .footer-veil {
+    background: color-mix(in srgb, var(--bg-subtle) 40%, var(--bg));
+  }
+
+  .fieldset {
+    min-width: 0;
+    margin: 0;
+    border: 0;
+    padding: 0;
+  }
+
+  .fieldset-legend {
+    display: block;
+    margin-bottom: 0.35rem;
+    padding: 0;
+    font-weight: 600;
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .step {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .step::before {
+    content: attr(data-content);
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    background: var(--brand);
+    color: var(--brand-fg);
+    font-weight: 700;
+  }
+
+  @media (width >= 80rem) {
+    .steps {
+      flex-direction: row;
+    }
   }
 
   .scroll-mt-nav {
@@ -358,9 +538,10 @@
 
   .eyebrow {
     font-family: var(--font-mono);
-    font-size: var(--step--1);
-    letter-spacing: var(--tracking-eyebrow);
-    opacity: 0.7;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: lowercase;
+    color: var(--brand);
   }
 
   .chrome-surface {
@@ -374,54 +555,24 @@
     }
   }
 
-  .chrome-label {
-    font-family: var(--font-sans);
-    font-size: var(--step--1);
-    font-weight: 600;
-    letter-spacing: var(--tracking-chrome);
-    text-transform: uppercase;
-    color: var(--fg-muted);
-  }
-
-  a.chrome-label:hover,
-  a.chrome-label[aria-current='page'] {
-    color: var(--fg);
-  }
-
-  .footer-title.chrome-label {
-    margin-bottom: 0.35rem;
-    color: var(--fg);
-    opacity: 1;
-    font-weight: 600;
-    line-height: 1.2;
-  }
-
   #site-header {
     width: 100%;
   }
 
-  #site-header .navbar-inner {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, auto) minmax(0, 1fr);
+  #site-header .header-bar {
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
     width: 100%;
     max-width: 72rem;
-    padding-block: 0.25rem;
     min-width: 0;
     min-height: var(--header-h);
   }
 
-  #site-header .navbar-start,
-  #site-header .navbar-center,
-  #site-header .navbar-end {
-    width: auto;
-    max-width: 100%;
+  #site-header .header-bar > * {
     min-width: 0;
-    flex: unset;
-  }
-
-  #site-header .navbar-end {
-    justify-self: end;
   }
 
   .skip-link {
@@ -472,7 +623,16 @@
     min-block-size: 2.75rem;
   }
 
-  #site-header .navbar-center .menu a {
+  .faq-item summary {
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  #site-header .header-nav a {
     min-block-size: 2.5rem;
     padding-block: 0.35rem;
     padding-inline: 0.65rem;
@@ -484,8 +644,10 @@
   footer nav a.link {
     display: flex;
     align-items: center;
+    min-width: 0;
     min-block-size: 1.5rem;
     padding-block: 0.1rem;
+    overflow-wrap: anywhere;
     font-size: var(--step--1);
     line-height: 1.2;
     color: var(--fg-muted);
@@ -514,13 +676,15 @@
     translate: 0 -50%;
   }
 
-  .project-details > summary::after {
+  .project-details > summary::after,
+  .faq-item > summary::after {
     content: '+';
     margin-inline-start: auto;
     font-weight: 700;
   }
 
-  .project-details[open] > summary::after {
+  .project-details[open] > summary::after,
+  .faq-item[open] > summary::after {
     content: '-';
   }
 
@@ -528,7 +692,6 @@
   .link:focus-visible,
   .checkbox:focus-visible,
   [data-theme-toggle]:focus-visible,
-  .collapse-title:focus-visible,
   a[data-open-dialog]:focus-visible,
   .card:has(:focus-visible) {
     outline: 2px solid var(--focus-color);
@@ -547,7 +710,7 @@
   .input:user-invalid,
   .textarea:user-invalid,
   .checkbox:user-invalid {
-    outline: 2px solid var(--color-error);
+    outline: 2px solid var(--color-danger);
     outline-offset: 1px;
   }
 
@@ -634,23 +797,60 @@
     .js .rise-4 {
       animation-delay: 120ms;
     }
+
+    .flow-pulse {
+      animation: flow-pulse 1.6s var(--ease-out) infinite;
+    }
+
+    .flow-card > ol > li:nth-child(2) .flow-pulse {
+      animation-delay: 0.4s;
+    }
+
+    .flow-card > ol > li:nth-child(3) .flow-pulse {
+      animation-delay: 0.8s;
+    }
+
+    .js [data-reveal] {
+      opacity: 0;
+      transform: translateY(0.5rem);
+    }
+
+    .js [data-reveal].is-in {
+      animation: rise-in var(--duration-normal) var(--ease-out) both;
+    }
+  }
+}
+
+@keyframes flow-pulse {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+
+  20%,
+  80% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(2rem);
   }
 }
 
 @layer utilities {
   /* stylelint-disable declaration-no-important, declaration-property-value-disallowed-list -- impresión */
   @media print {
-    .navbar,
+    #site-header,
     footer,
     [data-theme-toggle],
-    .js-only,
-    body::before {
+    .js-only {
       display: none !important;
     }
 
     body {
-      background: var(--paper-0);
-      color: var(--ink-900);
+      background: var(--bg);
+      color: var(--fg);
     }
   }
   /* stylelint-enable declaration-no-important, declaration-property-value-disallowed-list */
@@ -727,8 +927,7 @@ main:focus {
   outline: none;
 }
 
-/* Fuera de capas para ganar a daisyUI (components). Sin JS el botón de tema
-   no funciona y se oculta; foco en primary en menú y logo. */
+/* Sin JS el botón de tema no funciona y se oculta. Foco del menú y del logo. */
 html:not(.js) .js-only {
   display: none;
 }
@@ -742,7 +941,7 @@ html:not(.js) .js-only {
 [data-ref-filters] .btn[aria-pressed='true'] {
   border-color: var(--color-primary);
   background-color: var(--color-primary);
-  color: var(--color-primary-content);
+  color: var(--color-ink);
 }
 
 /* Enlaces y estados: la tinta de éxito queda separada del acento verde. */
@@ -771,7 +970,6 @@ html:not(.js) .js-only {
   .textarea:focus-visible {
     outline: 2px solid var(--focus-color);
     outline-offset: 2px;
-    box-shadow: var(--focus-ring);
   }
 }
 
@@ -796,22 +994,11 @@ html:not(.js) .js-only {
   }
 }
 
-/* Chrome fuera de @layer: gana a DaisyUI y evita que el orden de los módulos
-   CSS de una página cambie el eje compartido de header y footer. */
-#site-header .navbar-inner,
+/* Chrome fuera de @layer para que el orden de los módulos no mueva el eje. */
+#site-header .header-bar,
 footer > .footer-inner {
   margin-inline: auto;
   padding-inline: var(--space-page-x);
-}
-
-footer .footer-inner > nav {
-  gap: 0;
-}
-
-footer .footer-inner .footer-title.chrome-label {
-  opacity: 1;
-  color: var(--fg);
-  font-weight: 600;
 }
 
 .table-wrap table {
@@ -825,7 +1012,7 @@ footer .footer-inner .footer-title.chrome-label {
 .table-wrap th,
 .table-wrap td {
   padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid var(--color-base-300);
+  border-bottom: 1px solid var(--border-color);
   text-align: left;
   vertical-align: top;
 }

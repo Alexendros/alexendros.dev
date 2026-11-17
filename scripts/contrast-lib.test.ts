@@ -10,8 +10,8 @@ describe('extractThemes', () => {
     expect(darkPartial).toBe(false);
     expect(darkConsistent).toBe(true);
     expect(dark).toMatchObject({
-      bg: 'var(--ds-atlaps-blueprint-deep)',
-      card: 'var(--ds-atlaps-blueprint-deep)'
+      bg: 'var(--bg-night)',
+      brand: 'oklch(78% 0.13 281)'
     });
   });
 });

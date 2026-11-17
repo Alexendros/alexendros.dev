@@ -1,6 +1,6 @@
-/** Propiedades Atlaps usadas para el `theme-color` del navegador. */
-export const THEME_BG_LIGHT = '--ds-atlaps-paper-bone';
-export const THEME_BG_DARK = '--ds-atlaps-blueprint-deep';
+/** Fondos de la paleta, leídos del CSS para el `theme-color` del navegador. */
+export const THEME_BG_LIGHT = '--bg-day';
+export const THEME_BG_DARK = '--bg-night';
 
 /** Resuelve el color desde la hoja ya aplicada; no duplica valores cromáticos. */
 export function getThemeColor(property: string): string {

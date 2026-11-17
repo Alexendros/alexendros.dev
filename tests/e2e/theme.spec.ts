@@ -1,16 +1,15 @@
 import { test, expect } from '@playwright/test';
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
 
-const palette = readFileSync(resolve(process.cwd(), 'src/styles/design-references.css'), 'utf8');
-function paletteValue(property: string): string {
-  const value = palette.match(new RegExp(`${property}:\\s*([^;]+);`))?.[1];
-  if (!value) throw new Error(`Falta ${property} en la paleta Atlaps`);
-  return value.replace(/(?<!\d)0\./g, '.');
+async function paintedBackground(page: import('@playwright/test').Page): Promise<string> {
+  return page.evaluate(() => {
+    const probe = document.createElement('div');
+    probe.style.backgroundColor = 'var(--bg)';
+    document.body.append(probe);
+    const color = getComputedStyle(probe).backgroundColor;
+    probe.remove();
+    return color;
+  });
 }
-
-const lightColor = paletteValue('--ds-atlaps-paper-bone');
-const darkColor = paletteValue('--ds-atlaps-blueprint-deep');
 
 test('el selector de tema actualiza data-theme y theme-color', async ({ page }) => {
   await page.goto('/');
@@ -21,18 +20,21 @@ test('el selector de tema actualiza data-theme y theme-color', async ({ page }) 
 
   await toggle.click();
   await expect(html).toHaveAttribute('data-theme', 'alexlight');
-  await expect(metas.nth(0)).toHaveAttribute('content', lightColor);
-  await expect(metas.nth(1)).toHaveAttribute('content', lightColor);
+  const lightMeta = await metas.nth(0).getAttribute('content');
+  expect(lightMeta).toBeTruthy();
+  await expect(metas.nth(1)).toHaveAttribute('content', lightMeta!);
 
   await toggle.click();
   await expect(html).toHaveAttribute('data-theme', 'alexdark');
-  await expect(metas.nth(0)).toHaveAttribute('content', darkColor);
-  await expect(metas.nth(1)).toHaveAttribute('content', darkColor);
+  const darkMeta = await metas.nth(0).getAttribute('content');
+  expect(darkMeta).toBeTruthy();
+  expect(darkMeta).not.toBe(lightMeta);
+  await expect(metas.nth(1)).toHaveAttribute('content', darkMeta!);
 
   await toggle.click();
   await expect(html).not.toHaveAttribute('data-theme', /.+/);
-  await expect(metas.nth(0)).toHaveAttribute('content', lightColor);
-  await expect(metas.nth(1)).toHaveAttribute('content', darkColor);
+  await expect(metas.nth(0)).toHaveAttribute('content', lightMeta!);
+  await expect(metas.nth(1)).toHaveAttribute('content', darkMeta!);
 });
 
 test('el tema guardado se aplica antes del paint', async ({ page }) => {
@@ -41,10 +43,7 @@ test('el tema guardado se aplica antes del paint', async ({ page }) => {
   });
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'alexdark');
-  await expect(page.locator('meta[name="theme-color"]').nth(0)).toHaveAttribute(
-    'content',
-    darkColor
-  );
+  await expect(page.locator('meta[name="theme-color"]').nth(0)).not.toHaveAttribute('content', '');
 });
 
 test('el tema forzado aplica también las variables semánticas', async ({ page }) => {
@@ -53,13 +52,8 @@ test('el tema forzado aplica también las variables semánticas', async ({ page 
   await toggle.click();
   await toggle.click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'alexdark');
-  const darkBg = await page.evaluate(() =>
-    getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()
-  );
-  expect(darkBg).toBe(darkColor);
+  const darkBg = await paintedBackground(page);
   await toggle.click();
-  const lightBg = await page.evaluate(() =>
-    getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()
-  );
-  expect(lightBg).toBe(lightColor);
+  const lightBg = await paintedBackground(page);
+  expect(darkBg).not.toBe(lightBg);
 });

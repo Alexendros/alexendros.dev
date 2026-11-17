@@ -230,17 +230,22 @@ test('pie: foco visible alcanzable con teclado', async ({ page }) => {
   throw new Error('El foco no alcanzó el pie después de 100 tabulaciones');
 });
 
-test('C-1: botón principal con radio Atlaps de 4 px', async ({ page }) => {
+test('C-1: botón principal con el radio de control', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('.btn-primary').first()).toHaveCSS('border-radius', '4px');
+  await expect(page.locator('.btn-primary').first()).toHaveCSS('border-radius', '10px');
 });
 
-test('C-2: campo con anillo de foco visible', async ({ page }) => {
+test('C-2: campo con trazo de foco visible', async ({ page }) => {
   await page.goto('/contacto/');
   const field = page.getByLabel(/^Nombre( \*)?$/);
   await field.focus();
-  const shadow = await field.evaluate((element) => getComputedStyle(element).boxShadow);
-  expect(shadow).not.toBe('none');
+  const outline = await field.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return { style: style.outlineStyle, width: style.outlineWidth, shadow: style.boxShadow };
+  });
+  expect(outline.style).toBe('solid');
+  expect(outline.width).toBe('2px');
+  expect(outline.shadow).toBe('none');
 });
 
 test('C-3: plazo, entrega y garantía presentados como lista de datos', async ({ page }) => {
