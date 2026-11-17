@@ -10,10 +10,8 @@ const FORCE = args.has('--force');
 const OPEN_ONLY = args.has('--open-only');
 
 const CONSTANTS = {
-  PUBLIC_SITE_URL: 'https://alexendros.dev',
   PUBLIC_POSTHOG_HOST: 'https://eu.i.posthog.com',
-  PUBLIC_GTM_SS_DOMAIN: 'metrics.alexendros.dev',
-  PUBLIC_COOKIE_CONSENT_VERSION: '1'
+  PUBLIC_COOKIE_CONSENT_VERSION: '2'
 };
 
 const TARGETS = [
@@ -22,24 +20,6 @@ const TARGETS = [
     label: 'Upstash → base de datos → REST API',
     url: 'https://console.upstash.com/',
     patterns: [/https:\/\/[a-z0-9-]+\.upstash\.io/]
-  },
-  {
-    keys: ['PUBLIC_TURNSTILE_SITE_KEY'],
-    label: 'Cloudflare → Turnstile → sitio → Site Key',
-    url: 'https://dash.cloudflare.com/?to=/:account/turnstile',
-    patterns: [/0x4[A-Za-z0-9_-]{18,}/]
-  },
-  {
-    keys: ['TURNSTILE_SECRET_KEY'],
-    label: 'Cloudflare Turnstile → Secret Key (solo se muestra al crear)',
-    url: 'https://dash.cloudflare.com/?to=/:account/turnstile',
-    manual: true
-  },
-  {
-    keys: ['NOTION_TOKEN'],
-    label: 'Notion → integraciones internas → secreto',
-    url: 'https://www.notion.so/my-integrations',
-    patterns: [/\b(?:ntn|secret)_[A-Za-z0-9]{20,}/]
   },
   {
     keys: ['PUBLIC_GA4_ID'],
@@ -93,12 +73,6 @@ const TARGETS = [
     keys: ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS'],
     label: 'Proton → Settings → IMAP/SMTP → token SMTP',
     url: 'https://account.proton.me/mail/imap-smtp',
-    manual: true
-  },
-  {
-    keys: [],
-    label: 'Google Tag Manager → contenedor Server-Side',
-    url: 'https://tagmanager.google.com/',
     manual: true
   }
 ];

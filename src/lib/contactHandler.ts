@@ -15,6 +15,7 @@ import {
   type ContactIdempotencyStore
 } from './contactIdempotency';
 import { resolveSmtpConfig, type SmtpConfig } from './smtpConfig';
+import { hasMarketingConsentFromCookieHeader } from './tracking/consent';
 
 export const CONTACT_MAX_BODY_BYTES = 16_384;
 
@@ -34,7 +35,6 @@ export type ContactEnv = {
   SMTP_PASS?: string;
   UPSTASH_REDIS_REST_URL?: string;
   UPSTASH_REDIS_REST_TOKEN?: string;
-  TURNSTILE_SECRET_KEY?: string;
 };
 
 export type RateLimitResult = {
@@ -55,14 +55,11 @@ export type ContactDeps = {
   getEnv: () => ContactEnv;
   rateLimit: (ip: string) => Promise<RateLimitResult>;
   sendMail: (payload: ContactMailPayload) => Promise<void>;
-  verifyTurnstile?: (token: string, ip: string) => Promise<boolean>;
-  /** Solo con consentimiento de publicidad; el formulario de contacto no lo recoge. */
+  /**
+   * Meta CAPI Lead: solo con consentimiento de publicidad en `consent_v1`.
+   * El checkbox del formulario autoriza la respuesta, no la publicidad.
+   */
   sendLeadEvent?: (input: ContactLeadEvent) => Promise<void>;
-  saveLead?: (input: ContactLeadInput) => Promise<void>;
-  /** Aviso por correo a operaciones@ si falla el guardado en Notion (asunto «FALLO NOTION»). */
-  sendCrmFailureMail?: (payload: ContactMailPayload) => Promise<void>;
-  /** Push opcional (p. ej. ntfy). Texto fijo sin datos personales. */
-  sendAlertWebhook?: (text: string) => Promise<void>;
   /** Almacén de idempotencia con estados y lease por propietario. */
   idempotencyStore?: ContactIdempotencyStore;
   createRequestId?: () => string;
@@ -74,14 +71,9 @@ export type ContactLeadEvent = {
   ip: string;
   userAgent: string | null;
   sourceUrl: string | null;
-};
-
-export type ContactLeadInput = {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-  consent: boolean;
+  eventId?: string;
+  fbp?: string;
+  fbc?: string;
 };
 
 function json(status: number, body: unknown, extraHeaders?: HeadersInit): Response {
@@ -133,36 +125,15 @@ function mailFields(data: ContactInput) {
   };
 }
 
-export const CRM_FAILURE_SUBJECT_PREFIX = 'FALLO NOTION';
-export const CRM_FAILURE_ALERT_TEXT = 'Nuevo contacto sin guardar en Notion, revisa el correo.';
-
-/**
- * Si falla Notion el contacto no se pierde: correo «FALLO NOTION» con los datos
- * y push opcional sin PII. Nunca lanza: la respuesta al cliente no cambia.
- */
-async function notifyCrmFailure(
-  deps: ContactDeps,
-  payload: ContactMailPayload,
-  requestId: string
-): Promise<void> {
-  const tasks: Promise<void>[] = [];
-  if (deps.sendCrmFailureMail) {
-    tasks.push(
-      deps
-        .sendCrmFailureMail(payload)
-        .then(() => logEvent('info', 'contact_crm_failure_mail', requestId, true))
-        .catch(() => logEvent('error', 'contact_crm_failure_mail', requestId, false))
-    );
+function cookieValue(header: string | null, name: string): string | undefined {
+  if (!header) return undefined;
+  const prefix = `${name}=`;
+  for (const part of header.split(';')) {
+    const trimmed = part.trim();
+    if (!trimmed.startsWith(prefix)) continue;
+    return decodeURIComponent(trimmed.slice(prefix.length));
   }
-  if (deps.sendAlertWebhook) {
-    tasks.push(
-      deps
-        .sendAlertWebhook(CRM_FAILURE_ALERT_TEXT)
-        .then(() => logEvent('info', 'contact_crm_failure_push', requestId, true))
-        .catch(() => logEvent('error', 'contact_crm_failure_push', requestId, false))
-    );
-  }
-  await Promise.all(tasks);
+  return undefined;
 }
 
 /**
@@ -220,18 +191,6 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
 
   const env = deps.getEnv();
   const ip = clientIp(request);
-
-  if (env.TURNSTILE_SECRET_KEY) {
-    const token = parsed.data.turnstileToken;
-    const verified =
-      typeof token === 'string' && token.length > 0 && deps.verifyTurnstile
-        ? await deps.verifyTurnstile(token, ip).catch(() => false)
-        : false;
-    if (!verified) {
-      logEvent('info', 'contact_turnstile_failed', requestId, false);
-      return json(400, { error: 'Captcha verification failed' });
-    }
-  }
 
   if (!env.UPSTASH_REDIS_REST_URL || !env.UPSTASH_REDIS_REST_TOKEN) {
     logEvent('error', 'contact_redis_misconfigured', requestId, false);
@@ -350,7 +309,6 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
       persisted = false;
     }
     if (!persisted) {
-      // SMTP aceptó pero no pudimos persistir el resultado → unknown, sin reenvío ciego
       try {
         await finishContactIdempotency(store, {
           key: idemKey,
@@ -372,35 +330,20 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
     messageLen: fields.message.length
   });
 
-  // CAPI Lead solo si el dep está cableado Y el visitante dio consentimiento de
-  // publicidad. El formulario actual solo pide consentimiento de respuesta: el
-  // cableado de producción no registra sendLeadEvent (CIERRE-21).
-  if (deps.sendLeadEvent && parsed.data.email) {
+  const cookieHeader = request.headers.get('cookie');
+  const marketingOk = hasMarketingConsentFromCookieHeader(cookieHeader, nowMs);
+  if (deps.sendLeadEvent && parsed.data.email && marketingOk) {
     void deps
       .sendLeadEvent({
         email: parsed.data.email,
         ip,
         userAgent: request.headers.get('user-agent'),
-        sourceUrl: request.headers.get('referer')
+        sourceUrl: request.headers.get('referer'),
+        eventId: parsed.data.eventId,
+        fbp: cookieValue(cookieHeader, '_fbp'),
+        fbc: cookieValue(cookieHeader, '_fbc')
       })
       .catch(() => {});
-  }
-
-  // CRM Notion es opcional y secundario: el correo ya está aceptado.
-  // Fallo observable sin PII; la respuesta no promete registro en CRM.
-  if (deps.saveLead) {
-    try {
-      await deps.saveLead({
-        name: fields.name,
-        email: fields.email,
-        subject: fields.subject,
-        message: fields.message,
-        consent: parsed.data.consent
-      });
-    } catch {
-      logEvent('error', 'contact_crm_error', requestId, false);
-      await notifyCrmFailure(deps, { ...fields, smtp }, requestId);
-    }
   }
 
   return json(200, { ok: true, status: 'accepted', requestId, replay: false });

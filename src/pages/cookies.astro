@@ -2,8 +2,31 @@
 import Layout from '../layouts/Layout.astro';
 import { seoForPath } from '../content/seo';
 import { breadcrumbFromHome } from '../lib/breadcrumb';
+import inventory from '../../docs/cookies-inventory.json';
 
 const seo = seoForPath('/cookies/');
+
+type InventoryCookie = {
+  name: string;
+  owner: string;
+  purpose: string;
+  duration: string;
+  label: string;
+  requiresConsent: boolean;
+  party?: string;
+};
+
+const cookies = inventory.cookies as InventoryCookie[];
+
+function ownerCell(cookie: InventoryCookie): string {
+  if (cookie.party === 'first' && cookie.owner === 'alexendros.dev') {
+    return 'alexendros.dev (primera parte)';
+  }
+  if (cookie.owner === 'Google Analytics') return 'Google Analytics (tercero, EE. UU.)';
+  if (cookie.owner === 'PostHog') return 'PostHog (UE)';
+  if (cookie.party === 'third') return `${cookie.owner} (tercero)`;
+  return cookie.owner;
+}
 ---
 
 <Layout
@@ -71,7 +94,8 @@ const seo = seoForPath('/cookies/');
     <h2>Inventario (nombre, titular, para qué, cuánto dura)</h2>
     <p>
       Nada de lo que este dominio pueda escribir en tu navegador falta en esta tabla. Si una cookie
-      nueva entra en el código, el inventario se actualiza o falla la auditoría automática.
+      nueva entra en el código, el inventario se actualiza o falla la auditoría automática. Fuente:
+      <code>docs/cookies-inventory.json</code> (versión {inventory.version}).
     </p>
     <div class="table-wrap" tabindex="0" role="region" aria-label="Inventario de cookies">
       <table>
@@ -86,89 +110,20 @@ const seo = seoForPath('/cookies/');
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td><code>consent_v1</code></td>
-            <td>alexendros.dev (primera parte)</td>
-            <td>Recuerda tu sí/no a cada categoría, para no preguntarte otra vez.</td>
-            <td>12 meses</td>
-            <td>Técnica</td>
-            <td>No</td>
-          </tr>
-          <tr>
-            <td><code>alexendros_ref</code></td>
-            <td>alexendros.dev (primera parte)</td>
-            <td>
-              Guarda un código de referido técnico si llegas con <code>?ref=</code> o la ruta
-              <code>/r/…</code>, sin perfilado publicitario.
-            </td>
-            <td>90 días</td>
-            <td>Técnica</td>
-            <td>No</td>
-          </tr>
-          <tr>
-            <td><code>_ga</code></td>
-            <td>Google Analytics (tercero, EE. UU.)</td>
-            <td>Asigna un identificador anónimo para no contar la misma persona dos veces.</td>
-            <td>2 años</td>
-            <td>Analítica</td>
-            <td>Sí</td>
-          </tr>
-          <tr>
-            <td><code>_ga_*</code></td>
-            <td>Google Analytics</td>
-            <td>Mantiene el estado de esta visita (qué páginas de esta sesión).</td>
-            <td>2 años</td>
-            <td>Analítica</td>
-            <td>Sí</td>
-          </tr>
-          <tr>
-            <td><code>_gid</code></td>
-            <td>Google Analytics</td>
-            <td>Otro identificador de corto plazo para distinguir visitas de un mismo día.</td>
-            <td>1 día</td>
-            <td>Analítica</td>
-            <td>Sí</td>
-          </tr>
-          <tr>
-            <td><code>_clck</code></td>
-            <td>Microsoft Clarity</td>
-            <td>Identifica de forma persistente para unir visitas de la misma persona.</td>
-            <td>1 año</td>
-            <td>Analítica</td>
-            <td>Sí</td>
-          </tr>
-          <tr>
-            <td><code>_clsk</code></td>
-            <td>Microsoft Clarity</td>
-            <td>Agrupa las páginas vistas en una misma sesión.</td>
-            <td>1 día</td>
-            <td>Analítica</td>
-            <td>Sí</td>
-          </tr>
-          <tr>
-            <td><code>ph_*_posthog</code></td>
-            <td>PostHog (UE)</td>
-            <td>Analítica de producto: qué flujos usas, sin fines publicitarios.</td>
-            <td>1 año</td>
-            <td>Analítica</td>
-            <td>Sí</td>
-          </tr>
-          <tr>
-            <td><code>_fbp</code></td>
-            <td>Meta</td>
-            <td>Mide y personaliza anuncios; puede asociar esta visita a un perfil de Meta.</td>
-            <td>3 meses</td>
-            <td>Publicidad</td>
-            <td>Sí</td>
-          </tr>
-          <tr>
-            <td><code>li_sugr</code></td>
-            <td>LinkedIn</td>
-            <td>Atribuye visitas a campañas de LinkedIn.</td>
-            <td>3 meses</td>
-            <td>Publicidad</td>
-            <td>Sí</td>
-          </tr>
+          {
+            cookies.map((cookie) => (
+              <tr data-cookie-name={cookie.name}>
+                <td>
+                  <code>{cookie.name}</code>
+                </td>
+                <td>{ownerCell(cookie)}</td>
+                <td>{cookie.purpose}</td>
+                <td>{cookie.duration}</td>
+                <td>{cookie.label}</td>
+                <td>{cookie.requiresConsent ? 'Sí' : 'No'}</td>
+              </tr>
+            ))
+          }
         </tbody>
       </table>
     </div>
@@ -197,6 +152,6 @@ const seo = seoForPath('/cookies/');
       <a href="mailto:contratacion@alexendros.dev">contratacion@alexendros.dev</a>.
     </p>
 
-    <p>Última actualización: 12 de octubre de 2026.</p>
+    <p>Última actualización: 17 de noviembre de 2026.</p>
   </div>
 </Layout>

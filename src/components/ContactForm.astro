@@ -8,7 +8,6 @@ import styles from './ContactForm.module.css';
 interface Props {
   successMessage: string;
   errorMessage: string;
-  turnstileSiteKey?: string;
   initialReason?: ContactInput['reason'];
   initialOrigin?: ContactInput['origin'] | '';
   initialServiceSlug?: string;
@@ -19,7 +18,6 @@ interface Props {
 const {
   successMessage,
   errorMessage,
-  turnstileSiteKey,
   initialReason = 'informacionCliente',
   initialOrigin = '',
   initialServiceSlug = '',
@@ -231,8 +229,6 @@ const vias = [
     </span>
   </label>
   <p id="contact-consent-error" role="alert" class="text-step--1 text-danger" hidden></p>
-
-  {turnstileSiteKey && <div class="cf-turnstile" data-turnstile data-site-key={turnstileSiteKey} />}
 
   <div role="alert" class="space-y-1 text-step--1 text-danger" data-contact-errors hidden>
     <p data-contact-error-count></p>

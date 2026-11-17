@@ -47,9 +47,6 @@ importers:
       '@fontsource/space-grotesk':
         specifier: ^5.3.0
         version: 5.3.0
-      '@notionhq/client':
-        specifier: ^5.26.0
-        version: 5.26.0
       '@upstash/ratelimit':
         specifier: ^2.1.0
         version: 2.1.0(@upstash/redis@1.38.4)
@@ -1027,10 +1024,6 @@ packages:
   '@nodelib/fs.walk@1.2.8':
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
-
-  '@notionhq/client@5.26.0':
-    resolution: {integrity: sha512-Oc3438nQ5YmZkVO7YJG8fcTYl0V46CirdCvO33azZ9f7ZfD2rsHE4fUVANJiBB9Xf1sqpCs82nd8oKPxeXLmMg==}
-    engines: {node: '>=18'}
 
   '@octokit/auth-token@6.0.0':
     resolution: {integrity: sha512-P4YJBPdPSpWTQ1NU4XYdvHvXJJDxM6YwpS0FZHRgP7YFkdVxsWcpWGy/NVqlAA7PcPCnMacXlRm1y2PFZRWL/w==}
@@ -6424,8 +6417,6 @@ snapshots:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.3
-
-  '@notionhq/client@5.26.0': {}
 
   '@octokit/auth-token@6.0.0': {}
 

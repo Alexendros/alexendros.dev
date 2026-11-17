@@ -31,7 +31,7 @@ Alejandro Domingo Agustí como persona responsable y Alexendros como marca profe
 - Footer.astro: glass-bg + blur; marca + Contratación (mailto) + nav + legal; tracking solo con consentimiento (CMP); sin Sobre mí en el pie
 - Hero.astro: H1 de taxonomía; lista de cuatro enlaces; CTAs «Solicitar propuesta» y «Catálogo de servicios»
 - ServiceCard.astro / ProjectCard.astro: fichas de catálogo y referencias con availability
-- ContactForm.astro + scripts/contactForm.ts: formulario mínimo sin isla React (mensaje → nombre → canal → email|tel → consentimiento); motivo/categoría/refs ocultos o por query; errores por campo, honeypot, Turnstile opcional
+- ContactForm.astro + scripts/contactForm.ts: formulario mínimo sin isla React (mensaje → nombre → canal → email|tel → consentimiento); motivo/categoría/refs ocultos o por query; errores por campo, honeypot (sin Turnstile; decisión 0034)
 - DetailIsland.astro: dialog nativo sobre índices de servicios/referencias con soft-nav (decisión 0022)
 - scripts/cookieBanner.ts: CMP `vanilla-cookieconsent` v3 cargado desde Layout; Consent Mode v2 default-deny
 

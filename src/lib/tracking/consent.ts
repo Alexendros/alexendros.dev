@@ -107,10 +107,38 @@ function fromCookieValue(value: string | null): ConsentState | null {
   return normalize(parsed, consentVersion());
 }
 
-function isExpired(timestamp: string): boolean {
+function isExpired(timestamp: string, nowMs = Date.now()): boolean {
   const time = Date.parse(timestamp);
   if (!Number.isFinite(time)) return true;
-  return Date.now() - time > CONSENT_EXPIRES_DAYS * 86_400_000;
+  return nowMs - time > CONSENT_EXPIRES_DAYS * 86_400_000;
+}
+
+/**
+ * Lee `consent_v1` del header Cookie (servidor). Solo publicidad activa y
+ * vigente (versión + plazo) autoriza Meta CAPI.
+ */
+export function hasMarketingConsentFromCookieHeader(
+  cookieHeader: string | null,
+  nowMs = Date.now()
+): boolean {
+  if (!cookieHeader) return false;
+  const prefix = `${CONSENT_COOKIE}=`;
+  let raw: string | null = null;
+  for (const part of cookieHeader.split(';')) {
+    const trimmed = part.trim();
+    if (!trimmed.startsWith(prefix)) continue;
+    try {
+      raw = decodeURIComponent(trimmed.slice(prefix.length));
+    } catch {
+      raw = trimmed.slice(prefix.length);
+    }
+    break;
+  }
+  const state = fromCookieValue(raw);
+  if (!state) return false;
+  if (state.version !== consentVersion()) return false;
+  if (isExpired(state.timestamp, nowMs)) return false;
+  return state.marketing === true;
 }
 
 export function readConsent(): ConsentState | null {

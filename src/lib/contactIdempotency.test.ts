@@ -23,8 +23,8 @@ const basePayload: ContactInput = {
 
 describe('contactPayloadFingerprint', () => {
   it('API-08: Turnstile fuera de la identidad lógica', () => {
-    const a = contactPayloadFingerprint({ ...basePayload, turnstileToken: 'token-a' });
-    const b = contactPayloadFingerprint({ ...basePayload, turnstileToken: 'token-b' });
+    const a = contactPayloadFingerprint({ ...basePayload, eventId: 'evt-token-a' });
+    const b = contactPayloadFingerprint({ ...basePayload, eventId: 'evt-token-b' });
     expect(a).toBe(b);
     expect(a).toHaveLength(64);
   });
@@ -38,7 +38,7 @@ describe('contactPayloadFingerprint', () => {
   it('huella robusta (SHA-256), no hash 32 bits', () => {
     const fp = contactPayloadFingerprint(basePayload);
     expect(fp).toMatch(/^[a-f0-9]{64}$/);
-    expect(normalizeContactPayload(basePayload)).not.toContain('turnstile');
+    expect(normalizeContactPayload(basePayload)).not.toContain('eventId');
   });
 });
 

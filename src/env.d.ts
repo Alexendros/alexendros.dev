@@ -2,23 +2,12 @@
 /// <reference types="astro/client" />
 
 interface ImportMetaEnv {
-  readonly ALERT_WEBHOOK_URL?: string;
-  /** CSV de hostnames permitidos para ALERT_WEBHOOK_URL; default ntfy.sh. */
-  readonly ALERT_WEBHOOK_ALLOWED_HOSTS?: string;
   readonly SMTP_HOST?: string;
   readonly SMTP_PORT?: string;
   readonly SMTP_USER?: string;
   readonly SMTP_PASS?: string;
   readonly UPSTASH_REDIS_REST_URL?: string;
   readonly UPSTASH_REDIS_REST_TOKEN?: string;
-  readonly PUBLIC_SITE_URL?: string;
-  readonly NOTION_TOKEN?: string;
-  /** Data source id (API 2025-09-03). Alias: NOTION_LEADS_DATA_SOURCE_ID. */
-  readonly NOTION_LEADS_DATABASE_ID?: string;
-  readonly NOTION_LEADS_DATA_SOURCE_ID?: string;
-  /** Cloudflare Turnstile */
-  readonly PUBLIC_TURNSTILE_SITE_KEY?: string;
-  readonly TURNSTILE_SECRET_KEY?: string;
   /** Tracking (Meta CAPI server-side) */
   readonly META_PIXEL_ID?: string;
   readonly META_CAPI_TOKEN?: string;
@@ -26,7 +15,6 @@ interface ImportMetaEnv {
   /** Tracking client-side (loaders, gated by consent) */
   readonly PUBLIC_GA4_ID?: string;
   readonly PUBLIC_GTM_ID?: string;
-  readonly PUBLIC_GTM_SS_DOMAIN?: string;
   readonly PUBLIC_META_PIXEL_ID?: string;
   readonly PUBLIC_CLARITY_ID?: string;
   readonly PUBLIC_POSTHOG_KEY?: string;

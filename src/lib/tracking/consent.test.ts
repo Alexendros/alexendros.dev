@@ -137,4 +137,23 @@ describe('consent', () => {
     expect(state?.marketing).toBe(false);
     expect(hasConsent('analytics')).toBe(true);
   });
+
+  it('hasMarketingConsentFromCookieHeader exige publicidad vigente', async () => {
+    vi.stubEnv('PUBLIC_COOKIE_CONSENT_VERSION', '2');
+    const { hasMarketingConsentFromCookieHeader } = await import('./consent');
+    const now = Date.now();
+    const mk = (categories: string[], revision = 2) =>
+      `consent_v1=${encodeURIComponent(
+        JSON.stringify({
+          categories,
+          revision,
+          consentTimestamp: new Date(now).toISOString()
+        })
+      )}`;
+
+    expect(hasMarketingConsentFromCookieHeader(null, now)).toBe(false);
+    expect(hasMarketingConsentFromCookieHeader(mk(['necessary', 'analytics']), now)).toBe(false);
+    expect(hasMarketingConsentFromCookieHeader(mk(['necessary', 'marketing']), now)).toBe(true);
+    expect(hasMarketingConsentFromCookieHeader(mk(['necessary', 'marketing'], 1), now)).toBe(false);
+  });
 });
