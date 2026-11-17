@@ -93,12 +93,13 @@ const graph = {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <!--
-      Orden de capas en línea (sin request). Si un módulo abre @layer components
-      primero, esa capa queda bajo base y el texto del botón deja de ser --brand-fg.
+      Orden de capas en línea (sin request ni directiva inline de Astro). Si un
+      módulo abre @layer components primero, esa capa queda bajo base y el texto
+      del botón deja de ser --brand-fg.
     -->
-    <style is:inline>
-      @layer properties, reset, theme, base, components, utilities;
-    </style>
+    <Fragment
+      set:html={'<style>@layer properties, reset, theme, base, components, utilities;</style>'}
+    />
     <link rel="preload" href={bodyFontUrl} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={displayFontUrl} as="font" type="font/woff2" crossorigin />
     <title>{title}</title>
@@ -130,7 +131,7 @@ const graph = {
       media="(prefers-color-scheme: dark)"
     />
     <meta property="og:image:alt" content={resolvedOgAlt} />
-    <script is:inline set:html={themeInitSource} />
+    <Fragment set:html={`<script>${themeInitSource}</script>`} />
     <script type="application/ld+json" set:html={JSON.stringify(graph)} />
   </head>
   <body class="antialiased min-h-screen flex flex-col bg-bg text-fg">
