@@ -1,7 +1,4 @@
 import { z } from 'zod';
-import { articles } from './articles';
-import { projects } from './projects';
-import { services } from './services';
 
 /** Bandas alineadas al script de auditoría web-compliance (title 50–65, meta 150–170). */
 export const SEO_TITLE_MIN = 50;
@@ -144,19 +141,23 @@ export function seoForArticle(slug: string): SeoSnippet {
   return snippet;
 }
 
-/** Todas las snippets indexables (estáticas + dinámicas) para el gate de longitud. */
+/**
+ * Todas las snippets indexables (estáticas + dinámicas) para el gate de longitud.
+ * Itera solo mapas locales: no importar projects/services/articles aquí (sus .webp
+ * rompen Playwright/Node al cargar process → seo desde e2e).
+ */
 export function allIndexableSeo(): Array<{ path: string; snippet: SeoSnippet }> {
   const out: Array<{ path: string; snippet: SeoSnippet }> = Object.entries(seoByPath).map(
     ([path, snippet]) => ({ path, snippet })
   );
-  for (const service of services) {
-    out.push({ path: `/servicios/${service.slug}/`, snippet: seoForService(service.slug) });
+  for (const slug of Object.keys(serviceSeo)) {
+    out.push({ path: `/servicios/${slug}/`, snippet: seoForService(slug) });
   }
-  for (const project of projects) {
-    out.push({ path: `/referencias/${project.slug}/`, snippet: seoForProject(project.slug) });
+  for (const slug of Object.keys(projectSeo)) {
+    out.push({ path: `/referencias/${slug}/`, snippet: seoForProject(slug) });
   }
-  for (const article of articles) {
-    out.push({ path: `/articulos/${article.slug}/`, snippet: seoForArticle(article.slug) });
+  for (const slug of Object.keys(articleSeo)) {
+    out.push({ path: `/articulos/${slug}/`, snippet: seoForArticle(slug) });
   }
   return out;
 }
