@@ -9,7 +9,7 @@
   "packageManager": "pnpm@9.15.9",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro check && astro build && node scripts/fix-vercel-runtime.mjs && node scripts/check-public-pricing.mjs --require-build && bash scripts/audit/check-leaks.sh src .vercel/output/static",
+    "build": "astro check && astro build && node scripts/inject-csp-hashes.mjs && node scripts/fix-vercel-runtime.mjs && node scripts/check-public-pricing.mjs --require-build && bash scripts/audit/check-leaks.sh src .vercel/output/static",
     "preview": "serve .vercel/output/static -l 4321 --no-clipboard",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",

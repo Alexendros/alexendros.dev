@@ -4,18 +4,20 @@ import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import {
   buildContactEmailHtml,
+  CONTACT_RATE_LIMIT_PER_MINUTE,
   handleContactPost,
   methodNotAllowed,
   type ContactDeps,
   type ContactMailPayload
 } from '../../lib/contactHandler';
 import { createRedisContactIdempotencyStore } from '../../lib/contactIdempotency';
-import { isCapiConfigured, sendCapiEvent } from '../../lib/tracking/capi';
 
 export const prerender = false;
 
 const MAIL_FROM = 'operaciones@alexendros.dev';
 const MAIL_TO = 'operaciones@alexendros.dev';
+/** Timeouts SMTP por debajo de maxDuration (10 s) para liberar el lease. */
+const SMTP_TIMEOUT_MS = 5_000;
 
 let cachedRatelimit: Ratelimit | null = null;
 let cachedRedis: Redis | null = null;
@@ -36,7 +38,7 @@ function getContactRatelimit(): Ratelimit {
   if (!url || !token) throw new Error('redis_misconfigured');
   cachedRatelimit = new Ratelimit({
     redis: new Redis({ url, token }),
-    limiter: Ratelimit.slidingWindow(10, '1 m'),
+    limiter: Ratelimit.slidingWindow(CONTACT_RATE_LIMIT_PER_MINUTE, '1 m'),
     prefix: 'alexendros:contact'
   });
   return cachedRatelimit;
@@ -66,24 +68,6 @@ function createProductionDeps(): ContactDeps {
         return redis.set(key, value, { ex: opts.ex });
       }
     }),
-    sendLeadEvent: async ({ email, ip, userAgent, sourceUrl, eventId, fbp, fbc }) => {
-      const pixelId =
-        (import.meta.env.META_PIXEL_ID as string | undefined)?.trim() ||
-        (import.meta.env.PUBLIC_META_PIXEL_ID as string | undefined)?.trim();
-      const accessToken = (import.meta.env.META_CAPI_TOKEN as string | undefined)?.trim();
-      const cfg = {
-        pixelId,
-        accessToken,
-        testEventCode: (import.meta.env.META_CAPI_TEST_EVENT_CODE as string | undefined)?.trim()
-      };
-      if (!isCapiConfigured(cfg)) return;
-      await sendCapiEvent(cfg, {
-        eventName: 'Lead',
-        eventSourceUrl: sourceUrl ?? undefined,
-        eventId,
-        userData: { email, ip, userAgent: userAgent ?? undefined, fbp, fbc }
-      });
-    },
     sendMail: async (payload) => sendContactMail(payload)
   };
 }
@@ -106,7 +90,10 @@ async function sendContactMail({
     host: smtp.host,
     port: smtp.port,
     secure: smtp.port === 465,
-    auth: { user: smtp.user, pass: smtp.pass }
+    auth: { user: smtp.user, pass: smtp.pass },
+    connectionTimeout: SMTP_TIMEOUT_MS,
+    greetingTimeout: SMTP_TIMEOUT_MS,
+    socketTimeout: SMTP_TIMEOUT_MS
   });
   await transporter.sendMail({
     from: MAIL_FROM,

@@ -1,10 +1,8 @@
-export type ConsentCategory = 'necessary' | 'preferences' | 'analytics' | 'marketing';
+export type ConsentCategory = 'necessary' | 'analytics';
 
 export interface ConsentState {
   necessary: true;
-  preferences: boolean;
   analytics: boolean;
-  marketing: boolean;
   timestamp: string;
   version: number;
 }
@@ -12,12 +10,7 @@ export interface ConsentState {
 export const CONSENT_COOKIE = 'consent_v1';
 export const CONSENT_STORAGE_KEY = 'consent_v1';
 export const CONSENT_EXPIRES_DAYS = 365;
-export const CONSENT_CATEGORIES: readonly ConsentCategory[] = [
-  'necessary',
-  'preferences',
-  'analytics',
-  'marketing'
-];
+export const CONSENT_CATEGORIES: readonly ConsentCategory[] = ['necessary', 'analytics'];
 
 type ConsentListener = (state: ConsentState) => void;
 
@@ -76,9 +69,7 @@ function normalize(raw: unknown, fallbackVersion: number): ConsentState | null {
   if (typeof record.timestamp !== 'string') return null;
   return {
     necessary: true,
-    preferences: record.preferences === true,
     analytics: record.analytics === true,
-    marketing: record.marketing === true,
     timestamp: record.timestamp,
     version: typeof record.version === 'number' ? record.version : fallbackVersion
   };
@@ -97,9 +88,7 @@ function fromCookieValue(value: string | null): ConsentState | null {
     const version = typeof record.revision === 'number' ? record.revision : consentVersion();
     return {
       necessary: true,
-      preferences: categories.includes('preferences'),
       analytics: categories.includes('analytics'),
-      marketing: categories.includes('marketing'),
       timestamp,
       version
     };
@@ -111,34 +100,6 @@ function isExpired(timestamp: string, nowMs = Date.now()): boolean {
   const time = Date.parse(timestamp);
   if (!Number.isFinite(time)) return true;
   return nowMs - time > CONSENT_EXPIRES_DAYS * 86_400_000;
-}
-
-/**
- * Lee `consent_v1` del header Cookie (servidor). Solo publicidad activa y
- * vigente (versión + plazo) autoriza Meta CAPI.
- */
-export function hasMarketingConsentFromCookieHeader(
-  cookieHeader: string | null,
-  nowMs = Date.now()
-): boolean {
-  if (!cookieHeader) return false;
-  const prefix = `${CONSENT_COOKIE}=`;
-  let raw: string | null = null;
-  for (const part of cookieHeader.split(';')) {
-    const trimmed = part.trim();
-    if (!trimmed.startsWith(prefix)) continue;
-    try {
-      raw = decodeURIComponent(trimmed.slice(prefix.length));
-    } catch {
-      raw = trimmed.slice(prefix.length);
-    }
-    break;
-  }
-  const state = fromCookieValue(raw);
-  if (!state) return false;
-  if (state.version !== consentVersion()) return false;
-  if (isExpired(state.timestamp, nowMs)) return false;
-  return state.marketing === true;
 }
 
 export function readConsent(): ConsentState | null {
@@ -179,9 +140,7 @@ function emit(state: ConsentState): void {
 export function writeConsent(categories: readonly ConsentCategory[]): ConsentState {
   const state: ConsentState = {
     necessary: true,
-    preferences: categories.includes('preferences'),
     analytics: categories.includes('analytics'),
-    marketing: categories.includes('marketing'),
     timestamp: new Date().toISOString(),
     version: consentVersion()
   };

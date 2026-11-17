@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /design-system/
+Disallow: /sobre-mi/
 
 Sitemap: https://alexendros.dev/sitemap-index.xml

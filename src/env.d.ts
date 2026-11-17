@@ -8,19 +8,8 @@ interface ImportMetaEnv {
   readonly SMTP_PASS?: string;
   readonly UPSTASH_REDIS_REST_URL?: string;
   readonly UPSTASH_REDIS_REST_TOKEN?: string;
-  /** Tracking (Meta CAPI server-side) */
-  readonly META_PIXEL_ID?: string;
-  readonly META_CAPI_TOKEN?: string;
-  readonly META_CAPI_TEST_EVENT_CODE?: string;
-  /** Tracking client-side (loaders, gated by consent) */
-  readonly PUBLIC_GA4_ID?: string;
-  readonly PUBLIC_GTM_ID?: string;
-  readonly PUBLIC_META_PIXEL_ID?: string;
-  readonly PUBLIC_CLARITY_ID?: string;
-  readonly PUBLIC_POSTHOG_KEY?: string;
-  readonly PUBLIC_POSTHOG_HOST?: string;
-  readonly PUBLIC_LINKEDIN_PARTNER_ID?: string;
   readonly PUBLIC_COOKIE_CONSENT_VERSION?: string;
+  readonly VERCEL_GIT_COMMIT_SHA?: string;
 }
 
 interface ImportMeta {
@@ -29,10 +18,3 @@ interface ImportMeta {
 
 /** Inyectado por vite.define en astro.config.mjs: true solo en builds de Vercel. */
 declare const __IS_VERCEL__: boolean;
-
-declare namespace App {
-  interface Locals {
-    /** Nonce CSP por petición. Solo lo rellena el middleware en rutas on-demand. */
-    cspNonce: string;
-  }
-}

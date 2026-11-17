@@ -24,7 +24,7 @@ Astro 7.3 con `output: 'static'` y rutas on-demand (`prerender = false`) + Tailw
 
 ## APIs
 
-- `POST /api/contact` — Zod, honeypot, rate-limit Upstash, Proton SMTP, Turnstile si hay secreto. Fail-closed (503) sin Redis/SMTP. Idempotencia con estados `processing` | `accepted` | `retryable_failure` | `unknown` (contrato HTTP: 200 accepted/+replay, 202 processing + `Retry-After`, 409 conflict, 503 retryable_failure|unknown). Un claim ocupado no es éxito final.
+- `POST /api/contact` — Zod, honeypot, rate-limit Upstash, Proton SMTP. Fail-closed (503) sin Redis/SMTP. Idempotencia con estados `processing` | `accepted` | `retryable_failure` | `unknown` (contrato HTTP: 200 accepted/+replay, 202 processing + `Retry-After`, 409 conflict, 503 retryable_failure|unknown). Un claim ocupado no es éxito final. Sin Turnstile (decisión 0035).
 - `POST /api/csp-report` — colector de violaciones CSP (Report-Only).
 
 Variables: [`.env.example`](.env.example) y [docs/standards/protocols/env-vars.md](docs/standards/protocols/env-vars.md). Nunca en git.

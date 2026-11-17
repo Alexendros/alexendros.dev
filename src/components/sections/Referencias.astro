@@ -17,11 +17,7 @@ const featured = projects.filter((project) => project.featured).slice(0, 2);
   />
 
   <div class:list={['cards stack-gap grid gap-6 sm:grid-cols-2', styles.cards]}>
-    {
-      featured.map((project, index) => (
-        <ProjectCard project={project} headingLevel="h3" priority={index === 0} />
-      ))
-    }
+    {featured.map((project) => <ProjectCard project={project} headingLevel="h3" />)}
   </div>
 
   <p class="stack-gap">

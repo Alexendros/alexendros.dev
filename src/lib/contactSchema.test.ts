@@ -56,13 +56,23 @@ describe('parseContactBody R04', () => {
     ).toBe(false);
   });
 
-  it('rechaza markup peligroso en el mensaje', () => {
+  it('acepta markup en el mensaje (la salida del correo se escapa)', () => {
     expect(
       parseContactBody({
         ...validCorreo,
         message: 'Hola <script>alert(1)</script> necesito ayuda ya.'
       }).success
-    ).toBe(false);
+    ).toBe(true);
+  });
+
+  it('acepta mensajes técnicos con = (antes rechazados por on\\w+\\s*=)', () => {
+    for (const message of [
+      'La condition = true falla en producción y necesito ayuda.',
+      'Configuration = nueva en el entorno de prueba, revisar.',
+      'onboarding = lento tras el último despliegue, detalles aquí.'
+    ]) {
+      expect(parseContactBody({ ...validCorreo, message }).success).toBe(true);
+    }
   });
 
   it('rechaza CRLF en el nombre (inyección de cabecera SMTP)', () => {
@@ -212,14 +222,12 @@ describe('parseContactBody (formulario mínimo)', () => {
     expect(parseContactBody({ ...validCorreo, channel: 'whatsapp' }).success).toBe(false);
   });
 
-  it('rechaza markup en el mensaje', () => {
+  it('acepta markup en el mensaje (escapado al construir el correo)', () => {
     const parsed = parseContactBody({
       ...validCorreo,
       message: 'Hola <script>x</script> necesito ayuda ya.'
     });
-    expect(parsed.success).toBe(false);
-    if (parsed.success) return;
-    expect(formatContactFieldErrors(parsed.error).some((e) => e.field === 'message')).toBe(true);
+    expect(parsed.success).toBe(true);
   });
 });
 

@@ -2,8 +2,11 @@
 import Layout from '../layouts/Layout.astro';
 import { seoForPath } from '../content/seo';
 import { breadcrumbFromHome } from '../lib/breadcrumb';
+import { privacyProcessors } from '../content/processors';
+import { CONTACT_RATE_LIMIT_PER_MINUTE } from '../lib/contactLimits';
 
 const seo = seoForPath('/privacidad/');
+const processors = privacyProcessors();
 ---
 
 <Layout
@@ -29,14 +32,15 @@ const seo = seoForPath('/privacidad/');
     <p>
       Del formulario de contacto: motivo, nombre, categoría (particular, empresa o institución),
       correo electrónico de respuesta, texto de la petición y, si aplica, módulos indicados. También
-      datos técnicos mínimos del envío (dirección IP para limitación de abuso).
+      datos técnicos mínimos del envío (dirección IP para limitación de abuso, hasta{' '}
+      {CONTACT_RATE_LIMIT_PER_MINUTE} envíos por minuto).
     </p>
 
     <h2>Finalidad y base jurídica</h2>
     <p>
       Responder a tu petición y gestionar el contacto profesional. Base jurídica: Art. 6.1.b RGPD
       (medidas precontractuales a petición del interesado). El consentimiento de la casilla del
-      formulario acredita que has leído esta información; no se usa para marketing ni se marca por
+      formulario acredita que has leído esta información; no se usa para publicidad ni se marca por
       defecto.
     </p>
 
@@ -45,29 +49,23 @@ const seo = seoForPath('/privacidad/');
 
     <h2>Encargados y destinatarios</h2>
     <p>
-      Correo: Proton Mail. Alojamiento del sitio: Vercel. No se ceden ni se venden datos a terceros
-      con fines comerciales. Además, actúan como encargados del tratamiento:
+      No se ceden ni se venden datos a terceros con fines comerciales. Actúan como encargados del
+      tratamiento:
     </p>
     <ul>
-      <li>
-        <strong>Notion</strong> (Notion Labs, Inc.): guarda los datos del formulario de contacto (nombre,
-        correo, motivo y mensaje) para gestionar la respuesta.
-      </li>
-      <li>
-        <strong>Upstash</strong> (Upstash, Inc.), con los datos en Frankfurt (UE): limita el número de
-        envíos para evitar abusos (10 por minuto). Guarda la dirección IP solo el tiempo necesario para
-        aplicar ese límite y una huella cifrada (SHA-256) del envío durante 10 minutos para no procesarlo
-        dos veces; no guarda el contenido del mensaje.
-      </li>
-      <li>
-        <strong>Cloudflare</strong> (Cloudflare, Inc.), con Turnstile: comprueba que el envío lo hace
-        una persona y no un robot, a partir de datos técnicos del navegador y la dirección IP.
-      </li>
+      {
+        processors.map((processor) => (
+          <li>
+            <strong>{processor.name}</strong>: {processor.privacySummary}
+          </li>
+        ))
+      }
     </ul>
     <p>
-      Notion y Cloudflare tienen sede en Estados Unidos, por lo que puede haber transferencias
-      internacionales de datos. Se amparan en el Marco de Privacidad de Datos UE-EE. UU. y, en su
-      defecto, en cláusulas contractuales tipo de la Comisión Europea.
+      Vercel tiene sede en Estados Unidos; el alojamiento y la medición agregada pueden implicar
+      transferencias internacionales amparadas en el Marco de Privacidad de Datos UE-EE. UU. y, en
+      su defecto, en cláusulas contractuales tipo. Upstash opera el límite de abuso en Frankfurt
+      (UE). Proton Mail opera desde Suiza.
     </p>
 
     <h2>Derechos</h2>
@@ -81,11 +79,11 @@ const seo = seoForPath('/privacidad/');
 
     <h2>Cookies</h2>
     <p>
-      El sitio usa un gestor de consentimiento. Lo técnico recuerda tu decisión; analítica y
-      publicidad solo se encienden si tú lo permites, categoría a categoría. Explicación completa en <a
-        href="/cookies/">Cookies</a
-      >.
+      El sitio usa un gestor de consentimiento. Lo técnico recuerda tu decisión; la analítica
+      (Vercel Analytics y Speed Insights) solo se enciende si tú lo permites. Explicación completa
+      en
+      <a href="/cookies/">Cookies</a>.
     </p>
-    <p>Última actualización: 12 de octubre de 2026.</p>
+    <p>Última actualización: 17 de noviembre de 2026.</p>
   </div>
 </Layout>

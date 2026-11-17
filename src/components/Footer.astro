@@ -1,5 +1,6 @@
 ---
 import { site } from '../content/site';
+const year = new Date().getFullYear();
 ---
 
 <footer class="footer-veil border-t border-border">
@@ -60,6 +61,8 @@ import { site } from '../content/site';
     </div>
   </div>
   <div class="border-t border-border">
-    <p class="mx-auto max-w-6xl px-6 py-6 text-step--1 text-muted">Alexendros.dev</p>
+    <p class="mx-auto max-w-6xl px-6 py-6 text-step--1 text-muted">
+      © {year} Alejandro Domingo Agustí · Alexendros.dev
+    </p>
   </div>
 </footer>

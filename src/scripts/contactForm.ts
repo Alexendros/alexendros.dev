@@ -1,19 +1,30 @@
-import { normalizeProjectSlug, normalizeServiceSlug } from '../content/contactContext';
-import { normalizePortalModuleIds, serializePortalModuleIds } from '../content/portalModules';
+import { normalizePortalModuleIds, serializePortalModuleIds } from '../content/portalModuleIds';
 import { track } from '../lib/tracking/events';
+import { validateContactClient } from '../lib/contactClientValidate';
 import {
   contactOrigins,
   contactReasons,
   contactViaIds,
-  formatContactFieldErrors,
-  parseContactBody,
   portalModuleDisplayNames,
   resolveViaId,
   type ContactInput,
   type ContactViaId,
   type FieldError
-} from '../lib/contactSchema';
+} from '../lib/contactModel';
 import { paquetesPublicados } from '../content/paquetes';
+
+const SERVICE_SLUGS = new Set(['portal-web', 'software-a-medida']);
+const PROJECT_SLUGS = new Set(['front-valencia', 'graficas-nasve', 'zedazo', 'alexendros-me']);
+
+function normalizeServiceSlug(value: string | null | undefined): string | undefined {
+  const trimmed = value?.trim() ?? '';
+  return trimmed && SERVICE_SLUGS.has(trimmed) ? trimmed : undefined;
+}
+
+function normalizeProjectSlug(value: string | null | undefined): string | undefined {
+  const trimmed = value?.trim() ?? '';
+  return trimmed && PROJECT_SLUGS.has(trimmed) ? trimmed : undefined;
+}
 
 const SUBMIT_TIMEOUT_MS = 25_000;
 const FIELD_IDS: Record<string, string> = {
@@ -345,9 +356,9 @@ function initContactForm(form: HTMLFormElement): void {
       honeypot: data.get('website'),
       eventId
     };
-    const parsed = parseContactBody(payload);
+    const parsed = validateContactClient(payload);
     if (!parsed.success) {
-      showFieldErrors(formatContactFieldErrors(parsed.error));
+      showFieldErrors(parsed.errors);
       return;
     }
 

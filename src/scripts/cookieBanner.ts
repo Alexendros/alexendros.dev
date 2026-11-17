@@ -22,29 +22,6 @@ function toCategories(cookie: CookieValue | undefined): ConsentCategory[] {
   );
 }
 
-function retargetPreferencesBtn() {
-  const buttons = document.querySelectorAll('#cc-main button');
-  const button = [...buttons].find((element) =>
-    /^configurar$/i.test((element.textContent ?? '').trim())
-  ) as HTMLButtonElement | undefined;
-  if (!button || button.dataset.ccPolicy === '1') return;
-
-  button.dataset.ccPolicy = '1';
-  button.setAttribute(
-    'aria-label',
-    'Configurar cookies: explicación completa y panel para elegir categoría a categoría'
-  );
-  button.addEventListener(
-    'click',
-    (event) => {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      window.location.assign('/cookies');
-    },
-    true
-  );
-}
-
 function openPreferences(event: Event) {
   const target = event.target;
   if (!(target instanceof Element)) return;
@@ -59,17 +36,14 @@ export function initCookieBanner(): void {
   if (initialized) return;
   initialized = true;
 
-  let observer: MutationObserver | undefined;
   const handleError = (error: unknown) => {
     initialized = false;
-    observer?.disconnect();
     document.removeEventListener('click', openPreferences);
     delete document.documentElement.dataset.cmpReady;
     console.error('[cmp] No se pudo inicializar el gestor de consentimiento.', error);
   };
 
   try {
-    observer = new MutationObserver(retargetPreferencesBtn);
     void CookieConsent.run({
       revision: consentVersion(),
       cookie: {
@@ -99,9 +73,7 @@ export function initCookieBanner(): void {
       },
       categories: {
         necessary: { enabled: true, readOnly: true },
-        preferences: {},
-        analytics: {},
-        marketing: {}
+        analytics: {}
       },
       language: {
         default: 'es',
@@ -110,8 +82,8 @@ export function initCookieBanner(): void {
             consentModal: {
               title: 'Valoramos tu privacidad',
               description:
-                'Guardamos un dato técnico para recordar tu decisión. El resto (medición de visitas y publicidad) no se enciende hasta que tú lo permitas. ' +
-                '«Aceptar todas» activa analítica y publicidad. «Rechazar opcionales» deja solo lo técnico. «Configurar» abre el detalle por categoría. ' +
+                'Guardamos un dato técnico para recordar tu decisión. La medición de visitas (Vercel Analytics y Speed Insights) no se enciende hasta que tú lo permitas. ' +
+                '«Aceptar todas» activa la analítica. «Rechazar opcionales» deja solo lo técnico. «Configurar» abre el detalle por categoría. ' +
                 '<a href="/cookies/">Explicación completa en Cookies</a>.',
               acceptAllBtn: 'Aceptar todas',
               acceptNecessaryBtn: 'Rechazar opcionales',
@@ -136,22 +108,10 @@ export function initCookieBanner(): void {
                   linkedCategory: 'necessary'
                 },
                 {
-                  title: 'Preferencias (opcionales)',
-                  description:
-                    'En claro: recuerdan ajustes que tú eliges (por ejemplo un tema). Hoy este sitio casi no las usa. Grado técnico: solo se escriben si las aceptas. Base: consentimiento (art. 6.1.a RGPD).',
-                  linkedCategory: 'preferences'
-                },
-                {
                   title: 'Analítica (opcionales)',
                   description:
-                    'En claro: cuentan visitas y clics de forma agregada (Google Analytics, Microsoft Clarity, PostHog en la UE). No sirve para mostrarte anuncios. Grado técnico: identificadores de dispositivo y sesión, 1 día a 2 años. Base: consentimiento.',
+                    'En claro: cuentan visitas y rendimiento de forma agregada (Vercel Analytics y Speed Insights), solo en el despliegue de Vercel. No sirve para mostrarte anuncios. Base: consentimiento.',
                   linkedCategory: 'analytics'
-                },
-                {
-                  title: 'Publicidad (opcionales)',
-                  description:
-                    'En claro: miden y personalizan campañas (Meta y LinkedIn). Pueden asociar esta visita a un perfil publicitario. Grado técnico: píxeles de terceros, hasta 3 meses. Base: consentimiento. Clave interna: marketing.',
-                  linkedCategory: 'marketing'
                 }
               ]
             }
@@ -161,8 +121,6 @@ export function initCookieBanner(): void {
     })
       .then(() => {
         document.documentElement.dataset.cmpReady = 'true';
-        retargetPreferencesBtn();
-        observer?.observe(document.body, { childList: true, subtree: true });
         document.addEventListener('click', openPreferences);
       })
       .catch(handleError);

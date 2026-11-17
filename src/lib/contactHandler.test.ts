@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
   buildContactEmailHtml,
+  clientIp,
   CONTACT_MAX_BODY_BYTES,
   handleContactPost,
   isJsonContentType,
@@ -65,6 +66,37 @@ describe('buildContactEmailHtml', () => {
     });
     expect(mailSubject).not.toMatch(/[\r\n]/);
     expect(mailSubject).toContain('Propuesta comercial');
+  });
+
+  it('escapa <script> en el HTML del correo', () => {
+    const { html } = buildContactEmailHtml({
+      name: 'Alex',
+      email: 'alex@example.com',
+      subject: 'Propuesta comercial',
+      message: 'Hola <script>alert(1)</script> y condition = true.'
+    });
+    expect(html).toContain('&lt;script&gt;');
+    expect(html).not.toContain('<script>');
+  });
+});
+
+describe('clientIp', () => {
+  it('usa x-real-ip y ignora x-forwarded-for', () => {
+    const req = new Request('https://alexendros.dev/api/contact', {
+      headers: {
+        'x-forwarded-for': '1.2.3.4, 5.6.7.8',
+        'x-real-ip': '9.8.7.6'
+      }
+    });
+    expect(clientIp(req)).toBe('9.8.7.6');
+  });
+
+  it('sin x-real-ip emite clave anónima única (no unknown)', () => {
+    const a = clientIp(new Request('https://alexendros.dev/api/contact'));
+    const b = clientIp(new Request('https://alexendros.dev/api/contact'));
+    expect(a).toMatch(/^anon:/);
+    expect(b).toMatch(/^anon:/);
+    expect(a).not.toBe(b);
   });
 });
 
@@ -236,62 +268,6 @@ describe('handleContactPost', () => {
     );
     expect(res.status).toBe(200);
     expect(sendMail).not.toHaveBeenCalled();
-  });
-
-  function consentCookie(categories: string[]): string {
-    vi.stubEnv('PUBLIC_COOKIE_CONSENT_VERSION', '2');
-    return `consent_v1=${encodeURIComponent(
-      JSON.stringify({
-        categories,
-        consentTimestamp: new Date(1_700_000_000_000).toISOString(),
-        revision: 2
-      })
-    )}`;
-  }
-
-  it('CAPI: sin cookie de publicidad → no sendLeadEvent', async () => {
-    const sendLeadEvent = vi.fn(async () => undefined);
-    const res = await handleContactPost(
-      postJson({ ...validBody, eventId: 'evt-no-mkt' }),
-      deps({ sendLeadEvent })
-    );
-    expect(res.status).toBe(200);
-    expect(sendLeadEvent).not.toHaveBeenCalled();
-  });
-
-  it('CAPI: solo analítica → no sendLeadEvent', async () => {
-    const sendLeadEvent = vi.fn(async () => undefined);
-    const res = await handleContactPost(
-      postJson(
-        { ...validBody, eventId: 'evt-analytics' },
-        { headers: { Cookie: consentCookie(['necessary', 'analytics']) } }
-      ),
-      deps({ sendLeadEvent })
-    );
-    expect(res.status).toBe(200);
-    expect(sendLeadEvent).not.toHaveBeenCalled();
-  });
-
-  it('CAPI: publicidad → sendLeadEvent con eventId', async () => {
-    const sendLeadEvent = vi.fn(async (_input: unknown) => undefined);
-    const res = await handleContactPost(
-      postJson(
-        { ...validBody, eventId: 'evt-lead-12345' },
-        {
-          headers: {
-            Cookie: `${consentCookie(['necessary', 'analytics', 'marketing'])}; _fbp=fb.1.x`
-          }
-        }
-      ),
-      deps({ sendLeadEvent })
-    );
-    expect(res.status).toBe(200);
-    expect(sendLeadEvent).toHaveBeenCalledOnce();
-    expect(sendLeadEvent.mock.calls[0]?.[0]).toMatchObject({
-      email: validBody.email,
-      eventId: 'evt-lead-12345',
-      fbp: 'fb.1.x'
-    });
   });
 
   it('API-01: envío válido con store → un sendMail y accepted', async () => {

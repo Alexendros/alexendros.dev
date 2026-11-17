@@ -5,95 +5,47 @@ import {
   projectTitle,
   serviceTitle
 } from '../content/contactContext';
+import { normalizePortalModuleIds, serializePortalModuleIds } from '../content/portalModules';
 import {
-  normalizePortalModuleIds,
-  serializePortalModuleIds,
-  type PortalModuleId,
-  portalModules
-} from '../content/portalModules';
+  contactChannels,
+  contactOrigins,
+  contactReasons,
+  contactViaIds,
+  contactViaLabels,
+  EMAIL_MAX,
+  entityTypes,
+  fieldLabels,
+  MESSAGE_MAX,
+  MESSAGE_MIN,
+  NAME_MAX,
+  NAME_MIN,
+  OTRA_MAX,
+  OTRA_MIN,
+  portalModuleDisplayNames,
+  resolveViaId,
+  SITIO_MAX,
+  type ContactViaId,
+  type FieldError
+} from './contactModel';
 
-export const entityTypes = ['particular', 'empresa', 'institucion'] as const;
-export const contactChannels = ['correo'] as const;
-export const contactReasons = [
-  'proyectoEspecial',
-  'propuestaComercial',
-  'informacionCliente'
-] as const;
-
-export const contactOrigins = [
-  'proceso',
-  'servicios',
-  'home',
-  'referencias',
-  'proyectos',
-  'home-linux',
-  'home-gestion',
-  'home-ia',
-  'referido',
-  'catalogo-revision',
-  'catalogo-construccion',
-  'catalogo-colaboracion'
-] as const;
-
-/** Identificadores de vía del formulario (página única). */
-export const contactViaIds = [
-  'web',
-  'tienda',
-  'asistente',
-  'revisar',
-  'crear',
-  'colaborar',
-  'otra'
-] as const;
-export type ContactViaId = (typeof contactViaIds)[number];
-
-/** Ids retirados (enlaces externos o en caché) → id actual. */
-export const LEGACY_VIA_IDS: Readonly<Record<string, ContactViaId>> = {
-  automatizacion: 'asistente'
+export {
+  contactChannels,
+  contactOrigins,
+  contactReasons,
+  contactViaIds,
+  contactViaLabels,
+  entityTypes,
+  fieldLabels,
+  portalModuleDisplayNames,
+  resolveViaId,
+  type ContactViaId,
+  type FieldError
 };
 
-/** Traduce un id antiguo al actual; devuelve `null` si no es una vía válida. */
-export function resolveViaId(value: string): ContactViaId | null {
-  const trimmed = value.trim();
-  const id = LEGACY_VIA_IDS[trimmed] ?? trimmed;
-  return (contactViaIds as readonly string[]).includes(id) ? (id as ContactViaId) : null;
-}
-
-export const contactViaLabels: Record<ContactViaId, string> = {
-  web: 'Paquete Web',
-  tienda: 'Paquete Tienda online',
-  asistente: 'Paquete Asistente IA para tu negocio',
-  revisar: 'Revisar lo que ya existe',
-  crear: 'Crear una web o una tienda',
-  colaborar: 'Sumar un programador al equipo',
-  otra: 'Otra necesidad'
-};
-
-const PORTAL_MODULE_TITLES: Record<PortalModuleId, string> = Object.fromEntries(
-  portalModules.map((m) => [m.id, m.title])
-) as Record<PortalModuleId, string>;
-
-/** Nombres legibles de módulos ya normalizados (IDs o CSV). */
-export function portalModuleDisplayNames(modules: string | readonly string[] | undefined): string {
-  const ids = normalizePortalModuleIds(modules);
-  return ids.map((id) => PORTAL_MODULE_TITLES[id] ?? id).join(', ');
-}
-
-const UNSAFE_CONTENT = /<\s*script|javascript:|on\w+\s*=|data:\s*text\/html/i;
 /** CRLF y C0 en campos que pueden acabar en cabeceras SMTP (asunto). */
 const HEADER_UNSAFE_CHARS = /[\r\n\u0000-\u001f\u007f]/;
 /** En mensaje de cuerpo: permitir \\n y \\t; rechazar CR y demás controles. */
 const BODY_UNSAFE_CHARS = /[\r\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/;
-
-function rejectUnsafe(value: string, ctx: z.RefinementCtx, path: string) {
-  if (UNSAFE_CONTENT.test(value)) {
-    ctx.addIssue({
-      code: 'custom',
-      path: [path],
-      message: 'formato'
-    });
-  }
-}
 
 function rejectHeaderUnsafe(value: string, ctx: z.RefinementCtx, path: string) {
   if (HEADER_UNSAFE_CHARS.test(value)) {
@@ -130,7 +82,7 @@ const sitioSchema = z.preprocess(
   },
   z
     .string()
-    .max(200)
+    .max(SITIO_MAX)
     .regex(/^(https?:\/\/)?[^\s/.]+(\.[^\s/.]+)+(\/\S*)?$/i, { message: 'formato' })
     .optional()
 );
@@ -148,7 +100,7 @@ function normalizeVias(v: unknown): ContactViaId[] {
 
 export const contactSchema = z
   .object({
-    name: z.string().trim().min(2).max(100),
+    name: z.string().trim().min(NAME_MIN).max(NAME_MAX),
     /** UI mínima: default particular si no llega (contexto oculto). */
     entityType: z.preprocess((v) => {
       if (typeof v === 'string' && (entityTypes as readonly string[]).includes(v)) return v;
@@ -159,20 +111,20 @@ export const contactSchema = z
       if (typeof v !== 'string') return v;
       const trimmed = v.trim();
       return trimmed === '' ? undefined : trimmed;
-    }, z.email().max(254).optional()),
+    }, z.email().max(EMAIL_MAX).optional()),
     /** UI mínima: default informacionCliente; query `motivo` allowlisted si llega. */
     reason: z.preprocess((v) => {
       if (typeof v === 'string' && (contactReasons as readonly string[]).includes(v)) return v;
       return 'informacionCliente';
     }, z.enum(contactReasons)),
     /** Tope UI 600; servidor admite hasta 2000. */
-    message: z.string().trim().min(10).max(2000),
+    message: z.string().trim().min(MESSAGE_MIN).max(MESSAGE_MAX),
     vias: z.preprocess(normalizeVias, z.array(z.enum(contactViaIds)).min(1)),
     otraDetalle: z.preprocess((v) => {
       if (typeof v !== 'string') return undefined;
       const trimmed = v.trim();
       return trimmed === '' ? undefined : trimmed;
-    }, z.string().min(3).max(120).optional()),
+    }, z.string().min(OTRA_MIN).max(OTRA_MAX).optional()),
     sitio: sitioSchema,
     modules: z.preprocess((v) => {
       if (v === undefined || v === null) return undefined;
@@ -190,7 +142,7 @@ export const contactSchema = z
     }, z.enum(contactOrigins).optional()),
     consent: z.literal(true),
     honeypot: z.string().optional(),
-    /** Idempotencia de conversión Meta (píxel + CAPI). */
+    /** Correlación opcional cliente ↔ eventos de analítica. */
     eventId: z.preprocess((v) => {
       if (typeof v !== 'string') return undefined;
       const trimmed = v.trim();
@@ -198,12 +150,9 @@ export const contactSchema = z
     }, z.string().min(8).max(64).optional())
   })
   .superRefine((data, ctx) => {
-    rejectUnsafe(data.name, ctx, 'name');
     rejectHeaderUnsafe(data.name, ctx, 'name');
-    rejectUnsafe(data.message, ctx, 'message');
     rejectBodyUnsafe(data.message, ctx, 'message');
     if (data.otraDetalle) {
-      rejectUnsafe(data.otraDetalle, ctx, 'otraDetalle');
       rejectHeaderUnsafe(data.otraDetalle, ctx, 'otraDetalle');
     }
 
@@ -254,24 +203,6 @@ export const entityLabels: Record<(typeof entityTypes)[number], string> = {
   empresa: 'Empresa',
   institucion: 'Institución'
 };
-
-export const fieldLabels: Record<string, string> = {
-  name: 'Nombre',
-  entityType: 'Categoría',
-  channel: 'Canal de respuesta',
-  email: 'Correo electrónico',
-  reason: 'Motivo',
-  message: 'Mensaje',
-  vias: 'Vías',
-  otraDetalle: 'Otra necesidad',
-  sitio: 'Sitio web',
-  modules: 'Módulos',
-  serviceSlug: 'Servicio',
-  projectSlug: 'Trabajo',
-  consent: 'Consentimiento'
-};
-
-export type FieldError = { field: string; label: string; cause: string };
 
 /** Traduce issues de Zod a mensajes «Campo: causa» para la UI. */
 export function formatContactFieldErrors(error: z.ZodError): FieldError[] {

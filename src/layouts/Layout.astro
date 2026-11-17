@@ -1,7 +1,6 @@
 ---
 import bodyFontUrl from '@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2?url';
 import displayFontUrl from '@fontsource/space-grotesk/files/space-grotesk-latin-700-normal.woff2?url';
-import themeInitSource from '../scripts/theme-init.js?raw';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -9,6 +8,7 @@ import SkipLink from '../components/SkipLink.astro';
 import { site } from '../content/site';
 import { profile } from '../content/profile';
 import { THEME_BG_LIGHT, THEME_BG_DARK } from '../lib/themeColors';
+import { LAYER_ORDER_STYLE, THEME_INIT_SOURCE } from '../lib/cspInline';
 import paletteCss from '../styles/global.css?raw';
 function paletteColor(property: string): string {
   const value = paletteCss.match(new RegExp(`${property}:\\s*([^;]+);`))?.[1];
@@ -51,7 +51,6 @@ const graph = {
       description: profile.summary,
       url: site.url,
       sameAs: [site.social.github, site.social.linkedin],
-      email: 'contratacion@alexendros.dev',
       address: {
         '@type': 'PostalAddress',
         addressLocality: 'Valencia',
@@ -97,9 +96,7 @@ const graph = {
       módulo abre @layer components primero, esa capa queda bajo base y el texto
       del botón deja de ser --brand-fg.
     -->
-    <Fragment
-      set:html={'<style>@layer properties, reset, theme, base, components, utilities;</style>'}
-    />
+    <Fragment set:html={`<style>${LAYER_ORDER_STYLE}</style>`} />
     <link rel="preload" href={bodyFontUrl} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={displayFontUrl} as="font" type="font/woff2" crossorigin />
     <title>{title}</title>
@@ -131,7 +128,12 @@ const graph = {
       media="(prefers-color-scheme: dark)"
     />
     <meta property="og:image:alt" content={resolvedOgAlt} />
-    <Fragment set:html={`<script>${themeInitSource}</script>`} />
+    {
+      import.meta.env.VERCEL_GIT_COMMIT_SHA ? (
+        <meta name="build" content={import.meta.env.VERCEL_GIT_COMMIT_SHA} />
+      ) : null
+    }
+    <Fragment set:html={`<script>${THEME_INIT_SOURCE}</script>`} />
     <script type="application/ld+json" set:html={JSON.stringify(graph)} />
   </head>
   <body class="antialiased min-h-screen flex flex-col bg-bg text-fg">
@@ -144,11 +146,9 @@ const graph = {
     <script>
       import { initTracking } from '../lib/tracking/loaders';
       import { setupFunnelTracking } from '../lib/tracking/events';
-      import { captureReferralFromLocation } from '../lib/referral';
       import { initCookieBanner } from '../scripts/cookieBanner';
       initTracking();
       setupFunnelTracking();
-      captureReferralFromLocation();
       initCookieBanner();
 
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
