@@ -86,7 +86,7 @@ test.describe('chrome — skip, menú, tema, CTA', () => {
     const systemBg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
     expect(systemBg).not.toBe(darkBg);
 
-    // Con dark: system → alexlight → alexdark → system
+    // Con dark: system → alexlight → alexdark → alexlight (salta sistema idéntico)
     await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
     await page.evaluate(() => {
       try {
@@ -99,13 +99,21 @@ test.describe('chrome — skip, menú, tema, CTA', () => {
     await waitForHeaderReady(page);
     await dismissConsent(page);
     const toggle2 = page.getByRole('button', { name: /^Tema:/ });
+    const bgAt = async () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+
     await toggle2.click();
     await expect(html).toHaveAttribute('data-theme', 'alexlight');
     await expect(html).not.toHaveClass(/cc--darkmode/);
+    const lightBg = await bgAt();
+
     await toggle2.click();
     await expect(html).toHaveAttribute('data-theme', 'alexdark');
+    const darkForced = await bgAt();
+    expect(darkForced).not.toBe(lightBg);
+
     await toggle2.click();
-    await expect(html).not.toHaveAttribute('data-theme', /.+/);
+    await expect(html).toHaveAttribute('data-theme', 'alexlight');
+    expect(await bgAt()).not.toBe(darkForced);
   });
 
   test('CTA Contacto de cabecera lleva a propuesta comercial', async ({ page }) => {

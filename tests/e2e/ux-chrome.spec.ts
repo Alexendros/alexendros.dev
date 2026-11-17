@@ -46,11 +46,13 @@ test('menú hamburguesa abre y cierra el desplegable', async ({ page }) => {
 });
 
 test('toggle de tema cambia data-theme y el fondo de forma visible', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'light' });
   await page.goto('/');
   await dismissConsentIfPresent(page);
   const html = page.locator('html');
   const toggle = page.getByRole('button', { name: /^Tema:/ });
   await expect(toggle).toBeVisible();
+  await expect(toggle).toHaveAttribute('aria-label', /Pulsar para oscuro/);
 
   await toggle.click();
   await expect(html).toHaveAttribute('data-theme', 'alexdark');

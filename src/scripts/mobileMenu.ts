@@ -5,6 +5,8 @@ export function initMobileMenu(): void {
   const btn = document.querySelector<HTMLButtonElement>('[data-menu-button]');
   const nav = document.getElementById('mobile-nav');
   if (!btn || !nav) return;
+  if (btn.dataset.menuBound === '1') return;
+  btn.dataset.menuBound = '1';
 
   const inertTargets = (): HTMLElement[] =>
     [document.getElementById('main'), document.querySelector('footer')].filter(

@@ -1,20 +1,44 @@
-/** Ciclo sistema → claro → oscuro; sincroniza theme-controller y localStorage. */
+/** Ciclo sistema → claro → oscuro; sincroniza tema, iconos y localStorage. */
 
 import { THEME_BG_LIGHT, THEME_BG_DARK, getThemeColor } from '../lib/themeColors';
 
-type ThemeMode = 'system' | 'alexlight' | 'alexdark';
+export type ThemeMode = 'system' | 'alexlight' | 'alexdark';
 
-const LABELS: Record<ThemeMode, string> = {
-  system: 'Tema: sistema. Pulsar para claro',
-  alexlight: 'Tema: claro. Pulsar para oscuro',
-  alexdark: 'Tema: oscuro. Pulsar para sistema'
+const ORDER: readonly ThemeMode[] = ['system', 'alexlight', 'alexdark'];
+
+const MODE_NAME: Record<ThemeMode, string> = {
+  system: 'sistema',
+  alexlight: 'claro',
+  alexdark: 'oscuro'
 };
 
-/** Desde sistema, salta al opuesto del esquema resuelto para que el cambio se note. */
+/** Oscuridad resuelta que ve el usuario (sistema sigue prefers-color-scheme). */
+export function resolvesDark(mode: ThemeMode, prefersDark = false): boolean {
+  if (mode === 'alexdark') return true;
+  if (mode === 'alexlight') return false;
+  return prefersDark;
+}
+
+/**
+ * Avanza en orden documentado (sistema → claro → oscuro → sistema).
+ * Si el candidato no cambia el aspecto respecto al modo actual, se salta
+ * para que ningún clic sea visualmente nulo (p. ej. alexdark → sistema con
+ * OS oscuro).
+ */
 export function nextThemeMode(mode: ThemeMode, prefersDark = false): ThemeMode {
-  if (mode === 'system') return prefersDark ? 'alexlight' : 'alexdark';
-  if (mode === 'alexlight') return 'alexdark';
-  return 'system';
+  const currentDark = resolvesDark(mode, prefersDark);
+  const start = ORDER.indexOf(mode);
+  const from = start === -1 ? 0 : start;
+  for (let step = 1; step <= ORDER.length; step += 1) {
+    const candidate = ORDER[(from + step) % ORDER.length]!;
+    if (resolvesDark(candidate, prefersDark) !== currentDark) return candidate;
+  }
+  return currentDark ? 'alexlight' : 'alexdark';
+}
+
+export function labelFor(mode: ThemeMode, prefersDark = false): string {
+  const next = nextThemeMode(mode, prefersDark);
+  return `Tema: ${MODE_NAME[mode]}. Pulsar para ${MODE_NAME[next]}`;
 }
 
 function prefersDarkScheme(): boolean {
@@ -22,7 +46,7 @@ function prefersDarkScheme(): boolean {
 }
 
 function syncCmpDarkMode(mode: ThemeMode): void {
-  const dark = mode === 'alexdark' || (mode === 'system' && prefersDarkScheme());
+  const dark = resolvesDark(mode, prefersDarkScheme());
   document.documentElement.classList.toggle('cc--darkmode', dark);
 }
 
@@ -68,6 +92,7 @@ function syncIcons(button: HTMLButtonElement, mode: ThemeMode) {
 
 function applyMode(mode: ThemeMode, input: HTMLInputElement, button: HTMLButtonElement) {
   const root = document.documentElement;
+  const prefersDark = prefersDarkScheme();
   if (mode === 'system') {
     root.removeAttribute('data-theme');
     input.checked = false;
@@ -76,7 +101,7 @@ function applyMode(mode: ThemeMode, input: HTMLInputElement, button: HTMLButtonE
     input.checked = mode === 'alexdark';
   }
   writeStored(mode);
-  button.setAttribute('aria-label', LABELS[mode]);
+  button.setAttribute('aria-label', labelFor(mode, prefersDark));
   syncIcons(button, mode);
   applyThemeColor(mode);
   syncCmpDarkMode(mode);
@@ -87,11 +112,15 @@ export function initThemeToggle(): void {
   const input = document.querySelector<HTMLInputElement>('[data-theme-input]');
   const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
   if (!input || !button) return;
+  // Idempotente: el chunk de Layout no debe registrar el clic dos veces.
+  if (button.dataset.themeBound === '1') return;
+  button.dataset.themeBound = '1';
 
   let mode = readStored();
   applyMode(mode, input, button);
 
   button.addEventListener('click', (event) => {
+    event.preventDefault();
     event.stopPropagation();
     mode = nextThemeMode(mode, prefersDarkScheme());
     applyMode(mode, input, button);
