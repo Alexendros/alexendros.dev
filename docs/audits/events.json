@@ -243,6 +243,17 @@
       "recordType": "event",
       "kind": "aviso",
       "source": "docs/standards/website/diseno.md"
+    },
+    {
+      "id": "evt-2026-11-17-owasp-remediations",
+      "sequence": 23,
+      "timestamp": "2026-11-17T21:30:00Z",
+      "active": false,
+      "title": "Remediaciones OWASP Top 10:2021 en runtime",
+      "summary": "Cierre de CRLF en asunto SMTP del contacto, allowlist de host para ALERT_WEBHOOK_URL, tope de cuerpo en /api/csp-report y gitleaks pre-commit bloqueante. Residuales (CSP unsafe-inline fase ③, SRI, carrera Redis, orden Turnstile) documentados en docs/threat-model.md v1.2.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "docs/threat-model.md"
     }
   ]
 }

@@ -1,7 +1,7 @@
 # Threat Model — alexendrosdev
 
-**Versión**: 1.1 | **Fecha**: 2026-10-07 | **Autor**: Alexendros
-**Metodología**: STRIDE + ATT&CK v19 | **Revisión**: cada cambio mayor
+**Versión**: 1.2 | **Fecha**: 2026-11-17 | **Autor**: Alexendros
+**Metodología**: STRIDE + ATT&CK v19 · mapeo OWASP Top 10:2021 | **Revisión**: cada cambio mayor
 
 ---
 
@@ -32,14 +32,16 @@
 
 ### Formulario de contacto (`/api/contact`)
 
-| STRIDE                     | Amenaza                 | Mitigación actual                 | Gap        |
-| -------------------------- | ----------------------- | --------------------------------- | ---------- |
-| **S**poofing               | Falsificación remitente | Turnstile (configurado), honeypot | ✅         |
-| **T**ampering              | Inyección en payload    | Zod schema validation             | ✅         |
-| **R**epudiation            | Negación envío          | Log estructurado ausente          | ❌ Logging |
-| **I**nformation Disclosure | Fuga emails en error    | Respuesta genérica                | ✅         |
-| **D**enial of Service      | Flood API               | Upstash Ratelimit (10/min/IP)     | ✅         |
-| **E**levation of Privilege | N/A (sin auth)          | —                                 | —          |
+| STRIDE                     | Amenaza                       | Mitigación actual                          | Gap                   |
+| -------------------------- | ----------------------------- | ------------------------------------------ | --------------------- |
+| **S**poofing               | Falsificación remitente       | Turnstile (configurado), honeypot          | ✅                    |
+| **T**ampering              | Inyección en payload          | Zod schema validation                      | ✅                    |
+| **R**epudiation            | Negación envío                | Log estructurado ausente                   | ❌ Logging (ACEPTADO) |
+| **I**nformation Disclosure | Fuga emails en error          | Respuesta genérica                         | ✅                    |
+| **D**enial of Service      | Flood API                     | Upstash Ratelimit (10/min/IP)              | ✅                    |
+| **E**levation of Privilege | N/A (sin auth)                | —                                          | —                     |
+| Inyección SMTP (A03)       | CRLF en `name` → Subject      | Zod rechaza CRLF + sanitize asunto         | ✅ (2026-11-17)       |
+| SSRF webhook (A10)         | `ALERT_WEBHOOK_URL` maliciosa | HTTPS + allowlist host (default `ntfy.sh`) | ✅ (2026-11-17)       |
 
 ### Lead magnet / newsletter (retirados)
 
@@ -132,12 +134,26 @@ Usuario → [Navegador] → (HTTPS/TLS 1.3) → [Vercel Edge] → [Astro SSR/SSG
 
 ---
 
+### Colector CSP (`/api/csp-report`)
+
+| STRIDE                     | Amenaza                     | Mitigación actual                         | Gap             |
+| -------------------------- | --------------------------- | ----------------------------------------- | --------------- |
+| **D**enial of Service      | Cuerpo enorme / flood       | Tope 16 KiB; sin log del cuerpo oversized | ✅ (2026-11-17) |
+| **I**nformation Disclosure | Log de informes de terceros | Solo `console.warn` acotado               | Residual bajo   |
+
+---
+
 ## 6. Decisiones de riesgo aceptado
 
-| Riesgo                | Decisión              | Justificación                                        | Revisión   |
-| --------------------- | --------------------- | ---------------------------------------------------- | ---------- |
-| Sin branch protection | **ACEPTADO temporal** | Requiere admin repo; pendiente configuración manual  | 2026-10-14 |
-| Logging estructurado  | **ACEPTADO**          | Vercel Logs + Analytics cubren observabilidad básica | 2026-11-07 |
+| Riesgo                             | Decisión              | Justificación                                                        | Revisión   |
+| ---------------------------------- | --------------------- | -------------------------------------------------------------------- | ---------- |
+| Sin branch protection              | **ACEPTADO temporal** | Requiere admin repo; pendiente configuración manual                  | 2026-10-14 |
+| Logging estructurado               | **ACEPTADO**          | Vercel Logs + Analytics cubren observabilidad básica                 | 2026-11-07 |
+| CSP enforce `unsafe-inline`        | **ACEPTADO temporal** | Fase ③ (nonces/hashes); Report-Only sin inline ya activa             | 2026-11-17 |
+| Scripts terceros sin SRI           | **ACEPTADO**          | Consent-gated; URLs fijas; self-host/SRI en backlog                  | 2026-11-17 |
+| Idempotencia Redis no atómica      | **ACEPTADO**          | Carrera rara; coste = doble correo; Lua atómica en backlog           | 2026-11-17 |
+| Turnstile antes del rate limit     | **ACEPTADO**          | Prioriza fricción de bot; siteverify puede agotarse antes del 10/min | 2026-11-17 |
+| Sin check Origin en `/api/contact` | **ACEPTADO**          | JSON + sin CORS; abuso directo mitigado por Turnstile + rate limit   | 2026-11-17 |
 
 ---
 

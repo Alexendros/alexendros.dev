@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
+  buildContactEmailHtml,
   CONTACT_MAX_BODY_BYTES,
   handleContactPost,
   isJsonContentType,
@@ -53,6 +54,19 @@ function postJson(body: unknown, init?: RequestInit): Request {
     body: typeof body === 'string' ? body : JSON.stringify(body)
   });
 }
+
+describe('buildContactEmailHtml', () => {
+  it('sanitiza CRLF del asunto SMTP', () => {
+    const { mailSubject } = buildContactEmailHtml({
+      name: 'Alex\r\nBcc: evil@example.com',
+      email: 'alex@example.com',
+      subject: 'Propuesta comercial',
+      message: 'Detalle suficiente para el cuerpo.'
+    });
+    expect(mailSubject).not.toMatch(/[\r\n]/);
+    expect(mailSubject).toContain('Propuesta comercial');
+  });
+});
 
 describe('methodNotAllowed', () => {
   it('GET → 405 Allow POST', () => {
