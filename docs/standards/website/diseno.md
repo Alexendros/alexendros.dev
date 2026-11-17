@@ -11,7 +11,7 @@
 1. **Fuente única.** La paleta iris y melocotón, en claro y en oscuro, vive en `src/styles/global.css` (`@theme`, `@layer theme` y `@layer components`). El selector sigue ciclando sistema, `alexlight` y `alexdark`.
 2. **Tokens en una capa.** La paleta iris y melocotón, en claro y en oscuro, vive en `@layer theme` de `src/styles/global.css`. Tailwind solo referencia semánticos (`--bg`, `--fg`, `--fg-muted`, `--brand`, `--brand-hover`, `--brand-fg`, `--brand-soft`, `--peach`, `--border-color`, `--card`, `--danger`, `--success`, `--bg-subtle`, `--scrim`, `--focus-ring`, `--shadow-*`). `--border` es el grosor (`1px`); `--color-border` referencia `--border-color`. `--color-accent` es el melocotón y solo se usa en subrayados decorativos.
 3. **Reglas duras.** Sin `!important` fuera de la excepción de impresión, `transition: all`, colores literales fuera de las capas autorizadas, sombras Tailwind prohibidas por `check:classes` ni `font-size` literal donde exista `--step-*`.
-4. **Temas coherentes.** El selector cicla sistema → `alexlight` → `alexdark`, persiste en `localStorage` y `theme-init.js` evita el parpadeo. Las variantes oscuras por media query y `data-theme` deben contener los mismos valores; `check:contrast` las compara.
+4. **Temas coherentes.** El selector cicla sistema → `alexlight` → `alexdark`, persiste en `localStorage` y el script inline de `src/scripts/theme-init.js` (inyectado en `Layout.astro`) evita el parpadeo. Las variantes oscuras por media query y `data-theme` deben contener los mismos valores; `check:contrast` las compara.
 5. **Accesibilidad medible.** Contraste ≥4.5:1 para texto y ≥3:1 para foco e indicadores no textuales necesarios, objetivos táctiles ≥44px en acciones de contenido y reduced motion en todo movimiento.
 6. **Movimiento acotado.** Solo `transform`/`opacity`; hover de cards únicamente con `(hover: hover)` y `prefers-reduced-motion: no-preference`. Las sombras y bordes cambian sin animación. Con reduced motion, `html` usa `scroll-behavior: auto`. Las duraciones propias usan `--duration-fast` (180ms) y `--duration-normal` (200ms) con `--ease-out`.
 7. **Frontera global/módulo.** `global.css` contiene tokens y patrones con varios consumidores. Las reglas específicas viven en `Component.module.css` y se importan como `import styles from './Component.module.css'`, usando `styles.clase` o `styles['clase-kebab']`. Los tests usan IDs/`data-*`, nunca los nombres hash generados. No se usan `@apply` ni estilos inline.
@@ -21,11 +21,11 @@
 ### Tipografía
 
 - **Plus Jakarta Sans Variable** (`--font-sans`): cuerpo y controles. Se autoaloja con `@fontsource-variable/plus-jakarta-sans`; el archivo latin variable tiene preload en `Layout.astro`.
-- **Space Grotesk** (`--font-display`): titulares. Se autoaloja con `@fontsource/space-grotesk`, pesos 500 y 700, sin preload prioritario.
-- **JetBrains Mono Variable** (`--font-mono`): cejas, código y metadatos. Se autoaloja con `@fontsource-variable/jetbrains-mono`, sin preload prioritario. La ceja va en minúsculas y en color de marca.
-- **Escala:** `--step--1…--step-4` fluida mediante `clamp`; Tailwind la expone como `text-step--1…4`. Roles: H1 de página `text-step-3`; H2 de sección `text-step-2`; título de card/H3 `text-step-1`; cuerpo `text-step-0`; secundario/help/meta `text-step--1`. El H1 del hero usa la familia de titulares, `text-balance` y peso 700, con `text-4xl`, `sm:text-5xl` y `lg:text-6xl`. En esa familia solo existen los pesos 500 y 700.
+- **Space Grotesk** (`--font-display`): titulares y marca. Se autoaloja con `@fontsource/space-grotesk`, solo peso 700, con preload en `Layout.astro` (elemento LCP de texto).
+- **Mono de sistema** (`--font-mono`): cejas, código y metadatos (`ui-monospace` + respaldo). Sin descarga de fuente mono para no competir con el LCP. La ceja va en minúsculas y en color de marca.
+- **Escala:** `--step--1…--step-4` fluida mediante `clamp`; Tailwind la expone como `text-step--1…4`. Roles: H1 de página `text-step-3`; H2 de sección `text-step-2`; título de card/H3 `text-step-1`; cuerpo `text-step-0`; secundario/help/meta `text-step--1`. El H1 del hero usa la familia de titulares, `text-balance` y peso 700, con `text-4xl`, `sm:text-5xl` y `lg:text-6xl`.
 - **Lectura:** `--leading-body`, `--leading-tight`, `--tracking-eyebrow` y `--measure` (66ch). La prosa legal usa `.legal-prose`.
-- **Licencias:** las tres familias usan SIL OFL 1.1; se conservan los avisos distribuidos por Fontsource. No se cargan Google Fonts.
+- **Licencias:** Plus Jakarta y Space Grotesk usan SIL OFL 1.1; se conservan los avisos Fontsource. No se cargan Google Fonts.
 
 ### Espaciado y radios
 

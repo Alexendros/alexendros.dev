@@ -66,5 +66,8 @@ export const profile = {
     }
   ],
   location: 'Valencia',
-  languages: ['Español e inglés']
+  languages: ['Español e inglés'],
+  /** Fecha visible de última revisión de la ficha de experiencia (E-E-A-T). */
+  updatedAt: '2026-11-17',
+  updatedAtLabel: '17 de noviembre de 2026'
 } as const;

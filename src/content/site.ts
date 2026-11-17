@@ -1,9 +1,9 @@
 export const site = {
   name: 'Alexendros',
   url: 'https://alexendros.dev',
-  titleDefault: 'Alexendros — Tecnologías y servicios informáticos',
+  titleDefault: 'Alexendros — Tecnologías y servicios para negocios',
   descriptionDefault:
-    'Auditoría, diseño y construcción de páginas web, tiendas y herramientas para negocios. Desde Valencia y en remoto.',
+    'Auditoría, diseño y construcción de páginas web, tiendas y herramientas para negocios locales y equipos. Desde Valencia y en remoto, con alcance por escrito.',
   locale: 'es',
   ogLocale: 'es_ES',
   nav: [

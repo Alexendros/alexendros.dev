@@ -4,7 +4,7 @@ Repo canónico **público**: [`Alexendros/alexendros.dev`](https://github.com/Al
 
 ## site.ts
 
-Config global: name, url https://alexendros.dev apex, titleDefault "Alexendros — Tecnologías y servicios informáticos", nav Servicios/Referencias/Metodología, footer legal, social GitHub/LinkedIn/mailto. Fuente verdad SEO canonical OG JSON-LD Person + ProfessionalService (marca profesional individual).
+Config global: name, url https://alexendros.dev apex, titleDefault alineado a `src/content/seo.ts` (`/`), nav Servicios/Referencias/Metodología, footer legal, social GitHub/LinkedIn/mailto. Fuente verdad SEO canonical OG JSON-LD Person + ProfessionalService (marca profesional individual); titles/metas indexables en `seo.ts` (decisión 0033).
 
 ## profile.ts
 

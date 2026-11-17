@@ -6,6 +6,10 @@ import { contact } from '../content/contact';
 import { normalizeProjectSlug, normalizeServiceSlug } from '../content/contactContext';
 import { normalizePortalModuleIds, serializePortalModuleIds } from '../content/portalModules';
 import { contactOrigins, contactReasons, type ContactInput } from '../lib/contactSchema';
+import { seoForPath } from '../content/seo';
+import { breadcrumbFromHome } from '../lib/breadcrumb';
+
+const seo = seoForPath('/contacto/');
 const params = Astro.url.searchParams;
 const motivoParam = params.get('motivo');
 const initialReason: ContactInput['reason'] =
@@ -23,10 +27,11 @@ const initialModules = serializePortalModuleIds(normalizePortalModuleIds(params.
 ---
 
 <Layout
-  title="Contacto — Alexendros"
-  description="Solicitud de propuesta o información sobre un servicio. La respuesta llega por correo electrónico."
+  title={seo.title}
+  description={seo.description}
   ogImage="/og/contacto.png"
   ogImageAlt="Formulario de contacto de Alexendros.dev"
+  jsonLd={breadcrumbFromHome({ name: 'Contacto', path: '/contacto/' })}
 >
   <div class="page-shell page-shell-narrow">
     <PageHead

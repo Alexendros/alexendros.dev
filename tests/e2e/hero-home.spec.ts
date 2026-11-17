@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
+import { seoByPath } from '../../src/content/seo';
 
 const H1 = 'Auditoría, diseño y construcción de páginas web, tiendas y herramientas para negocios.';
-const TITLE = 'Alexendros — Tecnologías y servicios informáticos';
+const TITLE = seoByPath['/'].title;
 
 const OLD_STRINGS = [
   'Webs y software a medida. Y revisión de la tuya.',

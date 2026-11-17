@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('tipografía: Plus Jakarta para lectura, Space Grotesk en el titular y mono en la ceja', async ({
+test('tipografía: Plus Jakarta para lectura, Space Grotesk en el titular y mono de sistema en la ceja', async ({
   page
 }) => {
   await page.goto('/');
@@ -13,18 +13,20 @@ test('tipografía: Plus Jakarta para lectura, Space Grotesk en el titular y mono
 
   expect(bodyFont).toContain('Plus Jakarta Sans Variable');
   expect(headingFont).toContain('Space Grotesk');
-  expect(eyebrowFont).toContain('JetBrains Mono Variable');
+  expect(eyebrowFont).not.toContain('JetBrains');
+  expect(eyebrowFont.toLowerCase()).toMatch(/monospace|menlo|consolas|cascadia/);
 });
 
-test('tipografía: solo la letra de lectura tiene preload prioritario', async ({ page }) => {
+test('tipografía: preload de lectura y de titular (LCP)', async ({ page }) => {
   await page.goto('/');
 
   const preloads = page.locator('link[rel="preload"][as="font"]');
-  await expect(preloads).toHaveCount(1);
-  await expect(preloads.first()).toHaveAttribute(
-    'href',
-    /plus-jakarta-sans-latin-wght-normal.*\.woff2$/
+  await expect(preloads).toHaveCount(2);
+  const hrefs = await preloads.evaluateAll((nodes) =>
+    nodes.map((n) => n.getAttribute('href') ?? '')
   );
+  expect(hrefs.some((h) => /plus-jakarta-sans-latin-wght-normal.*\.woff2$/.test(h))).toBe(true);
+  expect(hrefs.some((h) => /space-grotesk-latin-700-normal.*\.woff2$/.test(h))).toBe(true);
 });
 
 test('hero: dos columnas, esquema del método y fondo liso', async ({ page }) => {

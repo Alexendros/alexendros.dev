@@ -27,7 +27,8 @@ export default defineConfig({
   image: { service: { entrypoint: 'astro/assets/services/sharp' } },
   vite: {
     plugins: [tailwindcss()],
-    build: { cssMinify: true },
+    // Una hoja por entrada: menos CSS render-blocking en cascada (LHCI).
+    build: { cssMinify: true, cssCodeSplit: false },
     // Expone VERCEL al prerender estático: en builds locales/CI queda vacío y
     // Layout.astro omite los scripts /_vercel/* (que allí darían 404).
     define: { __IS_VERCEL__: JSON.stringify(!!process.env.VERCEL) }

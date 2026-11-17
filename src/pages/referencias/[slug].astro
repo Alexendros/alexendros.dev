@@ -10,11 +10,14 @@ import {
   projects,
   workKindLabels
 } from '../../content/projects';
+import { seoForProject } from '../../content/seo';
+import { breadcrumbFromHome } from '../../lib/breadcrumb';
 
 export async function getStaticPaths() {
   return projects.map((p) => ({ params: { slug: p.slug }, props: { project: p } }));
 }
 const { project } = Astro.props;
+const seo = seoForProject(project.slug);
 const statusLabel =
   project.slug === 'zedazo'
     ? 'Herramienta propia, de código abierto'
@@ -25,10 +28,14 @@ const hasLinks = Boolean(project.links.prod || project.links.github);
 ---
 
 <Layout
-  title={`${project.title} — Alexendros`}
-  description={project.short}
+  title={seo.title}
+  description={seo.description}
   ogImage={`/og/proyectos/${project.slug}.png`}
   ogImageAlt={`Ficha de ${project.title}`}
+  jsonLd={breadcrumbFromHome(
+    { name: 'Referencias', path: '/referencias/' },
+    { name: project.title, path: `/referencias/${project.slug}/` }
+  )}
 >
   <div class="page-shell page-shell-narrow">
     <div class="text-step--1 text-muted">
@@ -48,6 +55,7 @@ const hasLinks = Boolean(project.links.prod || project.links.github);
         sizes="(max-width: 768px) 100vw, 800px"
         class="block h-auto w-full max-w-full"
         loading="eager"
+        fetchpriority="high"
         decoding="async"
       />
     </figure>

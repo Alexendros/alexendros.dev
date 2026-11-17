@@ -31,3 +31,17 @@ Objetivos de producto (cuando corre e2e/LHCI o Speed Insights en prod):
 - LCP medido en torno a ~1.9s; objetivo de producto histórico &lt;1.65s en Speed Insights
 
 El job `e2e` completo no bloquea PRs por defecto. Actívalo con label `e2e` o `workflow_dispatch` si el cambio toca UI, a11y o CWV. `e2e-critical` sí bloquea siempre.
+
+## Residuos de auditoría web (decisión 0033)
+
+Algunos checks de la matriz web-compliance no tienen sistema en este repo. Quedan cerrados así para no reabrirlos como PENDING sin dueño:
+
+| Check                    | Cierre                                                                                                                   |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| TEC-06 CrUX/PSI de campo | Umbral de laboratorio = LHCI opt-in (label `e2e`). CrUX de campo no se consulta en CI.                                   |
+| OFF-01 / OFF-03          | Sin herramienta de backlinks ni ficha de negocio local → N/A hasta que existan.                                          |
+| ANA-02 paridad GA4↔Ads   | Sin campañas ni cuenta de anuncios → N/A (mismo criterio que el pilar SEM).                                              |
+| ACC-11 HTML Validator    | Gate = axe CI + build Astro; sin validador W3C en quality.                                                               |
+| ACC-12 / ACC-13 AT       | Gate = axe + e2e de formulario/CMP/teclado. Pasada con lector de pantalla: revisión manual trimestral, no fallo abierto. |
+
+Titles y metas indexables: `src/content/seo.ts` (bandas 50–65 / 150–170) con test Vitest. Migas: `src/lib/breadcrumb.ts` en plantillas indexables salvo la portada. `/sobre-mi/` sigue noindex (decisión 0029); la autoría indexable vive en `/experiencia/`.

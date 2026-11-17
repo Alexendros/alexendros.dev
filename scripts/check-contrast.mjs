@@ -151,7 +151,7 @@ const themeColorFiles = [
   'src/lib/themeColors.ts',
   'src/layouts/Layout.astro',
   'src/scripts/themeToggle.ts',
-  'public/theme-init.js'
+  'src/scripts/theme-init.js'
 ];
 const colorLiterals = themeColorFiles.flatMap((file) => {
   const matches = readFileSync(join(root, file), 'utf8').match(/#[0-9a-fA-F]{3,8}\b/g) ?? [];
