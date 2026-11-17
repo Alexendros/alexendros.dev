@@ -4,11 +4,13 @@
     box-shadow: var(--shadow-1);
   }
 
+  /* Hit-area ≥ 44×44 (A11Y-04); el dibujo del check sigue en background-size. */
   .via-check {
-    width: 1.25rem;
-    height: 1.25rem;
-    min-width: 1.25rem;
-    min-height: 1.25rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    background-size: 1.1rem;
   }
 
   .via-icon {

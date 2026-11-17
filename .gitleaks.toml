@@ -8,6 +8,8 @@ description = "Clave de localStorage del banner histórico, falso positivo"
 condition = "AND"
 paths = [
   '''(?:^|/)src/components/LandingBanner\.astro$''',
+  '''(?:^|/)src/components/ExitIntent\.tsx$''',
+  '''(?:^|/)src/components/StickyCta\.astro$''',
   '''(?:^|/)public/scripts/landing-banner\.js$''',
   '''(?:^|/)src/scripts/landing-banner\.js$''',
 ]
