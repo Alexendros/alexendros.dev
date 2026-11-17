@@ -101,12 +101,17 @@ function loadInventory() {
     throw new Error(`No existe el inventario: ${relative(ROOT, INVENTORY_PATH)}`);
   }
   const parsed = JSON.parse(readFileSync(INVENTORY_PATH, 'utf8'));
+  if (typeof parsed.updatedAt !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(parsed.updatedAt)) {
+    throw new Error(
+      'docs/cookies-inventory.json: falta updatedAt válido (YYYY-MM-DD); actualizarlo en cada cambio de contenido de cookies.'
+    );
+  }
   const cookies = Array.isArray(parsed.cookies) ? parsed.cookies : [];
   const patterns = cookies
     .map((cookie) => (typeof cookie?.name === 'string' ? cookie.name : null))
     .filter((name) => Boolean(name));
   const known = Array.isArray(parsed.knownCookies) ? parsed.knownCookies : [];
-  return { patterns, known };
+  return { patterns, known, updatedAt: parsed.updatedAt };
 }
 
 function* walk(dir) {
