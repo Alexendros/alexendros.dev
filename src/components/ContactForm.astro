@@ -3,7 +3,21 @@ import { homeVias } from '../content/home';
 import { paquetesPublicados, paquetesVisibles } from '../content/paquetes';
 import { portalModuleDisplayNames, type ContactInput } from '../lib/contactSchema';
 import { site } from '../content/site';
+import Icon from './ui/Icon.astro';
 import styles from './ContactForm.module.css';
+
+type ViaIcon = 'file' | 'layers' | 'flag' | 'check';
+
+const VIA_ICONS: Record<string, ViaIcon> = {
+  revisar: 'file',
+  crear: 'layers',
+  colaborar: 'flag',
+  otra: 'check',
+  web: 'layers',
+  tienda: 'layers',
+  asistente: 'flag',
+  automatizacion: 'flag'
+};
 
 interface Props {
   successMessage: string;
@@ -89,14 +103,19 @@ const vias = [
               name="via"
               value={via.id}
               id={via.id === 'otra' ? 'contact-via-otra' : `contact-via-${via.id}`}
-              class="checkbox checkbox-primary mt-0.5 min-h-11 min-w-11"
+              class={`checkbox checkbox-primary mt-1 ${styles['via-check']}`}
               data-via={via.id}
               aria-controls={via.id === 'otra' ? 'contact-otra-wrap' : undefined}
               aria-expanded={via.id === 'otra' ? 'false' : undefined}
             />
             <span class="min-w-0">
-              <span class="block font-medium">{via.label}</span>
-              <span class="text-step--1 text-muted">{via.hint}</span>
+              <span class="flex min-w-0 items-center gap-2">
+                <span class={`${styles['via-icon']} text-primary`} aria-hidden="true">
+                  <Icon name={VIA_ICONS[via.id] ?? 'check'} size={18} />
+                </span>
+                <span class="min-w-0 font-medium">{via.label}</span>
+              </span>
+              <span class="mt-0.5 block text-step--1 text-muted">{via.hint}</span>
             </span>
           </label>
         ))
@@ -220,7 +239,7 @@ const vias = [
       id="contact-consent"
       type="checkbox"
       name="consent"
-      class="checkbox checkbox-primary checkbox-sm mt-0.5 min-h-11 min-w-11"
+      class={`checkbox checkbox-primary mt-0.5 ${styles['via-check']}`}
       required
     />
     <span>

@@ -10,14 +10,20 @@ const LABELS: Record<ThemeMode, string> = {
   alexdark: 'Tema: oscuro. Pulsar para sistema'
 };
 
-const CYCLE: Record<ThemeMode, ThemeMode> = {
-  system: 'alexlight',
-  alexlight: 'alexdark',
-  alexdark: 'system'
-};
+/** Desde sistema, salta al opuesto del esquema resuelto para que el cambio se note. */
+export function nextThemeMode(mode: ThemeMode, prefersDark = false): ThemeMode {
+  if (mode === 'system') return prefersDark ? 'alexlight' : 'alexdark';
+  if (mode === 'alexlight') return 'alexdark';
+  return 'system';
+}
 
-export function nextThemeMode(mode: ThemeMode): ThemeMode {
-  return CYCLE[mode];
+function prefersDarkScheme(): boolean {
+  return window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
+function syncCmpDarkMode(mode: ThemeMode): void {
+  const dark = mode === 'alexdark' || (mode === 'system' && prefersDarkScheme());
+  document.documentElement.classList.toggle('cc--darkmode', dark);
 }
 
 function readStored(): ThemeMode {
@@ -71,6 +77,7 @@ function applyMode(mode: ThemeMode, input: HTMLInputElement, button: HTMLButtonE
   button.setAttribute('aria-label', LABELS[mode]);
   syncIcons(button, mode);
   applyThemeColor(mode);
+  syncCmpDarkMode(mode);
 }
 
 export function initThemeToggle(): void {
@@ -82,8 +89,9 @@ export function initThemeToggle(): void {
   let mode = readStored();
   applyMode(mode, input, button);
 
-  button.addEventListener('click', () => {
-    mode = nextThemeMode(mode);
+  button.addEventListener('click', (event) => {
+    event.stopPropagation();
+    mode = nextThemeMode(mode, prefersDarkScheme());
     applyMode(mode, input, button);
   });
 }
