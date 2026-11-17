@@ -866,7 +866,8 @@
   opacity: 0.7;
 }
 
-.legal-prose a {
+.legal-prose a,
+.legal-prose code {
   overflow-wrap: anywhere;
 }
 

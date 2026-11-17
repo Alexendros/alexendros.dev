@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { test, expect, type Page } from '@playwright/test';
 
 const CONSENT_KEY = 'consent_v1';
@@ -80,12 +82,12 @@ async function instrumentNetwork(page: Page): Promise<SeenRequest[]> {
       const cookie = trackerCookieForHost(url.hostname);
       if (cookie && !planted.has(cookie.name)) {
         planted.add(cookie.name);
+        // Playwright 1.63: url XOR domain/path — pasar ambos falla.
         await context.addCookies([
           {
             name: cookie.name,
             value: cookie.value,
-            url: 'http://127.0.0.1:4321/',
-            path: '/'
+            url: 'http://127.0.0.1:4321/'
           }
         ]);
       }
@@ -481,7 +483,9 @@ test('PRIV-01a-cookies: sin decisión no hay cookies de analítica ni publicidad
 test('PRIV-cookies-inventory: la tabla de /cookies lista cada nombre del inventario', async ({
   page
 }) => {
-  const inventory = await import('../../docs/cookies-inventory.json');
+  const inventory = JSON.parse(
+    readFileSync(resolve(process.cwd(), 'docs/cookies-inventory.json'), 'utf8')
+  ) as { cookies: Array<{ name: string }> };
   await page.goto('/cookies/');
   for (const cookie of inventory.cookies) {
     await expect(page.locator(`[data-cookie-name="${cookie.name}"]`)).toHaveCount(1);
