@@ -147,6 +147,20 @@ const graph = {
       import { initTracking } from '../lib/tracking/loaders';
       import { setupFunnelTracking } from '../lib/tracking/events';
       import { initCookieBanner } from '../scripts/cookieBanner';
+      import { initThemeToggle } from '../scripts/themeToggle';
+      import { initMobileMenu } from '../scripts/mobileMenu';
+      // Cabecera en el chunk externo de Layout: un script de Header
+      // inlined quedaba bloqueado por CSP (solo hay hash del theme-init).
+      try {
+        initThemeToggle();
+      } catch (err) {
+        console.error('[chrome] themeToggle', err);
+      }
+      try {
+        initMobileMenu();
+      } catch (err) {
+        console.error('[chrome] mobileMenu', err);
+      }
       initTracking();
       setupFunnelTracking();
       initCookieBanner();

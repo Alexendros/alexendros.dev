@@ -48,10 +48,12 @@ function writeStored(mode: ThemeMode): void {
 function applyThemeColor(mode: ThemeMode) {
   const light = getThemeColor(THEME_BG_LIGHT);
   const dark = getThemeColor(THEME_BG_DARK);
+  if (!light && !dark) return;
   const color = mode === 'alexdark' ? dark : mode === 'alexlight' ? light : null;
   const metas = document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]');
   metas.forEach((meta, index) => {
-    meta.content = color ?? (index === 0 ? light : dark);
+    const next = color || (index === 0 ? light : dark);
+    if (next) meta.content = next;
   });
 }
 
