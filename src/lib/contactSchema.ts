@@ -80,6 +80,10 @@ export function portalModuleDisplayNames(modules: string | readonly string[] | u
 }
 
 const UNSAFE_CONTENT = /<\s*script|javascript:|on\w+\s*=|data:\s*text\/html/i;
+/** CRLF y C0 en campos que pueden acabar en cabeceras SMTP (asunto). */
+const HEADER_UNSAFE_CHARS = /[\r\n\u0000-\u001f\u007f]/;
+/** En mensaje de cuerpo: permitir \\n y \\t; rechazar CR y demás controles. */
+const BODY_UNSAFE_CHARS = /[\r\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/;
 
 function rejectUnsafe(value: string, ctx: z.RefinementCtx, path: string) {
   if (UNSAFE_CONTENT.test(value)) {
@@ -89,6 +93,32 @@ function rejectUnsafe(value: string, ctx: z.RefinementCtx, path: string) {
       message: 'formato'
     });
   }
+}
+
+function rejectHeaderUnsafe(value: string, ctx: z.RefinementCtx, path: string) {
+  if (HEADER_UNSAFE_CHARS.test(value)) {
+    ctx.addIssue({
+      code: 'custom',
+      path: [path],
+      message: 'formato'
+    });
+  }
+}
+
+function rejectBodyUnsafe(value: string, ctx: z.RefinementCtx, path: string) {
+  if (BODY_UNSAFE_CHARS.test(value)) {
+    ctx.addIssue({
+      code: 'custom',
+      path: [path],
+      message: 'formato'
+    });
+  }
+}
+
+/** Quita caracteres de control de valores usados en cabeceras SMTP (Subject). */
+export function sanitizeMailHeaderValue(value: string): string {
+  // Flag `g`: sin él solo se elimina el primer control (p. ej. queda \\n tras \\r).
+  return value.replace(/[\r\n\u0000-\u001f\u007f]/g, '').trim();
 }
 
 /** Sitio visible (no honeypot). Acepta dominio o URL http(s). */
@@ -164,8 +194,13 @@ export const contactSchema = z
   })
   .superRefine((data, ctx) => {
     rejectUnsafe(data.name, ctx, 'name');
+    rejectHeaderUnsafe(data.name, ctx, 'name');
     rejectUnsafe(data.message, ctx, 'message');
-    if (data.otraDetalle) rejectUnsafe(data.otraDetalle, ctx, 'otraDetalle');
+    rejectBodyUnsafe(data.message, ctx, 'message');
+    if (data.otraDetalle) {
+      rejectUnsafe(data.otraDetalle, ctx, 'otraDetalle');
+      rejectHeaderUnsafe(data.otraDetalle, ctx, 'otraDetalle');
+    }
 
     if (data.channel === 'correo' && !data.email) {
       ctx.addIssue({

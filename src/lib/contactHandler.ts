@@ -1,6 +1,7 @@
 import {
   buildContactMessage,
   escapeHtml,
+  sanitizeMailHeaderValue,
   isHoneypotFilled,
   parseContactBody,
   reasonLabels,
@@ -426,6 +427,6 @@ export function buildContactEmailHtml(input: {
   `;
 
   const text = `Nombre: ${input.name}\nEmail: ${input.email}\nMotivo: ${input.subject}\n\n${input.message}`;
-  const mailSubject = `[alexendros.dev] ${input.subject} - ${input.name}`;
+  const mailSubject = sanitizeMailHeaderValue(`[alexendros.dev] ${input.subject} - ${input.name}`);
   return { html, text, mailSubject };
 }

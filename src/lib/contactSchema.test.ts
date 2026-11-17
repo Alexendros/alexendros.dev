@@ -6,7 +6,8 @@ import {
   isHoneypotFilled,
   parseContactBody,
   portalModuleDisplayNames,
-  resolveViaId
+  resolveViaId,
+  sanitizeMailHeaderValue
 } from './contactSchema';
 
 const validCorreo = {
@@ -62,6 +63,36 @@ describe('parseContactBody R04', () => {
         message: 'Hola <script>alert(1)</script> necesito ayuda ya.'
       }).success
     ).toBe(false);
+  });
+
+  it('rechaza CRLF en el nombre (inyección de cabecera SMTP)', () => {
+    expect(
+      parseContactBody({
+        ...validCorreo,
+        name: 'Alex\r\nBcc: evil@example.com'
+      }).success
+    ).toBe(false);
+  });
+
+  it('rechaza CR en el mensaje pero admite saltos de línea', () => {
+    expect(
+      parseContactBody({
+        ...validCorreo,
+        message: 'Primera línea\nSegunda línea con detalle suficiente.'
+      }).success
+    ).toBe(true);
+    expect(
+      parseContactBody({
+        ...validCorreo,
+        message: 'Primera línea\rSegunda línea con detalle suficiente.'
+      }).success
+    ).toBe(false);
+  });
+
+  it('sanitizeMailHeaderValue elimina CRLF del asunto', () => {
+    expect(sanitizeMailHeaderValue('Motivo\r\nBcc: x@y.z - Nombre')).toBe(
+      'MotivoBcc: x@y.z - Nombre'
+    );
   });
 
   it('CFG-02/05: módulos se normalizan a IDs permitidos únicos', () => {

@@ -3,6 +3,8 @@
 
 interface ImportMetaEnv {
   readonly ALERT_WEBHOOK_URL?: string;
+  /** CSV de hostnames permitidos para ALERT_WEBHOOK_URL; default ntfy.sh. */
+  readonly ALERT_WEBHOOK_ALLOWED_HOSTS?: string;
   readonly SMTP_HOST?: string;
   readonly SMTP_PORT?: string;
   readonly SMTP_USER?: string;

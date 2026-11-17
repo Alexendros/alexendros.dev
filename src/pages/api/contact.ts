@@ -10,7 +10,7 @@ import {
   type ContactDeps,
   type ContactMailPayload
 } from '../../lib/contactHandler';
-import { sendAlertWebhook } from '../../lib/alertWebhook';
+import { parseAlertWebhookAllowedHosts, sendAlertWebhook } from '../../lib/alertWebhook';
 import { verifyTurnstileToken } from '../../lib/turnstile';
 import { createRedisContactIdempotencyStore } from '../../lib/contactIdempotency';
 import { createNotionLeadsStore } from '../../lib/notionLeads';
@@ -97,7 +97,13 @@ function createProductionDeps(): ContactDeps {
     },
     sendCrmFailureMail: async (payload) => sendContactMail(payload, CRM_FAILURE_SUBJECT_PREFIX),
     sendAlertWebhook: async (text) => {
-      await sendAlertWebhook(import.meta.env.ALERT_WEBHOOK_URL, text);
+      await sendAlertWebhook(
+        import.meta.env.ALERT_WEBHOOK_URL,
+        text,
+        fetch,
+        5000,
+        parseAlertWebhookAllowedHosts(import.meta.env.ALERT_WEBHOOK_ALLOWED_HOSTS)
+      );
     },
     sendMail: async (payload) => sendContactMail(payload)
   };
