@@ -18,7 +18,7 @@ describe('theme-color derivado de la paleta', () => {
       'src/lib/themeColors.ts',
       'src/layouts/Layout.astro',
       'src/scripts/themeToggle.ts',
-      'public/theme-init.js'
+      'src/scripts/theme-init.js'
     ]) {
       const source = readFileSync(resolve(process.cwd(), file), 'utf8');
       expect(source.match(/#[0-9a-fA-F]{3,8}\b/g), file).toBeNull();

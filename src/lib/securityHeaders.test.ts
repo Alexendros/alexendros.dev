@@ -12,8 +12,26 @@ describe('security headers (vercel.json)', () => {
     headers?: Array<{ source: string; headers: Array<{ key: string; value: string }> }>;
   };
 
-  const globalHeaders = config.headers?.find((h) => h.source === '/(.*)')?.headers ?? [];
+  const headers = config.headers ?? [];
+  const globalHeaders = headers.find((h) => h.source === '/(.*)')?.headers ?? [];
   const byKey = Object.fromEntries(globalHeaders.map((h) => [h.key.toLowerCase(), h.value]));
+
+  it('deja Cache-Control immutable de /_astro y /_image después del catch-all', () => {
+    const catchIdx = headers.findIndex((h) => h.source === '/(.*)');
+    const astroIdx = headers.findIndex((h) => h.source === '/_astro/(.*)');
+    const imageIdx = headers.findIndex((h) => h.source === '/_image(.*)');
+    expect(catchIdx).toBeGreaterThanOrEqual(0);
+    expect(astroIdx).toBeGreaterThan(catchIdx);
+    expect(imageIdx).toBeGreaterThan(catchIdx);
+    const astroCc = headers[astroIdx]?.headers.find(
+      (h) => h.key.toLowerCase() === 'cache-control'
+    )?.value;
+    const imageCc = headers[imageIdx]?.headers.find(
+      (h) => h.key.toLowerCase() === 'cache-control'
+    )?.value;
+    expect(astroCc).toBe('public, max-age=31536000, immutable');
+    expect(imageCc).toBe('public, max-age=31536000, immutable');
+  });
 
   it('exige CSP con frame-ancestors none y sin unsafe-eval', () => {
     const csp = byKey['content-security-policy'] ?? '';
