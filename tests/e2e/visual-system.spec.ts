@@ -37,7 +37,8 @@ test('hero: dos columnas, esquema del método y fondo liso', async ({ page }) =>
   const grid = await page.evaluate(
     () => getComputedStyle(document.body, '::before').backgroundImage
   );
-  const processSurface = page.locator('#metodo .surface-raised');
+  // Los pasos del método van en .steps.surface-panel (no .surface-raised).
+  const processSurface = page.locator('#metodo .steps.surface-panel');
   await expect(processSurface).toBeVisible();
   const processShadow = await processSurface.evaluate((el) => getComputedStyle(el).boxShadow);
 

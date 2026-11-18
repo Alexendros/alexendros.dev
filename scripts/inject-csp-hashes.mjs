@@ -1,64 +1,25 @@
 /**
- * Sincroniza las cabeceras CSP de vercel.json con la política mínima
- * (self + Vercel Analytics) y hashes de theme-init / @layer.
+ * Sincroniza las cabeceras CSP de vercel.json con buildCsp (SSOT en src/lib/csp.ts).
+ * Requiere: node --import tsx scripts/inject-csp-hashes.mjs
  */
 import { readFileSync, writeFileSync } from 'node:fs';
-import { createHash } from 'node:crypto';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createRequire } from 'node:module';
+import { buildCsp, CSP_REPORT_URI } from '../src/lib/csp.ts';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const require = createRequire(import.meta.url);
-
-const LAYER_ORDER_STYLE = '@layer properties, reset, theme, base, components, utilities;';
-
-function sha256Csp(content) {
-  return `'sha256-${createHash('sha256').update(content, 'utf8').digest('base64')}'`;
-}
-
-function themeInitFromDisk() {
-  return readFileSync(join(root, 'src/scripts/theme-init.js'), 'utf8');
-}
-
-function buildPolicy({ withHashes, reportUri }) {
-  const theme = themeInitFromDisk();
-  const scriptSrc = ["'self'", 'https://va.vercel-scripts.com'];
-  const styleSrc = ["'self'"];
-  if (withHashes) {
-    scriptSrc.push(sha256Csp(theme));
-    styleSrc.push(sha256Csp(LAYER_ORDER_STYLE));
-  }
-  const directives = {
-    'default-src': ["'self'"],
-    'script-src': scriptSrc,
-    'style-src': styleSrc,
-    'img-src': ["'self'", 'data:', 'blob:'],
-    'font-src': ["'self'", 'data:'],
-    'connect-src': [
-      "'self'",
-      'https://va.vercel-scripts.com',
-      'https://vitals.vercel-insights.com'
-    ],
-    'frame-ancestors': ["'none'"],
-    'base-uri': ["'self'"],
-    'form-action': ["'self'"],
-    'object-src': ["'none'"]
-  };
-  const body = Object.entries(directives)
-    .map(([k, v]) => `${k} ${v.join(' ')}`.trim())
-    .join('; ');
-  return reportUri ? `${body}; report-uri ${reportUri}; report-to csp-endpoint` : body;
-}
+const REPORTING_ENDPOINTS = `csp-endpoint="${CSP_REPORT_URI}"`;
 
 function main() {
   const vercelPath = join(root, 'vercel.json');
   const data = JSON.parse(readFileSync(vercelPath, 'utf8'));
-  const enforce = buildPolicy({ withHashes: true });
-  const reportOnly = buildPolicy({ withHashes: true, reportUri: '/api/csp-report/' });
+  const enforce = buildCsp({ withHashes: true });
+  const reportOnly = buildCsp({ withHashes: true, reportUri: CSP_REPORT_URI });
 
   let updated = 0;
+  let reportingFound = false;
   for (const group of data.headers ?? []) {
+    if (group.source !== '/(.*)') continue;
     for (const header of group.headers ?? []) {
       const key = String(header.key ?? '').toLowerCase();
       if (key === 'content-security-policy') {
@@ -67,7 +28,18 @@ function main() {
       } else if (key === 'content-security-policy-report-only') {
         header.value = reportOnly;
         updated += 1;
+      } else if (key === 'reporting-endpoints') {
+        header.value = REPORTING_ENDPOINTS;
+        reportingFound = true;
       }
+    }
+    if (!reportingFound) {
+      group.headers = group.headers ?? [];
+      group.headers.push({
+        key: 'Reporting-Endpoints',
+        value: REPORTING_ENDPOINTS
+      });
+      reportingFound = true;
     }
   }
   if (updated < 2) {
@@ -75,8 +47,9 @@ function main() {
     process.exit(1);
   }
   writeFileSync(vercelPath, `${JSON.stringify(data, null, 2)}\n`);
-  console.log('[inject-csp-hashes] vercel.json CSP sincronizada (sin unsafe-inline)');
-  void require;
+  console.log(
+    '[inject-csp-hashes] vercel.json CSP sincronizada desde buildCsp (sin unsafe-inline)'
+  );
 }
 
 main();

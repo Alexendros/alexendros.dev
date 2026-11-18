@@ -61,4 +61,24 @@ describe('security headers (vercel.json)', () => {
     expect(reportOnly).not.toMatch(/unsafe-eval/);
     expect(reportOnly).toMatch(/frame-ancestors\s+'none'/);
   });
+
+  it('define Reporting-Endpoints para cada grupo de report-to', () => {
+    const cspHeaders = [
+      byKey['content-security-policy'] ?? '',
+      byKey['content-security-policy-report-only'] ?? ''
+    ];
+    const reporting = byKey['reporting-endpoints'] ?? '';
+    const groups = new Set<string>();
+    for (const policy of cspHeaders) {
+      for (const match of policy.matchAll(/report-to\s+([^\s;]+)/gi)) {
+        const group = match[1];
+        if (group) groups.add(group);
+      }
+    }
+    expect(groups.size).toBeGreaterThan(0);
+    for (const group of groups) {
+      expect(reporting).toMatch(new RegExp(`${group}\\s*=`));
+    }
+    expect(reporting).toContain('csp-endpoint="/api/csp-report/"');
+  });
 });

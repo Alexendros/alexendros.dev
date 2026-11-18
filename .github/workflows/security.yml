@@ -32,25 +32,7 @@ jobs:
           persist-credentials: false
       - uses: actions/dependency-review-action@3b139cfc5fae8b618d3eae3675e383bb1769c019 # v4.5.0
 
-  sast:
-    name: sast
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    permissions:
-      contents: read
-      security-events: write
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          persist-credentials: false
-      - uses: github/codeql-action/init@bd726e2a6ef9fb1305ebd28a690e459525916958 # v3.29.1
-        with:
-          languages: javascript-typescript
-      # Sin Advanced Security el upload responde 403.
-      - uses: github/codeql-action/analyze@bd726e2a6ef9fb1305ebd28a690e459525916958 # v3.29.1
-        with:
-          upload: false
-
+  # sast (CodeQL) vive en ci.yml: ci-gate lo necesita en el mismo workflow.
   # Scorecard necesita API GitHub con alcance que el GITHUB_TOKEN no tiene en
   # repos privados (ListCommits → Resource not accessible by integration).
   # Misma guarda que dependency-review: solo en público.

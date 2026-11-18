@@ -85,13 +85,50 @@ function logEvent(
  * IP del cliente para rate-limit.
  * En Vercel la plataforma fija `x-real-ip`; no se usa `x-forwarded-for`
  * (el primer salto no es fiable si un cliente lo forja antes del proxy).
- * Sin IP de plataforma: clave única por petición (evita el cubo compartido
- * `unknown` que castigaría a todos los sin-cabecera).
+ * Sin IP de plataforma: cadena vacía → el handler responde 503 fail-closed.
  */
 export function clientIp(request: Request): string {
-  const realIp = request.headers.get('x-real-ip')?.trim();
-  if (realIp) return realIp;
-  return `anon:${crypto.randomUUID()}`;
+  return request.headers.get('x-real-ip')?.trim() ?? '';
+}
+
+/**
+ * Lee el cuerpo con tope de bytes. Cancela el stream al superar el límite.
+ * Devuelve null si la lectura falla; 'too_large' si supera maxBytes.
+ */
+export async function readBodyWithLimit(
+  request: Request,
+  maxBytes: number
+): Promise<{ ok: true; text: string } | { ok: false; reason: 'too_large' | 'read_error' }> {
+  const body = request.body;
+  if (!body) {
+    return { ok: true, text: '' };
+  }
+  const reader = body.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (!value || value.byteLength === 0) continue;
+      total += value.byteLength;
+      if (total > maxBytes) {
+        await reader.cancel().catch(() => {});
+        return { ok: false, reason: 'too_large' };
+      }
+      chunks.push(value);
+    }
+  } catch {
+    await reader.cancel().catch(() => {});
+    return { ok: false, reason: 'read_error' };
+  }
+  const merged = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    merged.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return { ok: true, text: new TextDecoder('utf-8').decode(merged) };
 }
 
 export function isJsonContentType(request: Request): boolean {
@@ -145,14 +182,15 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
     }
   }
 
-  const raw = await request.text().catch(() => null);
-  if (raw === null) {
+  const bodyRead = await readBodyWithLimit(request, CONTACT_MAX_BODY_BYTES);
+  if (!bodyRead.ok) {
+    if (bodyRead.reason === 'too_large') {
+      logEvent('info', 'contact_payload_too_large', requestId, false);
+      return json(413, { error: 'Payload too large' });
+    }
     return json(400, { error: 'Invalid request' });
   }
-  if (new TextEncoder().encode(raw).byteLength > CONTACT_MAX_BODY_BYTES) {
-    logEvent('info', 'contact_payload_too_large', requestId, false);
-    return json(413, { error: 'Payload too large' });
-  }
+  const raw = bodyRead.text;
 
   let data: unknown = null;
   try {
@@ -173,6 +211,10 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
 
   const env = deps.getEnv();
   const ip = clientIp(request);
+  if (!ip) {
+    logEvent('error', 'contact_ip_missing', requestId, false);
+    return json(503, { ok: false, status: 'retryable_failure', error: 'Service unavailable' });
+  }
 
   if (!env.UPSTASH_REDIS_REST_URL || !env.UPSTASH_REDIS_REST_TOKEN) {
     logEvent('error', 'contact_redis_misconfigured', requestId, false);

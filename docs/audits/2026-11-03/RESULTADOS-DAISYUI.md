@@ -104,4 +104,4 @@ Las siete capturas tienen 0 overflow horizontal y 0 imágenes rotas. La revisió
 - No se realizó una nueva evaluación manual con lector de pantalla o alto contraste.
 - No hay deployment de producción ni evidencia sobre un commit publicado.
 - Las capturas de `audit-out/` son artefactos locales ignorados por Git.
-- Este resultado no cierra los bloqueos independientes de `docs/plans/PLAN-CIERRE-SHIP.md`.
+- Evidencia histórica de la auditoría; no constituye contrato vigente.

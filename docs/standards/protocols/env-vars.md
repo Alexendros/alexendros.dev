@@ -22,6 +22,7 @@ Valor actual de consentimiento: `3` (categorías `necessary` + `analytics`).
 
 - SMTP Proton: `smtp.protonmail.ch:587`, usuario `operaciones@alexendros.dev`.
 - Upstash: rate limit 10/min por IP (`x-real-ip`) e idempotencia. Sin estas vars → 503.
+- Sin cabecera `x-real-ip` de plataforma → 503 fail-closed (no se abre un cubo anónimo por petición).
 
 ## 4. Medición
 
