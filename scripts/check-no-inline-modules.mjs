@@ -3,6 +3,9 @@
  * inline. La CSP solo permite 'self' + el hash del theme-init clásico; un
  * módulo inlined (Header, filtros…) queda bloqueado en Vercel
  * y rompe menú y tema.
+ *
+ * El escaneo usa indexOf (no regexp de filtrado HTML) para cubrir cierres
+ * con espacios/atributos raros entre </script y >.
  */
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative, extname } from 'node:path';
@@ -22,17 +25,38 @@ function walk(dir) {
   return files;
 }
 
+function isScriptOpenBoundary(ch) {
+  return ch === undefined || ch === '>' || ch === '/' || /\s/.test(ch);
+}
+
 function findInlineModules(html) {
   const hits = [];
-  // \s* antes de > para no perder cierres como </script > (CodeQL js/bad-tag-filter).
-  const pattern = /<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi;
-  for (const match of html.matchAll(pattern)) {
-    const attrs = match[1] ?? '';
-    if (!/\btype\s*=\s*["']module["']/i.test(attrs)) continue;
-    if (/\bsrc\s*=/i.test(attrs)) continue;
-    const body = (match[2] ?? '').trim();
-    if (!body) continue;
-    hits.push(body.slice(0, 80).replace(/\s+/g, ' '));
+  const lower = html.toLowerCase();
+  let i = 0;
+  while (i < html.length) {
+    const open = lower.indexOf('<script', i);
+    if (open === -1) break;
+    if (!isScriptOpenBoundary(lower[open + 7])) {
+      i = open + 7;
+      continue;
+    }
+    const tagEnd = html.indexOf('>', open);
+    if (tagEnd === -1) break;
+    const attrs = html.slice(open + 7, tagEnd);
+    const close = lower.indexOf('</script', tagEnd + 1);
+    if (close === -1) break;
+    if (!isScriptOpenBoundary(lower[close + 8])) {
+      i = close + 8;
+      continue;
+    }
+    const closeEnd = html.indexOf('>', close);
+    if (closeEnd === -1) break;
+
+    if (/\btype\s*=\s*["']module["']/i.test(attrs) && !/\bsrc\s*=/i.test(attrs)) {
+      const body = html.slice(tagEnd + 1, close).trim();
+      if (body) hits.push(body.slice(0, 80).replace(/\s+/g, ' '));
+    }
+    i = closeEnd + 1;
   }
   return hits;
 }

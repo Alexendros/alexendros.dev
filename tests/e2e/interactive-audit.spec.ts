@@ -316,24 +316,17 @@ test.describe('referencias — filtros y navegación a ficha', () => {
   });
 });
 
-test.describe('servicios — cards, details, CTA', () => {
-  test('cada ServiceCard navega al slug', async ({ page }) => {
+test.describe('servicios — catálogo, ficha, CTA', () => {
+  test('índice: catálogo sin fichas de producto; CTAs a contacto', async ({ page }) => {
     await page.setViewportSize(VIEWPORT_DESKTOP);
     await gotoReady(page, '/servicios/');
-    const cards = page.locator('main a[href^="/servicios/"]');
-    const n = await cards.count();
-    expect(n).toBeGreaterThanOrEqual(1);
-    const hrefs = await cards.evaluateAll((els) =>
-      [...new Set(els.map((el) => (el as HTMLAnchorElement).pathname))].filter(
-        (p) => p !== '/servicios/' && p !== '/servicios'
-      )
-    );
-    for (const path of hrefs) {
-      const res = await page.request.get(path.endsWith('/') ? path : `${path}/`);
-      expect(res.status(), path).toBe(200);
-    }
-    await cards.first().click();
-    await expect(page).toHaveURL(/\/servicios\/[^/]+\/?/);
+    await expect(page.locator('[data-catalogo]')).toBeVisible();
+    await expect(page.locator('[data-product-card]')).toHaveCount(0);
+    await expect(page.locator('main a[href^="/servicios/"][href*="software"]')).toHaveCount(0);
+    const ctas = page.locator('[data-catalogo] a[href^="/contacto/"]');
+    expect(await ctas.count()).toBeGreaterThanOrEqual(1);
+    await ctas.first().click();
+    await expect(page).toHaveURL(/\/contacto\/?/);
   });
 
   test('ficha servicio: details técnicos y CTA principal', async ({ page }) => {
@@ -349,16 +342,14 @@ test.describe('servicios — cards, details, CTA', () => {
     ).toBeVisible();
   });
 
-  test('CTA propuesta del índice', async ({ page }) => {
+  test('CTA del catálogo pide diagnóstico', async ({ page }) => {
     await page.setViewportSize(VIEWPORT_DESKTOP);
     await gotoReady(page, '/servicios/');
-    const cta = page
-      .locator('main')
-      .getByRole('link', { name: /Solicitar propuesta/i })
-      .first();
+    const cta = page.locator('main').getByRole('link', { name: /Pedir diagnóstico/i });
     await expect(cta).toBeVisible();
     await cta.click();
     await expect(page).toHaveURL(/\/contacto\/?/);
+    await expect(page).toHaveURL(/via=revisar/);
   });
 });
 
