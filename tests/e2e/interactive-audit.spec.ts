@@ -7,7 +7,8 @@ import {
   waitForCmpReady,
   waitForHeaderReady,
   axeZero,
-  gotoReady
+  gotoReady,
+  escapeRegExp
 } from './helpers/interactive';
 
 test.beforeEach(async ({ page }) => {
@@ -281,7 +282,7 @@ test.describe('referencias — filtros y navegación a ficha', () => {
     const card = page.locator('main a[href^="/referencias/"]').first();
     const href = await card.getAttribute('href');
     await card.click();
-    await expect(page).toHaveURL(new RegExp(`${href?.replace(/\//g, '\\/')}?$`));
+    await expect(page).toHaveURL(new RegExp(`${escapeRegExp(href ?? '')}?$`));
     await expect(page.locator('dialog[data-detail-island]')).toHaveCount(0);
     await expect(page.locator('main h1')).toBeVisible();
     await axeZero(page, 'ficha completa referencias');
@@ -472,7 +473,7 @@ test.describe('motion — reduced-motion no bloquea interacción', () => {
     const card = page.locator('main a[href^="/referencias/"]').first();
     const href = await card.getAttribute('href');
     await card.click();
-    await expect(page).toHaveURL(new RegExp(`${href?.replace(/\//g, '\\/')}?$`));
+    await expect(page).toHaveURL(new RegExp(`${escapeRegExp(href ?? '')}?$`));
     await expect(page.locator('dialog[data-detail-island]')).toHaveCount(0);
   });
 });

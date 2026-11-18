@@ -24,7 +24,8 @@ function walk(dir) {
 
 function findInlineModules(html) {
   const hits = [];
-  const pattern = /<script\b([^>]*)>([\s\S]*?)<\/script>/gi;
+  // \s* antes de > para no perder cierres como </script > (CodeQL js/bad-tag-filter).
+  const pattern = /<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi;
   for (const match of html.matchAll(pattern)) {
     const attrs = match[1] ?? '';
     if (!/\btype\s*=\s*["']module["']/i.test(attrs)) continue;

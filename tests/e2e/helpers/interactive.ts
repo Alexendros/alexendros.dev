@@ -4,6 +4,11 @@ import AxeBuilder from '@axe-core/playwright';
 export const VIEWPORT_MOBILE = { width: 390, height: 844 } as const;
 export const VIEWPORT_DESKTOP = { width: 1280, height: 800 } as const;
 
+/** Escapa metacaracteres de RegExp (incluye backslash) para construir patrones desde href. */
+export function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 /** Neutraliza webdriver y limpia tema/consentimiento antes de la primera navegación. */
 export async function clearStorage(page: Page): Promise<void> {
   await page.addInitScript(() => {

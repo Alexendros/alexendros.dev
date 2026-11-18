@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { escapeRegExp } from './helpers/interactive';
 
 test('DI-02: /referencias navega a la ficha completa', async ({ page }) => {
   await page.goto('/referencias/');
@@ -6,7 +7,7 @@ test('DI-02: /referencias navega a la ficha completa', async ({ page }) => {
   const href = await cardLink.getAttribute('href');
   expect(href).toMatch(/^\/referencias\/.+\//);
   await cardLink.click();
-  await expect(page).toHaveURL(new RegExp(`${href?.replace(/\//g, '\\/')}?$`));
+  await expect(page).toHaveURL(new RegExp(`${escapeRegExp(href ?? '')}?$`));
   await expect(page.locator('dialog[data-detail-island]')).toHaveCount(0);
   await expect(page.locator('main h1')).toBeVisible();
 });
