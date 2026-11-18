@@ -6,7 +6,7 @@
 
 **Destinatarios:** agentes de código y el rol Mantenedor. Homogeneizamos **nombres y contratos** (jobs `quality` / `test` / `build` / `smoke` / `e2e-critical`), no el copy del sitio.
 
-Plan de cierre vigente: [`docs/plans/PLAN-CIERRE-SHIP.md`](docs/plans/PLAN-CIERRE-SHIP.md). Sus bloqueos y evidencias no se sustituyen por afirmaciones de CI.
+Fuentes de verdad: [`docs/standards/`](docs/standards/), registros tipados en [`docs/audits/{decisions,events}.json`](docs/audits/decisions.json) y CI en [`.github/workflows/ci.yml`](.github/workflows/ci.yml). Los planes de cierre históricos se retiraron tras el ship; no se reabren como contrato.
 
 ## Learned User Preferences
 

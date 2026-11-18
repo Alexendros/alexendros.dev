@@ -57,3 +57,7 @@ audit-out/
 *.tar.gz
 *.tar
 specs/
+
+# Stryker
+.stryker-tmp/
+reports/mutation/

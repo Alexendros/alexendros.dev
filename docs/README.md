@@ -8,7 +8,7 @@
 
 ## Programa vigente
 
-- [plans/PLAN-CIERRE-SHIP.md](plans/PLAN-CIERRE-SHIP.md) — fases, responsables, bloqueos, evidencias y publicación.
+- Contratos vivos: [standards/](standards/), registros tipados en [audits/decisions.json](audits/decisions.json) y [audits/events.json](audits/events.json), pipeline en [`.github/workflows/ci.yml`](../.github/workflows/ci.yml).
 
 ## Contratos (raíz)
 
@@ -34,7 +34,6 @@
 - [standards/protocols/ci-release.md](standards/protocols/ci-release.md)
 - [standards/protocols/security-ci.md](standards/protocols/security-ci.md) — división entre `ci.yml` y `security.yml`
 - [standards/protocols/env-vars.md](standards/protocols/env-vars.md)
-- [standards/protocols/gtm-server-side.md](standards/protocols/gtm-server-side.md)
 
 ## Operación y decisiones
 

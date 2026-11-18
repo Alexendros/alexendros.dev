@@ -51,7 +51,11 @@ function postJson(body: unknown, init?: RequestInit): Request {
   return new Request('https://alexendros.dev/api/contact', {
     method: 'POST',
     ...rest,
-    headers: { 'Content-Type': 'application/json', ...extraHeaders },
+    headers: {
+      'Content-Type': 'application/json',
+      'x-real-ip': '203.0.113.10',
+      ...extraHeaders
+    },
     body: typeof body === 'string' ? body : JSON.stringify(body)
   });
 }
@@ -91,12 +95,8 @@ describe('clientIp', () => {
     expect(clientIp(req)).toBe('9.8.7.6');
   });
 
-  it('sin x-real-ip emite clave anónima única (no unknown)', () => {
-    const a = clientIp(new Request('https://alexendros.dev/api/contact'));
-    const b = clientIp(new Request('https://alexendros.dev/api/contact'));
-    expect(a).toMatch(/^anon:/);
-    expect(b).toMatch(/^anon:/);
-    expect(a).not.toBe(b);
+  it('sin x-real-ip devuelve cadena vacía', () => {
+    expect(clientIp(new Request('https://alexendros.dev/api/contact'))).toBe('');
   });
 });
 
@@ -186,6 +186,7 @@ describe('handleContactPost', () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-real-ip': '203.0.113.10',
           'Content-Length': String(CONTACT_MAX_BODY_BYTES + 1)
         },
         body: JSON.stringify({ ...validBody, modules: big })
@@ -193,6 +194,54 @@ describe('handleContactPost', () => {
       deps()
     );
     expect(res.status).toBe(413);
+  });
+
+  it('cuerpo fragmentado sin Content-Length que supera el tope → 413', async () => {
+    const oversized = JSON.stringify({
+      ...validBody,
+      modules: 'x'.repeat(CONTACT_MAX_BODY_BYTES)
+    });
+    expect(new TextEncoder().encode(oversized).byteLength).toBeGreaterThan(CONTACT_MAX_BODY_BYTES);
+    const stream = new ReadableStream<Uint8Array>({
+      start(controller) {
+        const bytes = new TextEncoder().encode(oversized);
+        const mid = Math.floor(bytes.byteLength / 2);
+        controller.enqueue(bytes.slice(0, mid));
+        controller.enqueue(bytes.slice(mid));
+        controller.close();
+      }
+    });
+    const rateLimit = vi.fn(async () => ({ success: true, reset: Date.now() + 60_000 }));
+    const res = await handleContactPost(
+      new Request('https://alexendros.dev/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-real-ip': '203.0.113.10'
+        },
+        // @ts-expect-error Node requiere duplex para body stream
+        duplex: 'half',
+        body: stream
+      }),
+      deps({ rateLimit })
+    );
+    expect(res.status).toBe(413);
+    expect(rateLimit).not.toHaveBeenCalled();
+  });
+
+  it('sin x-real-ip → 503 y no llama rateLimit', async () => {
+    const rateLimit = vi.fn(async () => ({ success: true, reset: Date.now() + 60_000 }));
+    const res = await handleContactPost(
+      new Request('https://alexendros.dev/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(validBody)
+      }),
+      deps({ rateLimit })
+    );
+    expect(res.status).toBe(503);
+    expect(await res.json()).toMatchObject({ ok: false, status: 'retryable_failure' });
+    expect(rateLimit).not.toHaveBeenCalled();
   });
 
   it('SMTP no configurado → 503 retryable_failure', async () => {

@@ -9,7 +9,8 @@
   "packageManager": "pnpm@9.15.9",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro check && astro build && node scripts/inject-csp-hashes.mjs && node scripts/fix-vercel-runtime.mjs && node scripts/check-public-pricing.mjs --require-build && node scripts/check-no-inline-modules.mjs && bash scripts/audit/check-leaks.sh src .vercel/output/static",
+    "build": "astro check && astro build && node scripts/strip-function-image.mjs && node --import tsx scripts/inject-csp-hashes.mjs && node scripts/fix-vercel-runtime.mjs && node scripts/check-function-budget.mjs && node scripts/check-public-pricing.mjs --require-build && node scripts/check-no-inline-modules.mjs && bash scripts/audit/check-leaks.sh src .vercel/output/static",
+    "csp:sync": "node --import tsx scripts/inject-csp-hashes.mjs",
     "preview": "serve .vercel/output/static -l 4321 --no-clipboard",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
@@ -17,9 +18,11 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:contract": "vitest run src/lib/contactSchema.test.ts src/lib/contactSchema.property.test.ts src/lib/smtpConfig.test.ts src/lib/smtpConfig.property.test.ts src/lib/contactIdempotency.test.ts src/lib/contactHandler.test.ts src/lib/securityHeaders.test.ts",
+    "test:mutate": "stryker run",
     "gen:cv": "node scripts/build-cv-pdf.mjs",
     "gen:og": "node --import tsx --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"./scripts/asset-stub-loader.mjs\", pathToFileURL(\"./\"));' scripts/gen-og.mts",
     "check:contrast": "node scripts/check-contrast.mjs",
+    "check:overrides": "node scripts/check-pnpm-overrides.mjs",
     "check:records": "node scripts/check-records.mjs",
     "check:copy": "node scripts/check-copy.mjs",
     "check:classes": "node scripts/check-classes.mjs",
@@ -36,7 +39,6 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.10",
     "@astrojs/sitemap": "^3.7.4",
     "@astrojs/vercel": "^11.0.11",
     "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
@@ -52,6 +54,7 @@
     "zod": "^4.6.6"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.10",
     "@axe-core/playwright": "^4.10.0",
     "@eslint/js": "^10.0.1",
     "@lhci/cli": "^0.15.1",
@@ -59,8 +62,10 @@
     "@semantic-release/commit-analyzer": "^13.0.1",
     "@semantic-release/github": "11",
     "@semantic-release/release-notes-generator": "^14.1.1",
+    "@stryker-mutator/core": "^10.1.1",
+    "@stryker-mutator/vitest-runner": "^10.1.1",
     "@tailwindcss/vite": "4.3.3",
-    "@types/node": "^26.5.0",
+    "@types/node": "^24.10.1",
     "@types/nodemailer": "^7.0.12",
     "ajv": "8.20.0",
     "ajv-formats": "3.0.1",

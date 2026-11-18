@@ -265,6 +265,17 @@
       "recordType": "event",
       "kind": "aviso",
       "source": "docs/audits/decisions.json"
+    },
+    {
+      "id": "evt-2026-11-18-auditoria-saneamiento",
+      "sequence": 25,
+      "timestamp": "2026-11-18T20:30:00Z",
+      "active": true,
+      "title": "Saneamiento de la auditoría crítica",
+      "summary": "Cierre de defectos MODERADOS/MICROSCÓPICOS y mejoras: Reporting-Endpoints, CodeQL en gate, higiene de deps, contacto fail-closed, CSP única, función sin libvips, señales CSP, Stryker y limpieza de specs/middleware.",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "docs/audits/decisions.json"
     }
   ]
 }

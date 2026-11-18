@@ -10,7 +10,7 @@ Sitio profesional de conversión + contratación. Producción: [https://alexendr
 
 ## Stack
 
-Astro 7.3 con `output: 'static'` y rutas on-demand (`prerender = false`) + Tailwind (PostCSS) + TypeScript estricto + Zod. Sin islas React: formulario y CMP son componentes Astro con scripts vanilla. Fuentes Plus Jakarta Sans y Space Grotesk self-hosted (Fontsource); mono de sistema para cejas y metadatos. Tracking comercial (GA4, Meta, Clarity, PostHog, LinkedIn, GTM) solo con consentimiento previo y granular (Consent Mode v2 default-deny). Vercel Analytics y Speed Insights solo en builds de Vercel (`__IS_VERCEL__`).
+Astro 7.4 con `output: 'static'` y rutas on-demand (`prerender = false`) + Tailwind 4 vía `@tailwindcss/vite` + TypeScript estricto + Zod. Sin islas React: formulario y CMP son componentes Astro con scripts vanilla. Fuentes Plus Jakarta Sans y Space Grotesk self-hosted (Fontsource); mono de sistema para cejas y metadatos. Tracking solo con consentimiento previo (CMP `necessary` + `analytics`; decisión 0035). Vercel Analytics y Speed Insights solo en builds de Vercel (`__IS_VERCEL__`) tras consentimiento de analítica.
 
 ## Runtime
 
@@ -25,7 +25,7 @@ Astro 7.3 con `output: 'static'` y rutas on-demand (`prerender = false`) + Tailw
 ## APIs
 
 - `POST /api/contact` — Zod, honeypot, rate-limit Upstash, Proton SMTP. Fail-closed (503) sin Redis/SMTP. Idempotencia con estados `processing` | `accepted` | `retryable_failure` | `unknown` (contrato HTTP: 200 accepted/+replay, 202 processing + `Retry-After`, 409 conflict, 503 retryable_failure|unknown). Un claim ocupado no es éxito final. Sin Turnstile (decisión 0035).
-- `POST /api/csp-report` — colector de violaciones CSP (Report-Only).
+- `POST /api/csp-report` — colector de violaciones CSP (Report-Only + Reporting-Endpoints); contadores Upstash y aviso por umbral; siempre 204.
 
 Variables: [`.env.example`](.env.example) y [docs/standards/protocols/env-vars.md](docs/standards/protocols/env-vars.md). Nunca en git.
 
@@ -33,7 +33,7 @@ Variables: [`.env.example`](.env.example) y [docs/standards/protocols/env-vars.m
 
 ## CI y release
 
-El workflow principal ejecuta `quality`, `test`, `build` (incluido `check:links`), `smoke`, `e2e-critical`, `csp`, `axe` y controles de seguridad; `ci-gate` agrega los obligatorios. Playwright completo + LHCI son **opt-in** (label `e2e` o `workflow_dispatch`). Release: `release.yml` + semantic-release (versionado ≠ promote a Vercel). Actualizaciones de dependencias: Renovate (`.github/renovate.json`).
+El workflow principal ejecuta `quality`, `test`, `build` (incluido `check:links`, árbol limpio y presupuesto de función), `smoke`, `e2e-critical`, `csp`, `axe`, `sast` (CodeQL), `mutate` (Stryker del núcleo de contacto) y controles de seguridad; `ci-gate` agrega los obligatorios. Playwright completo + LHCI son **opt-in** (label `e2e` o `workflow_dispatch`). Release: `release.yml` + semantic-release (versionado ≠ promote a Vercel). Actualizaciones de dependencias: Renovate (`.github/renovate.json`).
 
 ## Límites
 

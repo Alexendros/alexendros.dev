@@ -11,19 +11,21 @@ export default defineConfig({
       filter: (page) => !page.includes('/design-system') && !page.includes('/sobre-mi')
     })
   ],
-  // Astro 5 elimina output: 'hybrid'. static conserva el opt-in por ruta
-  // (prerender = false en API y /r/[code]).
+  // Sitio estático (Astro 7): prerender por defecto; API con prerender = false.
   output: 'static',
   // scripts/fix-vercel-runtime.mjs alinea el runtime de las funciones con
   // package.json#engines.node, la fuente de verdad del repo.
   adapter: vercel({
-    maxDuration: 10
+    maxDuration: 10,
+    // Sin Image Optimization on-demand de Vercel: las fichas se optimizan en el build.
+    imageService: false
   }),
   build: {
-    // Fase ② PROTECCIÓN: externaliza los estilos de Astro a /_astro/*.css
-    // para poder retirar 'unsafe-inline' de style-src en la fase ③.
+    // Externaliza estilos a /_astro/*.css (CSP style-src sin unsafe-inline).
     inlineStylesheets: 'never'
   },
+  // sharp en build para Image de astro:assets; sin superficie /_image en runtime
+  // (scripts/strip-function-image.mjs retira ruta y restos del trace).
   image: { service: { entrypoint: 'astro/assets/services/sharp' } },
   vite: {
     plugins: [tailwindcss()],

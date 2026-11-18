@@ -1,5 +1,7 @@
 /** Colector CSP Report-Only: límite de cuerpo y logging acotado (OWASP A09). */
 
+import { CSP_REPORT_ANON_IP, type CspSignalDeps, recordCspViolation } from './cspSignals';
+
 export const MAX_CSP_REPORT_BYTES = 16 * 1024;
 export const MAX_CSP_REPORT_FIELD_CHARS = 200;
 
@@ -10,8 +12,10 @@ export type CspReportLog = (label: string, detail?: string) => void;
 export type CspReportDeps = {
   /** Rate-limit por IP; si falla, se responde 204 sin loguear el cuerpo. */
   rateLimit?: (ip: string) => Promise<{ success: boolean }>;
-  /** Resuelve IP del cliente (misma semántica que contacto). */
+  /** Resuelve IP del cliente (cadena vacía → cubo anon:csp-report). */
   clientIp?: (request: Request) => string;
+  /** Contadores + alerta por umbral; los fallos no cambian el 204. */
+  signals?: CspSignalDeps;
 };
 
 function mediaType(request: Request): string | null {
@@ -85,10 +89,8 @@ export async function handleCspReportPost(
   }
 
   if (deps.rateLimit) {
-    const ip =
-      deps.clientIp?.(request) ??
-      request.headers.get('x-real-ip')?.trim() ??
-      `anon:${crypto.randomUUID()}`;
+    const resolved = deps.clientIp?.(request) ?? request.headers.get('x-real-ip')?.trim() ?? '';
+    const ip = resolved || CSP_REPORT_ANON_IP;
     try {
       const limited = await deps.rateLimit(ip);
       if (!limited.success) {
@@ -130,6 +132,9 @@ export async function handleCspReportPost(
     const summary = summarizeCspReport(report);
     if (summary) {
       log('[csp-report]', JSON.stringify(summary));
+      if (deps.signals) {
+        await recordCspViolation(summary, deps.signals).catch(() => null);
+      }
     }
   } catch {
     // cuerpos no-JSON: ignorar

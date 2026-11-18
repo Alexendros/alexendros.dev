@@ -1,0 +1,7 @@
+{
+  "path": ".vercel/output/functions/_render.func",
+  "maxBytes": 5007648,
+  "measuredBytes": 4354476,
+  "marginPercent": 15,
+  "note": "Medido 2026-11-18 tras strip-function-image (sin sharp/libvips). Presupuesto = ceil(measured * 1.15)."
+}

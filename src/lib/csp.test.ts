@@ -25,4 +25,17 @@ describe('buildCsp', () => {
     expect(policy).toContain(`report-uri ${CSP_REPORT_URI};`);
     expect(policy).not.toMatch(/unsafe-inline/);
   });
+
+  it('vercel.json coincide con buildCsp (enforce y report-only)', () => {
+    const config = JSON.parse(readFileSync(resolve(process.cwd(), 'vercel.json'), 'utf8')) as {
+      headers?: Array<{ source: string; headers: Array<{ key: string; value: string }> }>;
+    };
+    const globalHeaders = config.headers?.find((h) => h.source === '/(.*)')?.headers ?? [];
+    const byKey = Object.fromEntries(globalHeaders.map((h) => [h.key.toLowerCase(), h.value]));
+    expect(byKey['content-security-policy']).toBe(buildCsp({ withHashes: true }));
+    expect(byKey['content-security-policy-report-only']).toBe(
+      buildCsp({ withHashes: true, reportUri: CSP_REPORT_URI })
+    );
+    expect(byKey['reporting-endpoints']).toBe(`csp-endpoint="${CSP_REPORT_URI}"`);
+  });
 });

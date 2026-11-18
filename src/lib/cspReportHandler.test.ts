@@ -130,4 +130,19 @@ describe('handleCspReportPost', () => {
     expect(rateLimit).toHaveBeenCalledWith('1.1.1.1');
     expect(log).toHaveBeenCalledWith('[csp-report]', 'rate_limited');
   });
+
+  it('sin x-real-ip usa el cubo fijo anon:csp-report', async () => {
+    const log = vi.fn();
+    const rateLimit = vi.fn(async () => ({ success: true }));
+    await handleCspReportPost(
+      new Request('https://alexendros.dev/api/csp-report/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/csp-report' },
+        body: JSON.stringify({ 'csp-report': { 'violated-directive': 'script-src' } })
+      }),
+      log,
+      { rateLimit, clientIp: () => '' }
+    );
+    expect(rateLimit).toHaveBeenCalledWith('anon:csp-report');
+  });
 });

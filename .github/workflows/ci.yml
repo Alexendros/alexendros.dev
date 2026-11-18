@@ -61,6 +61,8 @@ jobs:
 
       - run: pnpm run check:records
 
+      - run: pnpm run check:overrides
+
       - run: pnpm run check:copy
 
       - run: pnpm run check:classes
@@ -94,6 +96,27 @@ jobs:
 
       - run: pnpm test
 
+  mutate:
+    name: mutate
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm test:mutate
+
   build:
     name: build
     if: github.event_name != 'schedule'
@@ -117,6 +140,9 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y poppler-utils
 
       - run: pnpm build
+
+      - name: Árbol versionado limpio tras el build
+        run: git diff --exit-code
 
       - run: pnpm check:links
 
@@ -274,6 +300,23 @@ jobs:
             --config=osv-scanner.toml
             .
 
+  sast:
+    name: sast
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - uses: github/codeql-action/init@bd726e2a6ef9fb1305ebd28a690e459525916958 # v3.29.1
+        with:
+          languages: javascript-typescript
+      - uses: github/codeql-action/analyze@bd726e2a6ef9fb1305ebd28a690e459525916958 # v3.29.1
+
   zizmor:
     name: zizmor
     runs-on: ubuntu-latest
@@ -385,7 +428,22 @@ jobs:
   ci-gate:
     name: ci-gate
     if: ${{ always() && github.event_name != 'schedule' }}
-    needs: [quality, test, build, smoke, e2e-critical, secrets, sca, zizmor, actionlint, csp, axe]
+    needs:
+      [
+        quality,
+        test,
+        mutate,
+        build,
+        smoke,
+        e2e-critical,
+        secrets,
+        sca,
+        sast,
+        zizmor,
+        actionlint,
+        csp,
+        axe
+      ]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
