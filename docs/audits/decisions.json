@@ -533,14 +533,14 @@
       "timestamp": "2026-11-18T20:00:00Z",
       "active": true,
       "title": "CodeQL con veredicto en ci-gate",
-      "summary": "El job sast vive en ci.yml, publica SARIF y entra en needs de ci-gate; si el upload responde 403 se retira el job.",
+      "summary": "Intentar CodeQL advanced en ci-gate; si el upload falla (403 o conflicto con default setup) se retira el job.",
       "recordType": "decision",
       "status": "aceptada",
       "supersedes": [],
       "supersededBy": null,
       "context": "Auditoría crítica: CodeQL corría con upload:false y no formaba parte del gate.",
-      "decision": "Mover sast a .github/workflows/ci.yml con security-events: write y sin upload:false; añadirlo a needs de ci-gate. security.yml conserva dependency-review y scorecard. Si el primer upload en CI responde 403, se elimina el job en el mismo PR.",
-      "consequences": "Una vulnerabilidad detectable por CodeQL puede fallar el gate. El workflow security.yml deja de duplicar el análisis."
+      "decision": "Mover sast a .github/workflows/ci.yml con security-events: write y sin upload:false; añadirlo a needs de ci-gate. security.yml conserva dependency-review y scorecard. Si el primer upload en CI responde 403 o GitHub rechaza el SARIF por default setup activo, se elimina el job en el mismo PR hasta desactivar default setup.",
+      "consequences": "En PR #220 el upload falló con «advanced configurations cannot be processed when the default setup is enabled»; el job sast se retiró del gate. Code scanning sigue en default setup semanal hasta intervención manual en Settings → Security."
     },
     {
       "id": "0037",

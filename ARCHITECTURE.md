@@ -33,7 +33,7 @@ Variables: [`.env.example`](.env.example) y [docs/standards/protocols/env-vars.m
 
 ## CI y release
 
-El workflow principal ejecuta `quality`, `test`, `build` (incluido `check:links`, árbol limpio y presupuesto de función), `smoke`, `e2e-critical`, `csp`, `axe`, `sast` (CodeQL), `mutate` (Stryker del núcleo de contacto) y controles de seguridad; `ci-gate` agrega los obligatorios. Playwright completo + LHCI son **opt-in** (label `e2e` o `workflow_dispatch`). Release: `release.yml` + semantic-release (versionado ≠ promote a Vercel). Actualizaciones de dependencias: Renovate (`.github/renovate.json`).
+El workflow principal ejecuta `quality`, `test`, `build` (incluido `check:links`, árbol limpio y presupuesto de función), `smoke`, `e2e-critical`, `csp`, `axe`, `mutate` (Stryker del núcleo de contacto) y controles de seguridad; `ci-gate` agrega los obligatorios. CodeQL advanced quedó fuera del gate (conflicto con default setup; decisión 0036). Playwright completo + LHCI son **opt-in** (label `e2e` o `workflow_dispatch`). Release: `release.yml` + semantic-release (versionado ≠ promote a Vercel). Actualizaciones de dependencias: Renovate (`.github/renovate.json`).
 
 ## Límites
 

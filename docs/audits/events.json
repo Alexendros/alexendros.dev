@@ -272,7 +272,7 @@
       "timestamp": "2026-11-18T20:30:00Z",
       "active": true,
       "title": "Saneamiento de la auditoría crítica",
-      "summary": "Cierre de defectos MODERADOS/MICROSCÓPICOS y mejoras: Reporting-Endpoints, CodeQL en gate, higiene de deps, contacto fail-closed, CSP única, función sin libvips, señales CSP, Stryker y limpieza de specs/middleware.",
+      "summary": "Cierre de defectos MODERADOS/MICROSCÓPICOS y mejoras: Reporting-Endpoints, higiene de deps, contacto fail-closed, CSP única, función sin libvips, señales CSP, Stryker y limpieza de specs/middleware. CodeQL advanced retirado del gate por conflicto con default setup (0036).",
       "recordType": "event",
       "kind": "aviso",
       "source": "docs/audits/decisions.json"

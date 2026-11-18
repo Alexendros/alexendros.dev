@@ -6,65 +6,65 @@
 # --- toolchain / CI only ---
 [[IgnoredVulns]]
 id = "GHSA-c475-qrg2-pj4r"
-ignoreUntil = "2027-02-16"
+ignoreUntil = "2027-02-16T00:00:00Z"
 reason = "basic-ftp solo CI/toolchain"
 
 [[IgnoredVulns]]
 id = "GHSA-vfj7-8cjw-p6xm"
-ignoreUntil = "2027-02-16"
+ignoreUntil = "2027-02-16T00:00:00Z"
 reason = "braces solo CI/toolchain"
 
 [[IgnoredVulns]]
 id = "GHSA-7pqw-9j4j-h8q3"
-ignoreUntil = "2027-02-16"
+ignoreUntil = "2027-02-16T00:00:00Z"
 reason = "extract-zip solo CI/toolchain (Playwright)"
 
 [[IgnoredVulns]]
 id = "GHSA-jmr9-qjv8-65gv"
-ignoreUntil = "2027-02-16"
+ignoreUntil = "2027-02-16T00:00:00Z"
 reason = "extract-zip solo CI/toolchain (Playwright)"
 
 [[IgnoredVulns]]
 id = "GHSA-hp3w-g68c-fv3c"
-ignoreUntil = "2027-02-16"
+ignoreUntil = "2027-02-16T00:00:00Z"
 reason = "sprintf-js solo toolchain; sin parche misma línea"
 
 [[IgnoredVulns]]
 id = "GHSA-52f5-9888-hmc6"
-ignoreUntil = "2027-02-16"
+ignoreUntil = "2027-02-16T00:00:00Z"
 reason = "tmp solo CI/toolchain"
 
 [[IgnoredVulns]]
 id = "GHSA-ph9p-34f9-6g65"
-ignoreUntil = "2027-02-16"
+ignoreUntil = "2027-02-16T00:00:00Z"
 reason = "tmp solo CI/toolchain"
 
 [[IgnoredVulns]]
 id = "GHSA-w5hq-g745-h8pq"
-ignoreUntil = "2027-02-16"
+ignoreUntil = "2027-02-16T00:00:00Z"
 reason = "uuid solo CI/toolchain"
 
 [[IgnoredVulns]]
 id = "GHSA-ch52-4w7c-c8xp"
-ignoreUntil = "2027-02-16"
+ignoreUntil = "2027-02-16T00:00:00Z"
 reason = "http-cache-semantics residual arrastrado; sin parche misma línea usable"
 
 [[IgnoredVulns]]
 id = "GHSA-mrhx-c7xc-m3w5"
-ignoreUntil = "2027-02-16"
+ignoreUntil = "2027-02-16T00:00:00Z"
 reason = "zod 3.x residual de chromium-bidi/Playwright; 4.x forzado a >=4.6.6"
 
 [[IgnoredVulns]]
 id = "GHSA-9wv6-86v2-598j"
-ignoreUntil = "2027-02-16"
+ignoreUntil = "2027-02-16T00:00:00Z"
 reason = "path-to-regexp override a 6.3.0; residual si queda copia antigua en toolchain"
 
 [[IgnoredVulns]]
 id = "GHSA-g3hv-75wg-m249"
-ignoreUntil = "2027-02-16"
+ignoreUntil = "2027-02-16T00:00:00Z"
 reason = "minimatch 3.x solo CI/toolchain (@lhci/cli > rimraf > glob 7); la línea 10.x se fuerza a >=11.0.1 por override"
 
 [[IgnoredVulns]]
 id = "GHSA-fc5q-39xc-vjpf"
-ignoreUntil = "2027-02-16"
+ignoreUntil = "2027-02-16T00:00:00Z"
 reason = "picomatch 2.3.2 vía astro>unstorage>anymatch (prod del framework) y 4.0.7 en toolchain; sin parche; no entra en la función de contacto"

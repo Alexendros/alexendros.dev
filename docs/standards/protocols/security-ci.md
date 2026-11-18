@@ -98,27 +98,7 @@ dependency-review:
 
 ## Job `sast` (CodeQL)
 
-Análisis local de javascript-typescript. `upload: false` porque sin GitHub Advanced Security el upload responde **403**.
-
-```yaml
-sast:
-  name: sast
-  runs-on: ubuntu-latest
-  timeout-minutes: 30
-  permissions:
-    contents: read
-    security-events: write
-  steps:
-    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-      with:
-        persist-credentials: false
-    - uses: github/codeql-action/init@bd726e2a6ef9fb1305ebd28a690e459525916958 # v3.29.1
-      with:
-        languages: javascript-typescript
-    - uses: github/codeql-action/analyze@bd726e2a6ef9fb1305ebd28a690e459525916958 # v3.29.1
-      with:
-        upload: false
-```
+Retirado de `ci.yml` (contingencia 0036): el **default setup** de Code scanning del repo rechaza SARIF de configuración avanzada. Mientras default setup esté activo, no hay job `sast` en el gate. Para reintroducirlo: Settings → Code security → Code scanning → Disable default setup, luego restaurar el job advanced en `ci.yml` con upload y `needs` de `ci-gate`.
 
 ## Job `scorecard`
 
