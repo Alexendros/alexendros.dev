@@ -131,7 +131,9 @@ scorecard:
 
 ## Renovate
 
-Configuración: [`.github/renovate.json`](../../../.github/renovate.json) (`npm` + `github-actions`, Dependency Dashboard, sin automerge de majors).
+Renovate (`.github/renovate.json`) es el único bot de version-updates (npm y github-actions). No hay dependabot.yml de version-updates; Dependabot queda solo para alertas.
+
+Configuración: [`.github/renovate.json`](../../../.github/renovate.json) (Dependency Dashboard, sin automerge de majors).
 
 Si el JSON valida con `renovate-config-validator` y no aparece el issue «Dependency Dashboard», falta instalar la **App de Renovate** en la cuenta u organización del repo. Eso es tarea de operador (Settings), no de un PR.
 

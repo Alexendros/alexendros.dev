@@ -1,6 +1,8 @@
 User-agent: *
 Allow: /
+# Vitrina noindex; excluida del sitemap (astro.config.mjs).
 Disallow: /design-system/
+# Página viva noindex con canonical a /experiencia/ (decisión 0029).
 Disallow: /sobre-mi/
 
 Sitemap: https://alexendros.dev/sitemap-index.xml

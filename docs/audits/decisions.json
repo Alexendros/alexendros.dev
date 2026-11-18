@@ -601,6 +601,21 @@
       "context": "Había tests de propiedades y contrato, sin medición de mutantes.",
       "decision": "Añadir @stryker-mutator/core y vitest-runner como devDependencies; stryker.config.mjs con break 45; job mutate (timeout 20) en needs de ci-gate. Primera medición 2026-11-18: score total 47.34 %.",
       "consequences": "Bajar del 45 % de mutación falla el gate. La suite de mutación añade ~15 min de CI en paralelo."
+    },
+    {
+      "id": "0041",
+      "sequence": 41,
+      "timestamp": "2026-11-18T21:40:00Z",
+      "active": true,
+      "title": "SBOM CycloneDX de producción en build y release",
+      "summary": "Artefacto sbom.cdx.json vía pnpm sbom (pnpm 12.16.1) en el job build y como asset del GitHub Release; sin paquete CycloneDX ni firma.",
+      "recordType": "decision",
+      "status": "aceptada",
+      "supersedes": [],
+      "supersededBy": null,
+      "context": "Auditoría de remediación (H-03): no había SBOM. packageManager sigue en pnpm@9.15.9, que no expone el subcomando sbom.",
+      "decision": "Script pnpm run sbom:gen (scripts/gen-sbom.mjs) genera CycloneDX de producción con --prod --lockfile-only --sbom-type application invocando pnpm@12.16.1 vía npm exec sobre un manifiesto temporal sin pin packageManager. scripts/check-sbom.mjs valida bomFormat, tipo application y las dependencias de package.json#dependencies. El job build sube el artefacto sbom; release.yml genera el fichero antes de semantic-release; .releaserc.json lo adjunta con etiqueta CycloneDX SBOM. sbom.cdx.json está en .gitignore. Sin @cyclonedx/cyclonedx-npm y sin cosign.",
+      "consequences": "Cada build de CI publica el artefacto sbom. El asset en GitHub Release aparece cuando el merge dispara un release (tipos chore/docs/content/feat/fix; no ci/test). Instalar o firmar el SBOM exige otra decisión."
     }
   ]
 }

@@ -37,6 +37,16 @@
       }
     ],
     ["@semantic-release/npm", { "npmPublish": false }],
-    "@semantic-release/github"
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          {
+            "path": "sbom.cdx.json",
+            "label": "CycloneDX SBOM"
+          }
+        ]
+      }
+    ]
   ]
 }

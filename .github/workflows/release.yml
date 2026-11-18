@@ -34,6 +34,11 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - name: SBOM CycloneDX
+        run: |
+          pnpm run sbom:gen
+          node scripts/check-sbom.mjs
+
       - name: Semantic Release
         run: pnpm exec semantic-release
         env:

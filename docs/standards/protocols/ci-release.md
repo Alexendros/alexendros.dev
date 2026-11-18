@@ -10,17 +10,17 @@
 
 Workflow: `.github/workflows/ci.yml`. El estado operativo se consulta en los registros tipados (`docs/audits/{decisions,events}.json`) y en los jobs de este workflow; este protocolo solo documenta la operación.
 
-| Job            | Bloquea PR      | Notas                                                           |
-| -------------- | --------------- | --------------------------------------------------------------- |
-| `quality`      | Sí              | Tipos, lint, formato, CSS, cookies, registros, copy y contraste |
-| `test`         | Sí              | Vitest                                                          |
-| `build`        | Sí              | Build, anti-importes, `check:links` y artefacto `site-static`   |
-| `smoke`        | Sí              | Depende de `build`                                              |
-| `e2e-critical` | Sí              | Home, contacto, consent deny-by-default                         |
-| `csp` / `axe`  | Sí              | Informe CSP y accesibilidad automatizada                        |
-| `ci-gate`      | Sí              | Agrega calidad, build, E2E y seguridad                          |
-| `e2e` / `lhci` | Solo si se pide | Label `e2e` o input `e2e` en `workflow_dispatch`                |
-| `pr-mergeable` | Sí              | Falla si el PR tiene conflictos con la base                     |
+| Job            | Bloquea PR      | Notas                                                                  |
+| -------------- | --------------- | ---------------------------------------------------------------------- |
+| `quality`      | Sí              | Tipos, lint, formato, CSS, cookies, registros, copy y contraste        |
+| `test`         | Sí              | Vitest                                                                 |
+| `build`        | Sí              | Build, anti-importes, `check:links`, artefactos `site-static` y `sbom` |
+| `smoke`        | Sí              | Depende de `build`                                                     |
+| `e2e-critical` | Sí              | Home, contacto, consent deny-by-default                                |
+| `csp` / `axe`  | Sí              | Informe CSP y accesibilidad automatizada                               |
+| `ci-gate`      | Sí              | Agrega calidad, build, E2E y seguridad                                 |
+| `e2e` / `lhci` | Solo si se pide | Label `e2e` o input `e2e` en `workflow_dispatch`                       |
+| `pr-mergeable` | Sí              | Falla si el PR tiene conflictos con la base                            |
 
 `e2e` ejecuta solo Playwright con IDs ficticios confinados al build de pruebas. `lhci` ejecuta solo Lighthouse sobre el artefacto production-like de `build`; ninguno reutiliza la salida del otro. Los informes HTML de Playwright y Lighthouse son artefactos obligatorios. `pr-mergeable` falla también si GitHub mantiene un estado desconocido tras los reintentos.
 
@@ -38,6 +38,7 @@ Workflow: `.github/workflows/pr-mergeable.yml`.
 
 - Conventional Commits. Tipo extra `content` → patch (`.releaserc.json`).
 - Push/merge a `main` con CI verde → semantic-release crea **tag** `vX.Y.Z` + GitHub Release (notas en el release).
+- El workflow `release.yml` genera `sbom.cdx.json` (`pnpm run sbom:gen`) antes de semantic-release; el GitHub Release incluye ese fichero (etiqueta «CycloneDX SBOM», decisión **0041**).
 - **No** se usa `@semantic-release/git` ni push de `CHANGELOG.md`/`package.json` a `main` (ruleset: PR obligatorio + checks; GH013).
 - `CHANGELOG.md` / `package.json` en `main` pueden desfasarse respecto al tag; la fuente de verdad de versión es el **tag GitHub**.
 - **Versionado ≠ promote.** Vercel Production = merge a `main`.
@@ -64,7 +65,7 @@ Workflow: `.github/workflows/main-watch.yml`.
 
 ## Renovate
 
-`.github/renovate.json` cubre `npm` y `github-actions`. No hay Dependabot de version-updates. Stack majors al día (issue #12 cerrado: Astro 7, Zod 4, nodemailer 10, React 19). Alertas y avisos operativos viven en `docs/audits/events.json`.
+Renovate (`.github/renovate.json`) es el único bot de version-updates (npm y github-actions). No hay dependabot.yml de version-updates; Dependabot queda solo para alertas. Stack majors al día (issue #12 cerrado: Astro 7, Zod 4, nodemailer 10, React 19). Alertas y avisos operativos viven en `docs/audits/events.json`.
 
 ## Si CI falla (PR)
 
