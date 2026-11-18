@@ -16,6 +16,7 @@ import { resolveSmtpConfig } from '../../lib/smtpConfig';
 
 export const prerender = false;
 
+/** From y To: buzón Proton autenticado (SMTP); no usar noreply@. */
 const MAIL_FROM = 'operaciones@alexendros.dev';
 const MAIL_TO = 'operaciones@alexendros.dev';
 const SMTP_TIMEOUT_MS = 5_000;

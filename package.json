@@ -36,6 +36,7 @@
     "smoke": "bash scripts/smoke.sh",
     "test:e2e": "playwright test",
     "lhci": "lhci autorun --config=./lighthouserc.json",
+    "sbom:gen": "node scripts/gen-sbom.mjs",
     "prepare": "husky"
   },
   "dependencies": {

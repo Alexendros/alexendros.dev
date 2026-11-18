@@ -9,6 +9,9 @@ node_modules/
 dist/
 .astro/
 
+# SBOM generado (artefacto CI/release; no versionar)
+sbom.cdx.json
+
 # Variables de entorno (se ignoran todas salvo el ejemplo)
 .env
 .env.*

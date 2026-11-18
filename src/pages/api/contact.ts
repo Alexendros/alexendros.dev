@@ -14,6 +14,7 @@ import { createRedisContactIdempotencyStore } from '../../lib/contactIdempotency
 
 export const prerender = false;
 
+/** From y To: buzón Proton autenticado (SMTP); no usar noreply@. */
 const MAIL_FROM = 'operaciones@alexendros.dev';
 const MAIL_TO = 'operaciones@alexendros.dev';
 /** Timeouts SMTP por debajo de maxDuration (10 s) para liberar el lease. */

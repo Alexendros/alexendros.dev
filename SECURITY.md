@@ -37,7 +37,7 @@ No abras issues públicos con exploits, PoCs ofensivos, tokens, secretos ni PII.
 - Rotar tokens ante sospecha de fuga o cadencia trimestral mínima del SMTP.
 - `/api/contact` es **fail-closed** sin Upstash o si Redis falla (HTTP 503 genérico). No devolver stacks, detalles Zod, ni nombres de variables al cliente.
 
-Renovate (`.github/renovate.json`) cubre `npm` y `github-actions`. No hay Dependabot de version-updates.
+Renovate (`.github/renovate.json`) es el único bot de version-updates (npm y github-actions). No hay dependabot.yml de version-updates; Dependabot queda solo para alertas.
 
 ## Alcance
 
