@@ -252,16 +252,60 @@
     box-shadow: var(--shadow-1);
   }
 
+  /* Panel elevado con padding de pasos/compromisos (varios consumidores). */
+  .surface-panel {
+    width: 100%;
+    padding-block: 1.5rem;
+    padding-inline: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-surface);
+    background-color: var(--card);
+    box-shadow: var(--shadow-1);
+  }
+
+  @media (width >= 80rem) {
+    .surface-panel {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  /* Subrayado melocotón en tramos de H1 (Servicios, Referencias, Metodología). */
+  .title-accent {
+    color: var(--fg);
+    text-decoration-line: underline;
+    text-decoration-color: var(--color-accent);
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.16em;
+  }
+
   .surface-card {
     border: 1px solid var(--border-color);
     background-color: var(--card);
     box-shadow: var(--shadow-1);
   }
 
+  /* Inset: radio + borde + fondo de card (padding lo aporta el consumidor). */
+  .surface-inset {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-surface);
+    background-color: var(--card);
+  }
+
   @media (hover: hover) {
     .surface-card:hover {
       box-shadow: var(--shadow-2);
     }
+  }
+
+  /* Títulos de card en home: el hit táctil 44 px lo aporta el ::after; el enlace no se hincha. */
+  .cards a {
+    display: inline;
+  }
+
+  /* H2 de sección editorial (diseno.md: step-2 + bold). */
+  .heading-2 {
+    font-size: var(--step-2);
+    font-weight: 700;
   }
 
   .focus-ring:focus-visible {
@@ -524,6 +568,16 @@
     .steps {
       flex-direction: row;
     }
+
+    /* Página de metodología: columna fija también en xl. */
+    .steps.steps-column {
+      flex-direction: column;
+    }
+  }
+
+  /* Objetivo táctil ≥44 px en CTAs «Ver más» de secciones de home. */
+  .section-more-link {
+    min-block-size: 2.75rem;
   }
 
   .scroll-mt-nav {
@@ -670,14 +724,12 @@
     translate: 0 -50%;
   }
 
-  .project-details > summary::after,
   .faq-item > summary::after {
     content: '+';
     margin-inline-start: auto;
     font-weight: 700;
   }
 
-  .project-details[open] > summary::after,
   .faq-item[open] > summary::after {
     content: '-';
   }
@@ -686,8 +738,8 @@
   .link:focus-visible,
   .checkbox:focus-visible,
   [data-theme-toggle]:focus-visible,
-  a[data-open-dialog]:focus-visible,
-  .card:has(:focus-visible) {
+  .card:has(:focus-visible),
+  .surface-card:has(:focus-visible) {
     outline: 2px solid var(--focus-color);
     outline-offset: 2px;
   }
@@ -706,10 +758,6 @@
   .checkbox:user-invalid {
     outline: 2px solid var(--color-danger);
     outline-offset: 1px;
-  }
-
-  dialog[data-detail-island]::backdrop {
-    background: var(--scrim);
   }
 
   .sr-only {

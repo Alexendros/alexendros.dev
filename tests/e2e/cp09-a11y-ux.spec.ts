@@ -120,12 +120,12 @@ test.describe('CP-09 teclado — CMP', () => {
 test.describe('CP-09 contacto — foco, errores y axe', () => {
   test('Enviar sin datos marca aria-invalid y axe sin violaciones', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto('/contacto');
+    await page.goto('/contacto/');
     await expect(page.getByRole('button', { name: /Enviar|Solicitar propuesta/ })).toBeEnabled({
       timeout: 10_000
     });
 
-    const name = page.getByLabel(/^Nombre( \*)?$/);
+    const name = page.getByLabel(/Nombre completo/);
     await expect(name).toBeVisible();
     await page.getByRole('button', { name: /Enviar|Solicitar propuesta/ }).click();
     await expect(name).toHaveAttribute('aria-invalid', 'true');
@@ -146,11 +146,11 @@ test.describe('CP-09 contacto — foco, errores y axe', () => {
 });
 
 test.describe('CP-09 recorridos A–E (muestreo)', () => {
-  test('A/B: servicios → ficha colaboración → Solicitar propuesta', async ({ page }) => {
-    await page.goto('/servicios');
+  test('A/B: ficha colaboración → Solicitar propuesta', async ({ page }) => {
+    await page.goto('/servicios/');
     await assertSingleH1AndMain(page);
-    await page.getByRole('link', { name: 'Colaboración en proyectos de programación' }).click();
-    await expect(page).toHaveURL(/\/servicios\/software-a-medida/);
+    await expect(page.locator('[data-product-card]')).toHaveCount(0);
+    await page.goto('/servicios/software-a-medida/');
     await assertSingleH1AndMain(page);
     const cta = page.getByRole('link', { name: 'Solicitar propuesta' });
     await expect(cta).toBeVisible();
@@ -160,9 +160,9 @@ test.describe('CP-09 recorridos A–E (muestreo)', () => {
   });
 
   test('C: proyecto → CTA disponibilidad → contacto con proyecto', async ({ page }) => {
-    await page.goto('/referencias/front-valencia');
+    await page.goto('/referencias/front-valencia/');
     await assertSingleH1AndMain(page);
-    const cta = page.getByRole('link', { name: 'Consultar sobre esta obra' });
+    const cta = page.getByRole('link', { name: 'Más información' });
     await expect(cta).toBeVisible();
     await cta.click();
     await expect(page).toHaveURL(/\/contacto/);
@@ -200,7 +200,7 @@ test.describe('CP-09 reflow 320 y zoom 200%', () => {
 
   test('zoom 200%: contacto mantiene H1 y Enviar usable', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto('/contacto');
+    await page.goto('/contacto/');
     await page.evaluate(() => {
       document.documentElement.style.zoom = '2';
     });

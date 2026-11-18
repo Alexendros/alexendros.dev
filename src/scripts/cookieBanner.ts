@@ -82,8 +82,11 @@ export function initCookieBanner(): void {
             consentModal: {
               title: 'Valoramos tu privacidad',
               description:
-                'Guardamos un dato técnico para recordar tu decisión. La medición de visitas (Vercel Analytics y Speed Insights) no se enciende hasta que tú lo permitas. ' +
-                '«Aceptar todas» activa la analítica. «Rechazar opcionales» deja solo lo técnico. «Configurar» abre el detalle por categoría. ' +
+                'Un dato técnico recuerda tu elección.<br>' +
+                'Analítica (Vercel Analytics y Speed Insights): solo si la permites.<br>' +
+                '<strong>Aceptar todas</strong> activa la analítica. ' +
+                '<strong>Rechazar opcionales</strong> deja solo lo técnico. ' +
+                '<strong>Configurar</strong> abre el detalle.<br>' +
                 '<a href="/cookies/">Explicación completa en Cookies</a>.',
               acceptAllBtn: 'Aceptar todas',
               acceptNecessaryBtn: 'Rechazar opcionales',

@@ -1,0 +1,35 @@
+@layer components {
+  .centered {
+    text-align: center;
+  }
+
+  .title {
+    max-width: 48rem;
+    overflow-wrap: break-word;
+    font-size: var(--step-3);
+    font-weight: 700;
+    text-wrap: balance;
+  }
+
+  .title-wide {
+    max-width: 64rem;
+  }
+
+  .title-centered {
+    margin-inline: auto;
+  }
+
+  .title-spaced {
+    margin-top: 0.5rem;
+  }
+
+  .description {
+    max-width: 42rem;
+    margin-top: 0.75rem;
+    color: var(--fg-muted);
+  }
+
+  .description-centered {
+    margin-inline: auto;
+  }
+}

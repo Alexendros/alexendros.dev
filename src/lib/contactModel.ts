@@ -93,6 +93,7 @@ export type ContactInput = {
   message: string;
   vias: ContactViaId[];
   otraDetalle?: string;
+  phone?: string;
   sitio?: string;
   modules?: string;
   serviceSlug?: string;
@@ -106,7 +107,7 @@ export type ContactInput = {
 export type FieldError = { field: string; label: string; cause: string };
 
 export const fieldLabels: Record<string, string> = {
-  name: 'Nombre',
+  name: 'Nombre completo',
   entityType: 'Categoría',
   channel: 'Canal de respuesta',
   email: 'Correo electrónico',
@@ -114,6 +115,7 @@ export const fieldLabels: Record<string, string> = {
   message: 'Mensaje',
   vias: 'Vías',
   otraDetalle: 'Otra necesidad',
+  phone: 'Teléfono móvil',
   sitio: 'Sitio web',
   modules: 'Módulos',
   serviceSlug: 'Servicio',

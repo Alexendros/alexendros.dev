@@ -15,6 +15,6 @@
 
   .description {
     max-inline-size: 42rem;
-    color: var(--color-muted);
+    color: var(--fg-muted);
   }
 }

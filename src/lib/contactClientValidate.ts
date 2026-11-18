@@ -112,6 +112,15 @@ export function validateContactClient(
     pushError(errors, 'otraDetalle', 'formato no válido');
   }
 
+  const PHONE_RE = /^[+\d][\d\s().-]{5,38}$/u;
+  let phone: string | undefined = asString(record.phone) || undefined;
+  if (phone) {
+    if (phone.length > 40 || !PHONE_RE.test(phone)) {
+      pushError(errors, 'phone', 'el teléfono no parece válido');
+      phone = undefined;
+    }
+  }
+
   let sitio: string | undefined = asString(record.sitio) || undefined;
   if (sitio) {
     if (sitio.length > SITIO_MAX || !SITIO_RE.test(sitio)) {
@@ -154,6 +163,7 @@ export function validateContactClient(
       message,
       vias,
       otraDetalle,
+      phone,
       sitio,
       modules,
       serviceSlug,

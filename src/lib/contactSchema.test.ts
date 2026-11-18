@@ -218,6 +218,11 @@ describe('parseContactBody (formulario mínimo)', () => {
     expect(parseContactBody({ ...validCorreo, sitio: 'nope' }).success).toBe(false);
   });
 
+  it('acepta teléfono móvil opcional válido y rechaza basura', () => {
+    expect(parseContactBody({ ...validCorreo, phone: '+34 600 000 000' }).success).toBe(true);
+    expect(parseContactBody({ ...validCorreo, phone: 'abc' }).success).toBe(false);
+  });
+
   it('rechaza un canal distinto de correo', () => {
     expect(parseContactBody({ ...validCorreo, channel: 'whatsapp' }).success).toBe(false);
   });

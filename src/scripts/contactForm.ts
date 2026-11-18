@@ -37,23 +37,26 @@ const FIELD_IDS: Record<string, string> = {
   consent: 'contact-consent',
   vias: paquetesPublicados ? 'contact-via-web' : 'contact-via-revisar',
   otraDetalle: 'contact-otra',
+  phone: 'contact-phone',
   sitio: 'contact-sitio'
 };
 
 /** IDs estáticos de aria-describedby por control (hint/count); el error se fusiona. */
 const FIELD_STATIC_DESCRIBEDBY: Record<string, string[]> = {
-  message: ['contact-message-hint', 'contact-message-error', 'contact-message-count'],
+  message: ['contact-message-error', 'contact-message-count'],
   name: ['contact-name-error'],
   email: ['contact-email-error'],
+  phone: ['contact-phone-error'],
   sitio: ['contact-sitio-error'],
   otraDetalle: ['contact-otra-error']
 };
 
 const FIELD_ERROR_MESSAGES: Record<string, string> = {
-  name: 'Falta el nombre.',
+  name: 'Falta el nombre completo.',
   email: 'El correo no es válido. Ejemplo: nombre@empresa.es.',
   message: 'Falta el mensaje. Bastan una o dos frases sobre qué se necesita.',
   otraDetalle: 'Falta describir la otra necesidad.',
+  phone: 'El teléfono no parece válido. Ejemplo: +34 600 000 000.',
   sitio: 'El sitio no parece válido. Ejemplo: empresa.es.',
   consent: 'Hace falta aceptar el tratamiento de datos para poder responder.'
 };
@@ -100,6 +103,7 @@ function logicalPayloadKey(data: ContactInput): string {
     message: data.message,
     vias: data.vias,
     otraDetalle: data.otraDetalle ?? null,
+    phone: data.phone ?? null,
     sitio: data.sitio ?? null,
     modules: data.modules ?? null,
     serviceSlug: data.serviceSlug ?? null,
@@ -257,7 +261,7 @@ function initContactForm(form: HTMLFormElement): void {
     requestAnimationFrame(() => {
       const element = document.getElementById(FIELD_IDS[field] ?? `contact-${field}`);
       if (element instanceof HTMLElement) element.focus();
-      else document.getElementById('contact-form-heading')?.focus();
+      else document.getElementById('contact-page-heading')?.focus();
     });
   }
 
@@ -347,6 +351,7 @@ function initContactForm(form: HTMLFormElement): void {
       message: data.get('message'),
       vias: collectVias(form),
       otraDetalle: data.get('otraDetalle') || undefined,
+      phone: data.get('phone') || undefined,
       sitio: data.get('sitio') || undefined,
       modules: data.get('modules') || undefined,
       serviceSlug: data.get('serviceSlug') || undefined,

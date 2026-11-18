@@ -255,7 +255,7 @@ test.describe('home — FAQ y CTAs', () => {
   });
 });
 
-test.describe('referencias — filtros y soft-nav', () => {
+test.describe('referencias — filtros y navegación a ficha', () => {
   test('filtros aria-pressed y grid', async ({ page }) => {
     await page.setViewportSize(VIEWPORT_DESKTOP);
     await gotoReady(page, '/referencias/');
@@ -275,47 +275,43 @@ test.describe('referencias — filtros y soft-nav', () => {
     }
   });
 
-  test('soft-nav: abrir, Escape, cerrar, history.back y axe', async ({ page }) => {
+  test('clic en tarjeta abre ficha completa sin dialog', async ({ page }) => {
     await page.setViewportSize(VIEWPORT_DESKTOP);
     await gotoReady(page, '/referencias/');
     const card = page.locator('main a[href^="/referencias/"]').first();
+    const href = await card.getAttribute('href');
     await card.click();
-    const dialog = page.locator('dialog[data-detail-island][open]');
-    await expect(dialog).toBeVisible();
-    await expect(page).toHaveURL(/\/referencias\/.+/);
-    await axeZero(page, 'detail-island abierto');
-
-    await page.keyboard.press('Escape');
-    await expect(dialog).toBeHidden({ timeout: 5_000 });
-    await expect(page).toHaveURL(/\/referencias\/?$/);
-
-    await card.click();
-    await expect(dialog).toBeVisible();
-    await dialog.locator('[data-detail-close]').click();
-    await expect(dialog).toBeHidden();
-
-    await card.click();
-    await expect(dialog).toBeVisible();
-    await page.goBack();
-    await expect(dialog).toBeHidden({ timeout: 5_000 });
+    await expect(page).toHaveURL(new RegExp(`${href?.replace(/\//g, '\\/')}?$`));
+    await expect(page.locator('dialog[data-detail-island]')).toHaveCount(0);
+    await expect(page.locator('main h1')).toBeVisible();
+    await axeZero(page, 'ficha completa referencias');
   });
 
-  test('ficha slug: details técnicos y CTA', async ({ page }) => {
+  test('ficha slug: formato canónico, enlaces y CTA', async ({ page }) => {
     await page.setViewportSize(VIEWPORT_DESKTOP);
     await gotoReady(page, '/referencias/front-valencia/');
-    const details = page.locator('main details').first();
-    if (await details.count()) {
-      await details.locator('summary').click();
-      await expect(details).toHaveAttribute('open', '');
-    }
-    const cta = page
-      .locator('main')
-      .getByRole('link')
-      .filter({ hasText: /contacto|propuesta|solicitar/i })
-      .first();
-    if (await cta.count()) {
-      await expect(cta).toBeVisible();
-    }
+    await expect(page.locator('[data-project-ficha="front-valencia"]')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Ficha técnica', level: 2 })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Alcance', level: 3 })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Enlaces' })).toHaveCount(0);
+    await expect(page.getByRole('link', { name: /Ver el sitio en vivo/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Código abierto del sitio/i })).toBeVisible();
+    const actions = page.locator('[data-project-ficha-actions]');
+    const live = actions.getByRole('link', { name: /Ver el sitio en vivo/i });
+    const code = actions.getByRole('link', { name: /Código abierto del sitio/i });
+    const cta = actions.getByRole('link', { name: 'Más información' });
+    await expect(cta).toBeVisible();
+    await expect(live).toHaveCSS('text-decoration-line', /underline/);
+    await expect(code).toHaveCSS('text-decoration-line', /underline/);
+    await page.setViewportSize({ width: 1100, height: 900 });
+    const liveBox = await live.boundingBox();
+    const codeBox = await code.boundingBox();
+    const ctaBox = await cta.boundingBox();
+    expect(Math.abs((liveBox?.y ?? 0) - (codeBox?.y ?? 0))).toBeLessThan(8);
+    expect(Math.abs((codeBox?.y ?? 0) - (ctaBox?.y ?? 0))).toBeLessThan(8);
+    const cover = page.locator('[data-project-ficha] figure').first();
+    const coverBox = await cover.boundingBox();
+    expect(ctaBox?.y ?? 0).toBeLessThan(coverBox?.y ?? Number.POSITIVE_INFINITY);
   });
 });
 
@@ -378,15 +374,21 @@ test.describe('contacto — vías, validación, contador', () => {
 
     for (let i = 0; i < 2; i += 1) {
       const label = labels.nth(i);
-      await expect(label.locator('svg').first()).toBeVisible();
+      await expect(label.locator('[data-via-mark] svg').first()).toBeVisible();
       const checkbox = label.locator('input[type="checkbox"]');
       await label.click();
       await expect(checkbox).toBeChecked();
-      const bg = await checkbox.evaluate((el) => getComputedStyle(el).backgroundImage);
-      expect(bg).not.toBe('none');
     }
 
+    await expect(page.getByLabel(/^Teléfono móvil$/)).toBeVisible();
+    await expect(page.getByLabel(/^Sitio web actual$/)).toBeVisible();
+    await expect(page.getByLabel(/Nombre completo/)).toBeVisible();
+
     const message = page.locator('#contact-message');
+    await expect(message).toHaveAttribute(
+      'placeholder',
+      /Qué se necesita, para cuándo y enlaces de referencia/i
+    );
     await message.fill('Hola auditoría');
     await expect(page.locator('[data-message-count]')).toContainText(/1[0-9] \/ 1500/);
 
@@ -456,7 +458,7 @@ test.describe('rutas secundarias — CTAs principales', () => {
 });
 
 test.describe('motion — reduced-motion no bloquea interacción', () => {
-  test('menú y soft-nav operativos con reduced-motion', async ({ page }) => {
+  test('menú y navegación a ficha operativos con reduced-motion', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.setViewportSize(VIEWPORT_MOBILE);
     await gotoReady(page, '/');
@@ -467,9 +469,10 @@ test.describe('motion — reduced-motion no bloquea interacción', () => {
 
     await page.setViewportSize(VIEWPORT_DESKTOP);
     await gotoReady(page, '/referencias/');
-    await page.locator('main a[href^="/referencias/"]').first().click();
-    await expect(page.locator('dialog[data-detail-island][open]')).toBeVisible();
-    await page.keyboard.press('Escape');
-    await expect(page.locator('dialog[data-detail-island][open]')).toHaveCount(0);
+    const card = page.locator('main a[href^="/referencias/"]').first();
+    const href = await card.getAttribute('href');
+    await card.click();
+    await expect(page).toHaveURL(new RegExp(`${href?.replace(/\//g, '\\/')}?$`));
+    await expect(page.locator('dialog[data-detail-island]')).toHaveCount(0);
   });
 });

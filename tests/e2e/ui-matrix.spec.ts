@@ -128,7 +128,7 @@ test.describe('CP-08 matriz UI — overflow y apilado', () => {
 
   test('320px contacto: contexto y mailto no desbordan; Enviar usable', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: VIEWPORT_HEIGHT });
-    await page.goto('/contacto');
+    await page.goto('/contacto/');
     await expect(page.getByRole('button', { name: /Enviar|Solicitar propuesta/ })).toBeEnabled({
       timeout: 10_000
     });
@@ -140,19 +140,17 @@ test.describe('CP-08 matriz UI — overflow y apilado', () => {
     expect(box!.width).toBeGreaterThan(40);
     expect(box!.height).toBeGreaterThanOrEqual(36);
     await sendBtn.click({ force: false });
-    await expect(page.getByLabel(/^Nombre( \*)?$/)).toBeVisible();
+    await expect(page.getByLabel(/Nombre completo/)).toBeVisible();
   });
 
-  test('servicios 320: catálogo y CTA Solicitar propuesta sin overflow', async ({ page }) => {
+  test('servicios 320: catálogo y CTA Pedir diagnóstico sin overflow', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: VIEWPORT_HEIGHT });
-    await page.goto('/servicios');
+    await page.goto('/servicios/');
     await expect(page.locator('[data-catalogo]')).toBeVisible({ timeout: 10_000 });
     await assertNoOverflow(page, '/servicios@320');
-    const ask = page.locator('[data-services-primary-action]').getByRole('link', {
-      name: 'Solicitar propuesta'
-    });
+    const ask = page.getByRole('link', { name: 'Pedir diagnóstico' });
     await expect(ask).toBeVisible();
     await ask.click({ force: false });
-    await expect(page).toHaveURL(/\/contacto/);
+    await expect(page).toHaveURL(/\/contacto\/.*via=revisar/);
   });
 });

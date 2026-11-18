@@ -56,7 +56,7 @@ test('vías estáticas en home y elevación solo en cards enlazables', async ({ 
   expect(await homeRoute.evaluate((el) => getComputedStyle(el).transform)).toBe('none');
 
   await page.goto('/servicios/');
-  const linkedCard = page.locator('[data-product-card]').first();
+  const linkedCard = page.locator('[data-catalogo-item]').first();
   expect(await linkedCard.evaluate((el) => getComputedStyle(el).boxShadow)).not.toBe('none');
   await linkedCard.hover();
   await page.waitForTimeout(250);
@@ -67,7 +67,7 @@ test('cards enlazables: reduced motion elimina la elevación por movimiento', as
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/servicios/');
 
-  const card = page.locator('[data-product-card]').first();
+  const card = page.locator('[data-catalogo-item]').first();
   await card.hover();
   expect(await card.evaluate((el) => getComputedStyle(el).transform)).toBe('none');
   expect(await card.evaluate((el) => getComputedStyle(el).transitionProperty)).not.toContain(
@@ -106,23 +106,19 @@ test('cabecera: glass con superficie semántica y foco con anillo', async ({ pag
   expect(await contactCta.evaluate((el) => getComputedStyle(el).outlineStyle)).toBe('solid');
 });
 
-test('catálogo: tres vías y ficha única conservan sus superficies', async ({ page }) => {
+test('catálogo: tres vías conservan sus superficies', async ({ page }) => {
   await page.goto('/servicios/');
 
   const catalogItems = page.locator('[data-catalogo-item]');
-  const productCard = page.locator('[data-product-card]');
   await expect(catalogItems).toHaveCount(3);
-  await expect(productCard).toHaveCount(1);
-  await expect(productCard).toBeVisible();
+  await expect(page.locator('[data-product-card]')).toHaveCount(0);
 
-  const surfaces = await page
-    .locator('[data-catalogo-item], [data-product-card]')
-    .evaluateAll((elements) =>
-      elements.map((element) => {
-        const styles = getComputedStyle(element);
-        return { background: styles.backgroundColor, border: styles.borderTopColor };
-      })
-    );
+  const surfaces = await catalogItems.evaluateAll((elements) =>
+    elements.map((element) => {
+      const styles = getComputedStyle(element);
+      return { background: styles.backgroundColor, border: styles.borderTopColor };
+    })
+  );
 
   for (const surface of surfaces) {
     expect(surface.background).not.toBe('rgba(0, 0, 0, 0)');
@@ -162,7 +158,7 @@ for (const theme of ['alexlight', 'alexdark'] as const) {
     await page.goto('/servicios/');
 
     const result = await page
-      .locator('[data-product-card]')
+      .locator('[data-catalogo-item]')
       .first()
       .evaluate((el) => {
         const root = getComputedStyle(document.documentElement);
@@ -209,7 +205,7 @@ test('cierre de contacto: superficie propia y formulario con la sans elegida', a
 });
 
 for (const theme of ['alexlight', 'alexdark'] as const) {
-  test(`proceso ${theme}: marcadores primarios sin estado de progreso`, async ({ page }) => {
+  test(`proceso ${theme}: marcadores de marca sin estado de progreso`, async ({ page }) => {
     await page.addInitScript((selectedTheme) => {
       localStorage.setItem('theme', selectedTheme);
     }, theme);
@@ -218,7 +214,7 @@ for (const theme of ['alexlight', 'alexdark'] as const) {
     const steps = page.locator('#steps .step');
     await expect(steps).toHaveCount(4);
     for (let index = 0; index < 4; index += 1) {
-      await expect(steps.nth(index)).toHaveClass(/step-primary/);
+      await expect(steps.nth(index)).toHaveAttribute('data-content', String(index + 1));
       await expect(steps.nth(index)).not.toHaveAttribute('aria-current');
     }
 

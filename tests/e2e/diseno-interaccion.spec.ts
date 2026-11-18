@@ -213,7 +213,7 @@ test('formulario: errores anunciados y foco en el primer campo inválido', async
   await expect(page.locator('[data-contact-errors]')).toHaveAttribute('role', 'alert');
   await expect(page.locator('[data-contact-errors]')).toBeVisible();
   await expect(page.locator('#contact-name-error')).toHaveAttribute('role', 'alert');
-  await expect(page.getByLabel(/^Nombre( \*)?$/)).toBeFocused();
+  await expect(page.getByLabel(/Nombre completo/)).toBeFocused();
 });
 
 test('pie: foco visible alcanzable con teclado', async ({ page }) => {
@@ -237,7 +237,7 @@ test('C-1: botón principal con el radio de control', async ({ page }) => {
 
 test('C-2: campo con trazo de foco visible', async ({ page }) => {
   await page.goto('/contacto/');
-  const field = page.getByLabel(/^Nombre( \*)?$/);
+  const field = page.getByLabel(/Nombre completo/);
   await field.focus();
   const outline = await field.evaluate((element) => {
     const style = getComputedStyle(element);
@@ -276,7 +276,7 @@ test('C-5: foco único en cabecera y formulario', async ({ page }) => {
   const header = page.locator('#site-header a[href^="/contacto"]');
   await header.focus();
   const headerColor = await header.evaluate((element) => getComputedStyle(element).outlineColor);
-  const field = page.getByLabel(/^Nombre( \*)?$/);
+  const field = page.getByLabel(/Nombre completo/);
   await field.focus();
   const fieldColor = await field.evaluate((element) => getComputedStyle(element).outlineColor);
   expect(fieldColor).toBe(headerColor);
@@ -291,10 +291,10 @@ test('C-6: confirmación de contacto como toast accesible', async ({ page }) => 
     });
   });
   await page.goto('/contacto/');
-  await page.locator('input[name="via"][value="revisar"]').check();
-  await page.getByLabel(/^Nombre( \*)?$/).fill('Test Cliente');
-  await page.getByLabel(/^Correo electrónico( \*)?$/).fill('test@example.invalid');
-  await page.getByLabel(/^Mensaje( \*)?$/).fill('Necesito información sobre el informe comercial.');
+  await page.locator('input[name="via"][value="revisar"]').check({ force: true });
+  await page.getByLabel(/Nombre completo/).fill('Test Cliente');
+  await page.getByLabel(/^Correo electrónico/).fill('test@example.invalid');
+  await page.getByLabel(/^Mensaje/).fill('Necesito información sobre el informe comercial.');
   await page.getByLabel(/Acepto/).check();
   await page.getByRole('button', { name: 'Solicitar propuesta', exact: true }).click();
   const toast = page.locator('[data-contact-success]');

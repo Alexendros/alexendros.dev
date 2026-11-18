@@ -125,6 +125,18 @@ export const contactSchema = z
       const trimmed = v.trim();
       return trimmed === '' ? undefined : trimmed;
     }, z.string().min(OTRA_MIN).max(OTRA_MAX).optional()),
+    phone: z.preprocess(
+      (v) => {
+        if (typeof v !== 'string') return undefined;
+        const trimmed = v.trim();
+        return trimmed === '' ? undefined : trimmed;
+      },
+      z
+        .string()
+        .max(40)
+        .regex(/^[+\d][\d\s().-]{5,38}$/u, { message: 'formato' })
+        .optional()
+    ),
     sitio: sitioSchema,
     modules: z.preprocess((v) => {
       if (v === undefined || v === null) return undefined;
@@ -154,6 +166,9 @@ export const contactSchema = z
     rejectBodyUnsafe(data.message, ctx, 'message');
     if (data.otraDetalle) {
       rejectHeaderUnsafe(data.otraDetalle, ctx, 'otraDetalle');
+    }
+    if (data.phone) {
+      rejectHeaderUnsafe(data.phone, ctx, 'phone');
     }
 
     if (data.channel === 'correo' && !data.email) {
@@ -220,6 +235,8 @@ export function formatContactFieldErrors(error: z.ZodError): FieldError[] {
       cause = 'marcar al menos una opción';
     } else if (field === 'otraDetalle') {
       cause = 'falta describir la otra necesidad';
+    } else if (field === 'phone') {
+      cause = 'el teléfono no parece válido';
     } else if (field === 'sitio') {
       cause = 'el sitio no parece válido';
     } else {
@@ -246,6 +263,7 @@ export function buildContactMessage(input: ContactInput): string {
     `Petición:\n${input.message}`
   ];
   if (input.email) lines.push(`Email: ${input.email}`);
+  if (input.phone) lines.push(`Teléfono móvil: ${input.phone}`);
   if (input.sitio) lines.push(`Sitio web: ${input.sitio}`);
   if (input.modules) {
     const names = portalModuleDisplayNames(input.modules);

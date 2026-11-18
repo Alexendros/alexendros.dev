@@ -1,0 +1,178 @@
+---
+/**
+ * Formato canónico de ficha `/referencias/[slug]/`.
+ * Solo se rellena con un `Project` tipado (Zod en `src/content/projects.ts`).
+ */
+import { Image } from 'astro:assets';
+import type { Project } from '../content/projects';
+import Button from './Button.astro';
+import Link from './Link.astro';
+import Icon from './ui/Icon.astro';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const resultItems =
+  project.results && project.results.length > 0 ? project.results : project.highlights;
+const liveHref = project.links.prod;
+const codeHref = project.links.github;
+const contactHref = `/contacto/?motivo=informacionCliente&origen=referencias&proyecto=${encodeURIComponent(project.slug)}`;
+---
+
+<div class="page-shell page-shell-narrow" data-project-ficha={project.slug}>
+  <div class="text-step--1 text-muted">
+    <Link href="/referencias/" variant="nav" class="inline-flex min-h-11 items-center gap-1">
+      <Icon name="arrow-left" size={14} /> Todas las referencias
+    </Link>
+  </div>
+  <h1 class="mt-3 text-step-3 break-words font-bold text-balance">{project.title}</h1>
+  <p class="mt-3 text-muted text-pretty">{project.summary}</p>
+  <div class="pagehead-rule mt-4" aria-hidden="true"></div>
+
+  <div
+    class="mt-6 grid grid-cols-1 items-center gap-3 sm:grid-cols-3 sm:gap-4"
+    data-project-ficha-actions
+  >
+    {
+      liveHref ? (
+        <a
+          href={liveHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="focus-ring inline-flex min-h-11 items-center justify-self-start rounded text-step--1 font-medium text-primary underline underline-offset-2 sm:justify-self-stretch"
+        >
+          Ver el sitio en vivo
+          <span class="sr-only">: {project.title} (abre en otra pestaña)</span>
+        </a>
+      ) : (
+        <span class="hidden sm:block" aria-hidden="true" />
+      )
+    }
+    {
+      codeHref ? (
+        <a
+          href={codeHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="focus-ring inline-flex min-h-11 items-center justify-self-start rounded text-step--1 font-medium text-primary underline underline-offset-2 sm:justify-center sm:justify-self-stretch"
+        >
+          Código abierto del sitio
+          <span class="sr-only">: {project.title} (abre en otra pestaña)</span>
+        </a>
+      ) : (
+        <span class="hidden sm:block" aria-hidden="true" />
+      )
+    }
+    <div class="justify-self-start sm:justify-self-end">
+      <Button href={contactHref}>Más información</Button>
+    </div>
+  </div>
+
+  <figure class="mt-6">
+    {
+      liveHref ? (
+        <a
+          href={liveHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group focus-ring block overflow-hidden rounded outline-offset-4 radius-surface border border-border"
+        >
+          <Image
+            src={project.cover}
+            alt={project.coverAlt}
+            widths={[800, 1200]}
+            sizes="(max-width: 768px) 100vw, 800px"
+            class="block h-auto w-full max-w-full"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+          <span class="sr-only">Ver {project.title} en vivo (abre en otra pestaña)</span>
+        </a>
+      ) : (
+        <div class="overflow-hidden radius-surface border border-border">
+          <Image
+            src={project.cover}
+            alt={project.coverAlt}
+            widths={[800, 1200]}
+            sizes="(max-width: 768px) 100vw, 800px"
+            class="block h-auto w-full max-w-full"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </div>
+      )
+    }
+  </figure>
+
+  {
+    project.metrics && project.metrics.length > 0 && (
+      <div class="mt-6 grid gap-4 sm:grid-cols-3">
+        {project.metrics.map((m) => (
+          <div class="surface-inset p-4">
+            <p class="heading-2 text-fg">{m.value}</p>
+            <p class="mt-1 text-step--1 text-muted">{m.label}</p>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  {
+    project.testimonial && (
+      <figure class="mt-6 border-l-2 border-primary pl-5">
+        <blockquote class="text-step--1 italic text-fg">«{project.testimonial.quote}»</blockquote>
+        <figcaption class="mt-2 text-step--1 text-muted">
+          {project.testimonial.author}
+          {project.testimonial.role && <span> · {project.testimonial.role}</span>}
+        </figcaption>
+      </figure>
+    )
+  }
+
+  <div class="stack-block grid gap-10 md:grid-cols-[1.2fr_0.8fr] md:gap-0">
+    <div class="min-w-0 space-y-8 text-step--1 md:pr-10" aria-labelledby="trabajo-heading">
+      <h2 id="trabajo-heading" class="heading-2">El trabajo</h2>
+      <div>
+        <h3 class="text-step-0 font-bold">Punto de partida</h3>
+        <p class="mt-2 text-muted text-pretty">{project.context}</p>
+      </div>
+      <div>
+        <h3 class="text-step-0 font-bold">Qué se hizo</h3>
+        <p class="mt-2 text-muted text-pretty">{project.solution}</p>
+      </div>
+      <div>
+        <h3 class="text-step-0 font-bold">Resultado</h3>
+        <ul class="mt-2 list-disc space-y-2 pl-5 text-muted">
+          {resultItems.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    </div>
+
+    <aside
+      class="min-w-0 space-y-8 text-step--1 md:border-l md:border-border md:pl-10"
+      aria-labelledby="ficha-tecnica-heading"
+    >
+      <div>
+        <h2 id="ficha-tecnica-heading" class="heading-2">Ficha técnica</h2>
+        <div class="mt-6 space-y-8">
+          <div>
+            <h3 class="text-step-0 font-bold">Alcance</h3>
+            <ul class="mt-2 list-disc space-y-2 pl-5 text-muted">
+              {project.responsibilities.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-step-0 font-bold">Tecnología</h3>
+            <ul class="mt-2 list-disc space-y-2 pl-5 text-muted">
+              {project.technologies.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

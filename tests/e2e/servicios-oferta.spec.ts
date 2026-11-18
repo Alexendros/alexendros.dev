@@ -2,17 +2,16 @@ import { expect, test, type Page } from '@playwright/test';
 
 const retiredSlugs = ['informe-comercial', 'cumplimiento-normativo', 'ciberseguridad'];
 
-test('DIS-05: /servicios/ solo contiene paquetes opcionales, Colaboración y su acción', async ({
+test('DIS-05: /servicios/ solo contiene catálogo, sin fichas de producto en índice', async ({
   page
 }) => {
   await page.goto('/servicios/');
   await expect(page.locator('[data-paquete]')).toHaveCount(0);
-  await expect(page.locator('[data-product-card]')).toHaveCount(1);
-  await expect(page.locator('[data-product-card="software-a-medida"]')).toHaveCount(1);
+  await expect(page.locator('[data-product-card]')).toHaveCount(0);
   for (const slug of retiredSlugs) {
     await expect(page.locator(`[data-product-card="${slug}"]`)).toHaveCount(0);
   }
-  await expect(page.locator('[data-services-primary-action]')).toHaveCount(1);
+  await expect(page.locator('[data-services-primary-action]')).toHaveCount(0);
   await expect(page.locator('[data-detail-island]')).toHaveCount(0);
   await expect(page.locator('[data-needs-configurator]')).toHaveCount(0);
   await expect(page.locator('#faq')).toHaveCount(0);

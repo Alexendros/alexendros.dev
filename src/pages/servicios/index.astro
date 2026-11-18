@@ -1,18 +1,13 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import ServiceCard from '../../components/ServiceCard.astro';
 import Catalogo from '../../components/Catalogo.astro';
-import Button from '../../components/Button.astro';
 import Paquetes from '../../components/Paquetes.astro';
 import PageHead from '../../components/PageHead.astro';
 import { catalogoPromocional } from '../../content/catalogo';
 import { paquetesPublicados } from '../../content/paquetes';
-import { serviceProducts } from '../../content/services';
 import { seoForPath } from '../../content/seo';
 import { breadcrumbFromHome } from '../../lib/breadcrumb';
-import styles from './index.module.css';
 
-const collaboration = serviceProducts[0];
 const seo = seoForPath('/servicios/');
 ---
 
@@ -24,29 +19,16 @@ const seo = seoForPath('/servicios/');
   jsonLd={breadcrumbFromHome({ name: 'Servicios', path: '/servicios/' })}
 >
   <div class="page-shell">
-    <PageHead
-      wide
-      description="Colaboración por fases: se define el alcance de cada encargo y se entrega un trabajo acotado, con sus límites por escrito."
-    >
-      Catálogo de servicios profesionales en{' '}
-      <span class={styles.accent}>respuesta a necesidades reales</span>
+    <PageHead wide>
+      Soluciones tecnológicas de calidad{' '}
+      <span class="title-accent">en respuesta a necesidades empresariales.</span>
+      <p slot="description" class="mx-auto mt-3 max-w-5xl text-muted" data-services-proposal-note>
+        Colaboración por fases: se define el alcance de cada encargo y se entrega un trabajo
+        acotado, con sus límites por escrito. El alcance, el calendario y las condiciones económicas
+        se detallan en cada propuesta.
+      </p>
     </PageHead>
     <Catalogo items={catalogoPromocional} headingLevel="h2" />
     {paquetesPublicados && <Paquetes headingLevel="h2" />}
-    <p class="mt-4 max-w-2xl text-step--1 text-muted" data-services-proposal-note>
-      El alcance, el calendario y las condiciones económicas se detallan en cada propuesta.
-    </p>
-    <div class="mt-6" data-services-primary-action>
-      <Button href="/contacto/?motivo=propuestaComercial&origen=servicios">
-        Solicitar propuesta
-      </Button>
-    </div>
-    {
-      collaboration && (
-        <div class="stack-gap max-w-md">
-          <ServiceCard product={collaboration} />
-        </div>
-      )
-    }
   </div>
 </Layout>

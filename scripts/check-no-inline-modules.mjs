@@ -1,8 +1,8 @@
 /**
  * Gate post-build: ningún HTML del output puede llevar <script type="module">
  * inline. La CSP solo permite 'self' + el hash del theme-init clásico; un
- * módulo inlined (Header, DetailIsland, filtros…) queda bloqueado en Vercel
- * y rompe menú, tema y soft-nav.
+ * módulo inlined (Header, filtros…) queda bloqueado en Vercel
+ * y rompe menú y tema.
  */
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative, extname } from 'node:path';

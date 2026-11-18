@@ -14,9 +14,12 @@ async function expect44(locator: Locator) {
   }
 }
 
-test('A11Y-04: las casillas tienen un objetivo mínimo de 44×44 px', async ({ page }) => {
+test('A11Y-04: las vías y el consentimiento tienen objetivo mínimo de 44×44 px', async ({
+  page
+}) => {
   await page.goto('/contacto/');
-  await expect44(page.locator('main input[type="checkbox"]:visible'));
+  await expect44(page.locator('[data-via-mark]'));
+  await expect44(page.locator('label[for="contact-consent"]'));
 });
 
 test('A11Y-04: el enlace sin seleccionar módulos, si existe, mide 44×44 px', async ({ page }) => {

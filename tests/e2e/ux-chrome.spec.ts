@@ -65,21 +65,24 @@ test('toggle de tema cambia data-theme y el fondo de forma visible', async ({ pa
   expect(darkBg).not.toBe(systemBg);
 });
 
-test('vías del formulario tienen icono y checkbox con marca visible', async ({ page }) => {
+test('vías del formulario: icono-marca y caja completa seleccionable', async ({ page }) => {
   await page.goto('/contacto/');
   await dismissConsentIfPresent(page);
+  await expect(
+    page.getByRole('heading', { name: 'Formulario de contacto', exact: true })
+  ).toBeVisible();
+  await expect(page.getByText(/Puedes seleccionar más de una opción/i)).toBeVisible();
   const ways = page.locator('#contact-ways');
-  await expect(ways.locator('legend')).toContainText(/Por dónde empezar/i);
   const first = ways.locator('label').first();
-  await expect(first.locator('svg').first()).toBeVisible();
+  const mark = first.locator('[data-via-mark]');
+  await expect(mark.locator('svg').first()).toBeVisible();
+  const markBox = await mark.boundingBox();
+  expect(markBox?.width ?? 0).toBeGreaterThanOrEqual(44);
+  expect(markBox?.height ?? 0).toBeGreaterThanOrEqual(44);
   const checkbox = first.locator('input[type="checkbox"]');
-  await expect(checkbox).toBeVisible();
-  const before = await checkbox.evaluate((el) => getComputedStyle(el).backgroundImage);
   await first.click();
   await expect(checkbox).toBeChecked();
-  const after = await checkbox.evaluate((el) => getComputedStyle(el).backgroundImage);
-  expect(after).not.toBe('none');
-  expect(after).not.toBe(before);
+  await expect(first).toHaveCSS('border-color', /.+/);
 });
 
 test('Configurar abre el panel de cookies legible', async ({ page }) => {

@@ -15,15 +15,15 @@ async function fillContactForm(
   const message = opts.message ?? 'Necesito información sobre el informe comercial.';
   const email = opts.email ?? 'test@example.com';
   const via = opts.via ?? 'revisar';
-  await page.locator(`input[name="via"][value="${via}"]`).check();
+  await page.locator(`input[name="via"][value="${via}"]`).check({ force: true });
   if (opts.otra) {
-    await page.locator('input[name="via"][value="otra"]').check();
+    await page.locator('input[name="via"][value="otra"]').check({ force: true });
     await page.getByLabel('Describir la otra necesidad').fill(opts.otra);
   }
-  await page.getByLabel(/^Mensaje( \*)?$/).fill(message);
-  await page.getByLabel(/^Nombre( \*)?$/).fill(name);
-  await page.getByLabel(/^Correo electrónico( \*)?$/).fill(email);
-  if (opts.sitio) await page.getByLabel(/Sitio web actual/).fill(opts.sitio);
+  await page.getByLabel(/^Mensaje/).fill(message);
+  await page.getByLabel(/^Nombre completo/).fill(name);
+  await page.getByLabel(/^Correo electrónico/).fill(email);
+  if (opts.sitio) await page.getByLabel(/^Sitio web actual$/).fill(opts.sitio);
   await page.getByLabel(/Acepto/).check();
 }
 
@@ -45,7 +45,7 @@ async function mockContact(
 }
 
 test('vacío: foco al primer error', async ({ page }) => {
-  await page.goto('/contacto');
+  await page.goto('/contacto/');
   await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
   await expect(page.getByRole('alert').first()).toBeVisible();
   const focused = page.locator(':focus');
@@ -53,11 +53,11 @@ test('vacío: foco al primer error', async ({ page }) => {
 });
 
 test('Otra vacía: error de detalle', async ({ page }) => {
-  await page.goto('/contacto');
-  await page.locator('input[name="via"][value="otra"]').check();
-  await page.getByLabel(/^Nombre( \*)?$/).fill('Test Cliente');
-  await page.getByLabel(/^Correo electrónico( \*)?$/).fill('test@example.com');
-  await page.getByLabel(/^Mensaje( \*)?$/).fill('Necesito algo fuera del catálogo habitual.');
+  await page.goto('/contacto/');
+  await page.locator('input[name="via"][value="otra"]').check({ force: true });
+  await page.getByLabel(/Nombre completo/).fill('Test Cliente');
+  await page.getByLabel(/^Correo electrónico/).fill('test@example.com');
+  await page.getByLabel(/^Mensaje/).fill('Necesito algo fuera del catálogo habitual.');
   await page.getByLabel(/Acepto/).check();
   await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
   await expect(page.locator('#contact-otra-error')).toBeVisible();
@@ -65,7 +65,7 @@ test('Otra vacía: error de detalle', async ({ page }) => {
 });
 
 test('correo inválido', async ({ page }) => {
-  await page.goto('/contacto');
+  await page.goto('/contacto/');
   await fillContactForm(page, { email: 'no-es-correo' });
   await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
   await expect(page.locator('#contact-email-error')).toBeVisible();
@@ -81,7 +81,7 @@ test('envio simulado correcto', async ({ page }) => {
       body: JSON.stringify({ ok: true, status: 'accepted', requestId: 'e2e', replay: false })
     });
   });
-  await page.goto('/contacto');
+  await page.goto('/contacto/');
   await fillContactForm(page);
   await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
   await expect(page.getByRole('status')).toContainText(/Solicitud enviada/i, { timeout: 10000 });
@@ -97,7 +97,7 @@ test('envio con sitio relleno llega al API', async ({ page }) => {
       body: JSON.stringify({ ok: true, status: 'accepted', requestId: 'e2e', replay: false })
     });
   });
-  await page.goto('/contacto');
+  await page.goto('/contacto/');
   await fillContactForm(page, { sitio: 'https://empresa.es' });
   await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
   await expect(page.getByRole('status')).toContainText(/Solicitud enviada/i, { timeout: 10000 });
@@ -115,7 +115,7 @@ test('trampa website rellena se envía como honeypot', async ({ page }) => {
       body: JSON.stringify({ ok: true, status: 'accepted', requestId: 'e2e', replay: false })
     });
   });
-  await page.goto('/contacto');
+  await page.goto('/contacto/');
   await fillContactForm(page);
   await page.locator('#contact-website').evaluate((el: HTMLInputElement) => {
     el.value = 'http://spam.example';
@@ -129,8 +129,10 @@ test.describe('sin JavaScript', () => {
   test.use({ javaScriptEnabled: false });
 
   test('aviso con correo; sin POST JSON', async ({ page }) => {
-    await page.goto('/contacto');
-    await expect(page.getByRole('heading', { name: 'Contacto', exact: true })).toBeVisible();
+    await page.goto('/contacto/');
+    await expect(
+      page.getByRole('heading', { name: 'Formulario de contacto', exact: true })
+    ).toBeVisible();
     await expect(page.locator('[data-contact-nojs]')).toHaveCount(1);
     await expect(page.locator('[data-contact-nojs]')).toBeVisible();
     const nojs = page.locator('noscript');

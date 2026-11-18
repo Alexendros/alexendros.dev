@@ -55,6 +55,8 @@ describe('processPage — copy público de metodología', () => {
     nonEmpty(processPage.seo.description, 'seo.description');
     expect(processPage.seo.description).toMatch(/desde la idea hasta el producto entregado/i);
     nonEmpty(processPage.hero.h1Lead, 'hero.h1Lead');
+    nonEmpty(processPage.hero.h1Accent, 'hero.h1Accent');
+    expect(`${processPage.hero.h1Lead}${processPage.hero.h1Accent}`).toMatch(/método/i);
     expect(processPage.title).toMatch(/paso a paso/i);
 
     expect(processPage.steps).toHaveLength(4);
