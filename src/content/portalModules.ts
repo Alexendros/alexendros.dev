@@ -1,11 +1,19 @@
 import { z } from 'zod';
+import {
+  PORTAL_MODULE_IDS,
+  normalizePortalModuleIds,
+  serializePortalModuleIds,
+  type PortalModuleId
+} from './portalModuleIds';
+
+export {
+  PORTAL_MODULE_IDS,
+  normalizePortalModuleIds,
+  serializePortalModuleIds,
+  type PortalModuleId
+};
 
 const nonEmptyTrimmed = z.string().trim().min(1);
-
-/** IDs canónicos aceptados en la web, la URL y el formulario. */
-export const PORTAL_MODULE_IDS = ['tienda', 'mensajeria', 'usuarios', 'contenidos'] as const;
-
-export type PortalModuleId = (typeof PORTAL_MODULE_IDS)[number];
 
 export const portalModuleSchema = z.object({
   id: z.enum(PORTAL_MODULE_IDS),
@@ -74,32 +82,6 @@ export const portalModules: PortalModule[] = [
     guarantee: 'Misma garantía del sitio sobre el alcance escrito de este módulo'
   }
 ];
-
-/** Normaliza IDs: solo permitidos, únicos y en orden canónico. */
-export function normalizePortalModuleIds(input: unknown): PortalModuleId[] {
-  const tokens: string[] = [];
-  const pushToken = (raw: string) => {
-    for (const part of raw.split(/[,|;]/)) {
-      const token = part.trim();
-      if (token) tokens.push(token);
-    }
-  };
-
-  if (typeof input === 'string') {
-    pushToken(input);
-  } else if (Array.isArray(input)) {
-    for (const item of input) {
-      if (typeof item === 'string') pushToken(item);
-    }
-  }
-
-  const present = new Set(tokens);
-  return PORTAL_MODULE_IDS.filter((id) => present.has(id));
-}
-
-export function serializePortalModuleIds(ids: readonly PortalModuleId[]): string {
-  return ids.join(',');
-}
 
 portalModules.forEach((module, index) => {
   const result = portalModuleSchema.safeParse(module);

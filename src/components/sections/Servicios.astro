@@ -4,7 +4,6 @@ import Icon from '../ui/Icon.astro';
 import SectionHeader from '../SectionHeader.astro';
 import Paquetes from '../Paquetes.astro';
 import { paquetesPublicados } from '../../content/paquetes';
-import styles from './Servicios.module.css';
 ---
 
 <section id="servicios" class="section-shell scroll-mt-nav" aria-labelledby="servicios-heading">
@@ -40,7 +39,7 @@ import styles from './Servicios.module.css';
     )
   }
   <p class="stack-gap">
-    <a class:list={['btn btn-outline', styles['more-link']]} href="/servicios/">
+    <a class="btn btn-outline section-more-link" href="/servicios/">
       Ver el catálogo de servicios
       <Icon name="arrow-right" size={16} />
     </a>

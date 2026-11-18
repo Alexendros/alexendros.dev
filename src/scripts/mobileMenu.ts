@@ -5,6 +5,8 @@ export function initMobileMenu(): void {
   const btn = document.querySelector<HTMLButtonElement>('[data-menu-button]');
   const nav = document.getElementById('mobile-nav');
   if (!btn || !nav) return;
+  if (btn.dataset.menuBound === '1') return;
+  btn.dataset.menuBound = '1';
 
   const inertTargets = (): HTMLElement[] =>
     [document.getElementById('main'), document.querySelector('footer')].filter(
@@ -46,7 +48,11 @@ export function initMobileMenu(): void {
     }
   };
 
-  btn.addEventListener('click', () => setOpen(!isOpen()));
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setOpen(!isOpen());
+  });
   nav.querySelectorAll('a').forEach((a) =>
     a.addEventListener('click', () => {
       nav.hidden = true;
@@ -67,7 +73,9 @@ export function initMobileMenu(): void {
     true
   );
   document.addEventListener('click', (e) => {
-    if (isOpen() && !btn.parentElement?.contains(e.target as Node)) setOpen(false);
+    const target = e.target;
+    if (!(target instanceof Node)) return;
+    if (isOpen() && !btn.parentElement?.contains(target)) setOpen(false);
   });
   document.documentElement.dataset.headerReady = 'true';
 }

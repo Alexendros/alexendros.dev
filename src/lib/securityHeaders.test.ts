@@ -33,10 +33,13 @@ describe('security headers (vercel.json)', () => {
     expect(imageCc).toBe('public, max-age=31536000, immutable');
   });
 
-  it('exige CSP con frame-ancestors none y sin unsafe-eval', () => {
+  it('exige CSP con frame-ancestors none, sin unsafe-eval ni unsafe-inline', () => {
     const csp = byKey['content-security-policy'] ?? '';
     expect(csp).toMatch(/frame-ancestors\s+'none'/);
     expect(csp).not.toMatch(/unsafe-eval/);
+    expect(csp).not.toMatch(/unsafe-inline/);
+    expect(csp).toMatch(/va\.vercel-scripts\.com/);
+    expect(csp).not.toMatch(/googletagmanager|facebook|clarity|posthog|licdn/i);
   });
 
   it('exige X-Frame-Options DENY y HSTS con preload', () => {

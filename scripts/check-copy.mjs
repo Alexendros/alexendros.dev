@@ -125,9 +125,10 @@ function pushCopyHit(file, rule, text, hits) {
   hits.push({ file: relative(ROOT, file), rule, snippet: text.trim().slice(0, 80) });
 }
 
-/** Nombres comerciales decididos con 2ª persona: literal exacto, solo en su archivo. */
+/** Nombres comerciales / UI de formulario: literal exacto, solo en su archivo. */
 const SECOND_PERSON_EXCEPTIONS = new Map([
-  ['src/content/paquetes.ts', new Set(['Asistente IA para tu negocio'])]
+  ['src/content/paquetes.ts', new Set(['Asistente IA para tu negocio'])],
+  ['src/pages/contacto.astro', new Set(['Puedes seleccionar más de una opción.'])]
 ]);
 
 /** Gate D3 + segunda persona sobre literales de contenido (.ts, no test). */
@@ -152,6 +153,8 @@ function checkTsPolicy(file, source, hits) {
 
 /** Gate D3 + segunda persona sobre copy visible de markup (.astro/.tsx). */
 function checkMarkupPolicy(file, source, hits) {
+  const rel = relative(ROOT, file);
+  const allowedSecond = SECOND_PERSON_EXCEPTIONS.get(rel) ?? new Set();
   for (const text of markupTextChunks(source)) {
     for (const { label, re } of D3_TERMS) {
       if (re.test(text)) {
@@ -159,7 +162,8 @@ function checkMarkupPolicy(file, source, hits) {
         break;
       }
     }
-    if (SECOND_PERSON_RE.test(text)) pushCopyHit(file, '2ª persona', text, hits);
+    if (SECOND_PERSON_RE.test(text) && !allowedSecond.has(text))
+      pushCopyHit(file, '2ª persona', text, hits);
   }
 }
 

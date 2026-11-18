@@ -4,7 +4,7 @@ test('DIS-04: la portada no muestra el bloque de compromisos', async ({ page }) 
   await page.goto('/');
   await expect(page.locator('main .commitment-item')).toHaveCount(0);
   await expect(
-    page.locator('main').getByRole('heading', { name: 'Compromisos antes de empezar' })
+    page.locator('main').getByRole('heading', { name: /Compromisos (antes de empezar|iniciales)/ })
   ).toHaveCount(0);
 });
 

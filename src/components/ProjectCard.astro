@@ -14,9 +14,7 @@ const { project, headingLevel = 'h2', priority = false } = Astro.props;
 const Heading = headingLevel;
 ---
 
-<article
-  class="surface-card group relative flex h-full flex-col radius-surface has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-focus"
->
+<article class="surface-card group relative flex h-full flex-col radius-surface">
   <div class="overflow-hidden rounded-t-[inherit]">
     <Image
       src={project.cover}

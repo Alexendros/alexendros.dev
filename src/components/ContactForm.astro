@@ -3,7 +3,21 @@ import { homeVias } from '../content/home';
 import { paquetesPublicados, paquetesVisibles } from '../content/paquetes';
 import { portalModuleDisplayNames, type ContactInput } from '../lib/contactSchema';
 import { site } from '../content/site';
+import Icon from './ui/Icon.astro';
 import styles from './ContactForm.module.css';
+
+type ViaIcon = 'file' | 'layers' | 'flag' | 'check';
+
+const VIA_ICONS: Record<string, ViaIcon> = {
+  revisar: 'file',
+  crear: 'layers',
+  colaborar: 'flag',
+  otra: 'check',
+  web: 'layers',
+  tienda: 'layers',
+  asistente: 'flag',
+  automatizacion: 'flag'
+};
 
 interface Props {
   successMessage: string;
@@ -13,6 +27,7 @@ interface Props {
   initialServiceSlug?: string;
   initialProjectSlug?: string;
   initialModules?: string;
+  initialVia?: string;
 }
 
 const {
@@ -22,7 +37,8 @@ const {
   initialOrigin = '',
   initialServiceSlug = '',
   initialProjectSlug = '',
-  initialModules = ''
+  initialModules = '',
+  initialVia = ''
 } = Astro.props;
 const moduleLabels = initialModules ? portalModuleDisplayNames(initialModules) : '';
 const vias = [
@@ -50,16 +66,13 @@ const vias = [
 >
 </p>
 
-<form class="relative space-y-5" novalidate aria-busy="false" data-contact-form>
-  <h2
-    id="contact-form-heading"
-    tabindex="-1"
-    class="focus-ring text-step-0 font-bold focus:outline-none"
-  >
-    La solicitud
-  </h2>
-  <p class="text-step--1 text-muted">Los campos con * son obligatorios.</p>
-
+<form
+  class="relative space-y-5"
+  novalidate
+  aria-busy="false"
+  aria-labelledby="contact-page-heading"
+  data-contact-form
+>
   <div class="honeypot" aria-hidden="true" inert>
     <label for="contact-website">Sitio web</label>
     <input id="contact-website" name="website" tabindex="-1" autocomplete="off" />
@@ -77,26 +90,38 @@ const vias = [
     <strong class="opacity-100" data-contact-module-labels>{moduleLabels}</strong>
   </p>
 
-  <fieldset class="fieldset min-w-0" id="contact-ways" data-contact-ways>
-    <legend class="fieldset-legend">Por dónde empezar</legend>
-    <p class="label mb-1 whitespace-normal text-muted">Se puede marcar una o varias opciones.</p>
+  <fieldset
+    class="fieldset min-w-0"
+    id="contact-ways"
+    data-contact-ways
+    aria-label="Opciones para empezar"
+  >
     <div class="grid grid-cols-1 gap-2">
       {
         vias.map((via) => (
-          <label class="flex min-w-0 min-h-11 cursor-pointer items-start gap-3 radius-surface border border-border p-3 hover:border-primary has-checked:border-primary has-checked:bg-brand-soft">
+          <label
+            class:list={[
+              'relative flex min-w-0 min-h-11 cursor-pointer items-start gap-3 radius-surface border border-border p-3 hover:border-primary has-checked:border-primary has-checked:bg-brand-soft',
+              styles['via-option']
+            ]}
+          >
             <input
               type="checkbox"
               name="via"
               value={via.id}
               id={via.id === 'otra' ? 'contact-via-otra' : `contact-via-${via.id}`}
-              class="checkbox checkbox-primary mt-0.5 min-h-11 min-w-11"
+              class={styles['via-input']}
               data-via={via.id}
+              checked={initialVia === via.id || undefined}
               aria-controls={via.id === 'otra' ? 'contact-otra-wrap' : undefined}
               aria-expanded={via.id === 'otra' ? 'false' : undefined}
             />
+            <span class={styles['via-mark']} data-via-mark aria-hidden="true">
+              <Icon name={VIA_ICONS[via.id] ?? 'check'} size={22} />
+            </span>
             <span class="min-w-0">
-              <span class="block font-medium">{via.label}</span>
-              <span class="text-step--1 text-muted">{via.hint}</span>
+              <span class="block min-w-0 font-medium">{via.label}</span>
+              <span class="mt-0.5 block text-step--1 text-muted">{via.hint}</span>
             </span>
           </label>
         ))
@@ -118,72 +143,111 @@ const vias = [
     <p id="contact-vias-error" role="alert" class="mt-1 text-step--1 text-danger" hidden></p>
   </fieldset>
 
-  <fieldset class="fieldset min-w-0">
-    <label class="fieldset-legend" for="contact-name">Nombre *</label>
-    <input
-      id="contact-name"
-      name="name"
-      autocomplete="name"
-      class="input validator w-full"
-      required
-      minlength="2"
-      aria-required="true"
-      aria-describedby="contact-name-error"
-    />
-    <p
-      id="contact-name-error"
-      role="alert"
-      class="validator-hint mt-1 text-step--1 text-danger"
-      hidden
-    >
-    </p>
-  </fieldset>
+  <div class="grid grid-cols-1 gap-5 md:grid-cols-2" data-contact-fields>
+    <div class="grid min-w-0 gap-5">
+      <fieldset class:list={['fieldset min-w-0', styles['req-field']]}>
+        <label class="fieldset-legend" for="contact-name">
+          Nombre completo<span
+            class:list={['text-muted text-step--1', styles['req-hint']]}
+            aria-hidden="true">obligatorio</span
+          >
+        </label>
+        <input
+          id="contact-name"
+          name="name"
+          autocomplete="name"
+          class="input validator w-full"
+          required
+          minlength="2"
+          aria-required="true"
+          aria-describedby="contact-name-error"
+        />
+        <p
+          id="contact-name-error"
+          role="alert"
+          class="validator-hint mt-1 text-step--1 text-danger"
+          hidden
+        >
+        </p>
+      </fieldset>
 
-  <fieldset class="fieldset min-w-0" data-contact-email-wrapper>
-    <label class="fieldset-legend" for="contact-email">Correo electrónico *</label>
-    <input
-      id="contact-email"
-      name="email"
-      type="email"
-      autocomplete="email"
-      class="input validator w-full"
-      required
-      aria-required="true"
-      aria-describedby="contact-email-error"
-    />
-    <p
-      id="contact-email-error"
-      role="alert"
-      class="validator-hint mt-1 text-step--1 text-danger"
-      hidden
-    >
-    </p>
-  </fieldset>
+      <fieldset class:list={['fieldset min-w-0', styles['req-field']]} data-contact-email-wrapper>
+        <label class="fieldset-legend" for="contact-email">
+          Correo electrónico<span
+            class:list={['text-muted text-step--1', styles['req-hint']]}
+            aria-hidden="true">obligatorio</span
+          >
+        </label>
+        <input
+          id="contact-email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          class="input validator w-full"
+          required
+          aria-required="true"
+          aria-describedby="contact-email-error"
+        />
+        <p
+          id="contact-email-error"
+          role="alert"
+          class="validator-hint mt-1 text-step--1 text-danger"
+          hidden
+        >
+        </p>
+      </fieldset>
+    </div>
 
-  <fieldset class="fieldset min-w-0">
-    <label class="fieldset-legend" for="contact-sitio">
-      Sitio web actual <span class="text-muted">(opcional)</span>
+    <div class="grid min-w-0 gap-5">
+      <fieldset class="fieldset min-w-0">
+        <label class="fieldset-legend" for="contact-phone">Teléfono móvil</label>
+        <input
+          id="contact-phone"
+          name="phone"
+          type="tel"
+          autocomplete="tel"
+          inputmode="tel"
+          class="input validator w-full"
+          maxlength="40"
+          aria-describedby="contact-phone-error"
+        />
+        <p
+          id="contact-phone-error"
+          role="alert"
+          class="validator-hint mt-1 text-step--1 text-danger"
+          hidden
+        >
+        </p>
+      </fieldset>
+
+      <fieldset class="fieldset min-w-0">
+        <label class="fieldset-legend" for="contact-sitio">Sitio web actual</label>
+        <input
+          id="contact-sitio"
+          name="sitio"
+          class="input validator w-full"
+          inputmode="url"
+          autocomplete="url"
+          pattern="(https?://)?[^\s/.]+(\.[^\s/.]+)+(/\S*)?"
+          aria-describedby="contact-sitio-error"
+        />
+        <p
+          id="contact-sitio-error"
+          role="alert"
+          class="validator-hint mt-1 text-step--1 text-danger"
+          hidden
+        >
+        </p>
+      </fieldset>
+    </div>
+  </div>
+
+  <fieldset class:list={['fieldset min-w-0', styles['req-field']]}>
+    <label class="fieldset-legend" for="contact-message">
+      Mensaje<span class:list={['text-muted text-step--1', styles['req-hint']]} aria-hidden="true"
+        >obligatorio</span
+      >
     </label>
-    <input
-      id="contact-sitio"
-      name="sitio"
-      class="input validator w-full"
-      inputmode="url"
-      autocomplete="url"
-      pattern="(https?://)?[^\s/.]+(\.[^\s/.]+)+(/\S*)?"
-      aria-describedby="contact-sitio-error"
-    />
-    <p
-      id="contact-sitio-error"
-      role="alert"
-      class="validator-hint mt-1 text-step--1 text-danger"
-      hidden
-    >
-    </p>
-  </fieldset>
-
-  <fieldset class="fieldset min-w-0">
-    <label class="fieldset-legend" for="contact-message">Mensaje *</label>
     <textarea
       id="contact-message"
       name="message"
@@ -191,9 +255,9 @@ const vias = [
       required
       minlength="10"
       maxlength="1500"
+      placeholder="Qué se necesita, para cuándo y enlaces de referencia."
       aria-required="true"
-      aria-describedby="contact-message-hint contact-message-error contact-message-count"
-    ></textarea>
+      aria-describedby="contact-message-error contact-message-count"></textarea>
     <p
       id="contact-message-error"
       role="alert"
@@ -201,29 +265,23 @@ const vias = [
       hidden
     >
     </p>
-    <p
-      class="mt-1 flex items-start justify-between gap-2 whitespace-normal text-step--1 text-muted"
-      id="contact-message-hint"
-    >
-      <span>Qué se necesita, para cuándo y enlaces de referencia.</span>
-      <span
-        aria-live="polite"
-        id="contact-message-count"
-        class="shrink-0 whitespace-nowrap"
-        data-message-count>0 / 1500</span
-      >
+    <p class="mt-1 text-end text-step--1 text-muted">
+      <span aria-live="polite" id="contact-message-count" data-message-count>0 / 1500</span>
     </p>
   </fieldset>
 
-  <label class="flex flex-wrap items-start gap-x-3 gap-y-1 text-step--1" for="contact-consent">
+  <label
+    class="inline-flex min-h-11 max-w-full items-center gap-x-3 text-step--1"
+    for="contact-consent"
+  >
     <input
       id="contact-consent"
       type="checkbox"
       name="consent"
-      class="checkbox checkbox-primary checkbox-sm mt-0.5 min-h-11 min-w-11"
+      class={`checkbox shrink-0 ${styles['consent-check']}`}
       required
     />
-    <span>
+    <span class="min-w-0">
       Acepto el tratamiento de mis datos para responder a esta solicitud según la{' '}
       <a href="/privacidad/" class="link underline underline-offset-2">política de privacidad</a>.
     </span>
@@ -276,17 +334,13 @@ const vias = [
 </form>
 
 <noscript>
-  <p data-contact-nojs class="mt-6 radius-surface border border-border bg-card p-4 text-step--1">
+  <p data-contact-nojs class="mt-6 surface-inset p-4 text-step--1">
     El formulario interactivo necesita JavaScript. Mientras tanto también se puede escribir a{' '}
     <a href={site.social.email} class="link">contratacion@alexendros.dev</a>.
   </p>
 </noscript>
 
-<p
-  data-contact-fallback
-  hidden
-  class="mt-6 radius-surface border border-border bg-card p-4 text-step--1"
->
+<p data-contact-fallback hidden class="mt-6 surface-inset p-4 text-step--1">
   El formulario interactivo necesita JavaScript y no se ha cargado. Mientras tanto también se puede
   escribir a{' '}
   <a href={site.social.email} class="link">contratacion@alexendros.dev</a>.

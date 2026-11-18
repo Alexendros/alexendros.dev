@@ -1,94 +1,65 @@
 // SSOT de la Content-Security-Policy de alexendros.dev.
-// Fase ② PROTECCIÓN · Protocolo Trifásico.
-// Alimenta la cabecera Report-Only de vercel.json y el middleware de rutas
-// on-demand. La CSP de enforce en vercel.json permanece intacta hasta la fase ③.
+// Orígenes de terceros desde src/content/processors.ts.
+import { createHash } from 'node:crypto';
+import { cspOrigins } from '../content/processors';
+import { LAYER_ORDER_STYLE, THEME_INIT_SOURCE } from './cspInline';
+
+export { LAYER_ORDER_STYLE, THEME_INIT_SOURCE } from './cspInline';
 
 export const CSP_REPORT_URI = '/api/csp-report/';
 
 export type CspDirectiveMap = Record<string, string[]>;
 
-/** Allowlists de terceros portadas desde la CSP de enforce (fase ①). */
-export const CSP_DIRECTIVES: CspDirectiveMap = {
-  'default-src': ["'self'"],
-  'script-src': [
-    "'self'",
-    'https://va.vercel-scripts.com',
-    'https://www.googletagmanager.com',
-    'https://connect.facebook.net',
-    'https://www.clarity.ms',
-    'https://eu.i.posthog.com',
-    'https://eu-assets.i.posthog.com',
-    'https://snap.licdn.com'
-  ],
-  'style-src': [
-    "'self'",
-    // 'unsafe-inline' no entra en la política endurecida: Astro externaliza
-    // estilos (build.inlineStylesheets: 'never'). El inline de terceros se
-    // decide en fase ③, tras observar /api/csp-report.
-    'https://www.googletagmanager.com'
-  ],
-  'img-src': [
-    "'self'",
-    'data:',
-    'blob:',
-    'https://www.google-analytics.com',
-    'https://www.googletagmanager.com',
-    'https://www.facebook.com',
-    'https://c.clarity.ms',
-    'https://eu.i.posthog.com',
-    'https://px.ads.linkedin.com'
-  ],
-  'font-src': ["'self'", 'data:'],
-  'connect-src': [
-    "'self'",
-    'https://vitals.vercel-insights.com',
-    'https://va.vercel-scripts.com',
-    'https://www.google-analytics.com',
-    'https://region1.google-analytics.com',
-    'https://analytics.google.com',
-    'https://www.googletagmanager.com',
-    'https://connect.facebook.net',
-    'https://www.facebook.com',
-    'https://graph.facebook.com',
-    'https://www.clarity.ms',
-    'https://c.clarity.ms',
-    'https://eu.i.posthog.com',
-    'https://eu-assets.i.posthog.com',
-    'https://snap.licdn.com',
-    'https://px.ads.linkedin.com'
-  ],
-  'frame-src': ['https://www.googletagmanager.com', 'https://td.doubleclick.net'],
-  'frame-ancestors': ["'none'"],
-  'base-uri': ["'self'"],
-  'form-action': ["'self'"],
-  'object-src': ["'none'"]
-};
+function sha256Csp(content: string): string {
+  return `'sha256-${createHash('sha256').update(content, 'utf8').digest('base64')}'`;
+}
 
-/**
- * Hashes sha256 de scripts inline conocidos.
- * Fase ③ los rellena con scripts/inject-csp-hashes.mjs. En esta base van vacíos:
- * el enforce de script-src no cambia; solo se observa la política endurecida.
- */
+/** Hashes de scripts inline conocidos (tema). */
+export function inlineScriptHashes(): string[] {
+  return [sha256Csp(THEME_INIT_SOURCE)];
+}
+
+/** Hashes de estilos inline conocidos (@layer). */
+export function inlineStyleHashes(): string[] {
+  return [sha256Csp(LAYER_ORDER_STYLE)];
+}
+
+/** Allowlists mínimas: self + Vercel Analytics / Speed Insights. */
+export function buildCspDirectives(): CspDirectiveMap {
+  const scriptExtra = cspOrigins('scriptSrc');
+  const connectExtra = cspOrigins('connectSrc');
+  const imgExtra = cspOrigins('imgSrc');
+  return {
+    'default-src': ["'self'"],
+    'script-src': ["'self'", ...scriptExtra],
+    'style-src': ["'self'"],
+    'img-src': ["'self'", 'data:', 'blob:', ...imgExtra],
+    'font-src': ["'self'", 'data:'],
+    'connect-src': ["'self'", ...connectExtra],
+    'frame-ancestors': ["'none'"],
+    'base-uri': ["'self'"],
+    'form-action': ["'self'"],
+    'object-src': ["'none'"]
+  };
+}
+
+/** Snapshot para tests que importan el objeto estático. */
+export const CSP_DIRECTIVES: CspDirectiveMap = buildCspDirectives();
+
+/** @deprecated Prefer inlineScriptHashes(). */
 export const INLINE_SCRIPT_HASHES: string[] = [];
 
 export interface BuildCspOptions {
-  /** nonce por petición (solo rutas on-demand). */
-  nonce?: string;
-  /** añade INLINE_SCRIPT_HASHES a script-src. */
   withHashes?: boolean;
-  /** endpoint colector de violaciones. */
   reportUri?: string;
 }
 
 /** Construye la cadena CSP endurecida a partir del SSOT. */
 export function buildCsp(opts: BuildCspOptions = {}): string {
-  const d: CspDirectiveMap = JSON.parse(JSON.stringify(CSP_DIRECTIVES)) as CspDirectiveMap;
-  if (opts.nonce) {
-    d['script-src'].push(`'nonce-${opts.nonce}'`);
-    d['style-src'].push(`'nonce-${opts.nonce}'`);
-  }
-  if (opts.withHashes && INLINE_SCRIPT_HASHES.length > 0) {
-    d['script-src'].push(...INLINE_SCRIPT_HASHES);
+  const d: CspDirectiveMap = JSON.parse(JSON.stringify(buildCspDirectives())) as CspDirectiveMap;
+  if (opts.withHashes) {
+    d['script-src'].push(...inlineScriptHashes());
+    d['style-src'].push(...inlineStyleHashes());
   }
   const body = Object.entries(d)
     .map(([k, v]) => `${k} ${v.join(' ')}`.trim())

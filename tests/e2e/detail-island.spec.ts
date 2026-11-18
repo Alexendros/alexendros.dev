@@ -1,10 +1,13 @@
 import { test, expect } from '@playwright/test';
+import { escapeRegExp } from './helpers/interactive';
 
-test('DI-02: /referencias abre ficha en dialog', async ({ page }) => {
-  await page.goto('/referencias');
+test('DI-02: /referencias navega a la ficha completa', async ({ page }) => {
+  await page.goto('/referencias/');
   const cardLink = page.locator('main a[href^="/referencias/"]').first();
+  const href = await cardLink.getAttribute('href');
+  expect(href).toMatch(/^\/referencias\/.+\//);
   await cardLink.click();
-  const dialog = page.locator('dialog[data-detail-island][open]');
-  await expect(dialog).toBeVisible();
-  await expect(page).toHaveURL(/\/referencias\/.+/);
+  await expect(page).toHaveURL(new RegExp(`${escapeRegExp(href ?? '')}?$`));
+  await expect(page.locator('dialog[data-detail-island]')).toHaveCount(0);
+  await expect(page.locator('main h1')).toBeVisible();
 });

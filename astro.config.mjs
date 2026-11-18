@@ -28,7 +28,10 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     // Una hoja por entrada: menos CSS render-blocking en cascada (LHCI).
-    build: { cssMinify: true, cssCodeSplit: false },
+    // assetsInlineLimit 0: evita que Vite/Astro incrusten chunks JS <4KB
+    // como <script type="module"> inline; esos quedan bloqueados por CSP
+    // (script-src solo admite 'self' + hash del theme-init).
+    build: { cssMinify: true, cssCodeSplit: false, assetsInlineLimit: 0 },
     // Expone VERCEL al prerender estático: en builds locales/CI queda vacío y
     // Layout.astro omite los scripts /_vercel/* (que allí darían 404).
     define: { __IS_VERCEL__: JSON.stringify(!!process.env.VERCEL) }

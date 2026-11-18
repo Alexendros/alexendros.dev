@@ -3,33 +3,66 @@ import { commitments } from '../content/commitments';
 
 interface Props {
   heading?: string;
+  headingId?: string;
   class?: string;
   showHeading?: boolean;
+  /** `row`: tarjetas en rejilla (legado). `column`: misma superficie que los pasos, sin numeración. */
+  layout?: 'row' | 'column';
 }
 
 const {
-  heading = 'Compromisos antes de empezar',
+  heading = 'Compromisos iniciales',
+  headingId,
   class: className = '',
-  showHeading = false
+  showHeading = false,
+  layout = 'row'
 } = Astro.props;
 ---
 
 <div class:list={['w-full', className]}>
   {
-    showHeading ? (
-      <h2 class="mb-4 text-step-1 font-bold">{heading}</h2>
+    layout === 'column' ? (
+      <div class="surface-panel stack-block">
+        {showHeading ? (
+          <h2 id={headingId} class="heading-2 mb-6">
+            {heading}
+          </h2>
+        ) : (
+          <h2 id={headingId} class="sr-only">
+            {heading}
+          </h2>
+        )}
+        <ul class="m-0 flex list-none flex-col gap-6 p-0">
+          {commitments.items.map((item) => (
+            <li class="commitment-item">
+              <div class="min-w-0 text-left">
+                <p class="text-step-1 font-bold text-fg">{item.title}</p>
+                <p class="mt-2 text-step--1 text-muted">{item.detail}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     ) : (
-      <h2 class="sr-only">{heading}</h2>
+      <>
+        {showHeading ? (
+          <h2 id={headingId} class="heading-2 mb-4">
+            {heading}
+          </h2>
+        ) : (
+          <h2 id={headingId} class="sr-only">
+            {heading}
+          </h2>
+        )}
+        <ul class="grid list-none gap-6 p-0 sm:grid-cols-3">
+          {commitments.items.map((item) => (
+            <li class="commitment-item surface-inset p-5">
+              <p class="font-semibold text-fg">{item.title}</p>
+              <p class="mt-1 text-step--1 text-muted">{item.detail}</p>
+            </li>
+          ))}
+        </ul>
+      </>
     )
   }
-  <ul class="grid list-none gap-6 p-0 sm:grid-cols-3">
-    {
-      commitments.items.map((item) => (
-        <li class="commitment-item surface-raised radius-surface p-5">
-          <p class="font-semibold text-fg">{item.title}</p>
-          <p class="mt-1 text-step--1 text-muted">{item.detail}</p>
-        </li>
-      ))
-    }
-  </ul>
 </div>

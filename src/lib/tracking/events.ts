@@ -1,10 +1,6 @@
 import { track as trackVercel } from '@vercel/analytics';
 import { hasConsent } from './consent';
 
-type Gtag = (...args: unknown[]) => void;
-type Fbq = (...args: unknown[]) => void;
-type PostHogFn = { capture?: (event: string, properties?: unknown) => void };
-
 export type FunnelEvent =
   | 'page_view'
   | 'view_servicios'
@@ -18,49 +14,13 @@ export type FunnelEvent =
 
 type Props = Record<string, string | number | boolean | null | undefined>;
 
-function gtagEvent(event: FunnelEvent, props: Props): void {
-  if (typeof window === 'undefined' || !hasConsent('analytics')) return;
-  const target = window as Window & { gtag?: Gtag; dataLayer?: unknown[] };
-  if (typeof target.gtag !== 'function') return;
-  target.gtag('event', event, props);
-  // Conversión GA4: evento recomendado generate_lead (marcarlo como evento clave en GA4).
-  if (event === 'contact_form_success') target.gtag('event', 'generate_lead', props);
-}
-
-function metaEvent(event: FunnelEvent, props: Props): void {
-  if (typeof window === 'undefined' || !hasConsent('marketing')) return;
-  const target = window as Window & { fbq?: Fbq };
-  if (typeof target.fbq !== 'function') return;
-  target.fbq('trackCustom', event, props);
-  // Lead solo tras aceptación contractual del formulario (no en el intento).
-  if (event === 'contact_form_success') {
-    const eventID = typeof props.eventId === 'string' ? props.eventId : undefined;
-    if (eventID) target.fbq('track', 'Lead', props, { eventID });
-    else target.fbq('track', 'Lead', props);
-  }
-  if (event === 'contact_click') {
-    target.fbq('track', 'Contact', props);
-  }
-}
-
-function postHogEvent(event: FunnelEvent, props: Props): void {
-  if (typeof window === 'undefined' || !hasConsent('analytics')) return;
-  const target = window as Window & { posthog?: PostHogFn };
-  target.posthog?.capture?.(event, props);
-}
-
 /**
- * Emite un evento del embudo de conversión a todos los destinos con
- * consentimiento concedido. Nunca rompe si un proveedor no está cargado.
- * form_submit = intento; contact_form_success = aceptación (no replay).
+ * Emite un evento del embudo a Vercel Analytics cuando hay consentimiento
+ * de analítica. form_submit = intento; contact_form_success = aceptación.
  */
 export function track(event: FunnelEvent, props: Props = {}): void {
-  if (hasConsent('analytics')) {
-    trackVercel(event, props);
-  }
-  gtagEvent(event, props);
-  metaEvent(event, props);
-  postHogEvent(event, props);
+  if (!hasConsent('analytics')) return;
+  trackVercel(event, props);
 }
 
 export type ContactChannel = 'phone' | 'whatsapp';
@@ -80,8 +40,8 @@ export function contactChannelFromHref(href: string): ContactChannel | null {
 }
 
 /**
- * Instala la captura base del embudo: page_view (también en navegaciones con
- * view transitions), view_servicios y clicks de CTA. Idempotente.
+ * Instala la captura base del embudo: page_view, view_servicios y clicks de CTA.
+ * Idempotente.
  */
 export function setupFunnelTracking(): void {
   if (typeof window === 'undefined') return;
@@ -104,7 +64,6 @@ export function setupFunnelTracking(): void {
     const href = anchor.getAttribute('href') ?? '';
     const channel = contactChannelFromHref(href);
     if (channel) {
-      // Sin el número: solo canal y ruta.
       track('contact_click', { channel, path: window.location.pathname });
       return;
     }

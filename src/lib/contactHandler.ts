@@ -15,9 +15,10 @@ import {
   type ContactIdempotencyStore
 } from './contactIdempotency';
 import { resolveSmtpConfig, type SmtpConfig } from './smtpConfig';
-import { hasMarketingConsentFromCookieHeader } from './tracking/consent';
+import { CONTACT_RATE_LIMIT_PER_MINUTE } from './contactLimits';
 
 export const CONTACT_MAX_BODY_BYTES = 16_384;
+export { CONTACT_RATE_LIMIT_PER_MINUTE };
 
 export {
   CONTACT_IDEMPOTENCY_TTL_SECONDS,
@@ -55,25 +56,10 @@ export type ContactDeps = {
   getEnv: () => ContactEnv;
   rateLimit: (ip: string) => Promise<RateLimitResult>;
   sendMail: (payload: ContactMailPayload) => Promise<void>;
-  /**
-   * Meta CAPI Lead: solo con consentimiento de publicidad en `consent_v1`.
-   * El checkbox del formulario autoriza la respuesta, no la publicidad.
-   */
-  sendLeadEvent?: (input: ContactLeadEvent) => Promise<void>;
   /** Almacén de idempotencia con estados y lease por propietario. */
   idempotencyStore?: ContactIdempotencyStore;
   createRequestId?: () => string;
   nowMs?: () => number;
-};
-
-export type ContactLeadEvent = {
-  email: string;
-  ip: string;
-  userAgent: string | null;
-  sourceUrl: string | null;
-  eventId?: string;
-  fbp?: string;
-  fbc?: string;
 };
 
 function json(status: number, body: unknown, extraHeaders?: HeadersInit): Response {
@@ -95,10 +81,17 @@ function logEvent(
   else console.info(line);
 }
 
+/**
+ * IP del cliente para rate-limit.
+ * En Vercel la plataforma fija `x-real-ip`; no se usa `x-forwarded-for`
+ * (el primer salto no es fiable si un cliente lo forja antes del proxy).
+ * Sin IP de plataforma: clave única por petición (evita el cubo compartido
+ * `unknown` que castigaría a todos los sin-cabecera).
+ */
 export function clientIp(request: Request): string {
-  const forwarded = request.headers.get('x-forwarded-for');
-  if (forwarded) return forwarded.split(',')[0]?.trim() || 'unknown';
-  return request.headers.get('x-real-ip') || 'unknown';
+  const realIp = request.headers.get('x-real-ip')?.trim();
+  if (realIp) return realIp;
+  return `anon:${crypto.randomUUID()}`;
 }
 
 export function isJsonContentType(request: Request): boolean {
@@ -123,17 +116,6 @@ function mailFields(data: ContactInput) {
     message,
     replyTo: data.email
   };
-}
-
-function cookieValue(header: string | null, name: string): string | undefined {
-  if (!header) return undefined;
-  const prefix = `${name}=`;
-  for (const part of header.split(';')) {
-    const trimmed = part.trim();
-    if (!trimmed.startsWith(prefix)) continue;
-    return decodeURIComponent(trimmed.slice(prefix.length));
-  }
-  return undefined;
 }
 
 /**
@@ -329,22 +311,6 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
     subjectLen: fields.subject.length,
     messageLen: fields.message.length
   });
-
-  const cookieHeader = request.headers.get('cookie');
-  const marketingOk = hasMarketingConsentFromCookieHeader(cookieHeader, nowMs);
-  if (deps.sendLeadEvent && parsed.data.email && marketingOk) {
-    void deps
-      .sendLeadEvent({
-        email: parsed.data.email,
-        ip,
-        userAgent: request.headers.get('user-agent'),
-        sourceUrl: request.headers.get('referer'),
-        eventId: parsed.data.eventId,
-        fbp: cookieValue(cookieHeader, '_fbp'),
-        fbc: cookieValue(cookieHeader, '_fbc')
-      })
-      .catch(() => {});
-  }
 
   return json(200, { ok: true, status: 'accepted', requestId, replay: false });
 }

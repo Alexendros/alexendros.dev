@@ -40,10 +40,12 @@ test.describe('critical paths', () => {
   });
 
   test('contacto muestra formulario usable', async ({ page }) => {
-    await page.goto('/contacto');
-    await expect(page.getByRole('heading', { name: 'Contacto', exact: true })).toBeVisible();
-    await expect(page.getByLabel(/^Mensaje( \*)?$/)).toBeVisible();
-    await expect(page.getByLabel(/^Nombre( \*)?$/)).toBeVisible();
+    await page.goto('/contacto/');
+    await expect(
+      page.getByRole('heading', { name: 'Formulario de contacto', exact: true })
+    ).toBeVisible();
+    await expect(page.getByLabel(/^Mensaje/)).toBeVisible();
+    await expect(page.getByLabel(/Nombre completo/)).toBeVisible();
     await expect(page.getByRole('button', { name: /Solicitar propuesta/ })).toBeVisible();
   });
 

@@ -146,14 +146,15 @@ Usuario → [Navegador] → (HTTPS/TLS 1.3) → [Vercel Edge] → [Astro SSR/SSG
 
 ## 6. Decisiones de riesgo aceptado
 
-| Riesgo                             | Decisión              | Justificación                                                     | Revisión   |
-| ---------------------------------- | --------------------- | ----------------------------------------------------------------- | ---------- |
-| Sin branch protection              | **ACEPTADO temporal** | Requiere admin repo; pendiente configuración manual               | 2026-10-14 |
-| Logging estructurado               | **ACEPTADO**          | Vercel Logs + Analytics cubren observabilidad básica              | 2026-11-07 |
-| CSP enforce `unsafe-inline`        | **ACEPTADO temporal** | Fase ③ (nonces/hashes); Report-Only sin inline ya activa          | 2026-11-17 |
-| Scripts terceros sin SRI           | **ACEPTADO**          | Consent-gated; URLs fijas; self-host/SRI en backlog               | 2026-11-17 |
-| Idempotencia Redis no atómica      | **ACEPTADO**          | Carrera rara; coste = doble correo; Lua atómica en backlog        | 2026-11-17 |
-| Sin check Origin en `/api/contact` | **ACEPTADO**          | JSON + sin CORS; abuso directo mitigado por honeypot + rate limit | 2026-11-17 |
+| Riesgo                             | Decisión              | Justificación                                                        | Revisión   |
+| ---------------------------------- | --------------------- | -------------------------------------------------------------------- | ---------- |
+| Sin branch protection              | **ACEPTADO temporal** | Requiere admin repo; pendiente configuración manual                  | 2026-10-14 |
+| Logging estructurado               | **ACEPTADO**          | Vercel Logs + Analytics cubren observabilidad básica                 | 2026-11-07 |
+| CSP enforce sin `unsafe-inline`    | **MITIGADO**          | Hashes de theme-init y @layer; orígenes solo Vercel Analytics (0035) | 2026-11-17 |
+| Scripts terceros sin SRI           | **ACEPTADO**          | Solo `va.vercel-scripts.com` tras consentimiento; SRI en backlog     | 2026-11-17 |
+| Idempotencia Redis no atómica      | **ACEPTADO**          | Carrera rara; coste = doble correo; Lua atómica en backlog           | 2026-11-17 |
+| Sin check Origin en `/api/contact` | **ACEPTADO**          | JSON + sin CORS; abuso directo mitigado por honeypot + rate limit    | 2026-11-17 |
+| Sin captcha en contacto            | **ACEPTADO**          | Decisión 0034/0035: honeypot + Upstash 10/min; sin Turnstile         | 2026-11-17 |
 
 ---
 

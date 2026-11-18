@@ -116,16 +116,11 @@ test.describe('DET estructura común de fichas', () => {
     });
   }
 
-  test('índice: una tarjeta con data-product-card y un solo enlace', async ({ page }) => {
-    await page.goto('/servicios');
-    for (const product of products) {
-      const card = page.locator(`[data-product-card="${product.slug}"]`);
-      await expect(card).toHaveCount(1);
-      await expect(card.locator('a')).toHaveCount(1);
-    }
+  test('índice: sin fichas de producto; nota de propuesta en el lead', async ({ page }) => {
+    await page.goto('/servicios/');
+    await expect(page.locator('[data-product-card]')).toHaveCount(0);
     await expect(page.locator('[data-services-proposal-note]')).toContainText(/propuesta/i);
     await expect(page.locator('[data-product-card="portal-inicio"]')).toHaveCount(0);
-    await expect(page.locator('[data-product-card]')).toHaveCount(1);
     await expect(page.getByText('Preparando el configurador')).toHaveCount(0);
   });
 });

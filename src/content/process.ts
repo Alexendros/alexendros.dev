@@ -16,8 +16,8 @@ export const processPage = {
     ogTitle: 'Cómo se trabaja'
   },
   hero: {
-    h1Lead: 'Cómo se trabaja, paso a paso.',
-    h1Accent: ''
+    h1Lead: 'Un método claro, ',
+    h1Accent: 'desde la propuesta hasta la entrega.'
   },
   eyebrow: '// 03',
   title: 'Cómo se trabaja, paso a paso',

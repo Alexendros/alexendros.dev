@@ -32,8 +32,8 @@ export const catalogoItemSchema = z.object({
 
 export type CatalogoItem = z.infer<typeof catalogoItemSchema>;
 
-const contacto = (origen: string) =>
-  `/contacto/?motivo=propuestaComercial&origen=${origen}` as const;
+const contacto = (origen: string, via: 'revisar' | 'crear' | 'colaborar') =>
+  `/contacto/?motivo=propuestaComercial&origen=${origen}&via=${via}` as const;
 
 /**
  * Catálogo promocional de `/servicios/`.
@@ -48,7 +48,7 @@ export const catalogoPromocional: readonly CatalogoItem[] = [
       'El encargo parte del sitio que ya funciona. Se ordenan los fallos por impacto y se deja un plan de mejoras por escrito.',
     ctaOpcional: {
       label: 'Pedir diagnóstico',
-      href: contacto('catalogo-revision')
+      href: contacto('catalogo-revision', 'revisar')
     }
   },
   {
@@ -58,7 +58,7 @@ export const catalogoPromocional: readonly CatalogoItem[] = [
       'Se diseña y se publica un sitio profesional, con catálogo y cobro cuando el negocio lo necesita, junto con la documentación de la entrega.',
     ctaOpcional: {
       label: 'Pedir construcción',
-      href: contacto('catalogo-construccion')
+      href: contacto('catalogo-construccion', 'crear')
     }
   },
   {
@@ -68,7 +68,7 @@ export const catalogoPromocional: readonly CatalogoItem[] = [
       'Se incorpora capacidad a un equipo con un encargo ya en marcha. Cada fase lleva alcance y plazo escritos antes de empezar.',
     ctaOpcional: {
       label: 'Pedir colaboración',
-      href: contacto('catalogo-colaboracion')
+      href: contacto('catalogo-colaboracion', 'colaborar')
     }
   }
 ];

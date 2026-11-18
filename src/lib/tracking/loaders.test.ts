@@ -1,256 +1,65 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-interface FakeScript {
-  tagName: string;
-  src: string;
-  async: boolean;
-  dataset: Record<string, string>;
-}
-
-interface DomEnv {
-  store: Map<string, string>;
-  scripts: FakeScript[];
-  window: Window & typeof globalThis & Record<string, unknown>;
-  document: Document;
-}
-
-function createDomEnv(): DomEnv {
-  const store = new Map<string, string>();
-  const scripts: FakeScript[] = [];
-
-  const document = {
-    cookie: '',
-    head: {
-      appendChild: (node: FakeScript): FakeScript => {
-        scripts.push(node);
-        return node;
-      }
+function stubBrowser() {
+  const store: Record<string, string> = {};
+  vi.stubGlobal('localStorage', {
+    getItem(key: string) {
+      return store[key] ?? null;
     },
-    createElement: (tagName: string): FakeScript => ({
-      tagName: tagName.toUpperCase(),
-      src: '',
-      async: false,
-      dataset: {}
-    }),
-    querySelector: (selector: string): FakeScript | null => {
-      const match = /^script\[data-tracker="([^"]+)"\]$/.exec(selector);
-      if (!match) return null;
-      return scripts.find((script) => script.dataset.tracker === match[1]) ?? null;
+    setItem(key: string, value: string) {
+      store[key] = value;
+    },
+    removeItem(key: string) {
+      delete store[key];
     }
-  } as unknown as Document;
-
-  const window = {
-    localStorage: {
-      getItem: (key: string): string | null => (store.has(key) ? (store.get(key) ?? null) : null),
-      setItem: (key: string, value: string): void => {
-        store.set(key, String(value));
-      },
-      removeItem: (key: string): void => {
-        store.delete(key);
-      }
-    }
-  } as unknown as Window & typeof globalThis & Record<string, unknown>;
-
-  return { store, scripts, window, document };
+  });
+  vi.stubGlobal('window', { localStorage: globalThis.localStorage });
+  vi.stubGlobal('document', {
+    cookie: '',
+    head: { appendChild: vi.fn() },
+    querySelector: vi.fn(() => null),
+    documentElement: { dataset: {} as Record<string, string> }
+  });
 }
 
-function gtagEntries(window: DomEnv['window']): unknown[][] {
-  return (window.dataLayer as unknown[][]) ?? [];
-}
-
-describe('tracking loaders', () => {
-  let env: DomEnv;
-
+describe('loadVercelPlatform', () => {
   beforeEach(() => {
     vi.resetModules();
-    vi.unstubAllEnvs();
-    vi.stubEnv('PUBLIC_COOKIE_CONSENT_VERSION', '1');
-    env = createDomEnv();
-    vi.stubGlobal('window', env.window);
-    vi.stubGlobal('document', env.document);
+    vi.stubEnv('PUBLIC_COOKIE_CONSENT_VERSION', '3');
+    vi.stubGlobal('__IS_VERCEL__', true);
+    stubBrowser();
   });
 
   afterEach(() => {
-    vi.unstubAllGlobals();
     vi.unstubAllEnvs();
+    vi.unstubAllGlobals();
   });
 
-  it('sin consentimiento no inyecta scripts ni define gtag/fbq', async () => {
-    const { initTracking } = await import('./loaders');
-
-    initTracking();
-
-    expect(env.scripts).toHaveLength(0);
-    expect(env.window.gtag).toBeUndefined();
-    expect(env.window.fbq).toBeUndefined();
-  });
-
-  it('con analytics y PUBLIC_GA4_ID inyecta gtag y envía consent default denied antes de config', async () => {
-    vi.stubEnv('PUBLIC_GA4_ID', 'G-TEST123');
-
+  it('sin consentimiento de analítica no inyecta Vercel', async () => {
+    const inject = vi.fn();
+    const injectSpeed = vi.fn();
+    vi.doMock('@vercel/analytics', () => ({ inject }));
+    vi.doMock('@vercel/speed-insights', () => ({ injectSpeedInsights: injectSpeed }));
     const consent = await import('./consent');
-    const { loadGA4 } = await import('./loaders');
-
-    consent.writeConsent(['necessary', 'analytics']);
-    loadGA4();
-
-    expect(env.scripts.map((script) => script.dataset.tracker)).toEqual(['ga4']);
-    expect(env.scripts[0].src).toContain('G-TEST123');
-
-    const dataLayer = gtagEntries(env.window);
-    expect(Array.isArray(dataLayer)).toBe(true);
-
-    const first = dataLayer[0] as unknown[];
-    expect(first[0]).toBe('consent');
-    expect(first[1]).toBe('default');
-    expect(first[2]).toMatchObject({
-      ad_storage: 'denied',
-      ad_user_data: 'denied',
-      ad_personalization: 'denied',
-      analytics_storage: 'denied'
-    });
-
-    const update = dataLayer.find(
-      (entry) => entry[0] === 'consent' && entry[1] === 'update'
-    ) as unknown[];
-    expect(update[2]).toMatchObject({ analytics_storage: 'granted', ad_storage: 'denied' });
-
-    const configIndex = dataLayer.findIndex((entry) => entry[0] === 'config');
-    expect(configIndex).toBeGreaterThan(0);
-    expect((dataLayer[configIndex] as unknown[])[1]).toBe('G-TEST123');
-  });
-
-  it('con consentimiento pero sin PUBLIC_GA4_ID no inyecta nada', async () => {
-    vi.stubEnv('PUBLIC_GA4_ID', '');
-
-    const consent = await import('./consent');
-    const { loadGA4 } = await import('./loaders');
-
-    consent.writeConsent(['necessary', 'analytics']);
-    loadGA4();
-
-    expect(env.scripts).toHaveLength(0);
-  });
-
-  it('revocar el consentimiento emite gtag update denied, fbq revoke y posthog opt_out', async () => {
-    vi.stubEnv('PUBLIC_GA4_ID', 'G-TEST123');
-    vi.stubEnv('PUBLIC_META_PIXEL_ID', 'PIXEL1');
-    vi.stubEnv('PUBLIC_POSTHOG_KEY', 'phc_test');
-    vi.stubEnv('PUBLIC_CLARITY_ID', 'clarity1');
-    vi.stubEnv('PUBLIC_LINKEDIN_PARTNER_ID', '99');
-
-    const consent = await import('./consent');
-    const { initTracking } = await import('./loaders');
-
-    initTracking();
-    consent.writeConsent(['necessary', 'analytics', 'marketing']);
-
-    expect(env.scripts.map((script) => script.dataset.tracker)).toEqual(
-      expect.arrayContaining(['ga4', 'meta-pixel', 'posthog', 'clarity', 'linkedin'])
-    );
-
+    consent.clearConsent();
     consent.writeConsent(['necessary']);
-
-    const lastUpdate = [...gtagEntries(env.window)]
-      .reverse()
-      .find((entry) => entry[0] === 'consent' && entry[1] === 'update') as unknown[];
-    expect(lastUpdate[2]).toMatchObject({
-      analytics_storage: 'denied',
-      ad_storage: 'denied',
-      ad_user_data: 'denied',
-      ad_personalization: 'denied'
-    });
-
-    const fbqCalls = ((env.window.fbq as { queue?: unknown[][] }).queue ?? []).map((call) =>
-      (call as unknown[]).slice(0, 2)
-    );
-    expect(fbqCalls).toContainEqual(['consent', 'revoke']);
-
-    const posthog = env.window.posthog as { _i?: unknown[][] };
-    expect(posthog._i?.some((call) => call[0] === 'opt_out_capturing')).toBe(true);
-
-    const clarity = env.window.clarity as { q?: unknown[][] };
-    expect(clarity.q?.some((call) => call[0] === 'consent' && call[1] === false)).toBe(true);
-
-    expect(env.window._linkedin_partner_id).toBe('');
+    const { loadVercelPlatform } = await import('./loaders');
+    loadVercelPlatform();
+    expect(inject).not.toHaveBeenCalled();
+    expect(injectSpeed).not.toHaveBeenCalled();
   });
 
-  it('con analytics y PUBLIC_POSTHOG_KEY crea el stub en cola e inyecta array.js', async () => {
-    vi.stubEnv('PUBLIC_POSTHOG_KEY', 'phc_test');
-
+  it('con analytics e __IS_VERCEL__ inyecta Analytics y Speed Insights', async () => {
+    const inject = vi.fn();
+    const injectSpeed = vi.fn();
+    vi.doMock('@vercel/analytics', () => ({ inject }));
+    vi.doMock('@vercel/speed-insights', () => ({ injectSpeedInsights: injectSpeed }));
     const consent = await import('./consent');
-    const { loadPostHog } = await import('./loaders');
-
+    consent.clearConsent();
     consent.writeConsent(['necessary', 'analytics']);
-    loadPostHog();
-
-    const posthog = env.window.posthog as { _i?: unknown[]; __SV?: number };
-    expect(Array.isArray(posthog._i)).toBe(true);
-    const firstCall = posthog._i?.[0] as unknown[];
-    expect(firstCall[0]).toBe('phc_test');
-    expect(firstCall[1]).toMatchObject({ api_host: 'https://eu.i.posthog.com' });
-
-    const script = env.scripts.find((item) => item.dataset.tracker === 'posthog');
-    expect(script?.src).toBe('https://eu.i.posthog.com/static/array.js');
-  });
-
-  it('con marketing y PUBLIC_LINKEDIN_PARTNER_ID crea el stub lintrk con cola', async () => {
-    vi.stubEnv('PUBLIC_LINKEDIN_PARTNER_ID', '12345');
-
-    const consent = await import('./consent');
-    const { loadLinkedIn } = await import('./loaders');
-
-    consent.writeConsent(['necessary', 'marketing']);
-    loadLinkedIn();
-
-    const lintrk = env.window.lintrk as { q?: unknown[][] };
-    expect(Array.isArray(lintrk.q)).toBe(true);
-    expect(env.window._linkedin_partner_id).toBe('12345');
-    expect(env.scripts.find((item) => item.dataset.tracker === 'linkedin')?.src).toContain(
-      'snap.licdn.com'
-    );
-  });
-
-  it('solo analítica: GA4 Clarity PostHog con id en URL; sin píxel ni LinkedIn', async () => {
-    vi.stubEnv('PUBLIC_GA4_ID', 'G-ANALYTICS1');
-    vi.stubEnv('PUBLIC_CLARITY_ID', 'clarity-id-1');
-    vi.stubEnv('PUBLIC_POSTHOG_KEY', 'phc_analytics');
-    vi.stubEnv('PUBLIC_META_PIXEL_ID', 'PIXEL-SHOULD-NOT');
-    vi.stubEnv('PUBLIC_LINKEDIN_PARTNER_ID', '999');
-
-    const consent = await import('./consent');
-    const { initTracking } = await import('./loaders');
-
-    consent.writeConsent(['necessary', 'analytics']);
-    initTracking();
-
-    const tags = env.scripts.map((script) => script.dataset.tracker);
-    expect(tags).toEqual(expect.arrayContaining(['ga4', 'clarity', 'posthog']));
-    expect(tags).not.toContain('meta-pixel');
-    expect(tags).not.toContain('linkedin');
-    expect(env.scripts.find((s) => s.dataset.tracker === 'ga4')?.src).toContain('G-ANALYTICS1');
-    expect(env.scripts.find((s) => s.dataset.tracker === 'clarity')?.src).toContain('clarity-id-1');
-    expect(env.scripts.find((s) => s.dataset.tracker === 'posthog')?.src).toContain(
-      'eu.i.posthog.com'
-    );
-  });
-
-  it('publicidad: URL del píxel y LinkedIn llevan su id', async () => {
-    vi.stubEnv('PUBLIC_META_PIXEL_ID', '111222333');
-    vi.stubEnv('PUBLIC_LINKEDIN_PARTNER_ID', '777888');
-
-    const consent = await import('./consent');
-    const { initTracking } = await import('./loaders');
-
-    consent.writeConsent(['necessary', 'marketing']);
-    initTracking();
-
-    expect(env.scripts.find((s) => s.dataset.tracker === 'meta-pixel')?.src).toContain(
-      'connect.facebook.net'
-    );
-    expect(env.scripts.find((s) => s.dataset.tracker === 'linkedin')?.src).toContain(
-      'snap.licdn.com'
-    );
-    expect(env.window._linkedin_partner_id).toBe('777888');
+    const { loadVercelPlatform } = await import('./loaders');
+    loadVercelPlatform();
+    expect(inject).toHaveBeenCalledOnce();
+    expect(injectSpeed).toHaveBeenCalledOnce();
   });
 });

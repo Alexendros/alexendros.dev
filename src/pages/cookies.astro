@@ -3,8 +3,11 @@ import Layout from '../layouts/Layout.astro';
 import { seoForPath } from '../content/seo';
 import { breadcrumbFromHome } from '../lib/breadcrumb';
 import inventory from '../../docs/cookies-inventory.json';
+import { PROCESSORS } from '../content/processors';
+import { formatDateEs } from '../lib/formatDateEs';
 
 const seo = seoForPath('/cookies/');
+const COOKIES_CONTACT_EMAIL = 'datos@alexendros.dev';
 
 type InventoryCookie = {
   name: string;
@@ -17,13 +20,14 @@ type InventoryCookie = {
 };
 
 const cookies = inventory.cookies as InventoryCookie[];
+const analyticsProcessors = PROCESSORS.filter((p) => p.kind === 'analytics');
+const updatedAt = inventory.updatedAt as string;
+const updatedAtLabel = formatDateEs(updatedAt);
 
 function ownerCell(cookie: InventoryCookie): string {
   if (cookie.party === 'first' && cookie.owner === 'alexendros.dev') {
     return 'alexendros.dev (primera parte)';
   }
-  if (cookie.owner === 'Google Analytics') return 'Google Analytics (tercero, EE. UU.)';
-  if (cookie.owner === 'PostHog') return 'PostHog (UE)';
   if (cookie.party === 'third') return `${cookie.owner} (tercero)`;
   return cookie.owner;
 }
@@ -37,15 +41,11 @@ function ownerCell(cookie: InventoryCookie): string {
   <div class="page-shell page-shell-narrow legal-prose">
     <p class="font-mono">LEGAL</p>
     <h1>Cookies</h1>
-    <p>
-      Una cookie es un pequeño archivo que el navegador guarda en tu dispositivo. Algunas son
-      imprescindibles para que esta página recuerde tu decisión. Otras sirven para medir visitas o
-      para publicidad: esas no se encienden hasta que tú lo permites.
-    </p>
-    <p>
-      Esta página es la explicación completa. El aviso emergente solo resume. Si quieres el detalle
-      técnico (nombre, titular, plazo), está en la tabla de abajo.
-    </p>
+    <p>Una cookie es un pequeño archivo que el navegador guarda en tu dispositivo.</p>
+    <p>Algunas son imprescindibles para que esta página recuerde tu decisión.</p>
+    <p>La medición de visitas no se enciende hasta que tú lo permites.</p>
+    <p>Esta página es la explicación completa. El aviso emergente solo resume.</p>
+    <p>Si quieres el detalle técnico (nombre, titular, plazo), está en la tabla de abajo.</p>
 
     <p class="mt-4">
       <button
@@ -56,46 +56,49 @@ function ownerCell(cookie: InventoryCookie): string {
         Configurar
       </button>
     </p>
+    <p class="text-sm text-muted">Abre el panel con interruptores por categoría.</p>
     <p class="text-sm text-muted">
-      Abre el panel con interruptores por categoría. «Aceptar todas» enciende analítica y
-      publicidad. «Rechazar opcionales» deja solo lo técnico.
+      «Aceptar todas» enciende la analítica. «Rechazar opcionales» deja solo lo técnico.
     </p>
 
     <h2>En claro, sin jerga</h2>
     <ul>
       <li>
-        <strong>Técnicas:</strong> recuerdan que ya respondiste al aviso. Sin ellas se te preguntaría
-        en cada visita. No hacen perfil comercial. No se pueden apagar aquí.
+        <p>
+          <strong>Técnicas:</strong> recuerdan que ya respondiste al aviso.
+        </p>
+        <p>Sin ellas se te preguntaría en cada visita.</p>
+        <p>No hacen perfil comercial. No se pueden apagar aquí.</p>
       </li>
       <li>
-        <strong>Preferencias:</strong> recuerdan ajustes que tú eliges. Hoy este sitio casi no las usa.
-        Opcionales.
-      </li>
-      <li>
-        <strong>Analítica:</strong> cuentan cuánta gente entra y qué páginas se leen (Google Analytics,
-        Microsoft Clarity, PostHog en la UE). Sirve para mejorar el sitio, no para mostrarte anuncios.
-        Opcionales.
-      </li>
-      <li>
-        <strong>Publicidad:</strong> miden campañas y pueden asociar esta visita a un perfil en Meta o
-        LinkedIn. Opcionales. En el código la categoría se llama <code>marketing</code>; en pantalla
-        se llama Publicidad.
+        <p>
+          <strong>Analítica:</strong> cuentan visitas y rendimiento de forma agregada (
+          {analyticsProcessors.map((p) => p.name).join(' y ')}), solo en el despliegue de Vercel.
+        </p>
+        <p>Sirve para mejorar el sitio, no para mostrarte anuncios. Opcionales.</p>
       </li>
     </ul>
 
     <h2>Base jurídica (grado técnico)</h2>
     <p>
       Técnicas: interés legítimo en prestar el servicio que pides (art. 6.1.f RGPD y art. 22.2
-      LSSI-CE). Preferencias, analítica y publicidad: consentimiento previo, informado y por
-      categoría (art. 6.1.a RGPD y art. 22.2 LSSI-CE). Hasta que aceptas esas tres, el sitio las
-      deja en <em>denied</em> (Consent Mode v2).
+      LSSI-CE).
     </p>
+    <p>Analítica: consentimiento previo e informado (art. 6.1.a RGPD y art. 22.2 LSSI-CE).</p>
+    <p>Hasta que aceptas la analítica, el sitio no carga esos scripts.</p>
 
     <h2>Inventario (nombre, titular, para qué, cuánto dura)</h2>
+    <p>Nada de lo que este dominio pueda escribir en tu navegador falta en esta tabla.</p>
     <p>
-      Nada de lo que este dominio pueda escribir en tu navegador falta en esta tabla. Si una cookie
-      nueva entra en el código, el inventario se actualiza o falla la auditoría automática. Fuente:
-      <code>docs/cookies-inventory.json</code> (versión {inventory.version}).
+      Si una cookie nueva entra en el código, el inventario se actualiza o falla la auditoría
+      automática.
+    </p>
+    <p>
+      Fuente: <code>docs/cookies-inventory.json</code> (versión {inventory.version}).
+    </p>
+    <p>
+      Las librerías de medición de Vercel usadas hoy no escriben cookies propias documentadas;
+      aparecen como encargados en Privacidad.
     </p>
     <div class="table-wrap" tabindex="0" role="region" aria-label="Inventario de cookies">
       <table>
@@ -129,29 +132,31 @@ function ownerCell(cookie: InventoryCookie): string {
     </div>
 
     <h2>Cómo elegir, cambiar o retirar</h2>
-    <ol>
-      <li>
-        La primera visita muestra el aviso. «Aceptar todas» activa analítica y publicidad. «Rechazar
-        opcionales» deja solo lo técnico. «Configurar» (este botón) abre interruptores uno a uno.
-      </li>
-      <li>
-        Puedes volver aquí en cualquier momento y pulsar otra vez «Configurar». Retirar el permiso
-        no anula lo ya tratado hasta ese instante.
-      </li>
-      <li>
-        También puedes borrar cookies desde Chrome, Firefox, Safari o Edge. Si bloqueas las
-        técnicas, el aviso reaparecerá y algunas funciones pueden fallar.
-      </li>
-    </ol>
+    <p>
+      La primera visita muestra el aviso. «Aceptar todas» activa la analítica. «Rechazar opcionales»
+      deja solo lo técnico. «Configurar» (este botón) abre interruptores uno a uno.
+    </p>
+    <p>
+      Puedes volver aquí en cualquier momento y pulsar otra vez «Configurar». Retirar el permiso no
+      anula lo ya tratado hasta ese instante.
+    </p>
+    <p>
+      También puedes borrar cookies desde Chrome, Firefox, Safari o Edge. Si bloqueas las técnicas,
+      el aviso reaparecerá y algunas funciones pueden fallar.
+    </p>
 
     <h2>Autoridad de control</h2>
     <p>
-      Agencia Española de Protección de Datos:
-      <a href="https://www.aepd.es" rel="noopener noreferrer" target="_blank">www.aepd.es</a>. Dudas
-      sobre esta política:
-      <a href="mailto:contratacion@alexendros.dev">contratacion@alexendros.dev</a>.
+      Agencia Española de Protección de Datos:{' '}
+      <a href="https://www.aepd.es" rel="noopener noreferrer" target="_blank">www.aepd.es</a>.
+    </p>
+    <p>
+      Dudas sobre esta política:{' '}
+      <a href={`mailto:${COOKIES_CONTACT_EMAIL}`}>{COOKIES_CONTACT_EMAIL}</a>.
     </p>
 
-    <p>Última actualización: 17 de noviembre de 2026.</p>
+    <p>
+      Última actualización: <time datetime={updatedAt}>{updatedAtLabel}</time>.
+    </p>
   </div>
 </Layout>

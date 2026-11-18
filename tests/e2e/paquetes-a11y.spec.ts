@@ -18,8 +18,7 @@ for (const theme of ['alexlight', 'alexdark'] as const) {
         await expect(page.locator('[data-paquete]')).toHaveCount(3);
         await expect(page.locator('[data-pick-via]')).toHaveCount(3);
         if (route === '/servicios/') {
-          await expect(page.locator('[data-product-card]')).toHaveCount(1);
-          await expect(page.locator('[data-product-card="software-a-medida"]')).toHaveCount(1);
+          await expect(page.locator('[data-product-card]')).toHaveCount(0);
           await expect(page.locator('[data-detail-island]')).toHaveCount(0);
           await expect(page.locator('[data-needs-configurator]')).toHaveCount(0);
           await expect(page.locator('#faq')).toHaveCount(0);

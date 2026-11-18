@@ -1,15 +1,12 @@
-/* El CSS de Button puede cargarse antes que Layout y alterar el orden de las
-   capas. La composición local queda fuera de capas para que el reset no
-   elimine el centrado ni el ritmo del shell solo en /metodologia/. */
-.shell {
+/* Ritmo de página: page-shell global aporta padding; aquí solo la rejilla interna.
+   Fuera de capas: el CSS de Button puede alterar el orden y anular el gap. */
+.page {
   display: grid;
   row-gap: var(--space-section-y);
-  margin-inline: auto;
-  padding-inline: var(--space-page-x);
-  padding-block: var(--space-section-y);
 }
 
-.balance {
+/* Hero + columnas: ritmo de bloque (más corto que section-y hacia el cierre). */
+.lead {
   display: grid;
   row-gap: var(--space-block);
 }
@@ -20,27 +17,16 @@
 }
 
 @layer components {
-  /* Número de paso: el texto sigue en --fg. El subrayado es melocotón
-     (--color-accent), igual que el énfasis del titular de /servicios/. */
-  .step-number {
-    color: var(--fg);
-    text-decoration-line: underline;
-    text-decoration-color: var(--color-accent);
-    text-decoration-thickness: 0.08em;
-    text-underline-offset: 0.16em;
+  /* Número y H3 comparten la misma banda vertical (alto del marcador = 2rem). */
+  .step-align {
+    align-items: flex-start;
   }
 
-  /* Centrado local del H1, la regla y la descripción. Los ids no se usan
-     aquí: el CSS module los renombra y deja de coincidir con el HTML.
-     La lista de pasos sigue al ancho del page-shell, con padding simétrico. */
-  .balance h1,
-  .balance h1 + div,
-  .balance h1 + div + p {
-    margin-inline: auto;
-    text-align: center;
-  }
-
-  .step {
-    text-align: center;
+  .step-title {
+    display: flex;
+    align-items: center;
+    min-block-size: 2rem;
+    margin: 0;
+    line-height: 1.2;
   }
 }

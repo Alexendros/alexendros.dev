@@ -27,9 +27,69 @@
     --cc-btn-secondary-hover-border-color: var(--color-border-strong);
     --cc-separator-border-color: var(--color-border);
     --cc-link-color: var(--color-primary);
+
+    /* Panel de preferencias: tokens de bloque e interruptor (sin esto, texto claro sobre gris claro). */
+    --cc-toggle-on-bg: var(--color-primary);
+    --cc-toggle-off-bg: var(--color-muted);
+    --cc-toggle-on-knob-bg: var(--color-ink);
+    --cc-toggle-off-knob-bg: var(--color-ink);
+    --cc-toggle-enabled-icon-color: var(--color-ink);
+    --cc-toggle-disabled-icon-color: var(--color-ink);
+    --cc-toggle-readonly-bg: var(--color-subtle);
+    --cc-toggle-readonly-knob-bg: var(--color-card);
+    --cc-toggle-readonly-knob-icon-color: var(--color-muted);
+    --cc-section-category-border: var(--color-border);
+    --cc-cookie-category-block-bg: var(--color-subtle);
+    --cc-cookie-category-block-border: var(--color-border);
+    --cc-cookie-category-block-hover-bg: var(--color-subtle);
+    --cc-cookie-category-block-hover-border: var(--color-border-strong);
+    --cc-cookie-category-expanded-block-bg: transparent;
+    --cc-cookie-category-expanded-block-hover-bg: var(--color-subtle);
+    --cc-overlay-bg: color-mix(in srgb, var(--color-fg) 55%, transparent);
+    --cc-footer-bg: var(--color-subtle);
+    --cc-footer-color: var(--color-muted);
+    --cc-footer-border-color: var(--color-border);
   }
 
   /* stylelint-disable selector-class-pattern, declaration-no-important, no-descending-specificity */
+
+  /* Capas + all:unset del vendor pueden dejar el panel a opacity 0; forzar estado abierto. */
+  #cc-main .pm,
+  #cc-main .pm-overlay {
+    pointer-events: none;
+  }
+
+  .show--preferences #cc-main .pm,
+  .show--preferences #cc-main .cc--anim .pm {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+
+  .show--preferences #cc-main .pm--box,
+  .show--preferences #cc-main .cc--anim .pm--box {
+    transform: translateY(-50%) !important;
+  }
+
+  .show--preferences #cc-main .pm-overlay,
+  .show--preferences #cc-main .cc--anim .pm-overlay {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+
+  #cc-main .pm__section--toggle,
+  #cc-main .pm__section {
+    color: var(--cc-primary-color);
+  }
+
+  #cc-main .pm__section-title {
+    color: inherit;
+  }
+
+  #cc-main .pm__section-desc {
+    color: var(--cc-secondary-color);
+  }
 
   /* Compartido desktop/móvil: sin divisor textos/botones; «Configurar» como enlace. */
   #cc-main .cm--bar .cm__btns {
@@ -84,7 +144,7 @@
 
     #cc-main .cm--bar.cm--inline .cm__desc {
       font-size: var(--step--1);
-      line-height: 1.35;
+      line-height: 1.5;
       max-height: none;
       padding: 0 !important;
       margin: 0;

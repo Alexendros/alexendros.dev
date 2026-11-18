@@ -57,10 +57,13 @@ export type ProjectProductType = Project['productType'];
  * evidencias con permiso; no son testimonios inventados. (Nota editorial: no
  * publicar este párrafo en la vista.)
  */
+/** CTA canónico de ficha de referencia (mismo rótulo en todas). */
+export const PROJECT_FICHA_CTA = 'Más información' as const;
+
 export const availabilityCtaLabels: Record<ProjectAvailability, string> = {
-  si: 'Consultar sobre esta obra',
-  no: 'Consultar sobre esta obra',
-  reservado: 'Preguntar por esta obra'
+  si: PROJECT_FICHA_CTA,
+  no: PROJECT_FICHA_CTA,
+  reservado: PROJECT_FICHA_CTA
 };
 
 export const workKindLabels: Record<ProjectWorkKind, string> = {

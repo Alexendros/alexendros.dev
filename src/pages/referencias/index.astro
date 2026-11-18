@@ -1,38 +1,26 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
-import DetailIsland from '../../components/DetailIsland.astro';
 import PageHead from '../../components/PageHead.astro';
-import {
-  availabilityCtaLabels,
-  productTypeLabels,
-  projectFilters,
-  projects
-} from '../../content/projects';
+import { projectFilters, projects } from '../../content/projects';
 import { seoForPath } from '../../content/seo';
 import { breadcrumbFromHome } from '../../lib/breadcrumb';
 
 const seo = seoForPath('/referencias/');
-const detailItems = projects.map((p) => ({
-  slug: p.slug,
-  path: `/referencias/${p.slug}/`,
-  title: p.title,
-  short: p.short,
-  meta: productTypeLabels[p.productType],
-  ctaLabel: availabilityCtaLabels[p.availability],
-  ctaHref: `/contacto/?motivo=informacionCliente&proyecto=${p.slug}&origen=referencias`
-}));
 ---
 
 <Layout
   title={seo.title}
   description={seo.description}
   ogImage="/og/proyectos.png"
-  ogImageAlt="Proyectos realizados"
+  ogImageAlt="Trabajo publicado, para quien quiera comprobarlo"
   jsonLd={breadcrumbFromHome({ name: 'Referencias', path: '/referencias/' })}
 >
   <div class="page-shell">
-    <PageHead title="Proyectos realizados." />
+    <PageHead wide>
+      Trabajo publicado,{' '}
+      <span class="title-accent">para quien quiera comprobarlo.</span>
+    </PageHead>
 
     <div
       class="stack-gap flex flex-wrap gap-2"
@@ -73,7 +61,6 @@ const detailItems = projects.map((p) => ({
         ))
       }
     </div>
-    <DetailIsland basePath="/referencias" items={detailItems} />
   </div>
 </Layout>
 
