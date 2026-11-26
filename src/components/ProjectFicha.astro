@@ -4,7 +4,7 @@
  * Solo se rellena con un `Project` tipado (Zod en `src/content/projects.ts`).
  */
 import { Image } from 'astro:assets';
-import type { Project } from '../content/projects';
+import { PROJECT_FICHA_CTA, type Project } from '../content/projects';
 import Button from './Button.astro';
 import Link from './Link.astro';
 import Icon from './ui/Icon.astro';
@@ -66,7 +66,9 @@ const contactHref = `/contacto/?motivo=informacionCliente&origen=referencias&pro
       )
     }
     <div class="justify-self-start sm:justify-self-end">
-      <Button href={contactHref}>Más información</Button>
+      <Button href={contactHref}>
+        {PROJECT_FICHA_CTA}<span class="sr-only"> sobre {project.title}</span>
+      </Button>
     </div>
   </div>
 

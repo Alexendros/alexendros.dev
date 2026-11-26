@@ -300,7 +300,7 @@ test.describe('referencias — filtros y navegación a ficha', () => {
     const actions = page.locator('[data-project-ficha-actions]');
     const live = actions.getByRole('link', { name: /Ver el sitio en vivo/i });
     const code = actions.getByRole('link', { name: /Código abierto del sitio/i });
-    const cta = actions.getByRole('link', { name: 'Más información' });
+    const cta = actions.getByRole('link', { name: 'Más información sobre Front Valencia' });
     await expect(cta).toBeVisible();
     await expect(live).toHaveCSS('text-decoration-line', /underline/);
     await expect(code).toHaveCSS('text-decoration-line', /underline/);
