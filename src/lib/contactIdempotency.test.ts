@@ -210,7 +210,7 @@ describe('begin/finishContactIdempotency (reloj controlado)', () => {
     expect(again).toEqual({ kind: 'unknown', requestId: 'req-1' });
   });
 
-  it('API-07: propietario antiguo no transiciona el claim de otro', async () => {
+  it('API-07: un lease vencido queda indeterminado', async () => {
     const store = createMemoryContactIdempotencyStore();
     const t0 = 6_000_000;
     await beginContactIdempotency(store, {
@@ -221,7 +221,6 @@ describe('begin/finishContactIdempotency (reloj controlado)', () => {
       leaseMs: 1_000,
       createOwnerId: () => 'owner-old'
     });
-    // Lease vencido: nuevo propietario
     const reclaim = await beginContactIdempotency(store, {
       key,
       fingerprint,
@@ -230,20 +229,9 @@ describe('begin/finishContactIdempotency (reloj controlado)', () => {
       leaseMs: 60_000,
       createOwnerId: () => 'owner-new'
     });
-    expect(reclaim).toEqual({ kind: 'acquired', ownerId: 'owner-new' });
+    expect(reclaim).toEqual({ kind: 'unknown', requestId: 'req-1' });
 
-    const stale = await finishContactIdempotency(store, {
-      key,
-      ownerId: 'owner-old',
-      status: 'accepted',
-      requestId: 'req-1',
-      nowMs: t0 + 5_100
-    });
-    expect(stale).toBe(false);
-
-    const current = await store.get(key);
-    expect(current?.ownerId).toBe('owner-new');
-    expect(current?.status).toBe('processing');
+    expect(await store.get(key)).toMatchObject({ ownerId: 'owner-old', status: 'processing' });
   });
 
   it('API-07b: compareAndSet rechaza owner incorrecto', async () => {

@@ -30,3 +30,27 @@ export function resolveSmtpConfig(env: {
   if (!host || !user || !pass || port === null) return null;
   return { host, port, user, pass };
 }
+
+/** Opciones compartidas de contacto y avisos CSP. */
+export function smtpTransportOptions(smtp: SmtpConfig) {
+  return {
+    host: smtp.host,
+    port: smtp.port,
+    secure: smtp.port === 465,
+    requireTLS: smtp.port !== 465,
+    auth: { user: smtp.user, pass: smtp.pass },
+    connectionTimeout: 5_000,
+    greetingTimeout: 5_000,
+    socketTimeout: 5_000
+  };
+}
+
+export function isSmtpFailureBeforeDelivery(error: unknown): boolean {
+  if (!error || typeof error !== 'object') return false;
+  const { code, command } = error as { code?: string; command?: string };
+  return (
+    (command === 'CONN' && code === 'EDNS') ||
+    (command === 'STARTTLS' && code === 'ETLS') ||
+    (code === 'EAUTH' && typeof command === 'string' && /^AUTH(?: |$)/.test(command))
+  );
+}

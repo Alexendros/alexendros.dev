@@ -1,6 +1,6 @@
-# Threat Model — alexendrosdev
+# Modelo de amenazas de alexendros.dev
 
-**Versión**: 1.3 | **Fecha**: 2026-11-17 | **Autor**: Alexendros
+**Versión**: 1.4 | **Fecha**: 2026-11-26 | **Autor**: Alexendros
 **Metodología**: STRIDE + ATT&CK v19 · mapeo OWASP Top 10:2021 | **Revisión**: cada cambio mayor
 
 ---
@@ -10,8 +10,8 @@
 | Activo                                         | Tipo          | Criticidad | Descripción                                     |
 | ---------------------------------------------- | ------------- | ---------- | ----------------------------------------------- |
 | Datos de contacto (correo Proton)              | PII           | Alta       | Nombre, email y mensaje del formulario          |
-| Cookies de consentimiento                      | PII (técnica) | Media      | Preferencias CMP v2, versión consentimiento     |
-| Métricas analíticas (GA4, PostHog, Clarity)    | Analítica     | Media      | Eventos de usuario, IDs pseudónimos             |
+| Cookies de consentimiento                      | PII (técnica) | Media      | Preferencias CMP v3, cookie `consent_v1`        |
+| Vercel Analytics y Speed Insights              | Analítica     | Media      | Métricas tras consentimiento de analítica       |
 | Secretos de despliegue (Vercel, Upstash, SMTP) | Credenciales  | Crítica    | Tokens en Vercel/Upstash/Proton; **no en repo** |
 | Código fuente y dependencias                   | IP            | Media      | Repo público GitHub                             |
 
@@ -32,15 +32,15 @@
 
 ### Formulario de contacto (`/api/contact`)
 
-| STRIDE                     | Amenaza                  | Mitigación actual                   | Gap                   |
-| -------------------------- | ------------------------ | ----------------------------------- | --------------------- |
-| **S**poofing               | Falsificación remitente  | Honeypot + Zod + rate limit Upstash | ✅                    |
-| **T**ampering              | Inyección en payload     | Zod schema validation               | ✅                    |
-| **R**epudiation            | Negación envío           | Log estructurado ausente            | ❌ Logging (ACEPTADO) |
-| **I**nformation Disclosure | Fuga emails en error     | Respuesta genérica                  | ✅                    |
-| **D**enial of Service      | Flood API                | Upstash Ratelimit (10/min/IP)       | ✅                    |
-| **E**levation of Privilege | N/A (sin auth)           | —                                   | —                     |
-| Inyección SMTP (A03)       | CRLF en `name` → Subject | Zod rechaza CRLF + sanitize asunto  | ✅ (2026-11-17)       |
+| STRIDE                     | Amenaza                  | Mitigación actual                        | Gap                          |
+| -------------------------- | ------------------------ | ---------------------------------------- | ---------------------------- |
+| **S**poofing               | Falsificación remitente  | Honeypot + Zod + rate limit Upstash      | ✅                           |
+| **T**ampering              | Inyección en payload     | Zod schema validation                    | ✅                           |
+| **R**epudiation            | Negación envío           | Eventos estructurados con ID de petición | Correlación operativa por ID |
+| **I**nformation Disclosure | Fuga emails en error     | Respuesta genérica                       | ✅                           |
+| **D**enial of Service      | Flood API                | Upstash Ratelimit (10/min/IP)            | ✅                           |
+| **E**levation of Privilege | N/A (sin auth)           | —                                        | —                            |
+| Inyección SMTP (A03)       | CRLF en `name` → Subject | Zod rechaza CRLF + sanitize asunto       | ✅ (2026-11-17)              |
 
 ### Lead magnet / newsletter (retirados)
 
@@ -91,31 +91,20 @@ Residuales aceptados del expediente `20261007-085704`, tras los parches de la mi
 - `http-cache-semantics` residual de toolchain: aceptado si no hay parche en la misma línea.
 - `nodemailer` **10.x** (issue #12 cerrado 2026-10-09). El email que va a `replyTo` sigue limitado a 254 caracteres.
 - F-003 a F-007 están cerrados en `.gitleaks.toml`: `STORAGE_KEY` de `localStorage` del banner, no una credencial.
-- Meta CAPI `Lead` (decisión 0034): solo si `consent_v1` incluye publicidad y hay `META_*`; el checkbox del formulario autoriza la respuesta, no la publicidad. Ver `docs/audits/archive/matriz-consentimiento.md` (histórico) y decisión 0034.
 
 ---
 
 ## 4. Flujos de datos y zonas de confianza
 
-```
-Usuario → [Navegador] → (HTTPS/TLS 1.3) → [Vercel Edge] → [Astro SSR/SSG]
-                                                        ↓
-                                            [API /contact] → [Zod] → [Upstash Ratelimit]
-                                                        ↓
-                                              [Proton SMTP]
-                                                        ↓
-                                              [Meta CAPI] (solo si publicidad en consent_v1)
-                                                        ↓
-                                              [GA4/PostHog/Clarity/Meta/LinkedIn] (consent-gated)
+```text
+Navegador → Vercel → /api/contact → validación → Upstash (límite e idempotencia) → Proton SMTP
+Navegador → Vercel → /api/csp-report → Upstash (límite y agregación) → Proton SMTP (aviso)
+Navegador → Vercel Analytics y Speed Insights (build de Vercel y consentimiento de analítica)
 ```
 
-**Zonas de confianza:**
+El servidor valida las entradas del navegador. Vercel ejecuta las funciones y Upstash conserva los límites, estados y contadores. Nodemailer exige transporte cifrado para Proton mediante TLS implícito en el puerto 465 o STARTTLS obligatorio en los demás puertos. Los proveedores declarados y sus finalidades figuran en [el inventario de encargados](compliance/processors.md).
 
-1. **Navegador usuario** — No confiable (validar todo en server)
-2. **Vercel Edge/Functions** — Confiable (infraestructura gestionada)
-3. **Upstash Redis** — Confiable (managed, TLS)
-4. **Proton SMTP** — Confiable (proveedor externo, auth mutua)
-5. **Analytics / Meta CAPI** — Semi-confiable (solo con consentimiento de categoría)
+La revisión del 26 de noviembre verificó el código y las pruebas locales. La configuración efectiva de WAF, versiones TLS en el edge, copias de seguridad y retención de proveedores queda pendiente de evidencia operativa fechada.
 
 ---
 
@@ -123,15 +112,15 @@ Usuario → [Navegador] → (HTTPS/TLS 1.3) → [Vercel Edge] → [Astro SSR/SSG
 
 | Táctica               | Técnica                            | Mitigación                                    | Estado |
 | --------------------- | ---------------------------------- | --------------------------------------------- | ------ |
-| **Initial Access**    | T1190 (Exploit Public-Facing App)  | WAF Vercel, rate limit, input validation      | ✅     |
+| **Initial Access**    | T1190 (Exploit Public-Facing App)  | Límite de peticiones y validación de entrada  | ✅     |
 | **Initial Access**    | T1195.001 (Supply Chain)           | Lockfile, Renovate, osv-scanner CI            | ✅     |
 | **Execution**         | T1059 (Command/Script Interpreter) | Sin `eval`/`exec` detectados, CSP             | ✅     |
 | **Credential Access** | T1552.001 (Unsecured Credentials)  | Secret scanning (pre-commit + CI), .gitignore | ✅     |
-| **Credential Access** | T1557 (MITM)                       | HSTS preload, TLS 1.3 only                    | ✅     |
+| **Credential Access** | T1557 (MITM)                       | HSTS y SMTP con TLS obligatorio               | ✅     |
 | **Discovery**         | T1083 (File/Directory Discovery)   | Sin directory listing, CSP                    | ✅     |
 | **Collection**        | T1005 (Data from Local System)     | No datos sensibles en cliente                 | ✅     |
 | **Exfiltration**      | T1041 (Exfil over C2)              | CSP `connect-src` restrictivo                 | ✅     |
-| **Impact**            | T1485 (Data Destruction)           | Backups Vercel, Git history                   | ✅     |
+| **Impact**            | T1485 (Data Destruction)           | Historial Git para el código                  | ✅     |
 
 ---
 
@@ -146,15 +135,15 @@ Usuario → [Navegador] → (HTTPS/TLS 1.3) → [Vercel Edge] → [Astro SSR/SSG
 
 ## 6. Decisiones de riesgo aceptado
 
-| Riesgo                             | Decisión              | Justificación                                                        | Revisión   |
-| ---------------------------------- | --------------------- | -------------------------------------------------------------------- | ---------- |
-| Sin branch protection              | **ACEPTADO temporal** | Requiere admin repo; pendiente configuración manual                  | 2026-10-14 |
-| Logging estructurado               | **ACEPTADO**          | Vercel Logs + Analytics cubren observabilidad básica                 | 2026-11-07 |
-| CSP enforce sin `unsafe-inline`    | **MITIGADO**          | Hashes de theme-init y @layer; orígenes solo Vercel Analytics (0035) | 2026-11-17 |
-| Scripts terceros sin SRI           | **ACEPTADO**          | Solo `va.vercel-scripts.com` tras consentimiento; SRI en backlog     | 2026-11-17 |
-| Idempotencia Redis no atómica      | **ACEPTADO**          | Carrera rara; coste = doble correo; Lua atómica en backlog           | 2026-11-17 |
-| Sin check Origin en `/api/contact` | **ACEPTADO**          | JSON + sin CORS; abuso directo mitigado por honeypot + rate limit    | 2026-11-17 |
-| Sin captcha en contacto            | **ACEPTADO**          | Decisión 0034/0035: honeypot + Upstash 10/min; sin Turnstile         | 2026-11-17 |
+| Riesgo                             | Decisión              | Justificación                                                                                                                                                                                                     | Revisión   |
+| ---------------------------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| Sin branch protection              | **ACEPTADO temporal** | Requiere admin repo; pendiente configuración manual                                                                                                                                                               | 2026-10-14 |
+| Logging estructurado               | **ACEPTADO**          | Vercel Logs + Analytics cubren observabilidad básica                                                                                                                                                              | 2026-11-07 |
+| CSP enforce sin `unsafe-inline`    | **MITIGADO**          | Hashes de theme-init y @layer; orígenes solo Vercel Analytics (0035)                                                                                                                                              | 2026-11-17 |
+| Scripts terceros sin SRI           | **ACEPTADO**          | Solo `va.vercel-scripts.com` tras consentimiento; SRI en backlog                                                                                                                                                  | 2026-11-17 |
+| Resultado SMTP indeterminado       | **RESIDUAL**          | Redis aplica transiciones atómicas. SMTP y Redis son independientes. Durante la vigencia del registro, un lease vencido se trata como resultado indeterminado y bloquea el reenvío automático con la misma clave. | 2026-11-26 |
+| Sin check Origin en `/api/contact` | **ACEPTADO**          | JSON + sin CORS; abuso directo mitigado por honeypot + rate limit                                                                                                                                                 | 2026-11-17 |
+| Sin captcha en contacto            | **ACEPTADO**          | Decisión 0034/0035: honeypot + Upstash 10/min; sin Turnstile                                                                                                                                                      | 2026-11-17 |
 
 ---
 

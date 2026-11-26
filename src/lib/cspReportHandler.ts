@@ -5,6 +5,7 @@ import { CSP_REPORT_ANON_IP, type CspSignalDeps, recordCspViolation } from './cs
 
 export const MAX_CSP_REPORT_BYTES = 16 * 1024;
 export const MAX_CSP_REPORT_FIELD_CHARS = 200;
+export const MAX_CSP_REPORTS_PER_REQUEST = 20;
 
 const ALLOWED_TYPES = new Set(['application/csp-report', 'application/reports+json']);
 
@@ -12,7 +13,7 @@ export type CspReportLog = (label: string, detail?: string) => void;
 
 export type CspReportDeps = {
   /** Rate-limit por IP; si falla, se responde 204 sin loguear el cuerpo. */
-  rateLimit?: (ip: string) => Promise<{ success: boolean }>;
+  rateLimit?: (ip: string) => Promise<{ success: boolean; reason?: string }>;
   /** Resuelve IP del cliente (cadena vacía → cubo anon:csp-report). */
   clientIp?: (request: Request) => string;
   /** Contadores + alerta por umbral; los fallos no cambian el 204. */
@@ -105,6 +106,7 @@ export async function handleCspReportPost(
     const ip = resolved || CSP_REPORT_ANON_IP;
     try {
       const limited = await deps.rateLimit(ip);
+      if (limited.reason === 'timeout') return new Response(null, { status: 204 });
       if (!limited.success) {
         log('[csp-report]', 'rate_limited');
         return new Response(null, { status: 204 });
@@ -136,12 +138,18 @@ export async function handleCspReportPost(
 
   try {
     const report: unknown = JSON.parse(raw);
-    const summary = summarizeCspReport(report);
-    if (summary) {
+    const reports = Array.isArray(report) ? report : [report];
+    if (reports.length > MAX_CSP_REPORTS_PER_REQUEST) return new Response(null, { status: 204 });
+    for (const item of reports) {
+      if (
+        type === 'application/reports+json' &&
+        (!item || typeof item !== 'object' || item.type !== 'csp-violation')
+      )
+        continue;
+      const summary = summarizeCspReport(item);
+      if (!summary) continue;
       log('[csp-report]', JSON.stringify(summary));
-      if (deps.signals) {
-        await recordCspViolation(summary, deps.signals).catch(() => null);
-      }
+      if (deps.signals) await recordCspViolation(summary, deps.signals);
     }
   } catch {
     // cuerpos no-JSON: ignorar

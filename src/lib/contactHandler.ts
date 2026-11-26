@@ -15,7 +15,7 @@ import {
   resolveContactIdempotencyKey,
   type ContactIdempotencyStore
 } from './contactIdempotency';
-import { resolveSmtpConfig, type SmtpConfig } from './smtpConfig';
+import { isSmtpFailureBeforeDelivery, resolveSmtpConfig, type SmtpConfig } from './smtpConfig';
 import { CONTACT_RATE_LIMIT_PER_MINUTE } from './contactLimits';
 
 export const CONTACT_MAX_BODY_BYTES = 16_384;
@@ -42,6 +42,7 @@ export type ContactEnv = {
 export type RateLimitResult = {
   success: boolean;
   reset?: number;
+  reason?: string;
 };
 
 export type ContactMailPayload = {
@@ -184,6 +185,7 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
   let limited: RateLimitResult;
   try {
     limited = await deps.rateLimit(ip);
+    if (limited.reason === 'timeout') throw new Error('rate_limit_timeout');
   } catch {
     logEvent('error', 'contact_redis_error', requestId, false);
     return json(503, { ok: false, status: 'retryable_failure', error: 'Service unavailable' });
@@ -266,18 +268,19 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
 
   try {
     await deps.sendMail({ ...fields, smtp });
-  } catch {
+  } catch (error) {
+    const status = isSmtpFailureBeforeDelivery(error) ? 'retryable_failure' : 'unknown';
     if (idemKey && store && ownerId) {
       await finishContactIdempotency(store, {
         key: idemKey,
         ownerId,
-        status: 'retryable_failure',
+        status,
         requestId,
         nowMs
       }).catch(() => {});
     }
-    logEvent('error', 'contact_smtp_error', requestId, false);
-    return json(503, { ok: false, status: 'retryable_failure', error: 'Service unavailable' });
+    logEvent('error', 'contact_smtp_error', requestId, false, { status });
+    return json(503, { ok: false, status, requestId, error: 'Service unavailable' });
   }
 
   if (idemKey && store && ownerId) {

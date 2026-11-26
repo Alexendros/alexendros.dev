@@ -132,7 +132,7 @@ function createProcessingRecord(
 
 /**
  * Inicia o reconsulta un claim. Un propietario antiguo no puede usurpar
- * un lease vivo de otro; solo puede reclamarse tras vencimiento o fallo reintentable.
+ * un lease vivo de otro. Solo se reclama un fallo que admite reintento.
  */
 export async function beginContactIdempotency(
   store: ContactIdempotencyStore,
@@ -171,17 +171,8 @@ export async function beginContactIdempotency(
         retryAfterSec: retryAfterSec(opts.nowMs, existing.leaseExpiresAt)
       };
     }
-    // Lease vencido en processing: reclamar
-    const ownerId = newOwner();
-    const record = createProcessingRecord(opts, ownerId);
-    const ok = await store.compareAndSet(
-      opts.key,
-      existing,
-      record,
-      ttlSecondsFrom(opts.nowMs, record.resultExpiresAt)
-    );
-    if (ok) return { kind: 'acquired', ownerId };
-    return beginContactIdempotency(store, opts);
+    // La función anterior pudo entregar a SMTP antes de guardar su resultado.
+    return { kind: 'unknown', requestId: existing.requestId };
   }
 
   const ownerId = newOwner();
