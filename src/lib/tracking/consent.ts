@@ -36,15 +36,6 @@ function readCookie(name: string): string | null {
   return decodeURIComponent(entry.slice(encoded.length));
 }
 
-function writeStorage(key: string, value: string): void {
-  if (!isBrowser()) return;
-  try {
-    window.localStorage.setItem(key, value);
-  } catch {
-    return;
-  }
-}
-
 function removeStorage(key: string): void {
   if (!isBrowser()) return;
   try {
@@ -112,7 +103,7 @@ export function readConsent(): ConsentState | null {
       return null;
     }
     current = fromCookie;
-    writeStorage(CONSENT_STORAGE_KEY, JSON.stringify(fromCookie));
+    removeStorage(CONSENT_STORAGE_KEY);
     return fromCookie;
   }
   if (current) {
@@ -145,7 +136,7 @@ export function writeConsent(categories: readonly ConsentCategory[]): ConsentSta
     version: consentVersion()
   };
   current = state;
-  writeStorage(CONSENT_STORAGE_KEY, JSON.stringify(state));
+  removeStorage(CONSENT_STORAGE_KEY);
   emit(state);
   return state;
 }

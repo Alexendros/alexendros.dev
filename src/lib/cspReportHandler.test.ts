@@ -7,16 +7,16 @@ describe('summarizeCspReport', () => {
       summarizeCspReport({
         'csp-report': {
           'violated-directive': 'script-src',
-          'blocked-uri': 'https://evil.example/x.js',
-          'document-uri': 'https://alexendros.dev/',
+          'blocked-uri': 'https://evil.example/x.js?token=secret',
+          'document-uri': 'https://alexendros.dev/contacto/?ref=secret#form',
           'script-sample': 'alert(1)',
           'original-policy': 'default-src self'
         }
       })
     ).toEqual({
       'violated-directive': 'script-src',
-      'blocked-uri': 'https://evil.example/x.js',
-      'document-uri': 'https://alexendros.dev/'
+      'blocked-uri': 'https://evil.example',
+      'document-uri': 'https://alexendros.dev'
     });
   });
 });
@@ -87,7 +87,7 @@ describe('handleCspReportPost', () => {
 
   it('no loguea cuerpo oversized leído', async () => {
     const log = vi.fn();
-    const big = 'a'.repeat(MAX_CSP_REPORT_BYTES + 10);
+    const big = 'á'.repeat(MAX_CSP_REPORT_BYTES / 2 + 1);
     const res = await handleCspReportPost(
       new Request('https://alexendros.dev/api/csp-report/', {
         method: 'POST',
@@ -97,7 +97,7 @@ describe('handleCspReportPost', () => {
       log
     );
     expect(res.status).toBe(204);
-    expect(log).toHaveBeenCalledWith('[csp-report]', `oversized_body:${big.length}`);
+    expect(log).toHaveBeenCalledWith('[csp-report]', 'oversized_body');
   });
 
   it('ignora JSON inválido sin fallar', async () => {

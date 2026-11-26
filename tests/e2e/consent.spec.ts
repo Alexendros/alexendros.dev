@@ -15,11 +15,15 @@ const FORBIDDEN_TRACKER_HOSTS = [
 
 type SeenRequest = { hostname: string; pathname: string };
 
-async function readConsentStorage(page: Page): Promise<Record<string, unknown> | null> {
-  return page.evaluate((key) => {
-    const raw = window.localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as Record<string, unknown>) : null;
-  }, CONSENT_KEY);
+async function readConsentCookie(page: Page) {
+  const cookie = (await page.context().cookies()).find(({ name }) => name === CONSENT_KEY);
+  if (!cookie) return null;
+  const { categories, revision } = JSON.parse(decodeURIComponent(cookie.value));
+  return {
+    necessary: categories.includes('necessary'),
+    analytics: categories.includes('analytics'),
+    version: revision
+  };
 }
 
 function matchesHost(hostname: string, domains: readonly string[]): boolean {
@@ -102,11 +106,9 @@ test('F06: el banner resume, acepta y Configurar abre el modal', async ({ page }
     .click();
 
   await accept.click();
-  const consent = await readConsentStorage(page);
+  const consent = await readConsentCookie(page);
   expect(consent).not.toBeNull();
-  expect(Object.keys(consent ?? {}).sort()).toEqual(
-    ['analytics', 'necessary', 'timestamp', 'version'].sort()
-  );
+  expect(await page.evaluate((key) => localStorage.getItem(key), CONSENT_KEY)).toBeNull();
   expect(consent?.necessary).toBe(true);
   expect(consent?.analytics).toBe(true);
   expect(consent?.version).toBe(3);
@@ -116,8 +118,8 @@ test('TEST-CMP-02b: al elegir lo esencial analytics queda a false', async ({ pag
   await page.goto('/');
   await waitForCmp(page);
   await page.getByRole('button', { name: 'Rechazar opcionales' }).first().click();
-  await expect.poll(async () => (await readConsentStorage(page))?.analytics).toBe(false);
-  await expect.poll(async () => (await readConsentStorage(page))?.necessary).toBe(true);
+  await expect.poll(async () => (await readConsentCookie(page))?.analytics).toBe(false);
+  await expect.poll(async () => (await readConsentCookie(page))?.necessary).toBe(true);
 });
 
 test('TEST-CMP-03: aceptar analítica carga /_vercel y no loaders de terceros', async ({ page }) => {
@@ -125,7 +127,7 @@ test('TEST-CMP-03: aceptar analítica carga /_vercel y no loaders de terceros', 
   await page.goto('/');
   await waitForCmp(page);
   await page.getByRole('button', { name: 'Aceptar todas' }).first().click();
-  await expect.poll(async () => (await readConsentStorage(page))?.analytics).toBe(true);
+  await expect.poll(async () => (await readConsentCookie(page))?.analytics).toBe(true);
 
   await expect
     .poll(() => seen.some((r) => r.pathname.startsWith('/_vercel')), { timeout: 15_000 })
@@ -144,4 +146,27 @@ test('TEST-CMP-04: panel desde /cookies/ solo tiene necessary y analytics', asyn
   await expect(panel.locator('input.section__toggle[value="analytics"]')).toHaveCount(1);
   await expect(panel.locator('input.section__toggle[value="marketing"]')).toHaveCount(0);
   await expect(panel.locator('input.section__toggle[value="preferences"]')).toHaveCount(0);
+});
+
+test('retirar la analítica desde el pie recarga sin medidores', async ({ page }) => {
+  const seen = await instrumentNetwork(page);
+  await page.goto('/');
+  await waitForCmp(page);
+  await page.getByRole('button', { name: 'Aceptar todas' }).first().click();
+  await expect
+    .poll(() => seen.filter((hit) => hit.pathname.startsWith('/_vercel/')).length)
+    .toBe(2);
+
+  await page.getByRole('link', { name: 'Preferencias de cookies' }).click();
+  const panel = page.locator('#cc-main .pm');
+  await expect(panel).toBeVisible();
+  seen.length = 0;
+  await Promise.all([
+    page.waitForEvent('framenavigated', { predicate: (frame) => frame === page.mainFrame() }),
+    panel.getByRole('button', { name: 'Rechazar opcionales' }).click()
+  ]);
+  await waitForCmpReady(page);
+  await expect.poll(async () => (await readConsentCookie(page))?.analytics).toBe(false);
+  await expect(page.locator('script[src*="/_vercel/"]')).toHaveCount(0);
+  expect(seen.filter((hit) => hit.pathname.startsWith('/_vercel/'))).toHaveLength(0);
 });

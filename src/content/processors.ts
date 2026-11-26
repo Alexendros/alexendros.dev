@@ -41,7 +41,7 @@ export const PROCESSORS: readonly Processor[] = [
     id: 'upstash',
     name: 'Upstash',
     kind: 'abuse-control',
-    privacySummary: `Limita el número de envíos para evitar abusos (${CONTACT_RATE_LIMIT_PER_MINUTE} por minuto) y guarda una huella cifrada (SHA-256) del envío durante 10 minutos para no procesarlo dos veces. Datos en Frankfurt (UE). No guarda el contenido del mensaje.`,
+    privacySummary: `Limita el número de envíos para evitar abusos (${CONTACT_RATE_LIMIT_PER_MINUTE} por minuto) y guarda una huella calculada con SHA-256 del envío durante 10 minutos para no procesarlo dos veces. Datos en Frankfurt (UE). No guarda el contenido del mensaje.`,
     requiresAnalyticsConsent: false
   },
   {

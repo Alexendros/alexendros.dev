@@ -27,8 +27,8 @@ function openPreferences(event: Event) {
   if (!(target instanceof Element)) return;
   const trigger = target.closest('[data-cc="show-preferencesModal"]');
   if (!trigger) return;
-  event.preventDefault();
   CookieConsent.showPreferences();
+  if (document.documentElement.classList.contains('show--preferences')) event.preventDefault();
 }
 
 /** Inicializa el CMP una sola vez por documento, sin runtime React. */
@@ -68,8 +68,13 @@ export function initCookieBanner(): void {
       onFirstConsent: ({ cookie }) => {
         writeConsent(toCategories(cookie));
       },
-      onChange: ({ cookie }) => {
-        writeConsent(toCategories(cookie));
+      onChange: ({ cookie, changedCategories }) => {
+        const categories = toCategories(cookie);
+        writeConsent(categories);
+        if (changedCategories.includes('analytics') && !categories.includes('analytics')) {
+          // Los scripts de Vercel ya ejecutados no ofrecen una parada pública.
+          window.location.reload();
+        }
       },
       categories: {
         necessary: { enabled: true, readOnly: true },

@@ -41,13 +41,12 @@ function ownerCell(cookie: InventoryCookie): string {
   <div class="page-shell page-shell-narrow legal-prose">
     <p class="font-mono">LEGAL</p>
     <h1>Cookies</h1>
-    <p>Una cookie es un pequeño archivo que el navegador guarda en tu dispositivo.</p>
-    <p>Algunas son imprescindibles para que esta página recuerde tu decisión.</p>
-    <p>La medición de visitas no se enciende hasta que tú lo permites.</p>
-    <p>Esta página es la explicación completa. El aviso emergente solo resume.</p>
-    <p>Si quieres el detalle técnico (nombre, titular, plazo), está en la tabla de abajo.</p>
+    <p>
+      El navegador guarda tu elección de privacidad y, si cambias el tema, tu preferencia visual.
+    </p>
+    <p>La medición de visitas y rendimiento solo se activa con tu permiso.</p>
 
-    <p class="mt-4">
+    <p id="preferencias" class="mt-4">
       <button
         type="button"
         data-cc="show-preferencesModal"
@@ -61,75 +60,36 @@ function ownerCell(cookie: InventoryCookie): string {
       «Aceptar todas» enciende la analítica. «Rechazar opcionales» deja solo lo técnico.
     </p>
 
-    <h2>En claro, sin jerga</h2>
-    <ul>
-      <li>
-        <p>
-          <strong>Técnicas:</strong> recuerdan que ya respondiste al aviso.
-        </p>
-        <p>Sin ellas se te preguntaría en cada visita.</p>
-        <p>No hacen perfil comercial. No se pueden apagar aquí.</p>
-      </li>
-      <li>
-        <p>
-          <strong>Analítica:</strong> cuentan visitas y rendimiento de forma agregada (
-          {analyticsProcessors.map((p) => p.name).join(' y ')}), solo en el despliegue de Vercel.
-        </p>
-        <p>Sirve para mejorar el sitio, no para mostrarte anuncios. Opcionales.</p>
-      </li>
-    </ul>
+    <h2>Almacenamiento necesario</h2>
+    {
+      cookies.map((cookie) => (
+        <section data-cookie-name={cookie.name}>
+          <h3>
+            <code>{cookie.name}</code>
+          </h3>
+          <p>{cookie.purpose}</p>
+          <p>
+            Cookie de {ownerCell(cookie)}. Duración: {cookie.duration}.
+          </p>
+        </section>
+      ))
+    }
+    <h3>Preferencia de tema</h3>
+    <p>
+      Si eliges un tema claro u oscuro, el sitio guarda la clave <code>theme</code> en el almacenamiento
+      local. Se elimina al volver al tema del sistema o borrar los datos del sitio.
+    </p>
+    <p>
+      Este almacenamiento permite recordar opciones que solicitas y no se utiliza para medir visitas
+      ni mostrar publicidad (art. 22.2 LSSI-CE).
+    </p>
 
-    <h2>Base jurídica (grado técnico)</h2>
+    <h2>Analítica opcional</h2>
     <p>
-      Técnicas: interés legítimo en prestar el servicio que pides (art. 6.1.f RGPD y art. 22.2
-      LSSI-CE).
+      {analyticsProcessors.map((p) => p.name).join(' y ')} miden visitas y rendimiento en el despliegue
+      de Vercel. Solo se activan con tu consentimiento y sus bibliotecas no documentan cookies propias
+      para esta medición (art. 6.1.a RGPD y art. 22.2 LSSI-CE).
     </p>
-    <p>Analítica: consentimiento previo e informado (art. 6.1.a RGPD y art. 22.2 LSSI-CE).</p>
-    <p>Hasta que aceptas la analítica, el sitio no carga esos scripts.</p>
-
-    <h2>Inventario (nombre, titular, para qué, cuánto dura)</h2>
-    <p>Nada de lo que este dominio pueda escribir en tu navegador falta en esta tabla.</p>
-    <p>
-      Si una cookie nueva entra en el código, el inventario se actualiza o falla la auditoría
-      automática.
-    </p>
-    <p>
-      Fuente: <code>docs/cookies-inventory.json</code> (versión {inventory.version}).
-    </p>
-    <p>
-      Las librerías de medición de Vercel usadas hoy no escriben cookies propias documentadas;
-      aparecen como encargados en Privacidad.
-    </p>
-    <div class="table-wrap" tabindex="0" role="region" aria-label="Inventario de cookies">
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">Nombre</th>
-            <th scope="col">Quién la emite</th>
-            <th scope="col">Para qué (en claro)</th>
-            <th scope="col">Cuánto dura</th>
-            <th scope="col">Tipo</th>
-            <th scope="col">¿Hace falta tu permiso?</th>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            cookies.map((cookie) => (
-              <tr data-cookie-name={cookie.name}>
-                <td>
-                  <code>{cookie.name}</code>
-                </td>
-                <td>{ownerCell(cookie)}</td>
-                <td>{cookie.purpose}</td>
-                <td>{cookie.duration}</td>
-                <td>{cookie.label}</td>
-                <td>{cookie.requiresConsent ? 'Sí' : 'No'}</td>
-              </tr>
-            ))
-          }
-        </tbody>
-      </table>
-    </div>
 
     <h2>Cómo elegir, cambiar o retirar</h2>
     <p>
@@ -137,8 +97,9 @@ function ownerCell(cookie: InventoryCookie): string {
       deja solo lo técnico. «Configurar» (este botón) abre interruptores uno a uno.
     </p>
     <p>
-      Puedes volver aquí en cualquier momento y pulsar otra vez «Configurar». Retirar el permiso no
-      anula lo ya tratado hasta ese instante.
+      Puedes abrir «Preferencias de cookies» desde el pie de cualquier página y pulsar «Rechazar
+      opcionales». La página se recarga para detener la medición. La retirada no afecta a lo tratado
+      antes de ese momento.
     </p>
     <p>
       También puedes borrar cookies desde Chrome, Firefox, Safari o Edge. Si bloqueas las técnicas,

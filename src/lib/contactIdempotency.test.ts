@@ -35,6 +35,12 @@ describe('contactPayloadFingerprint', () => {
     expect(a).not.toBe(b);
   });
 
+  it('distingue dos envíos cuyo único cambio es el teléfono', () => {
+    expect(contactPayloadFingerprint({ ...basePayload, phone: '+34600000001' })).not.toBe(
+      contactPayloadFingerprint({ ...basePayload, phone: '+34600000002' })
+    );
+  });
+
   it('huella robusta (SHA-256), no hash 32 bits', () => {
     const fp = contactPayloadFingerprint(basePayload);
     expect(fp).toMatch(/^[a-f0-9]{64}$/);
@@ -252,7 +258,7 @@ describe('begin/finishContactIdempotency (reloj controlado)', () => {
     });
     const hijack = await store.compareAndSet(
       `${key}-cas`,
-      'owner-fake',
+      { ...(await store.get(`${key}-cas`))!, ownerId: 'owner-fake' },
       {
         status: 'accepted',
         fingerprint,
@@ -264,6 +270,14 @@ describe('begin/finishContactIdempotency (reloj controlado)', () => {
       60
     );
     expect(hijack).toBe(false);
+    const current = (await store.get(`${key}-cas`))!;
+    const staleStatus = await store.compareAndSet(
+      `${key}-cas`,
+      { ...current, status: 'retryable_failure' },
+      { ...current, ownerId: 'owner-stale' },
+      60
+    );
+    expect(staleStatus).toBe(false);
     const record = await store.get(`${key}-cas`);
     expect(record?.ownerId).toBe('owner-real');
     expect(record?.status).toBe('processing');

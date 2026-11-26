@@ -16,71 +16,34 @@ const seo = seoForPath('/accesibilidad/');
     <p class="font-mono">ACCESIBILIDAD</p>
     <h1>Declaración de accesibilidad</h1>
     <p>
-      Esta declaración describe el estado real de <strong>alexendros.dev</strong> a 29 de octubre de 2026.
-      El objetivo técnico del sitio es <strong>WCAG 2.2 nivel AA</strong>. No se declara conformidad
-      total.
+      El objetivo técnico de <strong>alexendros.dev</strong> es <strong>WCAG 2.2 nivel AA</strong>.
+      La evaluación es parcial.
     </p>
 
     <h2>Alcance evaluado</h2>
     <p>
-      Plantillas públicas: inicio, servicios y sus cuatro fichas, proyectos y una ficha de proyecto,
-      metodología, sobre mí, contacto, identidad, privacidad y cookies. Incluye el menú móvil, los
-      diálogos de ficha, el aviso de cookies con su panel de preferencias y el formulario de
-      contacto con sus estados de error.
+      Inicio, servicios y su ficha publicada, referencias y sus cuatro fichas, metodología,
+      artículos, sobre mí, experiencia, identidad, contacto, privacidad, cookies, accesibilidad,
+      sistema de diseño y página de error.
     </p>
 
-    <h2>Método</h2>
-    <ul>
-      <li>
-        Automático: axe-core sobre 12 rutas (inicio, servicios, tres fichas, proyectos, una ficha,
-        metodología, identidad, contacto, cookies y privacidad) y comprobación de contraste por
-        tokens en tema claro y oscuro, ejecutadas en cada cambio del código.
-      </li>
-      <li>
-        Comprobaciones instrumentadas: un solo H1 y jerarquía sin saltos, landmarks únicos, nombres
-        accesibles de navegación, ausencia de enlaces vacíos e imágenes sin texto alternativo, foco
-        visible, reflujo a 320 CSS px, ampliación equivalente al 200 %, espaciado de texto,
-        reducción de movimiento y tamaño de objetivos.
-      </li>
-      <li>
-        Teclado: recorrido del menú móvil con apertura, cierre con Escape y retorno de foco; cierre
-        de diálogos con Escape y con clic en el fondo; decisiones de cookies sin ratón.
-      </li>
-    </ul>
+    <h2>Método y resultados</h2>
     <p>
-      La evaluación con lector de pantalla (NVDA o VoiceOver) <strong>no se ha realizado</strong>.
-      Tampoco se ha hecho una revisión visual por zoom real en navegador de escritorio.
+      La suite automatizada utiliza axe en 20 rutas con los temas claro y oscuro. Las pruebas de
+      interacción cubren la navegación por teclado, el menú móvil, el consentimiento y los errores
+      del formulario.
+    </p>
+    <p>
+      La revisión de producción del 26 de noviembre de 2026 cubrió 19 páginas a 320 píxeles CSS en
+      Chromium, en claro y oscuro. En esa muestra se comprobó el reflujo y axe no detectó
+      infracciones en las reglas seleccionadas.
     </p>
 
-    <h2>Resultado</h2>
-    <ul>
-      <li>Sin violaciones detectadas por axe en las 12 rutas de la muestra.</li>
-      <li>
-        Un H1 por página, sin saltos de nivel de encabezado, con <code>main</code> y navegación nombrada.
-      </li>
-      <li>Sin desbordes horizontales a 320 CSS px ni con el texto espaciado según 1.4.12.</li>
-      <li>Foco visible por teclado en todos los elementos interactivos.</li>
-      <li>Reducción de movimiento respetada: sin animaciones de entrada activas.</li>
-      <li>
-        Los enlaces dentro de una frase conservan el tamaño de la línea de texto y quedan amparados
-        por la excepción de contenido en línea del criterio 2.5.8.
-      </li>
-    </ul>
-
-    <h2>Limitaciones e incidencias conocidas</h2>
-    <ul>
-      <li>
-        No se ha verificado con lectores de pantalla ni con navegadores distintos de Chromium.
-      </li>
-      <li>
-        Los vídeos, incrustaciones y documentos de terceros no forman parte del alcance: el sitio no
-        los usa.
-      </li>
-      <li>
-        Las fichas de proyecto describen imágenes de trabajos ajenos; su texto alternativo se limita
-        a lo que aporta la ficha.
-      </li>
-    </ul>
+    <h2>Evaluaciones pendientes</h2>
+    <p>
+      Queda pendiente completar la revisión con lector de pantalla, zoom real de escritorio y
+      navegadores distintos de Chromium.
+    </p>
 
     <h2>Contacto</h2>
     <p>
@@ -99,6 +62,6 @@ const seo = seoForPath('/accesibilidad/');
       de <code>docs/compliance/</code> y no se presupone aquí.
     </p>
 
-    <p>Última actualización: 29 de octubre de 2026.</p>
+    <p>Última actualización: <time datetime="2026-11-26">26 de noviembre de 2026</time>.</p>
   </div>
 </Layout>

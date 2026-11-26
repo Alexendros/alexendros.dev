@@ -33,12 +33,11 @@ export type ContactIdempotencyStore = {
     ttlSeconds: number
   ) => Promise<boolean>;
   /**
-   * Sustituye el registro solo si el propietario actual coincide con
-   * `expectedOwnerId` (o el registro ha caducado / no existe).
+   * Sustituye el registro solo si el propietario y estado actuales coinciden.
    */
   compareAndSet: (
     key: string,
-    expectedOwnerId: string,
+    expected: ContactIdempotencyRecord,
     record: ContactIdempotencyRecord,
     ttlSeconds: number
   ) => Promise<boolean>;
@@ -58,6 +57,7 @@ export function normalizeContactPayload(data: ContactInput): string {
     entityType: data.entityType,
     channel: data.channel,
     email: data.email ?? null,
+    ...(data.phone ? { phone: data.phone } : {}),
     reason: data.reason,
     message: data.message,
     vias: data.vias,
@@ -157,7 +157,7 @@ export async function beginContactIdempotency(
       const record = createProcessingRecord(opts, ownerId);
       const ok = await store.compareAndSet(
         opts.key,
-        existing.ownerId,
+        existing,
         record,
         ttlSecondsFrom(opts.nowMs, record.resultExpiresAt)
       );
@@ -176,7 +176,7 @@ export async function beginContactIdempotency(
     const record = createProcessingRecord(opts, ownerId);
     const ok = await store.compareAndSet(
       opts.key,
-      existing.ownerId,
+      existing,
       record,
       ttlSecondsFrom(opts.nowMs, record.resultExpiresAt)
     );
@@ -226,7 +226,7 @@ export async function finishContactIdempotency(
   };
   return store.compareAndSet(
     opts.key,
-    opts.ownerId,
+    current,
     record,
     ttlSecondsFrom(opts.nowMs, record.resultExpiresAt)
   );
@@ -244,18 +244,28 @@ export function createMemoryContactIdempotencyStore(): ContactIdempotencyStore {
       map.set(key, { ...record });
       return true;
     },
-    async compareAndSet(key, expectedOwnerId, record) {
+    async compareAndSet(key, expected, record) {
       const current = map.get(key);
-      if (current && current.ownerId !== expectedOwnerId) return false;
+      if (current?.ownerId !== expected.ownerId || current.status !== expected.status) return false;
       map.set(key, { ...record });
       return true;
     }
   };
 }
 
-/** Adaptador Redis (Upstash). Valores JSON; CAS optimista por propietario. */
+const REPLACE_IF_OWNER = `
+local current = redis.call('GET', KEYS[1])
+if not current then return 0 end
+local valid, record = pcall(cjson.decode, current)
+if not valid or type(record) ~= 'table' or record.ownerId ~= ARGV[1] or record.status ~= ARGV[2] then return 0 end
+redis.call('SET', KEYS[1], ARGV[3], 'EX', ARGV[4])
+return 1
+`;
+
+/** Adaptador Redis (Upstash). La comprobación y la escritura son atómicas. */
 export function createRedisContactIdempotencyStore(redis: {
   get: (key: string) => Promise<unknown>;
+  eval: (script: string, keys: string[], args: string[]) => Promise<number>;
   set: (key: string, value: string, opts: { nx?: boolean; ex: number }) => Promise<unknown>;
 }): ContactIdempotencyStore {
   return {
@@ -279,11 +289,14 @@ export function createRedisContactIdempotencyStore(redis: {
       });
       return Boolean(result);
     },
-    async compareAndSet(key, expectedOwnerId, record, ttlSeconds) {
-      const current = await this.get(key);
-      if (current && current.ownerId !== expectedOwnerId) return false;
-      await redis.set(key, JSON.stringify(record), { ex: ttlSeconds });
-      return true;
+    async compareAndSet(key, expected, record, ttlSeconds) {
+      return (
+        (await redis.eval(
+          REPLACE_IF_OWNER,
+          [key],
+          [expected.ownerId, expected.status, JSON.stringify(record), String(ttlSeconds)]
+        )) === 1
+      );
     }
   };
 }

@@ -61,6 +61,7 @@ function createProductionDeps(): ContactDeps {
     },
     idempotencyStore: createRedisContactIdempotencyStore({
       get: async (key) => getContactRedis().get(key),
+      eval: (script, keys, args) => getContactRedis().eval<string[], number>(script, keys, args),
       set: async (key, value, opts) => {
         const redis = getContactRedis();
         if (opts.nx) {

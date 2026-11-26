@@ -1,3 +1,4 @@
+import { readBodyWithLimit } from './readBodyWithLimit';
 /** Colector CSP Report-Only: límite de cuerpo y logging acotado (OWASP A09). */
 
 import { CSP_REPORT_ANON_IP, type CspSignalDeps, recordCspViolation } from './cspSignals';
@@ -31,6 +32,17 @@ function clip(value: unknown): string | undefined {
   return trimmed.slice(0, MAX_CSP_REPORT_FIELD_CHARS);
 }
 
+function reportOrigin(value: unknown): string | undefined {
+  if (typeof value !== 'string') return undefined;
+  try {
+    const url = new URL(value);
+    if (url.protocol === 'https:' || url.protocol === 'http:') return clip(url.origin);
+    return clip(url.protocol);
+  } catch {
+    return ['inline', 'eval', 'wasm-eval', 'self'].includes(value) ? value : undefined;
+  }
+}
+
 /** Extrae solo campos seguros del informe CSP (legacy o Reporting API). */
 export function summarizeCspReport(report: unknown): Record<string, string> | null {
   if (!report || typeof report !== 'object') return null;
@@ -44,8 +56,8 @@ export function summarizeCspReport(report: unknown): Record<string, string> | nu
   if (legacy) {
     const out: Record<string, string> = {};
     const violated = clip(legacy['violated-directive']);
-    const blocked = clip(legacy['blocked-uri']);
-    const document = clip(legacy['document-uri']);
+    const blocked = reportOrigin(legacy['blocked-uri']);
+    const document = reportOrigin(legacy['document-uri']);
     if (violated) out['violated-directive'] = violated;
     if (blocked) out['blocked-uri'] = blocked;
     if (document) out['document-uri'] = document;
@@ -60,8 +72,8 @@ export function summarizeCspReport(report: unknown): Record<string, string> | nu
     const violated = clip(
       body.effectiveDirective ?? body.violatedDirective ?? body['violated-directive']
     );
-    const blocked = clip(body.blockedURL ?? body['blocked-uri']);
-    const document = clip(body.documentURL ?? body['document-uri']);
+    const blocked = reportOrigin(body.blockedURL ?? body['blocked-uri']);
+    const document = reportOrigin(body.documentURL ?? body['document-uri']);
     if (violated) out['violated-directive'] = violated;
     if (blocked) out['blocked-uri'] = blocked;
     if (document) out['document-uri'] = document;
@@ -111,17 +123,12 @@ export async function handleCspReportPost(
     }
   }
 
-  let raw: string;
-  try {
-    raw = await request.text();
-  } catch {
+  const body = await readBodyWithLimit(request, MAX_CSP_REPORT_BYTES);
+  if (!body.ok) {
+    if (body.reason === 'too_large') log('[csp-report]', 'oversized_body');
     return new Response(null, { status: 204 });
   }
-
-  if (raw.length > MAX_CSP_REPORT_BYTES) {
-    log('[csp-report]', `oversized_body:${raw.length}`);
-    return new Response(null, { status: 204 });
-  }
+  const raw = body.text;
 
   if (!raw.trim()) {
     return new Response(null, { status: 204 });
