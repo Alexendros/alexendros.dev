@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "updatedAt": "2026-11-17",
+  "updatedAt": "2026-11-26",
   "policy": "Toda cookie emitida por el sitio debe figurar aquí. audit:cookies falla si detecta una cookie no listada. updatedAt (YYYY-MM-DD) es la fecha de publicación del inventario y de la política /cookies/; hay que actualizarla en cada cambio de contenido.",
   "categories": {
     "necessary": "Técnicas imprescindibles; no requieren consentimiento",

@@ -1,5 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
-import { handleCspReportPost, MAX_CSP_REPORT_BYTES, summarizeCspReport } from './cspReportHandler';
+import {
+  handleCspReportPost,
+  MAX_CSP_REPORT_BYTES,
+  MAX_CSP_REPORTS_PER_REQUEST,
+  summarizeCspReport
+} from './cspReportHandler';
 
 describe('summarizeCspReport', () => {
   it('extrae solo campos seguros del informe legacy', () => {
@@ -7,16 +12,16 @@ describe('summarizeCspReport', () => {
       summarizeCspReport({
         'csp-report': {
           'violated-directive': 'script-src',
-          'blocked-uri': 'https://evil.example/x.js',
-          'document-uri': 'https://alexendros.dev/',
+          'blocked-uri': 'https://evil.example/x.js?token=secret',
+          'document-uri': 'https://alexendros.dev/contacto/?ref=secret#form',
           'script-sample': 'alert(1)',
           'original-policy': 'default-src self'
         }
       })
     ).toEqual({
       'violated-directive': 'script-src',
-      'blocked-uri': 'https://evil.example/x.js',
-      'document-uri': 'https://alexendros.dev/'
+      'blocked-uri': 'https://evil.example',
+      'document-uri': 'https://alexendros.dev'
     });
   });
 });
@@ -46,6 +51,60 @@ describe('handleCspReportPost', () => {
     expect(detail).toContain('script-src');
     expect(detail).not.toContain('script-sample');
     expect(detail).not.toContain('alert(1)');
+  });
+
+  const report = {
+    type: 'csp-violation',
+    body: { effectiveDirective: 'script-src', blockedURL: 'https://example.org/a?secret=x' }
+  };
+
+  it.each([
+    [[report], 1],
+    [[{ ...report, type: 'deprecation' }, report, null], 1],
+    [Array(MAX_CSP_REPORTS_PER_REQUEST + 1).fill(report), 0]
+  ])('procesa los informes CSP dentro del límite del lote', async (batch, count) => {
+    const log = vi.fn();
+    const increment = vi.fn(async () => ({ count: 1, overflow: false }));
+    const res = await handleCspReportPost(
+      new Request('https://alexendros.dev/api/csp-report/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/reports+json' },
+        body: JSON.stringify(batch)
+      }),
+      log,
+      { signals: { store: { increment }, sendAlert: vi.fn() } }
+    );
+    expect(res.status).toBe(204);
+    expect(increment).toHaveBeenCalledTimes(count);
+    expect(log).toHaveBeenCalledTimes(count);
+    if (count)
+      expect(log).toHaveBeenCalledWith(
+        '[csp-report]',
+        JSON.stringify({
+          'violated-directive': 'script-src',
+          'blocked-uri': 'https://example.org'
+        })
+      );
+  });
+
+  it('descarta el lote en silencio si el limitador agota el tiempo', async () => {
+    const log = vi.fn();
+    const increment = vi.fn();
+    const res = await handleCspReportPost(
+      new Request('https://alexendros.dev/api/csp-report/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/reports+json' },
+        body: JSON.stringify([report])
+      }),
+      log,
+      {
+        rateLimit: async () => ({ success: true, reason: 'timeout' }),
+        signals: { store: { increment }, sendAlert: vi.fn() }
+      }
+    );
+    expect(res.status).toBe(204);
+    expect(log).not.toHaveBeenCalled();
+    expect(increment).not.toHaveBeenCalled();
   });
 
   it('rechaza en silencio Content-Type incorrecto', async () => {
@@ -87,7 +146,7 @@ describe('handleCspReportPost', () => {
 
   it('no loguea cuerpo oversized leído', async () => {
     const log = vi.fn();
-    const big = 'a'.repeat(MAX_CSP_REPORT_BYTES + 10);
+    const big = 'á'.repeat(MAX_CSP_REPORT_BYTES / 2 + 1);
     const res = await handleCspReportPost(
       new Request('https://alexendros.dev/api/csp-report/', {
         method: 'POST',
@@ -97,7 +156,7 @@ describe('handleCspReportPost', () => {
       log
     );
     expect(res.status).toBe(204);
-    expect(log).toHaveBeenCalledWith('[csp-report]', `oversized_body:${big.length}`);
+    expect(log).toHaveBeenCalledWith('[csp-report]', 'oversized_body');
   });
 
   it('ignora JSON inválido sin fallar', async () => {

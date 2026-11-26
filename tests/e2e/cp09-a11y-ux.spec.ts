@@ -162,7 +162,7 @@ test.describe('CP-09 recorridos A–E (muestreo)', () => {
   test('C: proyecto → CTA disponibilidad → contacto con proyecto', async ({ page }) => {
     await page.goto('/referencias/front-valencia/');
     await assertSingleH1AndMain(page);
-    const cta = page.getByRole('link', { name: 'Más información' });
+    const cta = page.getByRole('link', { name: 'Más información sobre Front Valencia' });
     await expect(cta).toBeVisible();
     await cta.click();
     await expect(page).toHaveURL(/\/contacto/);

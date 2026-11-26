@@ -1,3 +1,4 @@
+import { readBodyWithLimit } from './readBodyWithLimit';
 import {
   buildContactMessage,
   escapeHtml,
@@ -14,7 +15,7 @@ import {
   resolveContactIdempotencyKey,
   type ContactIdempotencyStore
 } from './contactIdempotency';
-import { resolveSmtpConfig, type SmtpConfig } from './smtpConfig';
+import { isSmtpFailureBeforeDelivery, resolveSmtpConfig, type SmtpConfig } from './smtpConfig';
 import { CONTACT_RATE_LIMIT_PER_MINUTE } from './contactLimits';
 
 export const CONTACT_MAX_BODY_BYTES = 16_384;
@@ -41,6 +42,7 @@ export type ContactEnv = {
 export type RateLimitResult = {
   success: boolean;
   reset?: number;
+  reason?: string;
 };
 
 export type ContactMailPayload = {
@@ -89,46 +91,6 @@ function logEvent(
  */
 export function clientIp(request: Request): string {
   return request.headers.get('x-real-ip')?.trim() ?? '';
-}
-
-/**
- * Lee el cuerpo con tope de bytes. Cancela el stream al superar el límite.
- * Devuelve null si la lectura falla; 'too_large' si supera maxBytes.
- */
-export async function readBodyWithLimit(
-  request: Request,
-  maxBytes: number
-): Promise<{ ok: true; text: string } | { ok: false; reason: 'too_large' | 'read_error' }> {
-  const body = request.body;
-  if (!body) {
-    return { ok: true, text: '' };
-  }
-  const reader = body.getReader();
-  const chunks: Uint8Array[] = [];
-  let total = 0;
-  try {
-    for (;;) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      if (!value || value.byteLength === 0) continue;
-      total += value.byteLength;
-      if (total > maxBytes) {
-        await reader.cancel().catch(() => {});
-        return { ok: false, reason: 'too_large' };
-      }
-      chunks.push(value);
-    }
-  } catch {
-    await reader.cancel().catch(() => {});
-    return { ok: false, reason: 'read_error' };
-  }
-  const merged = new Uint8Array(total);
-  let offset = 0;
-  for (const chunk of chunks) {
-    merged.set(chunk, offset);
-    offset += chunk.byteLength;
-  }
-  return { ok: true, text: new TextDecoder('utf-8').decode(merged) };
 }
 
 export function isJsonContentType(request: Request): boolean {
@@ -223,6 +185,7 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
   let limited: RateLimitResult;
   try {
     limited = await deps.rateLimit(ip);
+    if (limited.reason === 'timeout') throw new Error('rate_limit_timeout');
   } catch {
     logEvent('error', 'contact_redis_error', requestId, false);
     return json(503, { ok: false, status: 'retryable_failure', error: 'Service unavailable' });
@@ -305,18 +268,19 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
 
   try {
     await deps.sendMail({ ...fields, smtp });
-  } catch {
+  } catch (error) {
+    const status = isSmtpFailureBeforeDelivery(error) ? 'retryable_failure' : 'unknown';
     if (idemKey && store && ownerId) {
       await finishContactIdempotency(store, {
         key: idemKey,
         ownerId,
-        status: 'retryable_failure',
+        status,
         requestId,
         nowMs
       }).catch(() => {});
     }
-    logEvent('error', 'contact_smtp_error', requestId, false);
-    return json(503, { ok: false, status: 'retryable_failure', error: 'Service unavailable' });
+    logEvent('error', 'contact_smtp_error', requestId, false, { status });
+    return json(503, { ok: false, status, requestId, error: 'Service unavailable' });
   }
 
   if (idemKey && store && ownerId) {

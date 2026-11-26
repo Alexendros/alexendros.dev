@@ -11,14 +11,13 @@ import {
   type ContactMailPayload
 } from '../../lib/contactHandler';
 import { createRedisContactIdempotencyStore } from '../../lib/contactIdempotency';
+import { smtpTransportOptions } from '../../lib/smtpConfig';
 
 export const prerender = false;
 
 /** From y To: buzón Proton autenticado (SMTP); no usar noreply@. */
 const MAIL_FROM = 'operaciones@alexendros.dev';
 const MAIL_TO = 'operaciones@alexendros.dev';
-/** Timeouts SMTP por debajo de maxDuration (10 s) para liberar el lease. */
-const SMTP_TIMEOUT_MS = 5_000;
 
 let cachedRatelimit: Ratelimit | null = null;
 let cachedRedis: Redis | null = null;
@@ -57,10 +56,11 @@ function createProductionDeps(): ContactDeps {
     }),
     rateLimit: async (ip) => {
       const result = await getContactRatelimit().limit(ip);
-      return { success: result.success, reset: result.reset };
+      return { success: result.success, reset: result.reset, reason: result.reason };
     },
     idempotencyStore: createRedisContactIdempotencyStore({
       get: async (key) => getContactRedis().get(key),
+      eval: (script, keys, args) => getContactRedis().eval<string[], number>(script, keys, args),
       set: async (key, value, opts) => {
         const redis = getContactRedis();
         if (opts.nx) {
@@ -87,15 +87,7 @@ async function sendContactMail({
     subject,
     message
   });
-  const transporter = nodemailer.createTransport({
-    host: smtp.host,
-    port: smtp.port,
-    secure: smtp.port === 465,
-    auth: { user: smtp.user, pass: smtp.pass },
-    connectionTimeout: SMTP_TIMEOUT_MS,
-    greetingTimeout: SMTP_TIMEOUT_MS,
-    socketTimeout: SMTP_TIMEOUT_MS
-  });
+  const transporter = nodemailer.createTransport(smtpTransportOptions(smtp));
   await transporter.sendMail({
     from: MAIL_FROM,
     to: MAIL_TO,

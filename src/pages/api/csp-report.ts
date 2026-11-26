@@ -10,16 +10,15 @@ import {
   CSP_SIGNAL_KEYS_SET,
   CSP_SIGNAL_WINDOW_SECONDS,
   type CspSignalAlert,
-  type CspSignalStore
+  createRedisCspSignalStore
 } from '../../lib/cspSignals';
-import { resolveSmtpConfig } from '../../lib/smtpConfig';
+import { resolveSmtpConfig, smtpTransportOptions } from '../../lib/smtpConfig';
 
 export const prerender = false;
 
 /** From y To: buzón Proton autenticado (SMTP); no usar noreply@. */
 const MAIL_FROM = 'operaciones@alexendros.dev';
 const MAIL_TO = 'operaciones@alexendros.dev';
-const SMTP_TIMEOUT_MS = 5_000;
 
 let cachedRatelimit: Ratelimit | null = null;
 let cachedRedis: Redis | null = null;
@@ -45,31 +44,6 @@ function getCspReportRatelimit(): Ratelimit | null {
   return cachedRatelimit;
 }
 
-function createSignalStore(redis: Redis): CspSignalStore {
-  return {
-    scard: async (key) => Number(await redis.scard(key)),
-    sismember: async (key, member) => Boolean(await redis.sismember(key, member)),
-    sadd: async (key, member) => {
-      const added = await redis.sadd(key, member);
-      if (Number(added) > 0) {
-        await redis.expire(key, CSP_SIGNAL_WINDOW_SECONDS);
-      }
-      return Number(added) > 0;
-    },
-    incrWithTtl: async (key, ttlSeconds) => {
-      const count = Number(await redis.incr(key));
-      if (count === 1) {
-        await redis.expire(key, ttlSeconds);
-      }
-      return count;
-    },
-    setNx: async (key, value, ttlSeconds) => {
-      const result = await redis.set(key, value, { nx: true, ex: ttlSeconds });
-      return result === 'OK';
-    }
-  };
-}
-
 async function sendCspAlert(alert: CspSignalAlert): Promise<void> {
   const smtp = resolveSmtpConfig({
     SMTP_HOST: import.meta.env.SMTP_HOST,
@@ -88,15 +62,7 @@ async function sendCspAlert(alert: CspSignalAlert): Promise<void> {
     `Registro de claves: ${CSP_SIGNAL_KEYS_SET}`
   ].join('\n');
 
-  const transporter = nodemailer.createTransport({
-    host: smtp.host,
-    port: smtp.port,
-    secure: smtp.port === 465,
-    auth: { user: smtp.user, pass: smtp.pass },
-    connectionTimeout: SMTP_TIMEOUT_MS,
-    greetingTimeout: SMTP_TIMEOUT_MS,
-    socketTimeout: SMTP_TIMEOUT_MS
-  });
+  const transporter = nodemailer.createTransport(smtpTransportOptions(smtp));
   await transporter.sendMail({ from: MAIL_FROM, to: MAIL_TO, subject, text });
 }
 
@@ -108,12 +74,14 @@ export const POST: APIRoute = async ({ request }) => {
     rateLimit: limiter
       ? async (ip) => {
           const result = await limiter.limit(ip);
-          return { success: result.success };
+          return { success: result.success, reason: result.reason };
         }
       : undefined,
     signals: redis
       ? {
-          store: createSignalStore(redis),
+          store: createRedisCspSignalStore((script, keys, args) =>
+            redis.eval<string[], [number, number]>(script, keys, args)
+          ),
           sendAlert: sendCspAlert
         }
       : undefined

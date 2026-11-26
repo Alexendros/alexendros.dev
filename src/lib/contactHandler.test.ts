@@ -296,17 +296,34 @@ describe('handleContactPost', () => {
     expect(res.headers.get('Retry-After')).toBe('30');
   });
 
-  it('SMTP send fail → 503 retryable_failure', async () => {
+  it('SMTP pierde la respuesta → 503 unknown y un solo envío', async () => {
+    const sendMail = vi.fn(async () => {
+      throw Object.assign(new Error('smtp'), { code: 'ETIMEDOUT', command: 'DATA' });
+    });
+    const d = deps({ sendMail, idempotencyStore: createMemoryContactIdempotencyStore() });
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      const res = await handleContactPost(
+        postJson(validBody, { headers: { 'Idempotency-Key': 'smtp-unknown' } }),
+        d
+      );
+      expect(res.status).toBe(503);
+      expect(await res.json()).toMatchObject({ status: 'unknown' });
+    }
+    expect(sendMail).toHaveBeenCalledOnce();
+  });
+
+  it('timeout del limitador → 503 sin enviar correo', async () => {
+    const sendMail = vi.fn(async () => undefined);
     const res = await handleContactPost(
       postJson(validBody),
       deps({
-        sendMail: async () => {
-          throw new Error('smtp');
-        }
+        sendMail,
+        rateLimit: async () => ({ success: true, reason: 'timeout' })
       })
     );
     expect(res.status).toBe(503);
     expect(await res.json()).toMatchObject({ status: 'retryable_failure' });
+    expect(sendMail).not.toHaveBeenCalled();
   });
 
   it('honeypot → 200 sin sendMail', async () => {
@@ -413,7 +430,8 @@ describe('handleContactPost', () => {
       idempotencyStore: store,
       sendMail: async () => {
         attempts += 1;
-        if (attempts === 1) throw new Error('smtp');
+        if (attempts === 1)
+          throw Object.assign(new Error('smtp'), { code: 'EDNS', command: 'CONN' });
       }
     });
     const fail = await handleContactPost(
@@ -430,29 +448,30 @@ describe('handleContactPost', () => {
     expect(attempts).toBe(2);
   });
 
-  it('API-06: SMTP ok pero persistencia accepted falla → 503 unknown', async () => {
+  it('API-06: SMTP ok pero persistencia del resultado falla → 503 unknown', async () => {
     const inner = createMemoryContactIdempotencyStore();
     const store: ContactIdempotencyStore = {
       get: (k) => inner.get(k),
       tryCreate: (k, r, t) => inner.tryCreate(k, r, t),
-      compareAndSet: async (k, owner, record, ttl) => {
-        if (record.status === 'accepted') return false;
-        return inner.compareAndSet(k, owner, record, ttl);
+      compareAndSet: async () => {
+        throw new Error('Redis no disponible');
       }
     };
     const sendMail = vi.fn(async () => undefined);
+    let now = 1_700_000_000_000;
+    const d = deps({ sendMail, idempotencyStore: store, nowMs: () => now });
     const res = await handleContactPost(
       postJson(validBody, { headers: { 'Idempotency-Key': 'api-06-key' } }),
-      deps({ sendMail, idempotencyStore: store })
+      d
     );
     expect(res.status).toBe(503);
     expect(await res.json()).toMatchObject({ ok: false, status: 'unknown' });
     expect(sendMail).toHaveBeenCalledOnce();
 
-    // Reintento no reenvía (unknown bloquea)
+    now += 120_000;
     const again = await handleContactPost(
       postJson(validBody, { headers: { 'Idempotency-Key': 'api-06-key' } }),
-      deps({ sendMail, idempotencyStore: store })
+      d
     );
     expect(again.status).toBe(503);
     expect(await again.json()).toMatchObject({ status: 'unknown' });

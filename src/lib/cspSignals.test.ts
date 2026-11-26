@@ -11,38 +11,18 @@ import {
 
 function memoryStore(): CspSignalStore & {
   counters: Map<string, number>;
-  sets: Map<string, Set<string>>;
-  nx: Map<string, string>;
 } {
   const counters = new Map<string, number>();
-  const sets = new Map<string, Set<string>>();
-  const nx = new Map<string, string>();
   return {
     counters,
-    sets,
-    nx,
-    async scard(key) {
-      return sets.get(key)?.size ?? 0;
-    },
-    async sismember(key, member) {
-      return sets.get(key)?.has(member) ?? false;
-    },
-    async sadd(key, member) {
-      const set = sets.get(key) ?? new Set();
-      const wasNew = !set.has(member);
-      set.add(member);
-      sets.set(key, set);
-      return wasNew;
-    },
-    async incrWithTtl(key) {
-      const next = (counters.get(key) ?? 0) + 1;
-      counters.set(key, next);
-      return next;
-    },
-    async setNx(key, value) {
-      if (nx.has(key)) return false;
-      nx.set(key, value);
-      return true;
+    async increment(candidate) {
+      const overflow =
+        !counters.has(candidate) &&
+        counters.size - Number(counters.has(CSP_SIGNAL_OVERFLOW_KEY)) >= CSP_SIGNAL_MAX_KEYS;
+      const key = overflow ? CSP_SIGNAL_OVERFLOW_KEY : candidate;
+      const count = (counters.get(key) ?? 0) + 1;
+      counters.set(key, count);
+      return { count, overflow };
     }
   };
 }
@@ -108,23 +88,25 @@ describe('recordCspViolation', () => {
     expect(overflow?.count).toBe(1);
     expect(store.counters.get(CSP_SIGNAL_OVERFLOW_KEY)).toBe(1);
     expect(store.counters.has(signalCounterKey('script-src', 'https://new.example'))).toBe(false);
+    await Promise.all(
+      Array.from({ length: CSP_SIGNAL_ALERT_THRESHOLD }, (_, index) =>
+        recordCspViolation(
+          { 'violated-directive': `extra-${index}`, 'blocked-uri': 'https://new.example/' },
+          { store, sendAlert }
+        )
+      )
+    );
+    expect(store.counters.size).toBe(CSP_SIGNAL_MAX_KEYS + 1);
+    expect(sendAlert).toHaveBeenCalledExactlyOnceWith({
+      directive: 'overflow',
+      origin: 'agrupado',
+      count: CSP_SIGNAL_ALERT_THRESHOLD
+    });
   });
 
   it('tragan errores del store', async () => {
     const store: CspSignalStore = {
-      scard: async () => {
-        throw new Error('down');
-      },
-      sismember: async () => {
-        throw new Error('down');
-      },
-      sadd: async () => {
-        throw new Error('down');
-      },
-      incrWithTtl: async () => {
-        throw new Error('down');
-      },
-      setNx: async () => {
+      increment: async () => {
         throw new Error('down');
       }
     };
